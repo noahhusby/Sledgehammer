@@ -1,0 +1,20 @@
+# Generate a new key using https://uuidgenerator.net/version4
+# All corresponding sledgehammer clients must have the same code
+# Don't share this key with anyone you don't trust as it will allow anybody to run any command on connected servers.
+authentication-key: ''
+
+# The prefix of messages broadcasted to players from the proxy
+message-prefix: '[BTE] '
+
+# The command for network-wide warping. Leave blank to disable
+# Permissions: sledgehammer.warp for teleporting, and sledgehammer.warp.admin for setting warps
+warp-command: 'nwarp'
+
+# Enter your Bungeecord (Case Sensitive) servers below with the corresponding states.
+# This is used to determine where to teleport when using /tpll
+servers:
+  - Michigan:
+      - Michigan
+      - Indiana
+  - Ohio:
+      - Ohio

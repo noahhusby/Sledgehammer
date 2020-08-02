@@ -1,0 +1,15 @@
+[
+{
+  "modid": "sledgehammer",
+  "name": "Sledgehammer",
+  "description": "An inter-server manager for Build The Earth servers",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["noahhusby"],
+  "credits": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
