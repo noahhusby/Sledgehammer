@@ -1,6 +1,14 @@
 # Sledgehammer
 A set of tools for multi-server Build the Earth servers
 
+## Features
+* Region Assigning - /tpll will automatically teleport between servers based upon region configuration
+* Global Warps - Set warps and teleport across the network
+
+#### Future Plans
+* Border Teleportation (WIP) - Teleport automatically between servers when passing through region borders
+* Border Duplication - Duplicate buildings on border for a seamless teleportation experience
+
 ## Installation
 Go to the [releases](https://github.com/noahhusby/Sledgehammer/releases) page and download the latest bungeecord plugin and forge mod.
 
@@ -67,5 +75,28 @@ general {
 The Sledgehammer plugin will recognize both /tpll and /cs tpll, but you must state which one you want to use for execution on the server. Default: tpll
 
 ## Usage
+### Commands
+* `/tpll <lat> <lon>` (or `/cs tpll <lat> <lon>`) - Teleport to latitude and longitude within the server. Sledgehammer will automatically decide which server to send players to based upon region configuration. This can be disabled in the bungeecord config file.
+* `/nwarp <warp name>` - Teleport to a specific warp
+* `/nwarp list` - Lists all network warps
+* `/nwarp set <warp name>` - Sets warp
+* `/nwarp remove <warp name>` - Removes a warp
 
-## Building
+### Permissions
+* `sledgehammer.warp` - Gives access to /nwarp teleportation
+* `sledgehammer.warp.admin` - Permits the creation and removal of warps
+
+Note: The /tpll command doesn't have a permission node. It is up to the individual servers to control permisison nodes for /tpll or /cs tpll
+
+## Contributing
+### Bungeecord
+* Clone this repo, or download as a zip
+* Open the `Sledgehammer [Bungeecord]` in your preferred IDE
+* Build using: Maven Package
+
+### Forge
+* Clone this repo, or download as a zip
+* Open the `Sledgehammer [Forge]` folder in IntelliJ
+* Import it as a gradle project
+* Run `./gradlew setupDecompWorkshop` to download the necessary libraries
+* Run `./gradlew reofbShadowJar` to build
