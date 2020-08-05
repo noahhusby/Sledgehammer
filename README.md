@@ -1,5 +1,5 @@
 # Sledgehammer
-A multi-server communication system designed for the Build The Earth project.
+A set of tools for multi-server Build the Earth servers
 
 ## Installation
 Go to the [releases](https://github.com/noahhusby/Sledgehammer/releases) page and download the latest bungeecord plugin and forge mod.
