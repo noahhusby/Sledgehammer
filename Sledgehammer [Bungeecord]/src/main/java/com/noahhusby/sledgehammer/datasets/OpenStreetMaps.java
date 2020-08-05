@@ -50,7 +50,8 @@ public class OpenStreetMaps {
                                 }
                                 break;
                             case "county":
-                                if(location.county.equals(regionData[1].trim())) {
+                                if(location.county.equals(regionData[1].trim()) &&
+                                location.state.equals(regionData[2].trim())) {
                                     return ProxyUtil.getServerFromName(server);
                                 }
                                 break;

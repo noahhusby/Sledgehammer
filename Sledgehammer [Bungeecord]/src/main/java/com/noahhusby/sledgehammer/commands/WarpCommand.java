@@ -9,6 +9,7 @@ import com.noahhusby.sledgehammer.util.Warp;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Command;
 
 public class WarpCommand extends Command {
@@ -44,8 +45,21 @@ public class WarpCommand extends Command {
                 return;
             }
             WarpHandler.getInstance().requestNewWarp(args[1], sender);
-        } else if(args[0].equals("list")) {
+        } else if(args[0].equals("delete") || args[0].equals("remove")) {
+            if (!sender.hasPermission("sledgehammer.warp.admin")) {
+                sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("You don't have access to that command!", ChatColor.RED)));
+                return;
+            }
 
+            if (args.length < 2) {
+                sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Usage: [/" + Sledgehammer.configuration.getString(
+                        "warp-command") + " remove <warp name>] to remove a warp.", ChatColor.RED)));
+                return;
+            }
+            WarpHandler.getInstance().removeWarp(args[1], sender);
+        } else if(args[0].equals("list")) {
+            sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Warps: ", ChatColor.GOLD),
+                    new TextElement(WarpHandler.getInstance().getWarpList(), ChatColor.RED)));
         } else {
             Warp warp = WarpHandler.getInstance().getWarp(args[0]);
             if(warp == null) {

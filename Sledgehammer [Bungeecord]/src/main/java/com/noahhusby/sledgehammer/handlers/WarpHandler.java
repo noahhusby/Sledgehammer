@@ -41,6 +41,18 @@ public class WarpHandler {
         requestedWarps.put(sender.getName(), warp);
         CommunicationHandler.executeRequest(ProxyServer.getInstance().getPlayer(sender.getName()).getServer().getInfo(),
                 sender.getName(), "WARP_LOC");
+    }
+
+    public void removeWarp(String w, CommandSender sender) {
+        if(warps.containsKey(w.toLowerCase())) {
+            warps.remove(w.toLowerCase());
+            sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Successfully removed ", ChatColor.GOLD),
+                    new TextElement(StringUtils.capitalize(w), ChatColor.RED)));
+            Sledgehammer.saveWarpDB();
+            return;
+        }
+
+        sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Warp could not be removed", ChatColor.RED)));
 
     }
 
@@ -51,8 +63,21 @@ public class WarpHandler {
         }
     }
 
+    public String getWarpList() {
+        String warpList = "";
+        boolean first = true;
+        for(String s : warps.keySet()) {
+            if(first) {
+                warpList = StringUtils.capitalize(s);
+                first = false;
+            } else {
+                warpList += ", "+StringUtils.capitalize(s);
+            }
+        }
+        return warpList;
+    }
+
     private void addWarp(String sender, String w, Point p, ServerInfo s) {
-        //Sledgehammer.loadWarpDB();
         warps.remove(w.toLowerCase());
 
         warps.put(w.toLowerCase(), new Warp(p, s.getName()));
@@ -63,7 +88,5 @@ public class WarpHandler {
     }
 
 
-    private void deleteWarp(String w) {
 
-    }
 }
