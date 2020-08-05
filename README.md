@@ -88,7 +88,7 @@ The Sledgehammer plugin will recognize both /tpll and /cs tpll, but you must sta
 
 Note: The /tpll command doesn't have a permission node. It is up to the individual servers to control permisison nodes for /tpll or /cs tpll
 
-## Contributing
+## Building
 ### Bungeecord
 * Clone this repo, or download as a zip
 * Open the `Sledgehammer [Bungeecord]` in your preferred IDE
