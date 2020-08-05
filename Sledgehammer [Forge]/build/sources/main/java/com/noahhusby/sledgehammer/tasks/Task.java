@@ -18,4 +18,8 @@ public abstract class Task implements ITask {
     protected void throwNoSender() {
         Sledgehammer.logger.error("The task manager attempted to execute a task without an available sender.");
     }
+
+    protected void throwNoArgs() {
+        Sledgehammer.logger.error("The task manager attempted to execute a task without any arguments.");
+    }
 }

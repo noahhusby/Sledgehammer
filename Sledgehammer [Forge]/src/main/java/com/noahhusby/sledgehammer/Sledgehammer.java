@@ -1,7 +1,7 @@
 package com.noahhusby.sledgehammer;
 
 import com.noahhusby.sledgehammer.communication.SimpleChannelManager;
-import com.noahhusby.sledgehammer.managers.TaskQueueManager;
+import com.noahhusby.sledgehammer.handlers.TaskQueueManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;

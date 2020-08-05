@@ -1,6 +1,5 @@
 package com.noahhusby.sledgehammer.communication;
 
-import com.noahhusby.sledgehammer.managers.IncomingCommandHandler;
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -34,7 +33,7 @@ public class RequestMessage implements IMessage {
 
         @Override
         public RequestMessage onMessage(RequestMessage message, MessageContext ctx) {
-            return new RequestMessage("Ya Ya yeet");
+            return null;
         }
     }
 

@@ -1,5 +1,6 @@
 package com.noahhusby.sledgehammer.tasks;
 
+import com.noahhusby.sledgehammer.ConfigHandler;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.utils.Util;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,13 +10,11 @@ public class TpllTask extends Task {
 
     private final String lat;
     private final String lon;
-    private final CommandType ct;
 
-    public TpllTask(String sender, long executionTime, int time, CommandType ct, String lat, String lon) {
+    public TpllTask(String sender, long executionTime, int time, String lat, String lon) {
         super(sender, executionTime, time);
         this.lat = lat;
         this.lon = lon;
-        this.ct = ct;
     }
 
     @Override
@@ -26,7 +25,7 @@ public class TpllTask extends Task {
             return;
         }
 
-        if(ct.equals(CommandType.CS)) {
+        if(ConfigHandler.tpllMode.toLowerCase().equals("cs")) {
             FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(player, "/cs tpll "+lat+" "+lon);
             return;
         }
@@ -34,7 +33,4 @@ public class TpllTask extends Task {
         FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(player, "/tpll "+lat+" "+lon);
     }
 
-    public enum CommandType {
-        CS, TPLL
-    }
 }

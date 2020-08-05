@@ -48,4 +48,20 @@ public class CommunicationHandler {
             ex.printStackTrace();
         }
     }
+
+    public static String getRawArguments(String[] args) {
+        if(args.length == 0) {
+            return "";
+        } else if(args.length == 1) {
+            return args[0];
+        }
+
+        String arguments = args[0];
+
+        for(int x = 1; x < args.length; x++) {
+            arguments+=","+args[x];
+        }
+
+        return arguments;
+    }
 }

@@ -59,44 +59,17 @@ public class TpllCommand extends Command {
             return;
         }
 
-        String state = OpenStreetMaps.getInstance().getState(lon, lat);
-        if(state == null) {
-            sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("The location could not be found, or is not available on this server!", ChatColor.RED)));
+        ServerInfo server = OpenStreetMaps.getInstance().getServerFromLocation(lon, lat);
+
+        if (server == null) {
+            sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("That location could not be found, or is not available on this server!", ChatColor.RED)));
             return;
         }
 
-        Map<String, ServerInfo> servers = ProxyServer.getInstance().getServers();
-
-        for (Map.Entry<String, ServerInfo> en : servers.entrySet()) {
-            String name = en.getKey();
-            String desiredServer = getServerFromState(state);
-            if(desiredServer == null) {
-                //TODO: ADD WARNING
-                return;
-            }
-
-            if(name.toLowerCase().equals(desiredServer.toLowerCase())) {
-                ServerInfo server = ProxyServer.getInstance().getServerInfo(name);
-                if(ProxyServer.getInstance().getPlayer(sender.getName()).getServer().getInfo() != server) {
-                    sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Sending you to: ", ChatColor.GOLD), new TextElement(desiredServer, ChatColor.RED)));
-                    ProxyServer.getInstance().getPlayer(sender.getName()).connect(server);
-                }
-                CommunicationHandler.executeCommand(server, "location", sender.getName(), String.valueOf(lat), String.valueOf(lon));
-            }
+        if (ProxyServer.getInstance().getPlayer(sender.getName()).getServer().getInfo() != server) {
+            sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Sending you to: ", ChatColor.GOLD), new TextElement(server.getName(), ChatColor.RED)));
+            ProxyServer.getInstance().getPlayer(sender.getName()).connect(server);
         }
-    }
-
-    private String getServerFromState(String state) {
-        ArrayList<LinkedHashMap<String, ArrayList<String>>> map = (ArrayList<LinkedHashMap<String, ArrayList<String>>>) Sledgehammer.configuration.get("servers");
-        for(LinkedHashMap<String, ArrayList<String>> s : map) {
-            for(String server : s.keySet()) {
-                for(String states : s.get(server)) {
-                    if(states.equals(state)) {
-                        return server;
-                    }
-                }
-            }
-        }
-        return null;
+        CommunicationHandler.executeCommand(server, "location", sender.getName(), String.valueOf(lat), String.valueOf(lon));
     }
 }

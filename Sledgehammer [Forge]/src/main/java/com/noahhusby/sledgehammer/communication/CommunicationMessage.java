@@ -1,6 +1,6 @@
 package com.noahhusby.sledgehammer.communication;
 
-import com.noahhusby.sledgehammer.managers.IncomingCommandHandler;
+import com.noahhusby.sledgehammer.handlers.IncomingCommandHandler;
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;

@@ -2,6 +2,7 @@ package com.noahhusby.sledgehammer;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.noahhusby.sledgehammer.commands.CsTpllCommand;
 import com.noahhusby.sledgehammer.commands.TpllCommand;
 import com.noahhusby.sledgehammer.commands.WarpCommand;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
@@ -24,14 +25,17 @@ import org.json.simple.parser.JSONParser;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 
 public class Sledgehammer extends Plugin implements Listener {
+    public static Logger logger;
     private static File warpFile = null;
     private final File configFile = new File(getDataFolder(), "config.yml");
     public static Configuration configuration;
 
     @Override
     public void onEnable() {
+        logger = getLogger();
         initConfig();
 
         warpFile = new File(getDataFolder(), "warps.json");
@@ -41,7 +45,11 @@ public class Sledgehammer extends Plugin implements Listener {
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new WarpCommand());
         }
 
-        ProxyServer.getInstance().getPluginManager().registerCommand(this, new TpllCommand());
+        if(configuration.getBoolean("global-tpll")) {
+            ProxyServer.getInstance().getPluginManager().registerCommand(this, new TpllCommand());
+            ProxyServer.getInstance().getPluginManager().registerCommand(this, new CsTpllCommand());
+        }
+
         ProxyServer.getInstance().registerChannel("sledgehammer:channel");
         ProxyServer.getInstance().getPluginManager().registerListener(this, this);
 
@@ -96,7 +104,6 @@ public class Sledgehammer extends Plugin implements Listener {
             {
                 e.printStackTrace();
                 System.err.println("\n" + json);
-                System.out.println(e);
             }
             return;
         }

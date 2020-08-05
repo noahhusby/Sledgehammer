@@ -9,10 +9,13 @@ public class ConfigHandler {
     public static Configuration config;
 
     public static String authenticationCode = "";
+    public static String tpllMode = "";
 
     public static void init(File f) {
         config = new Configuration(f);
         config.addCustomCategoryComment("General", "");
+        tpllMode = config.getString("Teleportation Mode", "General", "tpll"
+                , "Use [tpll] for /tpll, or [cs] for /cs tpll");
         authenticationCode = config.getString("Network Authentication Code", "General", ""
                 , "Use the same authentication code as the bungeecord server you are connecting to");
 
