@@ -67,12 +67,13 @@ general {
     # Use the same authentication code as the bungeecord server you are connecting to [default: ]
     S:"Network Authentication Code"=
 
-    # Use [tpll] for /tpll, or [cs] for /cs tpll [default: tpll]
-    S:"Teleportation Mode"=tpll
+    # Use 'internal' for sledgehammer's internal interpreter. Use 'tpll' for terra121's interpreter, or 'cs' for BTE Tool's interpreter. [default: internal]
+    S:"Teleportation Mode"=internal
 }
 ```
 #### Tpll Execution Mode
-The Sledgehammer plugin will recognize both /tpll and /cs tpll, but you must state which one you want to use for execution on the server. Default: tpll
+The Sledgehammer plugin will recognize both /tpll and /cs tpll, but you must state which one you want to use for execution on the server. Sledgehammer also includes its own internal teleporter which reduces lag.
+Default: internal
 
 ## Usage
 ### Commands
