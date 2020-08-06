@@ -14,8 +14,8 @@ public class ConfigHandler {
     public static void init(File f) {
         config = new Configuration(f);
         config.addCustomCategoryComment("General", "");
-        tpllMode = config.getString("Teleportation Mode", "General", "tpll"
-                , "Use [tpll] for /tpll, or [cs] for /cs tpll");
+        tpllMode = config.getString("Teleportation Mode", "General", "internal"
+                , "Use 'internal' for sledgehammer's internal interpreter. Use 'tpll' for terra121's interpreter, or 'cs' for BTE Tool's interpreter.");
         authenticationCode = config.getString("Network Authentication Code", "General", ""
                 , "Use the same authentication code as the bungeecord server you are connecting to");
 

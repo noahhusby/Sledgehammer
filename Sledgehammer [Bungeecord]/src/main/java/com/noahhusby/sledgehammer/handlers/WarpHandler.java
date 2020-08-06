@@ -11,7 +11,6 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
@@ -47,7 +46,7 @@ public class WarpHandler {
         if(warps.containsKey(w.toLowerCase())) {
             warps.remove(w.toLowerCase());
             sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Successfully removed ", ChatColor.GOLD),
-                    new TextElement(StringUtils.capitalize(w), ChatColor.RED)));
+                    new TextElement(ChatHelper.capitalize(w), ChatColor.RED)));
             Sledgehammer.saveWarpDB();
             return;
         }
@@ -68,10 +67,10 @@ public class WarpHandler {
         boolean first = true;
         for(String s : warps.keySet()) {
             if(first) {
-                warpList = StringUtils.capitalize(s);
+                warpList = ChatHelper.capitalize(s);
                 first = false;
             } else {
-                warpList += ", "+StringUtils.capitalize(s);
+                warpList += ", "+ChatHelper.capitalize(s);
             }
         }
         return warpList;
@@ -83,7 +82,7 @@ public class WarpHandler {
         warps.put(w.toLowerCase(), new Warp(p, s.getName()));
 
         ProxyServer.getInstance().getPlayer(sender).sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Created warp ", ChatColor.GOLD),
-                new TextElement(StringUtils.capitalize(w), ChatColor.RED)));
+                new TextElement(ChatHelper.capitalize(w), ChatColor.RED)));
         Sledgehammer.saveWarpDB();
     }
 

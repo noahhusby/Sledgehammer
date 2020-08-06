@@ -25,6 +25,6 @@ public class TeleportTask extends Task {
             return;
         }
 
-        FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(player, String.format("/tp %s %s %s", x, y, z));
+        FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(player, String.format("tp %s %s %s", x, y, z));
     }
 }

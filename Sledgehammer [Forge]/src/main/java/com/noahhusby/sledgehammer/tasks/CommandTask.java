@@ -27,9 +27,9 @@ public class CommandTask extends Task {
         }
 
         if(args.length < 6) {
-            FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(player, "/"+args[4]);
+            FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(player, args[4]);
         } else {
-            String command = "/"+args[4];
+            String command = args[4];
             for(int x = 5; x < args.length; x++) {
                 command += " "+args[x];
             }

@@ -28,6 +28,7 @@ public class IncomingCommandHandler {
             return;
         }
 
+
         switch (data[0]) {
             case "command":
                 try {
@@ -40,6 +41,7 @@ public class IncomingCommandHandler {
                 try {
                     TaskQueueManager.getInstance().queueTask(new TpllTask(data[3], Long.parseLong(data[2]),10000, data[4], data[5]));
                 } catch (Exception e) {
+                    e.printStackTrace();
                     Sledgehammer.logger.error("There was an error executing the location command!");
                 }
                 break;
