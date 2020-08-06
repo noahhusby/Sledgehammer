@@ -21,14 +21,14 @@ public class GeographicProjection {
 
     public static GeographicProjection orientProjection(GeographicProjection base, Orientation o) {
         if(base.upright()) {
-            if(o== Orientation.upright)
+            if(o==Orientation.upright)
                 return base;
             base = new UprightOrientation(base);
         }
 
-        if(o== Orientation.swapped) {
+        if(o==Orientation.swapped) {
             return new InvertedOrientation(base);
-        } else if(o== Orientation.upright) {
+        } else if(o==Orientation.upright) {
             base = new UprightOrientation(base);
         }
 

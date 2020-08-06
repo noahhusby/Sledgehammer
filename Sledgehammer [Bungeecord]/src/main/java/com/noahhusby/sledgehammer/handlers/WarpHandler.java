@@ -39,7 +39,7 @@ public class WarpHandler {
     public void requestNewWarp(String warp, CommandSender sender) {
         requestedWarps.put(sender.getName(), warp);
         CommunicationHandler.executeRequest(ProxyServer.getInstance().getPlayer(sender.getName()).getServer().getInfo(),
-                sender.getName(), "WARP_LOC");
+                sender.getName(), "POS");
     }
 
     public void removeWarp(String w, CommandSender sender) {

@@ -8,16 +8,16 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaskQueueManager {
-    private static TaskQueueManager mInstance = null;
+public class TaskQueueHandler {
+    private static TaskQueueHandler mInstance = null;
 
-    public static TaskQueueManager getInstance() {
-        if(mInstance == null) mInstance = new TaskQueueManager();
+    public static TaskQueueHandler getInstance() {
+        if(mInstance == null) mInstance = new TaskQueueHandler();
 
         return mInstance;
     }
 
-    private TaskQueueManager() { }
+    private TaskQueueHandler() { }
 
     List<Task> tasks = new ArrayList<>();
 

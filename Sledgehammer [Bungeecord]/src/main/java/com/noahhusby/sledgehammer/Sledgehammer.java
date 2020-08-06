@@ -3,15 +3,19 @@ package com.noahhusby.sledgehammer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.noahhusby.sledgehammer.commands.CsTpllCommand;
+import com.noahhusby.sledgehammer.commands.SledgehammerCommand;
 import com.noahhusby.sledgehammer.commands.TpllCommand;
 import com.noahhusby.sledgehammer.commands.WarpCommand;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.handlers.CommunicationHandler;
+import com.noahhusby.sledgehammer.handlers.PlayerLocationHandler;
 import com.noahhusby.sledgehammer.handlers.WarpHandler;
 import com.noahhusby.sledgehammer.util.Warp;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PluginMessageEvent;
+import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
@@ -24,6 +28,7 @@ import org.json.simple.parser.JSONParser;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -50,15 +55,31 @@ public class Sledgehammer extends Plugin implements Listener {
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new CsTpllCommand());
         }
 
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerCommand());
+
         ProxyServer.getInstance().registerChannel("sledgehammer:channel");
         ProxyServer.getInstance().getPluginManager().registerListener(this, this);
 
         OpenStreetMaps.getInstance();
+
+        getProxy().getScheduler().schedule(this, () -> {
+
+        }, 10,  TimeUnit.SECONDS);
     }
 
     @EventHandler
     public void onMessage(PluginMessageEvent e) {
         CommunicationHandler.onIncomingMessage(e);
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PostLoginEvent e) {
+        PlayerLocationHandler.getInstance().onPlayerJoin(e.getPlayer());
+    }
+
+    @EventHandler
+    public void onPlayerLeave(PlayerDisconnectEvent e) {
+        PlayerLocationHandler.getInstance().onPlayerQuit(e.getPlayer());
     }
 
 

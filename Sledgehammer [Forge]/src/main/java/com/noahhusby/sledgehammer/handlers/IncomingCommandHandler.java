@@ -23,6 +23,7 @@ public class IncomingCommandHandler {
     }
 
     public void incomingCommand(CommunicationMessage message) {
+        Sledgehammer.logger.info(message.text);
         String[] data = message.text.split(",");
         if(data.length < 2 || !isGenuineRequest(data[1])) {
             return;
@@ -32,14 +33,14 @@ public class IncomingCommandHandler {
         switch (data[0]) {
             case "command":
                 try {
-                    TaskQueueManager.getInstance().queueTask(new CommandTask(data[3], Long.parseLong(data[2]),10000, data));
+                    TaskQueueHandler.getInstance().queueTask(new CommandTask(data[3], Long.parseLong(data[2]),10000, data));
                 } catch (Exception e) {
                     Sledgehammer.logger.error("There was an error executing the command!");
                 }
                 break;
             case "location":
                 try {
-                    TaskQueueManager.getInstance().queueTask(new TpllTask(data[3], Long.parseLong(data[2]),10000, data[4], data[5]));
+                    TaskQueueHandler.getInstance().queueTask(new TpllTask(data[3], Long.parseLong(data[2]),10000, data[4], data[5]));
                 } catch (Exception e) {
                     e.printStackTrace();
                     Sledgehammer.logger.error("There was an error executing the location command!");
@@ -51,7 +52,7 @@ public class IncomingCommandHandler {
                 break;
             case "teleport":
                 try {
-                    TaskQueueManager.getInstance().queueTask(new TeleportTask(data[3], Long.parseLong(data[2]),10000, data[4], data[5], data[6]));
+                    TaskQueueHandler.getInstance().queueTask(new TeleportTask(data[3], Long.parseLong(data[2]),10000, data[4], data[5], data[6]));
                 } catch (Exception e) {
                     Sledgehammer.logger.error("There was an error executing the teleport command!");
                 }
@@ -66,11 +67,11 @@ public class IncomingCommandHandler {
         return;
     }
 
-    private void request(CommunicationMessage message) {
+    public void request(CommunicationMessage message) {
         String[] args = message.text.split(",");
         if(args.length < 4) return;
         switch(args[4]) {
-            case "WARP_LOC":
+            case "POS":
                 List<EntityPlayerMP> players = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers();
                 if(players.isEmpty()) {
                     return;
@@ -79,7 +80,7 @@ public class IncomingCommandHandler {
                 for(EntityPlayerMP p : players) {
                     if(p.getName().equals(args[3])) {
                         SimpleChannelManager.network.sendTo(new RequestMessage(String.format("%s,%s,%s,%s,%s,%s,%s,%s",
-                                "response", ConfigHandler.authenticationCode, System.currentTimeMillis(), args[3], "WARP_LOC",
+                                "response", ConfigHandler.authenticationCode, System.currentTimeMillis(), args[3], "POS",
                                 p.getPosition().getX(), p.getPosition().getY(), p.getPosition().getZ())), p);
                         return;
                     }

@@ -39,8 +39,10 @@ public class CommunicationHandler {
             if(args.length < 3) return;
             if(!args[1].equals(Sledgehammer.configuration.getString("authentication-key"))) return;
             switch (args[4]) {
-                case "WARP_LOC":
+                case "POS":
                     WarpHandler.getInstance().incomingLocationResponse(args[3], new Point(args[5].replaceAll("[^\\d-]", ""),
+                            args[6].replaceAll("[^\\d-]", ""), args[7].replaceAll("[^\\d-]", "")));
+                    PlayerLocationHandler.getInstance().updateLocation(args[3], new Point(args[5].replaceAll("[^\\d-]", ""),
                             args[6].replaceAll("[^\\d-]", ""), args[7].replaceAll("[^\\d-]", "")));
                     break;
             }

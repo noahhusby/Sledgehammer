@@ -1,6 +1,7 @@
 package com.noahhusby.sledgehammer.datasets;
 
 
+import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.util.Location;
 import com.noahhusby.sledgehammer.util.ProxyUtil;
@@ -50,9 +51,17 @@ public class OpenStreetMaps {
                                 }
                                 break;
                             case "county":
-                                if(location.county.equals(regionData[1].trim()) &&
-                                location.state.equals(regionData[2].trim())) {
-                                    return ProxyUtil.getServerFromName(server);
+                                if(regionData.length==4) {
+                                    if(location.county.equals(regionData[1].trim()) &&
+                                    location.state.equals(regionData[2].trim()) &&
+                                    location.country.equals(regionData[3].trim())) {
+                                        return ProxyUtil.getServerFromName(server);
+                                    }
+                                } else {
+                                    if(location.county.equals(regionData[1].trim()) &&
+                                            location.state.equals(regionData[2].trim())) {
+                                        return ProxyUtil.getServerFromName(server);
+                                    }
                                 }
                                 break;
                             case "state":
@@ -82,7 +91,7 @@ public class OpenStreetMaps {
 
             URL url = new URL(fullRequest);
             HttpURLConnection con = (HttpURLConnection)url.openConnection();
-            con.setRequestProperty("User-Agent", "sledgehammer/1.0");
+            con.setRequestProperty("User-Agent", Constants.PLUGINID+"/"+Constants.VERSION);
             con.setRequestProperty("Accept", "application/json");
 
             try(BufferedReader br = new BufferedReader(

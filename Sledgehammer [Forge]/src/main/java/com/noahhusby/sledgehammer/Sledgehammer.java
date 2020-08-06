@@ -1,8 +1,11 @@
 package com.noahhusby.sledgehammer;
 
 import com.noahhusby.sledgehammer.communication.SimpleChannelManager;
-import com.noahhusby.sledgehammer.handlers.TaskQueueManager;
+import com.noahhusby.sledgehammer.handlers.PlayerLocationHandler;
+import com.noahhusby.sledgehammer.handlers.TaskQueueHandler;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
@@ -15,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 
 @Mod(modid = Reference.MODID, name = "BTE Utilities", version = Reference.VERSION, dependencies = "", updateJSON = "", acceptableRemoteVersions = "*", acceptedMinecraftVersions = "1.12.2")
 public class Sledgehammer
@@ -55,7 +59,13 @@ public class Sledgehammer
 
     @SubscribeEvent
     void logIn(PlayerEvent.PlayerLoggedInEvent event) {
-        TaskQueueManager.getInstance().playerJoined(event.player);
+        TaskQueueHandler.getInstance().playerJoined(event.player);
+        List<EntityPlayerMP> players = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers();
+        for(EntityPlayerMP player : players) {
+            if(player.getName().equals(event.player.getName())) {
+                PlayerLocationHandler.getInstance().onPlayerJoin(player);
+            }
+        }
     }
 
     @SubscribeEvent

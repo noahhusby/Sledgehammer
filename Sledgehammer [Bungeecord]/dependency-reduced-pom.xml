@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.noahhusby</groupId>
   <artifactId>Sledgehammer</artifactId>
-  <version>0.1-bungeecord</version>
+  <version>0.2.2-bungeecord</version>
   <build>
     <plugins>
       <plugin>

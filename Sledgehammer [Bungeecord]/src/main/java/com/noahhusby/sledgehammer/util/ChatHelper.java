@@ -1,7 +1,10 @@
 package com.noahhusby.sledgehammer.util;
 
+import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.Sledgehammer;
+import com.sun.org.apache.bcel.internal.generic.GotoInstruction;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 
 public class ChatHelper {
@@ -24,6 +27,24 @@ public class ChatHelper {
             bar.addExtra(temp);
         }
         return bar;
+    }
+
+    public TextComponent makeTextComponent(TextElement... text) {
+        TextComponent bar = new TextComponent();
+        for(int x = 0; x < text.length; x++) {
+            TextComponent temp = new TextComponent(text[x].text);
+            temp.setColor(text[x].color);
+            temp.setBold(text[0].bold);
+            bar.addExtra(temp);
+        }
+        return bar;
+    }
+
+    public void infoMessage(CommandSender sender) {
+        sender.sendMessage(makeTextComponent(new TextElement("-----------------------", ChatColor.GOLD),
+                new TextElement("\nSledgehammer ", ChatColor.GOLD), new TextElement("v."+ Constants.VERSION, ChatColor.RED),
+                new TextElement("\nDeveloped by: ", ChatColor.GOLD), new TextElement("Noah Husby", ChatColor.RED),
+                new TextElement("\n-----------------------",ChatColor.GOLD)));
     }
 
     public static String capitalize(final String str) {
