@@ -21,6 +21,6 @@ jobs:
       with:
         java-version: 1.8
     - name: Enter directory
-      run: cd Sledgehammer [Bungeecord]
+      run: cd "Sledgehammer [Bungeecord]"
     - name: Build with Maven
       run: mvn -B package --file pom.xml
