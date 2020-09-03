@@ -1,49 +1,84 @@
 package com.noahhusby.sledgehammer.commands;
 
 import com.noahhusby.sledgehammer.Sledgehammer;
+import com.noahhusby.sledgehammer.commands.data.Command;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.handlers.CommunicationHandler;
+import com.noahhusby.sledgehammer.handlers.TaskHandler;
+import com.noahhusby.sledgehammer.tasks.LocationTask;
+import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
 import com.noahhusby.sledgehammer.util.ChatHelper;
+import com.noahhusby.sledgehammer.util.ProxyUtil;
 import com.noahhusby.sledgehammer.util.TextElement;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Command;
 
 import java.util.*;
 
 public class TpllCommand extends Command {
 
     public TpllCommand() {
-        super("tpll");
+        super("tpll", "sledgehammer.tpll");
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(!(sender instanceof ProxiedPlayer)) {
             sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("This command can only be executed by a player.", ChatColor.RED)));
+            return;
+        }
+
+        if(!hasGeneralPermission(sender)) {
+            sender.sendMessage(ChatHelper.getInstance().makeTextComponent(new TextElement("You don't have permission to run this command!", ChatColor.DARK_RED)));
+            return;
         }
 
         if(args.length==0) {
+            if(hasPermissionAdmin(sender)) {
+                sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Usage: /tpll [target player] <lat> <lon>", ChatColor.RED)));
+                return;
+            }
             sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Usage: /tpll <lat> <lon>", ChatColor.RED)));
             return;
         }
 
-        String[] splitCoords = args[0].split(",");
-        String alt = null;
-        if(splitCoords.length==2&&args.length<3) { // lat and long in single arg
-            if(args.length>1) alt = args[1];
-            args = splitCoords;
-        } else if(args.length==3) {
-            alt = args[2];
+        String parsedSender;
+        String[] parseArgs;
+
+        if(args.length == 3 && hasPermissionAdmin(sender)) {
+            parseArgs = new String[]{args[1], args[2]};
+            parsedSender = args[0];
+            ProxiedPlayer player = ProxyServer.getInstance().getPlayer(parsedSender);
+            if(player == null) {
+                sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement(parsedSender, ChatColor.RED),
+                        new TextElement(" could not be found on the network!", ChatColor.RED)));
+                return;
+            }
+        } else {
+            parsedSender = sender.getName();
+            parseArgs = args;
         }
-        if(args[0].endsWith(","))
-            args[0] = args[0].substring(0, args[0].length() - 1);
-        if(args.length>1&&args[1].endsWith(","))
-            args[1] = args[1].substring(0, args[1].length() - 1);
-        if(args.length!=2&&args.length!=3) {
+
+        String[] splitCoords = parseArgs[0].split(",");
+        String alt = null;
+        if(splitCoords.length==2&&parseArgs.length<3) { // lat and long in single arg
+            if(parseArgs.length>1) alt = parseArgs[1];
+            parseArgs = splitCoords;
+        } else if(parseArgs.length==3) {
+            alt = parseArgs[2];
+        }
+        if(parseArgs[0].endsWith(","))
+            parseArgs[0] = parseArgs[0].substring(0, parseArgs[0].length() - 1);
+        if(parseArgs.length>1&&parseArgs[1].endsWith(","))
+            parseArgs[1] = parseArgs[1].substring(0, parseArgs[1].length() - 1);
+        if(parseArgs.length!=2&&parseArgs.length!=3) {
+            if(hasPermissionAdmin(sender)) {
+                sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Usage: /tpll [target player] <lat> <lon>", ChatColor.RED)));
+                return;
+            }
             sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Usage: /tpll <lat> <lon>", ChatColor.RED)));
             return;
         }
@@ -52,9 +87,13 @@ public class TpllCommand extends Command {
         double lat;
 
         try {
-            lat = Double.parseDouble(args[0]);
-            lon = Double.parseDouble(args[1]);
+            lat = Double.parseDouble(parseArgs[0]);
+            lon = Double.parseDouble(parseArgs[1]);
         } catch(Exception e) {
+            if(hasPermissionAdmin(sender)) {
+                sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Usage: /tpll [target player] <lat> <lon>", ChatColor.RED)));
+                return;
+            }
             sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Usage: /tpll <lat> <lon>", ChatColor.RED)));
             return;
         }
@@ -66,10 +105,17 @@ public class TpllCommand extends Command {
             return;
         }
 
-        if (ProxyServer.getInstance().getPlayer(sender.getName()).getServer().getInfo() != server) {
-            sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Sending you to: ", ChatColor.GOLD), new TextElement(server.getName(), ChatColor.RED)));
-            ProxyServer.getInstance().getPlayer(sender.getName()).connect(server);
+        if(!hasPermissionAdmin(sender) && !hasSpecificNode(sender, server.getName())) {
+            sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("You don't have permission to tpll to ", ChatColor.RED),
+                    new TextElement(server.getName(), ChatColor.DARK_RED)));
+            return;
         }
-        CommunicationHandler.executeCommand(server, "location", sender.getName(), String.valueOf(lat), String.valueOf(lon));
+
+        if (ProxyUtil.getServerFromPlayerName(parsedSender) != server) {
+                sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Sending you to: ", ChatColor.GOLD), new TextElement(server.getName(), ChatColor.RED)));
+                ProxyServer.getInstance().getPlayer(parsedSender).connect(server);
+        }
+        TransferPacket t = new TransferPacket(server, parsedSender);
+        TaskHandler.getInstance().execute(new LocationTask(t, String.valueOf(lat), String.valueOf(lon)));
     }
 }

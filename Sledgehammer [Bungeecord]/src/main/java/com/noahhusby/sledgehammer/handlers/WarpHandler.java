@@ -3,8 +3,12 @@ package com.noahhusby.sledgehammer.handlers;
 import com.google.common.collect.Maps;
 import com.google.gson.annotations.Expose;
 import com.noahhusby.sledgehammer.Sledgehammer;
+import com.noahhusby.sledgehammer.config.ConfigHandler;
+import com.noahhusby.sledgehammer.tasks.SetWarpTask;
+import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
 import com.noahhusby.sledgehammer.util.ChatHelper;
-import com.noahhusby.sledgehammer.util.Point;
+import com.noahhusby.sledgehammer.datasets.Point;
+import com.noahhusby.sledgehammer.util.ProxyUtil;
 import com.noahhusby.sledgehammer.util.TextElement;
 import com.noahhusby.sledgehammer.util.Warp;
 import net.md_5.bungee.api.ChatColor;
@@ -38,8 +42,11 @@ public class WarpHandler {
 
     public void requestNewWarp(String warp, CommandSender sender) {
         requestedWarps.put(sender.getName(), warp);
-        CommunicationHandler.executeRequest(ProxyServer.getInstance().getPlayer(sender.getName()).getServer().getInfo(),
-                sender.getName(), "POS");
+
+        TransferPacket t = new TransferPacket(ProxyUtil.getServerFromPlayerName(sender.getName()), sender.getName());
+        TaskHandler.getInstance().execute(new SetWarpTask(t));
+        //CommunicationHandler.executeRequest(ProxyServer.getInstance().getPlayer(sender.getName()).getServer().getInfo(),
+        //        sender.getName(), "POS");
     }
 
     public void removeWarp(String w, CommandSender sender) {
@@ -47,7 +54,7 @@ public class WarpHandler {
             warps.remove(w.toLowerCase());
             sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Successfully removed ", ChatColor.GOLD),
                     new TextElement(ChatHelper.capitalize(w), ChatColor.RED)));
-            Sledgehammer.saveWarpDB();
+            ConfigHandler.getInstance().saveWarpDB();
             return;
         }
 
@@ -83,7 +90,7 @@ public class WarpHandler {
 
         ProxyServer.getInstance().getPlayer(sender).sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Created warp ", ChatColor.GOLD),
                 new TextElement(ChatHelper.capitalize(w), ChatColor.RED)));
-        Sledgehammer.saveWarpDB();
+        ConfigHandler.getInstance().saveWarpDB();
     }
 
 

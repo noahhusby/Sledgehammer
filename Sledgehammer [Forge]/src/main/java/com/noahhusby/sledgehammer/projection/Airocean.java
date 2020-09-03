@@ -508,39 +508,4 @@ public class Airocean extends GeographicProjection {
     public double metersPerUnit() {
         return Math.sqrt(510100000000000.0/(20*ROOT3*ARC*ARC/4));
     }
-
-    /*public static void main(String[] args) throws IOException {
-        Airocean projection = new ModifiedAirocean();
-        double[] c = projection.fromGeo(12.4900422, 41.8902102);//-73.985821, 40.723241);
-        System.out.println(c[0] + " " + c[1]);
-        c = projection.toGeo(c[0], c[1]);
-        System.out.println(c[0] + " " + c[1]);
-        System.out.println((new ConformalEstimate()).fromGeo(170.185772, 53.611924)[0]);
-        System.out.println((new ConformalEstimate()).fromGeo(170.185772, 53.611924)[1]);
-        System.out.println(ARC);
-        BufferedImage base;
-        InputStream is = new FileInputStream("../../../../../resources/assets/terra121/data/map.png");
-        base = ImageIO.read(is);
-        BufferedImage img = new BufferedImage(1024, 1024, BufferedImage.TYPE_INT_ARGB);
-        //scale should be able to fit whole earth inside texture
-        double[] bounds = projection.bounds();
-        double scale = Math.max(Math.abs(bounds[2] - bounds[0]), Math.abs(bounds[3] - bounds[1]));
-        int w = img.getWidth();
-        int h = img.getHeight();
-        for (int lon = 0; lon < base.getWidth(); lon++) {
-            for (int lat = 0; lat < base.getHeight(); lat++) {
-                //lat lon to reference image coords
-                double Lon = (lon / (double) base.getWidth() - 0.5) * 360;
-                double Lat = (lat / (double) base.getHeight() - 0.5) * 180;
-                double proj[] = projection.fromGeo(Lon, Lat); //projection coords to x y
-                int x = (int) (w * (proj[0] - bounds[0]) / scale);
-                int y = (int) (h * (proj[1] - bounds[1]) / scale);
-                //get pixel from reference image if possible
-                if (x >= 0 && y >= 0 && x < img.getHeight() && y < img.getWidth()) {
-                    img.setRGB(x, h - y - 1, base.getRGB(lon, base.getHeight() - lat - 1));
-                }
-            }
-        }
-        ImageIO.write(img, "png", new File("out.png"));
-    }*/
 }

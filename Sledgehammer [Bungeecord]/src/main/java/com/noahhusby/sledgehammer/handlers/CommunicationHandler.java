@@ -1,7 +1,8 @@
 package com.noahhusby.sledgehammer.handlers;
 
 import com.noahhusby.sledgehammer.Sledgehammer;
-import com.noahhusby.sledgehammer.util.Point;
+import com.noahhusby.sledgehammer.config.ConfigHandler;
+import com.noahhusby.sledgehammer.datasets.Point;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 
@@ -13,7 +14,7 @@ public class CommunicationHandler {
     }
 
     public static void executeCommand(ServerInfo server, String command, String sender, String... args) {
-        String executionMessage = String.format("%s,%s,%s,%s", command, Sledgehammer.configuration.getString("authentication-key")
+        String executionMessage = String.format("%s,%s,%s,%s", command, ConfigHandler.getInstance().getConfiguration().getString("authentication-key")
         , System.currentTimeMillis(), sender);
         for(int x = 0; x < args.length; x++) {
             executionMessage+=","+args[x];
@@ -37,7 +38,7 @@ public class CommunicationHandler {
 
             String[] args = in.readUTF().split(",");
             if(args.length < 3) return;
-            if(!args[1].equals(Sledgehammer.configuration.getString("authentication-key"))) return;
+            if(!args[1].equals(ConfigHandler.getInstance().getConfiguration().getString("authentication-key"))) return;
             switch (args[4]) {
                 case "POS":
                     WarpHandler.getInstance().incomingLocationResponse(args[3], new Point(args[5].replaceAll("[^\\d-]", ""),

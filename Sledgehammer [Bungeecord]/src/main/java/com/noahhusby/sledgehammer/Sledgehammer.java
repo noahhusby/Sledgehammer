@@ -2,17 +2,19 @@ package com.noahhusby.sledgehammer;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.noahhusby.sledgehammer.commands.CsTpllCommand;
-import com.noahhusby.sledgehammer.commands.SledgehammerCommand;
-import com.noahhusby.sledgehammer.commands.TpllCommand;
-import com.noahhusby.sledgehammer.commands.WarpCommand;
+import com.noahhusby.sledgehammer.commands.*;
+import com.noahhusby.sledgehammer.commands.admin.SetupAdminCommand;
+import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.handlers.CommunicationHandler;
 import com.noahhusby.sledgehammer.handlers.PlayerLocationHandler;
+import com.noahhusby.sledgehammer.handlers.TaskHandler;
 import com.noahhusby.sledgehammer.handlers.WarpHandler;
+import com.noahhusby.sledgehammer.util.ProxyUtil;
 import com.noahhusby.sledgehammer.util.Warp;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
@@ -34,17 +36,16 @@ import java.util.logging.Logger;
 
 public class Sledgehammer extends Plugin implements Listener {
     public static Logger logger;
-    private static File warpFile = null;
-    private final File configFile = new File(getDataFolder(), "config.yml");
-    public static Configuration configuration;
+    private static Configuration configuration;
+    public static Plugin sledgehammer;
 
     @Override
     public void onEnable() {
+        this.sledgehammer = this;
         logger = getLogger();
-        initConfig();
 
-        warpFile = new File(getDataFolder(), "warps.json");
-        loadWarpDB();
+        ConfigHandler.getInstance().init(getDataFolder());
+        configuration = ConfigHandler.getInstance().getConfiguration();
 
         if(!configuration.getString("warp-command").equals("")) {
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new WarpCommand());
@@ -56,6 +57,7 @@ public class Sledgehammer extends Plugin implements Listener {
         }
 
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerCommand());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerAdminCommand());
 
         ProxyServer.getInstance().registerChannel("sledgehammer:channel");
         ProxyServer.getInstance().getPluginManager().registerListener(this, this);
@@ -69,7 +71,7 @@ public class Sledgehammer extends Plugin implements Listener {
 
     @EventHandler
     public void onMessage(PluginMessageEvent e) {
-        CommunicationHandler.onIncomingMessage(e);
+        TaskHandler.getInstance().onIncomingMessage(e);
     }
 
     @EventHandler
@@ -82,77 +84,7 @@ public class Sledgehammer extends Plugin implements Listener {
         PlayerLocationHandler.getInstance().onPlayerQuit(e.getPlayer());
     }
 
-
-    private void initConfig() {
-        createConfig();
-
-        try {
-            configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static void setupAdminCommandListener(SetupAdminCommand s) {
+        ProxyServer.getInstance().getPluginManager().registerListener(sledgehammer, s);
     }
-
-    private void createConfig() {
-        if (!getDataFolder().exists())
-            getDataFolder().mkdir();
-
-        File file = new File(getDataFolder(), "config.yml");
-
-        if (!file.exists()) {
-            try (InputStream in = getResourceAsStream("config.yml")) {
-                Files.copy(in, file.toPath());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public static void loadWarpDB() {
-        if (warpFile.exists())
-        {
-            String json = null;
-            try
-            {
-                Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting()
-                        .create();
-                json = FileUtils.readFileToString(warpFile, "UTF-8");
-                WarpHandler.setInstance(gson.fromJson(json, WarpHandler.class));
-                WarpHandler.getInstance();
-                saveWarpDB();
-            }
-            catch (Throwable e)
-            {
-                e.printStackTrace();
-                System.err.println("\n" + json);
-            }
-            return;
-        }
-
-        WarpHandler.setInstance(new WarpHandler());
-        WarpHandler.getInstance();
-        saveWarpDB();
-    }
-
-    public static void saveWarpDB() {
-        try
-        {
-            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
-            Predicate<String> nonnull = new Predicate<String>()
-            {
-                @Override
-                public boolean test(String t)
-                {
-                    return t == null || t.isEmpty();
-                }
-            };
-            FileUtils.writeStringToFile(warpFile, gson.toJson(WarpHandler.getInstance()), "UTF-8");
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-
 }

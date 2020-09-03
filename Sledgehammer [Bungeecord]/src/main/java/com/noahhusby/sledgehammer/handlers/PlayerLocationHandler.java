@@ -6,8 +6,7 @@ import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.projection.GeographicProjection;
 import com.noahhusby.sledgehammer.projection.ModifiedAirocean;
 import com.noahhusby.sledgehammer.projection.ScaleProjection;
-import com.noahhusby.sledgehammer.util.Point;
-import com.noahhusby.sledgehammer.util.ProxyUtil;
+import com.noahhusby.sledgehammer.datasets.Point;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.Map;

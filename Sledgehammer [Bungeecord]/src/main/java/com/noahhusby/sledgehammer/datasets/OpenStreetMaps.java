@@ -3,9 +3,9 @@ package com.noahhusby.sledgehammer.datasets;
 
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.Sledgehammer;
-import com.noahhusby.sledgehammer.util.Location;
+import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.types.Server;
 import com.noahhusby.sledgehammer.util.ProxyUtil;
-import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -19,6 +19,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.logging.Level;
 
 public class OpenStreetMaps {
@@ -36,49 +37,42 @@ public class OpenStreetMaps {
     public ServerInfo getServerFromLocation(double lon, double lat) {
         Location location = getLocation(lon, lat);
 
-        ArrayList<LinkedHashMap<String, ArrayList<String>>> map = (ArrayList<LinkedHashMap<String, ArrayList<String>>>) Sledgehammer.configuration.get("servers");
-        for(LinkedHashMap<String, ArrayList<String>> s : map) {
-            for(String server : s.keySet()) {
-                for(String rd : s.get(server)) {
-                    try {
-                        String[] regionData = rd.toLowerCase().split(",");
-                        switch (regionData[0]) {
-                            case "city":
-                                if(location.city.equals(regionData[1].trim()) &&
-                                        (location.state.equals(regionData[2].trim())) ||
-                                location.country.equals(regionData[2])) {
-                                    return ProxyUtil.getServerFromName(server);
-                                }
-                                break;
-                            case "county":
-                                if(regionData.length==4) {
-                                    if(location.county.equals(regionData[1].trim()) &&
-                                    location.state.equals(regionData[2].trim()) &&
-                                    location.country.equals(regionData[3].trim())) {
-                                        return ProxyUtil.getServerFromName(server);
-                                    }
-                                } else {
-                                    if(location.county.equals(regionData[1].trim()) &&
-                                            location.state.equals(regionData[2].trim())) {
-                                        return ProxyUtil.getServerFromName(server);
-                                    }
-                                }
-                                break;
-                            case "state":
-                                if(location.state.equals(regionData[1].trim()) &&
-                                        location.country.equals(regionData[2].trim())) {
-                                    return ProxyUtil.getServerFromName(server);
-                                }
-                                break;
-                            case "country":
-                                if(location.country.equals(regionData[1].trim())) {
-                                    return ProxyUtil.getServerFromName(server);
-                                }
-                                break;
+        List<Server> servers = ServerConfig.getInstance().getServers();
+        for(Server s : servers) {
+            for(Location l : s.locations) {
+                switch (l.detailType) {
+                    case city:
+                        if(location.city.equals(l.city) &&
+                                (location.state.equals(l.state) ||
+                                location.country.equals(l.country))) {
+                            return ProxyUtil.getServerFromName(s.name);
                         }
-                    } catch (Exception e) {
-                        Sledgehammer.logger.log(Level.WARNING, "Error decoding region data. Please check your config file!");
-                    }
+                        break;
+                    case county:
+                        if(!l.country.equals("")) {
+                            if(location.county.equals(l.county) &&
+                                    location.state.equals(l.state) &&
+                                    location.country.equals(l.country)) {
+                                return ProxyUtil.getServerFromName(s.name);
+                            }
+                        } else {
+                            if(location.county.equals(l.county) &&
+                                    location.state.equals(l.state)) {
+                                return ProxyUtil.getServerFromName(s.name);
+                            }
+                        }
+                        break;
+                    case state:
+                        if(location.state.equals(l.state) &&
+                                location.country.equals(l.country)) {
+                            return ProxyUtil.getServerFromName(s.name);
+                        }
+                        break;
+                    case country:
+                        if(location.country.equals(l.country)) {
+                            return ProxyUtil.getServerFromName(s.name);
+                        }
+                        break;
                 }
             }
         }
@@ -114,7 +108,7 @@ public class OpenStreetMaps {
                 String state = (String) address.get("state");
                 String country = (String) address.get("country");
 
-                return new Location(city, county, state, country);
+                return new Location(Location.detail.none, city, county, state, country);
             }
         } catch (IOException | ParseException | NullPointerException e) {
             return null;

@@ -2,33 +2,41 @@ package com.noahhusby.sledgehammer.tasks;
 
 import com.noahhusby.sledgehammer.ConfigHandler;
 import com.noahhusby.sledgehammer.Reference;
+import com.noahhusby.sledgehammer.handlers.TaskHandler;
 import com.noahhusby.sledgehammer.projection.GeographicProjection;
 import com.noahhusby.sledgehammer.projection.ModifiedAirocean;
 import com.noahhusby.sledgehammer.projection.ScaleProjection;
+import com.noahhusby.sledgehammer.tasks.data.IResponse;
+import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
 import com.noahhusby.sledgehammer.utils.Util;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TpllTask extends Task {
+public class LocationTask extends Task {
 
-    private final String lat;
-    private final String lon;
+    public LocationTask(TransferPacket t, String[] data) {
+        super(t, data);
+    }
 
-    public TpllTask(String sender, long executionTime, int time, String lat, String lon) {
-        super(sender, executionTime, time);
-        this.lat = lat;
-        this.lon = lon;
+    @Override
+    public String getCommandName() {
+        return Reference.locationTask;
     }
 
     @Override
     public void execute() {
-        EntityPlayer player = Util.getPlayerFromName(sender);
+        EntityPlayer player = Util.getPlayerFromName(getTransferPacket().sender);
         if(player == null) {
             throwNoSender();
             return;
         }
+
+        String[] data = getData();
+
+        String lat = data[0];
+        String lon = data[1];
 
         if(ConfigHandler.tpllMode.toLowerCase().equals("cs")) {
             FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(player, "cs tpll "+lat+" "+lon);
@@ -57,7 +65,18 @@ public class TpllTask extends Task {
             y--;
         }
 
-        FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(player, String.format("tp %s %s %s", x, y+2, z));
+        FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(FMLCommonHandler.instance().getMinecraftServerInstance(),
+                String.format("tp %s %s %s %s", getTransferPacket().sender, x, y+2, z));
+    }
+
+    @Override
+    public IResponse getResponse() {
+        return null;
+    }
+
+    @Override
+    public void build(TransferPacket t, String[] data) {
+        TaskHandler.getInstance().queueTask(new LocationTask(t, data));
     }
 
 }

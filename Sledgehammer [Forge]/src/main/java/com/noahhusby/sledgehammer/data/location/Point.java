@@ -1,4 +1,4 @@
-package com.noahhusby.sledgehammer.util;
+package com.noahhusby.sledgehammer.data.location;
 
 import com.google.gson.annotations.Expose;
 

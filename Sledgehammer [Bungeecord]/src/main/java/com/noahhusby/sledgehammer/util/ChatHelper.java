@@ -2,7 +2,9 @@ package com.noahhusby.sledgehammer.util;
 
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.Sledgehammer;
+import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.sun.org.apache.bcel.internal.generic.GotoInstruction;
+import com.sun.org.apache.regexp.internal.RE;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -17,7 +19,7 @@ public class ChatHelper {
     }
 
     public TextComponent makeTitleTextComponent(TextElement... text) {
-        TextComponent bar = new TextComponent(Sledgehammer.configuration.getString("message-prefix"));
+        TextComponent bar = new TextComponent(ConfigHandler.getInstance().getConfiguration().getString("message-prefix"));
         bar.setColor(ChatColor.GOLD);
         bar.setBold(true);
         for(int x = 0; x < text.length; x++) {
@@ -45,6 +47,14 @@ public class ChatHelper {
                 new TextElement("\nSledgehammer ", ChatColor.GOLD), new TextElement("v."+ Constants.VERSION, ChatColor.RED),
                 new TextElement("\nDeveloped by: ", ChatColor.GOLD), new TextElement("Noah Husby", ChatColor.RED),
                 new TextElement("\n-----------------------",ChatColor.GOLD)));
+    }
+
+    public void adminInfoMessage(CommandSender sender) {
+        sender.sendMessage(makeTextComponent(
+                new TextElement("\nSledgehammer ", ChatColor.GOLD), new TextElement("v."+ Constants.VERSION, ChatColor.RED),
+                new TextElement("\nDeveloped by: ", ChatColor.GOLD), new TextElement("Noah Husby", ChatColor.RED),
+                new TextElement("\n", ChatColor.RESET), new TextElement("\nCommands: ", ChatColor.GOLD),
+                new TextElement("\n/sha ", ChatColor.YELLOW), new TextElement("- Sledgehammer admin command", ChatColor.RED)));
     }
 
     public static String capitalize(final String str) {
