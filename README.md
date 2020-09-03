@@ -77,13 +77,17 @@ Default: internal
 
 ## Usage
 ### Commands
-* `/tpll <lat> <lon>` (or `/cs tpll <lat> <lon>`) - Teleport to latitude and longitude within the server. Sledgehammer will automatically decide which server to send players to based upon region configuration. This can be disabled in the bungeecord config file.
+* `/tpll [target player] <lat> <lon>` (or `/cs tpll [target player] <lat> <lon>`) - Teleport to latitude and longitude within the server. Sledgehammer will automatically decide which server to send players to based upon region configuration. This can be disabled in the bungeecord config file.
 * `/nwarp <warp name>` - Teleport to a specific warp
 * `/nwarp list` - Lists all network warps
 * `/nwarp set <warp name>` - Sets warp
 * `/nwarp remove <warp name>` - Removes a warp
 
 ### Permissions
+* `sledgehammer.admin` - Gives access to all sledgehammer commands + admin privileges. **Be careful when assigning this permission as it can cause serious damage!**
+* `sledgehammer.tpll.[Server Name | all]` - Allows player to /tpll to that specific server
+* `sledgehammer.tpll.bypass.[Server Name | all]` - Allows player to /tpll on a server, even if that server has local restrictions
+* `sledgehammer.tpll.admin` - Allows an admin to execute /tpll on behalf of another player
 * `sledgehammer.warp` - Gives access to /nwarp teleportation
 * `sledgehammer.warp.admin` - Permits the creation and removal of warps
 
