@@ -87,6 +87,7 @@ Default: internal
 * `sledgehammer.admin` - Gives access to all sledgehammer commands + admin privileges. **Be careful when assigning this permission as it can cause serious damage!**
 * `sledgehammer.tpll.[Server Name | all]` - Allows player to /tpll to that specific server
 * `sledgehammer.tpll.bypass.[Server Name | all]` - Allows player to /tpll on a server, even if that server has local restrictions
+* `sledgehammer.tpll.blacklist.[Server Name]` - Disables /tpll from that specific server
 * `sledgehammer.tpll.admin` - Allows an admin to execute /tpll on behalf of another player
 * `sledgehammer.warp` - Gives access to /nwarp teleportation
 * `sledgehammer.warp.admin` - Permits the creation and removal of warps
