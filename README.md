@@ -32,7 +32,7 @@ Note: Sledgehammer supports any fork of Bungeecord, including Waterfall.
 authentication-key: ''
 
 # The prefix of messages broadcasted to players from the proxy
-message-prefix: '[BTE] '
+message-prefix: '&9&lBTE &8&l> '
 
 # Set this to false to disable global tpll [/tpll & /cs tpll]
 global-tpll: true
@@ -41,29 +41,18 @@ global-tpll: true
 # Permissions: sledgehammer.warp for teleporting, and sledgehammer.warp.admin for setting warps
 warp-command: 'nwarp'
 
-# Enter your Bungeecord (Case Sensitive) servers below with the corresponding states.
-# This is used to determine where to teleport when using /tpll
-servers:
-  - Michigan:
-      - State, Michigan, United States of America
-      - City, Toledo, Ohio
-  - Ohio:
-      - State, Ohio, United States of America
+# Do not edit this!
+config-version: 0.3
 ```
-#### Bungeecord Region Config
-Sledgehammer supports the following region types: City (Town), County, State, and Country
-
-Examples:
-* **City** - City, Toledo, Ohio
-* **County** - County, Wayne, Michigan
-* **State** - State, California, United States of America
-* **Country** - Country, United States of America
 
 ### Default Forge Configuration:
 ```yaml
 # Configuration file
 
 general {
+    # Raise this if sledgehammer's inter-server actions aren't executing. Default: 10000 (10 seconds) [range: 2000 ~ 30000, default: 10000]
+    I:"Execution Timeout"=10000
+
     # Use the same authentication code as the bungeecord server you are connecting to [default: ]
     S:"Network Authentication Code"=
 
@@ -74,6 +63,11 @@ general {
 #### Tpll Execution Mode
 The Sledgehammer plugin will recognize both /tpll and /cs tpll, but you must state which one you want to use for execution on the server. Sledgehammer also includes its own internal teleporter which reduces lag.
 Default: internal
+
+### Bungeecord Region Config
+Sledgehammer supports the following region types: City (Town), County, State, and Country
+
+To setup regions, you must have the permission node `sledgehammer.admin`. Run `/sha setup` in-game and follow the prompts. **Note: Territories are classified as states in sledgehammer, and should be entered as such.**
 
 ## Usage
 ### Commands
@@ -87,12 +81,9 @@ Default: internal
 * `sledgehammer.admin` - Gives access to all sledgehammer commands + admin privileges. **Be careful when assigning this permission as it can cause serious damage!**
 * `sledgehammer.tpll.[Server Name | all]` - Allows player to /tpll to that specific server
 * `sledgehammer.tpll.bypass.[Server Name | all]` - Allows player to /tpll on a server, even if that server has local restrictions
-* `sledgehammer.tpll.blacklist.[Server Name]` - Disables /tpll from that specific server
 * `sledgehammer.tpll.admin` - Allows an admin to execute /tpll on behalf of another player
 * `sledgehammer.warp` - Gives access to /nwarp teleportation
 * `sledgehammer.warp.admin` - Permits the creation and removal of warps
-
-Note: The /tpll command doesn't have a permission node. It is up to the individual servers to control permisison nodes for /tpll or /cs tpll
 
 ## Building
 ### Bungeecord
