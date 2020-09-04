@@ -35,6 +35,8 @@ public class Location {
         }
     }
 
+    public Location() {}
+
     public enum detail {
         none, city, county, state, country;
     }

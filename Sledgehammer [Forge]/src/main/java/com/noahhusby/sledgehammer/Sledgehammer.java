@@ -49,8 +49,7 @@ public class Sledgehammer
     {
         if (event.getSide() == Side.CLIENT)
         {
-            //TODO: Replace with logger
-            System.out.println("Disabled on client side as set by config. (server starting)");
+            logger.warn("Disabled on client side!");
             return;
         }
 

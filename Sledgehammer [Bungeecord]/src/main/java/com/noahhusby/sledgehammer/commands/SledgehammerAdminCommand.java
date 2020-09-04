@@ -33,11 +33,11 @@ public class SledgehammerAdminCommand extends Command {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(!hasPermissionAdmin(sender)) {
-            sender.sendMessage(ChatHelper.getInstance().makeTextComponent(new TextElement("You don't have permission to run this command!", ChatColor.RED)));
+            sender.sendMessage(ChatHelper.getInstance().makeTextComponent(new TextElement("You don't have permission to run this command!", ChatColor.DARK_RED)));
             return;
         }
         if(args.length == 0) {
-            sender.sendMessage(ChatHelper.getInstance().makeTextComponent(new TextElement("Sledgehammer Admin Commands:", ChatColor.GOLD)));
+            sender.sendMessage(ChatHelper.getInstance().makeTextComponent(new TextElement("Sledgehammer Admin Commands:", ChatColor.GRAY)));
             for(IAdminCommand a : adminCommandList) {
                 sender.sendMessage(ChatHelper.getInstance().makeTextComponent(new TextElement("/sha "+a.getName(), ChatColor.YELLOW),
                         new TextElement(" - ", ChatColor.GRAY), new TextElement(a.getPurpose(), ChatColor.RED)));

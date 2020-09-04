@@ -19,9 +19,7 @@ public class ChatHelper {
     }
 
     public TextComponent makeTitleTextComponent(TextElement... text) {
-        TextComponent bar = new TextComponent(ConfigHandler.getInstance().getConfiguration().getString("message-prefix"));
-        bar.setColor(ChatColor.GOLD);
-        bar.setBold(true);
+        TextComponent bar = new TextComponent(ConfigHandler.getInstance().getConfiguration().getString("message-prefix").replace("&","\u00A7"));
         for(int x = 0; x < text.length; x++) {
             TextComponent temp = new TextComponent(text[x].text);
             temp.setColor(text[x].color);
@@ -43,17 +41,17 @@ public class ChatHelper {
     }
 
     public void infoMessage(CommandSender sender) {
-        sender.sendMessage(makeTextComponent(new TextElement("-----------------------", ChatColor.GOLD),
-                new TextElement("\nSledgehammer ", ChatColor.GOLD), new TextElement("v."+ Constants.VERSION, ChatColor.RED),
-                new TextElement("\nDeveloped by: ", ChatColor.GOLD), new TextElement("Noah Husby", ChatColor.RED),
-                new TextElement("\n-----------------------",ChatColor.GOLD)));
+        sender.sendMessage(makeTextComponent(new TextElement("-----------------------", ChatColor.GRAY),
+                new TextElement("\nSledgehammer ", ChatColor.BLUE), new TextElement("v."+ Constants.VERSION, ChatColor.RED),
+                new TextElement("\nDeveloped by: ", ChatColor.BLUE), new TextElement("Noah Husby", ChatColor.RED),
+                new TextElement("\n-----------------------",ChatColor.GRAY)));
     }
 
     public void adminInfoMessage(CommandSender sender) {
         sender.sendMessage(makeTextComponent(
-                new TextElement("\nSledgehammer ", ChatColor.GOLD), new TextElement("v."+ Constants.VERSION, ChatColor.RED),
-                new TextElement("\nDeveloped by: ", ChatColor.GOLD), new TextElement("Noah Husby", ChatColor.RED),
-                new TextElement("\n", ChatColor.RESET), new TextElement("\nCommands: ", ChatColor.GOLD),
+                new TextElement("Sledgehammer ", ChatColor.BLUE), new TextElement("v."+ Constants.VERSION, ChatColor.RED),
+                new TextElement("\nDeveloped by: ", ChatColor.BLUE), new TextElement("Noah Husby", ChatColor.RED),
+                new TextElement("\n", ChatColor.RESET), new TextElement("\nCommands: ", ChatColor.GRAY),
                 new TextElement("\n/sha ", ChatColor.YELLOW), new TextElement("- Sledgehammer admin command", ChatColor.RED)));
     }
 

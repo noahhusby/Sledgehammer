@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-Class-Path: slf4j-simple-1.7.28.jar emoji-java-5.1.1.jar slf4j-api-1.7
- .28.jar json-20170516.jar
-

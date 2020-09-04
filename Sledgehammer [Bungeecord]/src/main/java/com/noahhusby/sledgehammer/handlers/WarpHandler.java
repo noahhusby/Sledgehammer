@@ -52,7 +52,7 @@ public class WarpHandler {
     public void removeWarp(String w, CommandSender sender) {
         if(warps.containsKey(w.toLowerCase())) {
             warps.remove(w.toLowerCase());
-            sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Successfully removed ", ChatColor.GOLD),
+            sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Successfully removed ", ChatColor.GRAY),
                     new TextElement(ChatHelper.capitalize(w), ChatColor.RED)));
             ConfigHandler.getInstance().saveWarpDB();
             return;
@@ -88,7 +88,7 @@ public class WarpHandler {
 
         warps.put(w.toLowerCase(), new Warp(p, s.getName()));
 
-        ProxyServer.getInstance().getPlayer(sender).sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Created warp ", ChatColor.GOLD),
+        ProxyServer.getInstance().getPlayer(sender).sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Created warp ", ChatColor.GRAY),
                 new TextElement(ChatHelper.capitalize(w), ChatColor.RED)));
         ConfigHandler.getInstance().saveWarpDB();
     }

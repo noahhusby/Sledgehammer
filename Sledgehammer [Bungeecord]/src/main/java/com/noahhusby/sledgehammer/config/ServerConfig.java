@@ -5,18 +5,6 @@ import com.google.gson.annotations.Expose;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.config.types.Server;
 import com.noahhusby.sledgehammer.datasets.Location;
-import com.noahhusby.sledgehammer.datasets.Point;
-import com.noahhusby.sledgehammer.handlers.TaskHandler;
-import com.noahhusby.sledgehammer.tasks.SetWarpTask;
-import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
-import com.noahhusby.sledgehammer.util.ChatHelper;
-import com.noahhusby.sledgehammer.util.ProxyUtil;
-import com.noahhusby.sledgehammer.util.TextElement;
-import com.noahhusby.sledgehammer.util.Warp;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.config.ServerInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +22,6 @@ public class ServerConfig {
     }
 
     public ServerConfig() {
-        Location l = new Location(Location.detail.state, "", "", "michigan", "united states of america");
-        Server s = new Server("michigan");
-        s.locations.add(l);
-        servers.add(s);
-        ConfigHandler.getInstance().saveServerDB();
     }
 
     @Expose(serialize = true, deserialize = true)
@@ -46,5 +29,41 @@ public class ServerConfig {
 
     public List<Server> getServers() {
         return servers;
+    }
+
+    public void pushServer(Server server) {
+        List<Server> remove = new ArrayList<>();
+        for(Server s : servers) {
+            if(s.name.toLowerCase().equals(server.name)) {
+                remove.add(s);
+            }
+        }
+
+        for(Server s : remove) {
+            servers.remove(s);
+        }
+
+        servers.add(server);
+        ConfigHandler.getInstance().saveServerDB();
+    }
+
+
+    public Server getServer(String name) {
+        for(Server s : servers) {
+            if(s.name.toLowerCase().equals(name.toLowerCase())) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    public List<Location> getLocationsFromServer(String server) {
+        for(Server s : servers) {
+            if(s.name.toLowerCase().equals(server.toLowerCase())) {
+                return s.locations;
+            }
+        }
+
+        return null;
     }
 }

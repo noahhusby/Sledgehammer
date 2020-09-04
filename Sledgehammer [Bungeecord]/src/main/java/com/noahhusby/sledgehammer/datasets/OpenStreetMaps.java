@@ -106,6 +106,9 @@ public class OpenStreetMaps {
                 }
                 String county = (String) address.get("county");
                 String state = (String) address.get("state");
+                if(state == null && ((String) address.get("territory") != null)) {
+                    state = (String) address.get("territory");
+                }
                 String country = (String) address.get("country");
 
                 return new Location(Location.detail.none, city, county, state, country);

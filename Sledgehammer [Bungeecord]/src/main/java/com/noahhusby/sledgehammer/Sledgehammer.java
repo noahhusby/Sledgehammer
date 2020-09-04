@@ -1,37 +1,21 @@
 package com.noahhusby.sledgehammer;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.noahhusby.sledgehammer.commands.*;
 import com.noahhusby.sledgehammer.commands.admin.SetupAdminCommand;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
-import com.noahhusby.sledgehammer.handlers.CommunicationHandler;
 import com.noahhusby.sledgehammer.handlers.PlayerLocationHandler;
 import com.noahhusby.sledgehammer.handlers.TaskHandler;
-import com.noahhusby.sledgehammer.handlers.WarpHandler;
-import com.noahhusby.sledgehammer.util.ProxyUtil;
-import com.noahhusby.sledgehammer.util.Warp;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
-import net.md_5.bungee.config.ConfigurationProvider;
-import net.md_5.bungee.config.YamlConfiguration;
 import net.md_5.bungee.event.EventHandler;
-import org.apache.commons.io.FileUtils;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
-import java.io.*;
-import java.nio.file.Files;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 public class Sledgehammer extends Plugin implements Listener {

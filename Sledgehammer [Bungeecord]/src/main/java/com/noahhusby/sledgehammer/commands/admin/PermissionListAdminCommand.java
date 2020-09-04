@@ -12,13 +12,14 @@ public class PermissionListAdminCommand implements IAdminCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        sender.sendMessage(ChatHelper.getInstance().makeTextComponent(new TextElement("Permissions:", ChatColor.RED)));
         ProxiedPlayer p;
         if(args.length == 0) {
             p = ProxyServer.getInstance().getPlayer(sender.getName());
         } else {
             p = ProxyServer.getInstance().getPlayer(args[0]);
         }
+        sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Permissions for ", ChatColor.DARK_RED),
+                new TextElement(p.getName(), ChatColor.RED)));
 
         if(p == null) {
             sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement(args[0], ChatColor.RED),
@@ -33,7 +34,7 @@ public class PermissionListAdminCommand implements IAdminCommand {
 
     @Override
     public String getName() {
-        return "p";
+        return "pcheck";
     }
 
     @Override

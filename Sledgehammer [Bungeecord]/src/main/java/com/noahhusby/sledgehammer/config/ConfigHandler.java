@@ -60,7 +60,7 @@ public class ConfigHandler {
         File configurationF = new File(dataFolder, "config.yml");
 
         if (!configurationF.exists()) {
-            try (InputStream in = getClass().getResourceAsStream("config.yml")) {
+            try (InputStream in = getClass().getClassLoader().getResourceAsStream("config.yml")) {
                 Files.copy(in, configurationF.toPath());
             } catch (IOException e) {
                 e.printStackTrace();
@@ -122,7 +122,7 @@ public class ConfigHandler {
             {
                 Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting()
                         .create();
-                json = FileUtils.readFileToString(warpFile, "UTF-8");
+                json = FileUtils.readFileToString(serverFile, "UTF-8");
                 ServerConfig.setInstance(gson.fromJson(json, ServerConfig.class));
                 ServerConfig.getInstance();
                 saveServerDB();

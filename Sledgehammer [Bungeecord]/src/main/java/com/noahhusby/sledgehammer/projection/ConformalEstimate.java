@@ -50,61 +50,6 @@ public class ConformalEstimate extends Airocean {
         inverse = new InvertableVectorField(xs, ys);
     }
 
-    /*public ConformalEstimate () {
-        int sideLength = 5;
-        double[][] xs = new double[sideLength+1][];
-        double[][] ys = new double[xs.length][];
-        for(int u=0; u<xs.length; u++) {
-            double[] px = new double[xs.length-u];
-            double[] py = new double[xs.length-u];
-            xs[u] = px;
-            ys[u] = py;
-            for(int v=0; v<px.length; v++) {
-                double y0 = v*0.5;
-                double x0 = u + y0;
-                y0 *= ROOT3;
-                //System.out.println(x0 + " " + y0);
-                x0 /= sideLength;
-                y0 /= sideLength;
-                x0 -= 0.5;
-                y0 -= ROOT3/6;
-                x0 *= ARC;
-                y0 *= ARC;
-                //System.out.println(x0 + " " + y0);
-                double dis = Math.sqrt(x0*x0 + y0*y0);
-                double theta = dis<(ARC*ROOT3/6)?45*(ARC*ROOT3/6 - dis)/(ARC*ROOT3/6):0;
-                px[v] = Math.cos(theta*TO_RADIANS)*x0 + Math.sin(theta*TO_RADIANS)*y0;
-                py[v] = Math.cos(theta*TO_RADIANS)*y0 - Math.sin(theta*TO_RADIANS)*x0;
-            }
-        }
-        forward = new InvertableVectorField(xs, ys);
-        xs = new double[sideLength+1][];
-        ys = new double[xs.length][];
-        for(int u=0; u<xs.length; u++) {
-            double[] px = new double[xs.length-u];
-            double[] py = new double[xs.length-u];
-            xs[u] = px;
-            ys[u] = py;
-            for(int v=0; v<px.length; v++) {
-                double y0 = v*0.5;
-                double x0 = u + y0;
-                y0 *= ROOT3;
-                //System.out.println(x0 + " " + y0);
-                x0 /= sideLength;
-                y0 /= sideLength;
-                x0 -= 0.5;
-                y0 -= ROOT3/6;
-                x0 *= ARC;
-                y0 *= ARC;
-                double dis = Math.sqrt(x0*x0 + y0*y0);
-                double theta = dis<(ARC*ROOT3/6)?45*(ARC*ROOT3/6 - dis)/(ARC*ROOT3/6):0;
-                px[v] = Math.cos(-theta*TO_RADIANS)*x0 + Math.sin(-theta*TO_RADIANS)*y0;
-                py[v] = Math.cos(-theta*TO_RADIANS)*y0 - Math.sin(-theta*TO_RADIANS)*x0;
-            }
-        }
-        inverse = new InvertableVectorField(xs, ys);
-    }*/
-
     protected double[] triangleTransform(double x, double y, double z) {
         double[] c = super.triangleTransform(x,y,z);
 
@@ -142,8 +87,6 @@ public class ConformalEstimate extends Airocean {
 
     protected double[] inverseTriangleTransform(double x, double y) {
 
-        //System.out.println(x+" "+y);
-
         x /= ARC;
         y /= ARC;
 
@@ -157,8 +100,6 @@ public class ConformalEstimate extends Airocean {
         double theta = dis<(ARC*ROOT3/6)?90*(ARC*ROOT3/6 - dis)/(ARC*ROOT3/6):0;
         c[0] = Math.cos(-theta * TO_RADIANS) * c[0] + Math.sin(-theta * TO_RADIANS) * c[1];
         c[1] = Math.cos(-theta * TO_RADIANS) * c[1] - Math.sin(-theta * TO_RADIANS) * x;*/
-
-        //System.out.println(c[0]+" "+c[1]);
 
         return  super.inverseTriangleTransform(c[0],c[1]);
     }

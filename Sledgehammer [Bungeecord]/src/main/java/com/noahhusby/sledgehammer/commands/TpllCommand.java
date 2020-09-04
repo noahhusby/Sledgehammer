@@ -105,15 +105,31 @@ public class TpllCommand extends Command {
             return;
         }
 
-        if(!hasPermissionAdmin(sender) && !hasSpecificNode(sender, server.getName())) {
+        if(!hasPermissionAdmin(sender) && !(hasSpecificNode(sender, server.getName()) || hasSpecificNode(sender, "all"))) {
             sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("You don't have permission to tpll to ", ChatColor.RED),
                     new TextElement(server.getName(), ChatColor.DARK_RED)));
             return;
         }
 
         if (ProxyUtil.getServerFromPlayerName(parsedSender) != server) {
-                sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Sending you to: ", ChatColor.GOLD), new TextElement(server.getName(), ChatColor.RED)));
-                ProxyServer.getInstance().getPlayer(parsedSender).connect(server);
+            if(!parsedSender.equals(sender.getName())) {
+                ProxyServer.getInstance().getPlayer(parsedSender).sendMessage(
+                        ChatHelper.getInstance().makeTitleTextComponent(new TextElement("You were summoned to ", ChatColor.GRAY),
+                                new TextElement(server.getName(), ChatColor.RED), new TextElement(" by ", ChatColor.GRAY),
+                                new TextElement(sender.getName(), ChatColor.DARK_RED)));
+            } else {
+                sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Sending you to ", ChatColor.GRAY), new TextElement(server.getName(), ChatColor.RED)));
+            }
+            ProxyServer.getInstance().getPlayer(parsedSender).connect(server);
+        }
+
+        if(!parsedSender.equals(sender.getName())) {
+            ProxyServer.getInstance().getPlayer(parsedSender).sendMessage(
+                    ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Teleporting to ", ChatColor.GRAY),
+                            new TextElement(lat+", "+lon, ChatColor.RED)));
+        } else {
+            sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Teleporting to ", ChatColor.GRAY),
+                            new TextElement(lat+", "+lon, ChatColor.RED)));
         }
         TransferPacket t = new TransferPacket(server, parsedSender);
         TaskHandler.getInstance().execute(new LocationTask(t, String.valueOf(lat), String.valueOf(lon)));

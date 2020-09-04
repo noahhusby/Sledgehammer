@@ -23,44 +23,48 @@ public class WarpCommand extends Command {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(!hasGeneralPermission(sender)) {
-            sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("You don't have access to that command!", ChatColor.RED)));
+            sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("You don't have permission to run this command!", ChatColor.DARK_RED)));
             return;
         }
 
         if(args.length < 1) {
             sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Usage: /"+ConfigHandler.getInstance().getConfiguration().getString(
                     "warp-command")+" <warp>", ChatColor.RED)));
-            sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Usage: /"+ConfigHandler.getInstance().getConfiguration().getString(
-                    "warp-command")+" list to see the available warps.", ChatColor.RED)));
+            sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Use ", ChatColor.GRAY),
+                    new TextElement("/"+ConfigHandler.getInstance().getConfiguration().getString(
+                    "warp-command")+" list", ChatColor.BLUE),new TextElement(" to see the available warps.", ChatColor.GRAY)));
             return;
         }
 
         if(args[0].equals("set")) {
             if(!hasPermissionAdmin(sender)) {
-                sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("You don't have access to that command!", ChatColor.RED)));
+                sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("You don't have permission to run this command!", ChatColor.DARK_RED)));
                 return;
             }
 
             if(args.length < 2) {
-                sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Usage: [/"+ConfigHandler.getInstance().getConfiguration().getString(
-                        "warp-command")+" set <warp name>] to set a warp.", ChatColor.RED)));
+                sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Use ", ChatColor.GRAY),
+                                new TextElement("/"+ConfigHandler.getInstance().getConfiguration().getString(
+                        "warp-command")+" set <warp name>", ChatColor.BLUE), new TextElement(" to set a warp.", ChatColor.GRAY)));
                 return;
             }
             WarpHandler.getInstance().requestNewWarp(args[1], sender);
         } else if(args[0].equals("delete") || args[0].equals("remove")) {
             if (!hasPermissionAdmin(sender)) {
-                sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("You don't have access to that command!", ChatColor.RED)));
+                sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("You don't have permission to run this command!", ChatColor.DARK_RED)));
                 return;
             }
 
             if (args.length < 2) {
-                sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Usage: [/" + ConfigHandler.getInstance().getConfiguration().getString(
-                        "warp-command") + " remove <warp name>] to remove a warp.", ChatColor.RED)));
+                sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Use ", ChatColor.GRAY),
+                        new TextElement("/"+ConfigHandler.getInstance().getConfiguration().getString(
+                                "warp-command")+" remove <warp name>", ChatColor.BLUE), new TextElement(" to remove set a warp.", ChatColor.GRAY)));
+
                 return;
             }
             WarpHandler.getInstance().removeWarp(args[1], sender);
         } else if(args[0].equals("list")) {
-            sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Warps: ", ChatColor.GOLD),
+            sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Warps: ", ChatColor.GRAY),
                     new TextElement(WarpHandler.getInstance().getWarpList(), ChatColor.RED)));
         } else {
             Warp warp = WarpHandler.getInstance().getWarp(args[0]);
@@ -71,8 +75,10 @@ public class WarpCommand extends Command {
 
             if(ProxyServer.getInstance().getPlayer(sender.getName()).getServer().getInfo() != ProxyServer.getInstance().getServerInfo(warp.server)) {
                 ProxyServer.getInstance().getPlayer(sender.getName()).connect(ProxyServer.getInstance().getServerInfo(warp.server));
+                sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Sending you to ", ChatColor.GRAY), new TextElement(warp.server, ChatColor.RED)));
             }
 
+            sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Warping to ", ChatColor.GRAY), new TextElement(args[0], ChatColor.RED)));
             TransferPacket t = new TransferPacket(ProxyServer.getInstance().getServerInfo(warp.server), sender.getName());
             TaskHandler.getInstance().execute(new TeleportTask(t, warp.point));
         }
