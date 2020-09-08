@@ -1,9 +1,7 @@
 package com.noahhusby.sledgehammer.commands;
 
-import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.commands.data.Command;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
-import com.noahhusby.sledgehammer.handlers.CommunicationHandler;
 import com.noahhusby.sledgehammer.handlers.TaskHandler;
 import com.noahhusby.sledgehammer.tasks.LocationTask;
 import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
@@ -15,8 +13,6 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-
-import java.util.*;
 
 public class TpllCommand extends Command {
 

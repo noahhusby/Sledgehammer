@@ -1,6 +1,6 @@
 package com.noahhusby.sledgehammer.commands.data;
 
-import com.noahhusby.sledgehammer.commands.admin.SetupAdminCommand;
+import com.noahhusby.sledgehammer.commands.fragments.admin.SetupAdminCommand;
 import net.md_5.bungee.api.chat.TextComponent;
 
 public class SetupField {

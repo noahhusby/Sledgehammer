@@ -1,9 +1,8 @@
 package com.noahhusby.sledgehammer.handlers;
 
-import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
-import com.noahhusby.sledgehammer.tasks.IResponse;
-import com.noahhusby.sledgehammer.tasks.ITask;
+import com.noahhusby.sledgehammer.tasks.data.IResponse;
+import com.noahhusby.sledgehammer.tasks.data.ITask;
 import com.noahhusby.sledgehammer.tasks.data.TaskPacket;
 import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
 import net.md_5.bungee.api.event.PluginMessageEvent;

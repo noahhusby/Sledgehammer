@@ -1,9 +1,6 @@
 package com.noahhusby.sledgehammer.commands;
 
-import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.commands.data.Command;
-import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
-import com.noahhusby.sledgehammer.handlers.CommunicationHandler;
 import com.noahhusby.sledgehammer.handlers.TaskHandler;
 import com.noahhusby.sledgehammer.tasks.CommandTask;
 import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
@@ -12,13 +9,9 @@ import com.noahhusby.sledgehammer.util.ProxyUtil;
 import com.noahhusby.sledgehammer.util.TextElement;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class CsTpllCommand extends Command {
 

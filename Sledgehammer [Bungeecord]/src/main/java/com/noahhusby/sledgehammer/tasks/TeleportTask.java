@@ -2,6 +2,7 @@ package com.noahhusby.sledgehammer.tasks;
 
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.datasets.Point;
+import com.noahhusby.sledgehammer.tasks.data.IResponse;
 import com.noahhusby.sledgehammer.tasks.data.TaskPacket;
 import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
 

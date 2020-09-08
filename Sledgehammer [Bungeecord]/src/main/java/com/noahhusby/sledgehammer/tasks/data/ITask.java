@@ -1,6 +1,4 @@
-package com.noahhusby.sledgehammer.tasks;
-
-import com.noahhusby.sledgehammer.tasks.data.TaskPacket;
+package com.noahhusby.sledgehammer.tasks.data;
 
 public interface ITask {
     String getCommandName();

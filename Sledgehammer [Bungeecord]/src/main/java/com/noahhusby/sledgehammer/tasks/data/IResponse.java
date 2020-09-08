@@ -1,4 +1,4 @@
-package com.noahhusby.sledgehammer.tasks;
+package com.noahhusby.sledgehammer.tasks.data;
 
 import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
 

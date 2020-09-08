@@ -43,7 +43,7 @@ public class ConfigHandler {
         createConfig();
 
         try {
-            configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configurationFile);
+            configuration = ConfigurationProvider.getProvider(net.md_5.bungee.config.YamlConfiguration.class).load(configurationFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -160,4 +160,6 @@ public class ConfigHandler {
         }
     }
 
+    private class YamlConfiguration {
+    }
 }

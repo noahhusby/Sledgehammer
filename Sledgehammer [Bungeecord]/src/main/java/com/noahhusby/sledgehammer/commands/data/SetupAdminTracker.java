@@ -1,6 +1,6 @@
 package com.noahhusby.sledgehammer.commands.data;
 
-import com.noahhusby.sledgehammer.commands.admin.SetupAdminCommand;
+import com.noahhusby.sledgehammer.commands.fragments.admin.SetupAdminCommand;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.types.Server;
 import com.noahhusby.sledgehammer.datasets.Location;

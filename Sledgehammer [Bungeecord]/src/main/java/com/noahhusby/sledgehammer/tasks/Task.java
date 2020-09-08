@@ -1,5 +1,6 @@
 package com.noahhusby.sledgehammer.tasks;
 
+import com.noahhusby.sledgehammer.tasks.data.ITask;
 import com.noahhusby.sledgehammer.tasks.data.TaskPacket;
 import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
 import net.md_5.bungee.api.config.ServerInfo;

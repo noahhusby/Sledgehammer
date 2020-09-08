@@ -1,6 +1,6 @@
-package com.noahhusby.sledgehammer.commands.admin;
+package com.noahhusby.sledgehammer.commands.fragments.admin;
 
-import com.noahhusby.sledgehammer.commands.data.IAdminCommand;
+import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.util.ChatHelper;
 import com.noahhusby.sledgehammer.util.TextElement;
 import net.md_5.bungee.api.ChatColor;
@@ -8,7 +8,7 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-public class PermissionListAdminCommand implements IAdminCommand {
+public class PermissionListAdminCommand implements ICommandFragment {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
@@ -40,5 +40,10 @@ public class PermissionListAdminCommand implements IAdminCommand {
     @Override
     public String getPurpose() {
         return "List all sledgehammer permissions for a given player";
+    }
+
+    @Override
+    public String getArguments() {
+        return "[player]";
     }
 }

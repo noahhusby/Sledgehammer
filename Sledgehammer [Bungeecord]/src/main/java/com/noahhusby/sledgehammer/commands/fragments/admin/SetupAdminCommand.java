@@ -1,11 +1,10 @@
-package com.noahhusby.sledgehammer.commands.admin;
+package com.noahhusby.sledgehammer.commands.fragments.admin;
 
 import com.google.common.collect.Maps;
-import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.Sledgehammer;
-import com.noahhusby.sledgehammer.commands.data.IAdminCommand;
 import com.noahhusby.sledgehammer.commands.data.SetupAdminTracker;
 import com.noahhusby.sledgehammer.commands.data.SetupField;
+import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.datasets.Location;
 import com.noahhusby.sledgehammer.util.ChatHelper;
@@ -24,13 +23,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class SetupAdminCommand implements IAdminCommand, Listener {
+public class SetupAdminCommand implements ICommandFragment, Listener {
 
     Map<CommandSender, SetupAdminTracker> liveDialogs = Maps.newHashMap();
     List<SetupField> setupFields = new ArrayList<>();
 
     public SetupAdminCommand() {
-        Sledgehammer.setupAdminCommandListener(this);
+        Sledgehammer.setupListener(this);
         registerField(dialogAction.SERVER_EDIT,
                 ChatHelper.getInstance().makeTextComponent(new TextElement("Do you want to edit this server?", ChatColor.GREEN)),
                 ChatHelper.getInstance().makeTextComponent(new TextElement("Type ", ChatColor.GRAY),
@@ -93,6 +92,11 @@ public class SetupAdminCommand implements IAdminCommand, Listener {
     @Override
     public String getPurpose() {
         return "Run the automatic setup prompt";
+    }
+
+    @Override
+    public String getArguments() {
+        return "";
     }
 
     @EventHandler
