@@ -17,7 +17,7 @@ import net.md_5.bungee.api.ProxyServer;
 public class WarpCommand extends Command {
 
     public WarpCommand() {
-        super(ConfigHandler.getInstance().getConfiguration().getString("warp-command"), "sledgehammer.warp");
+        super(ConfigHandler.warpCommand, "sledgehammer.warp");
     }
 
     @Override
@@ -28,11 +28,9 @@ public class WarpCommand extends Command {
         }
 
         if(args.length < 1) {
-            sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Usage: /"+ConfigHandler.getInstance().getConfiguration().getString(
-                    "warp-command")+" <warp>", ChatColor.RED)));
+            sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Usage: /"+ConfigHandler.warpCommand+" <warp>", ChatColor.RED)));
             sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Use ", ChatColor.GRAY),
-                    new TextElement("/"+ConfigHandler.getInstance().getConfiguration().getString(
-                    "warp-command")+" list", ChatColor.BLUE),new TextElement(" to see the available warps.", ChatColor.GRAY)));
+                    new TextElement("/"+ConfigHandler.warpCommand+" list", ChatColor.BLUE),new TextElement(" to see the available warps.", ChatColor.GRAY)));
             return;
         }
 
@@ -44,8 +42,7 @@ public class WarpCommand extends Command {
 
             if(args.length < 2) {
                 sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Use ", ChatColor.GRAY),
-                                new TextElement("/"+ConfigHandler.getInstance().getConfiguration().getString(
-                        "warp-command")+" set <warp name>", ChatColor.BLUE), new TextElement(" to set a warp.", ChatColor.GRAY)));
+                                new TextElement("/"+ConfigHandler.warpCommand+" set <warp name>", ChatColor.BLUE), new TextElement(" to set a warp.", ChatColor.GRAY)));
                 return;
             }
             WarpHandler.getInstance().requestNewWarp(args[1], sender);
@@ -57,8 +54,7 @@ public class WarpCommand extends Command {
 
             if (args.length < 2) {
                 sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Use ", ChatColor.GRAY),
-                        new TextElement("/"+ConfigHandler.getInstance().getConfiguration().getString(
-                                "warp-command")+" remove <warp name>", ChatColor.BLUE), new TextElement(" to remove set a warp.", ChatColor.GRAY)));
+                        new TextElement("/"+ConfigHandler.warpCommand+" remove <warp name>", ChatColor.BLUE), new TextElement(" to remove set a warp.", ChatColor.GRAY)));
 
                 return;
             }

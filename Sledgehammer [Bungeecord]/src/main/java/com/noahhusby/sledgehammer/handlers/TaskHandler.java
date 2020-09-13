@@ -6,6 +6,7 @@ import com.noahhusby.sledgehammer.tasks.data.ITask;
 import com.noahhusby.sledgehammer.tasks.data.TaskPacket;
 import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
 import net.md_5.bungee.api.event.PluginMessageEvent;
+import net.minecraftforge.common.config.Config;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class TaskHandler {
 
     public void execute(ITask task) {
         TaskPacket p = task.build();
-        String executionMessage = String.format("%s,%s,%s,%s", task.getCommandName(), ConfigHandler.getInstance().getConfiguration().getString("authentication-key")
+        String executionMessage = String.format("%s,%s,%s,%s", task.getCommandName(), ConfigHandler.authenticationCode
         , System.currentTimeMillis(), p.sender);
         for(int x = 0; x < p.data.length; x++) {
             executionMessage+=","+p.data[x];
@@ -50,7 +51,7 @@ public class TaskHandler {
             if (!incomingChannel.equalsIgnoreCase("sledgehammer:channel")) return;
             String[] args = getStringFromMessage(in).split(",");
             if(args.length < 3) return;
-            if(!args[1].equals(ConfigHandler.getInstance().getConfiguration().getString("authentication-key"))) return;
+            if(!args[1].equals(ConfigHandler.authenticationCode)) return;
 
             ArrayList<String> dataList = new ArrayList<>();
             for(int x = 4; x < args.length; x++) dataList.add(args[x]);

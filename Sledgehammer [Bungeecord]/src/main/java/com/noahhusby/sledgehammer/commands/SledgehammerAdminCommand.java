@@ -5,6 +5,7 @@ import com.noahhusby.sledgehammer.commands.fragments.admin.PermissionListAdminCo
 import com.noahhusby.sledgehammer.commands.fragments.admin.ServerAdminCommand;
 import com.noahhusby.sledgehammer.commands.fragments.admin.SetupAdminCommand;
 import com.noahhusby.sledgehammer.commands.data.Command;
+import com.noahhusby.sledgehammer.commands.fragments.admin.TestLocationCommand;
 import com.noahhusby.sledgehammer.util.ChatHelper;
 import com.noahhusby.sledgehammer.util.TextElement;
 import net.md_5.bungee.api.ChatColor;
@@ -23,6 +24,7 @@ public class SledgehammerAdminCommand extends CommandFragmentManager {
         registerCommandFragment(new PermissionListAdminCommand());
         registerCommandFragment(new SetupAdminCommand());
         registerCommandFragment(new ServerAdminCommand());
+        registerCommandFragment(new TestLocationCommand());
     }
 
     @Override

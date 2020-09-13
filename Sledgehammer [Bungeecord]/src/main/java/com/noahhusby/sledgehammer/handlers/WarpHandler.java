@@ -36,6 +36,10 @@ public class WarpHandler {
 
     public Map<String, String> requestedWarps = Maps.newHashMap();
 
+    public Map<String, Warp> getWarps() {
+        return warps;
+    }
+
     public Warp getWarp(String w) {
         return warps.get(w.toLowerCase());
     }

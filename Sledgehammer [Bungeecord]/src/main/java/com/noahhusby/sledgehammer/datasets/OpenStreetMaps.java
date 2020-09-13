@@ -3,6 +3,7 @@ package com.noahhusby.sledgehammer.datasets;
 
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.Sledgehammer;
+import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.types.Server;
 import com.noahhusby.sledgehammer.util.ProxyUtil;
@@ -17,6 +18,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -32,7 +34,15 @@ public class OpenStreetMaps {
         return mInstance;
     }
 
-    private OpenStreetMaps() { }
+    private OpenStreetMaps() {
+        try {
+            offlineGeocoder = new ReverseGeocoder(ConfigHandler.getInstance().getOfflineBin());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private ReverseGeocoder offlineGeocoder;
 
     public ServerInfo getServerFromLocation(double lon, double lat) {
         Location location = getLocation(lon, lat);
@@ -79,7 +89,7 @@ public class OpenStreetMaps {
         return null;
     }
 
-    private Location getLocation(double lon, double lat) {
+    public Location getLocation(double lon, double lat) {
         try {
             String fullRequest = nominatimAPI + "&lon="+lon+"&accept-language=en&lat="+lat;
 
@@ -118,5 +128,68 @@ public class OpenStreetMaps {
         }
     }
 
+    public Location getOfflineLocation(double lon, double lat) {
+        String[] data = offlineGeocoder.lookup((float) lon, (float) lat);
+        String city = null;
+        String county = null;
+        String state = null;
+        String country = null;
+        for(int x = 0; x < data.length; x++) {
+            OfflineDataField o = getDataField(data[x]);
+            if (o.type.equals("city")) {
+                city = o.data;
+            } else if(o.type.equals("county")) {
+                county = o.data;
+            } else if(o.type.equals("state")) {
+                state = o.data;
+            } else if(o.type.equals("country")) {
+                country = o.data;
+            } else if (o.admin.equals("8") && city == null) {
+                city = o.data;
+            } else if(o.admin.equals("6") && county == null) {
+                county = o.data;
+            } else if(o.admin.equals("4") && state == null) {
+                state = o.data;
+            } else if(o.admin.equals("2") && country == null) {
+                country = o.data;
+            } else if (city == null) {
+                city = o.data;
+            } else if(county == null) {
+                county = o.data;
+            } else if(state == null) {
+                state = o.data;
+            } else if(country == null) {
+                country = o.data;
+            }
 
+        }
+
+        Location l = new Location(Location.detail.none, city, county, state, country);
+        return l;
+    }
+
+    private static OfflineDataField getDataField(String f) {
+        if(f == null) return null;
+        String[] data = f.trim().replaceAll(" ", "space").replaceAll("\\s+", ";;")
+                .replaceAll("space", " ").trim().split(";;");
+        String a = "";
+        String b = "";
+        String c = "";
+        System.out.println();
+        for(int x = 0; x < data.length; x++) {
+            System.out.println(x+": "+data[x]);
+        }
+        System.out.println();
+        if(data.length > 1) {
+            a = data[1];
+        }
+
+        if(data.length > 2) {
+            b = data[2];
+        }
+
+        c = data[data.length-1].trim();
+
+        return new OfflineDataField(a, b, c);
+    }
 }

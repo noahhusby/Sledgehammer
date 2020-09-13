@@ -1,27 +1,24 @@
 package com.noahhusby.sledgehammer;
 
 import com.noahhusby.sledgehammer.commands.*;
-import com.noahhusby.sledgehammer.commands.fragments.admin.SetupAdminCommand;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.handlers.PlayerLocationHandler;
 import com.noahhusby.sledgehammer.handlers.TaskHandler;
+import com.noahhusby.sledgehammer.map.MapHandler;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.event.EventHandler;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class Sledgehammer extends Plugin implements Listener {
     public static Logger logger;
-    private static Configuration configuration;
     public static Plugin sledgehammer;
 
     @Override
@@ -30,15 +27,45 @@ public class Sledgehammer extends Plugin implements Listener {
         logger = getLogger();
 
         ConfigHandler.getInstance().init(getDataFolder());
-        configuration = ConfigHandler.getInstance().getConfiguration();
 
-        if(!configuration.getString("warp-command").equals("")) {
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new WarpTemp());
+
+        if(!ConfigHandler.warpCommand.equals("")) {
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new WarpCommand());
         }
 
-        if(configuration.getBoolean("global-tpll")) {
+        if(ConfigHandler.globalTpll) {
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new TpllCommand());
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new CsTpllCommand());
+        }
+
+        if(ConfigHandler.borderTeleportation && !ConfigHandler.useOfflineMode) {
+            logger.warning("------------------------------");
+            for(int x = 0; x < 2; x++) {
+                logger.warning("");
+            }
+            logger.warning("Automatic border teleportation was enabled without an offline OSM database.");
+            logger.warning("This feature will now be disabled.");
+            for(int x = 0; x < 2; x++) {
+                logger.warning("");
+            }
+            logger.warning("------------------------------");
+            ConfigHandler.borderTeleportation = false;
+        }
+
+        if(ConfigHandler.borderTeleportation && !ConfigHandler.doesOfflineExist) {
+            logger.warning("------------------------------");
+            for(int x = 0; x < 2; x++) {
+                logger.warning("");
+            }
+            logger.warning("The offline OSM database was enabled without a proper database configured.");
+            logger.warning("Please follow the guide on https://github.com/noahhusby/sledgehammer to configure an offline database.");
+            logger.warning("This feature will now be disabled.");
+            for(int x = 0; x < 2; x++) {
+                logger.warning("");
+            }
+            logger.warning("------------------------------");
+            ConfigHandler.borderTeleportation = false;
         }
 
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerCommand());
@@ -48,6 +75,8 @@ public class Sledgehammer extends Plugin implements Listener {
         ProxyServer.getInstance().getPluginManager().registerListener(this, this);
 
         OpenStreetMaps.getInstance();
+
+        MapHandler.getInstance().init();
 
         getProxy().getScheduler().schedule(this, () -> {
 
