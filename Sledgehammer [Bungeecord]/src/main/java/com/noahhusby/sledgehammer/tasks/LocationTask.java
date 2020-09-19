@@ -4,6 +4,7 @@ import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.tasks.data.IResponse;
 import com.noahhusby.sledgehammer.tasks.data.TaskPacket;
 import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
+import org.json.simple.JSONObject;
 
 public class LocationTask extends Task {
 
@@ -23,7 +24,9 @@ public class LocationTask extends Task {
 
     @Override
     public TaskPacket build() {
-        String[] data = {lat, lon};
+        JSONObject data = new JSONObject();
+        data.put("lat", lat);S
+        data.put("lon", lon);
         return buildPacket(data);
     }
 

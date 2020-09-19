@@ -6,10 +6,11 @@ import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
 import com.noahhusby.sledgehammer.utils.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.json.simple.JSONObject;
 
 public class CommandTask extends Task {
 
-    public CommandTask(TransferPacket t, String[] data) {
+    public CommandTask(TransferPacket t, JSONObject data) {
         super(t, data);
     }
 
@@ -21,20 +22,7 @@ public class CommandTask extends Task {
             return;
         }
 
-        if(getData().length == 0) {
-            throwNoArgs();
-            return;
-        }
-
-        if(getData().length < 2) {
-            Bukkit.getServer().dispatchCommand(player, getData()[0]);
-        } else {
-            String command = getData()[0];
-            for(int x = 1; x < getData().length; x++) {
-                command += " "+getData()[x];
-            }
-            Bukkit.getServer().dispatchCommand(player, command);
-        }
+        Bukkit.getServer().dispatchCommand(player, (String) getData().get("args"));
     }
 
     @Override
@@ -48,7 +36,7 @@ public class CommandTask extends Task {
     }
 
     @Override
-    public void build(TransferPacket t, String[] data) {
+    public void build(TransferPacket t, JSONObject data) {
         TaskHandler.getInstance().queueTask(new CommandTask(t, data));
     }
 }

@@ -12,10 +12,11 @@ import com.noahhusby.sledgehammer.utils.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.json.simple.JSONObject;
 
 public class LocationTask extends Task {
 
-    public LocationTask(TransferPacket t, String[] data) {
+    public LocationTask(TransferPacket t, JSONObject data) {
         super(t, data);
     }
 
@@ -32,10 +33,10 @@ public class LocationTask extends Task {
             return;
         }
 
-        String[] data = getData();
+        JSONObject data = getData();
 
-        String lat = data[0];
-        String lon = data[1];
+        String lat = (String) data.get("lat");
+        String lon = (String) data.get("lon");
 
         if(ConfigHandler.tpllMode.toLowerCase().equals("cs")) {
             Bukkit.getServer().dispatchCommand(player,"cs tpll "+lat+" "+lon);
@@ -73,7 +74,7 @@ public class LocationTask extends Task {
     }
 
     @Override
-    public void build(TransferPacket t, String[] data) {
+    public void build(TransferPacket t, JSONObject data) {
         TaskHandler.getInstance().queueTask(new LocationTask(t, data));
     }
 

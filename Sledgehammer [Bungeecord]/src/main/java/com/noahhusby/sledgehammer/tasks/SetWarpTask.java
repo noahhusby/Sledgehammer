@@ -6,6 +6,9 @@ import com.noahhusby.sledgehammer.handlers.WarpHandler;
 import com.noahhusby.sledgehammer.tasks.data.IResponse;
 import com.noahhusby.sledgehammer.tasks.data.TaskPacket;
 import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class SetWarpTask extends Task implements IResponse {
     public SetWarpTask(TransferPacket transfer) {
@@ -18,13 +21,15 @@ public class SetWarpTask extends Task implements IResponse {
     }
 
     @Override
-    public void respond(String[] data) {
-        WarpHandler.getInstance().incomingLocationResponse(getSender(), new Point(data[0], data[1], data[2]));
+    public void respond(JSONObject d) {
+        JSONObject data = (JSONObject) d.get("data");
+        JSONObject point = (JSONObject) data.get("point");
+        WarpHandler.getInstance().incomingLocationResponse(getSender(), new Point((String) point.get("x"),(String) point.get("y"),
+                (String) point.get("z"), (String) point.get("yaw"), (String) point.get("pitch")));
     }
 
     @Override
-    public boolean validateResponse(TransferPacket transfer, String[] data) {
-        if(data.length < 3) return false;
+    public boolean validateResponse(TransferPacket transfer, JSONObject data) {
         return transfer.sender.equals(getSender());
     }
 
@@ -35,7 +40,7 @@ public class SetWarpTask extends Task implements IResponse {
 
     @Override
     public TaskPacket build() {
-        return buildPacket(new String[0]);
+        return buildPacket(new JSONObject());
     }
 
     @Override

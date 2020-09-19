@@ -17,8 +17,6 @@ public class CityScene extends DialogScene {
 
     @Override
     public void onFinish() {
-        System.out.println(getValue("city"));
-        System.out.println(getValue("state"));
-        System.out.println(getValue("country"));
+
     }
 }

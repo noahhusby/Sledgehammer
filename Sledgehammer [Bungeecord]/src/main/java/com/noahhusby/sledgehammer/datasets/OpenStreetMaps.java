@@ -175,10 +175,7 @@ public class OpenStreetMaps {
         String a = "";
         String b = "";
         String c = "";
-        System.out.println();
-        for(int x = 0; x < data.length; x++) {
-            System.out.println(x+": "+data[x]);
-        }
+
         System.out.println();
         if(data.length > 1) {
             a = data[1];

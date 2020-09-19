@@ -5,8 +5,10 @@ import com.noahhusby.sledgehammer.data.location.Point;
 import com.noahhusby.sledgehammer.handlers.TaskHandler;
 import com.noahhusby.sledgehammer.tasks.data.IResponse;
 import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
+import com.noahhusby.sledgehammer.utils.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.json.simple.JSONObject;
 
 import java.util.List;
 
@@ -14,7 +16,7 @@ public class SetWarpTask extends Task implements IResponse {
 
     private Point point;
 
-    public SetWarpTask(TransferPacket t, String[] data) {
+    public SetWarpTask(TransferPacket t, JSONObject data) {
         super(t, data);
     }
 
@@ -24,8 +26,10 @@ public class SetWarpTask extends Task implements IResponse {
     }
 
     @Override
-    public String[] response() {
-        return new String[]{point.x, point.y, point.z};
+    public JSONObject response() {
+        JSONObject data = new JSONObject();
+        data.put("point", point.getJSON());
+        return generateTaskHeader(data);
     }
 
     @Override
@@ -39,8 +43,8 @@ public class SetWarpTask extends Task implements IResponse {
         if(p == null) return;
         if(!p.isOnline()) return;
 
-        point = new Point(String.valueOf(p.getLocation().getX()), String.valueOf(p.getLocation().getY()), String.valueOf(p.getLocation().getZ()));
-
+        point = new Point(String.valueOf(p.getLocation().getX()), String.valueOf(p.getLocation().getY()), String.valueOf(p.getLocation().getZ()),
+                String.valueOf(p.getLocation().getPitch()), String.valueOf(p.getLocation().getYaw()));
 
         TaskHandler.getInstance().sendResponse(this);
     }
@@ -51,7 +55,7 @@ public class SetWarpTask extends Task implements IResponse {
     }
 
     @Override
-    public void build(TransferPacket t, String[] data) {
+    public void build(TransferPacket t, JSONObject data) {
         TaskHandler.getInstance().queueTask(new SetWarpTask(t, data));
     }
 }

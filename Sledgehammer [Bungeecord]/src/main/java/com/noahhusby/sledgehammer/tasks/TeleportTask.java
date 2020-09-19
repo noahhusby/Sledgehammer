@@ -5,6 +5,7 @@ import com.noahhusby.sledgehammer.datasets.Point;
 import com.noahhusby.sledgehammer.tasks.data.IResponse;
 import com.noahhusby.sledgehammer.tasks.data.TaskPacket;
 import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
+import org.json.simple.JSONObject;
 
 public class TeleportTask extends Task {
 
@@ -22,8 +23,13 @@ public class TeleportTask extends Task {
 
     @Override
     public TaskPacket build() {
-        String[] data = {point.x, point.y, point.z};
-        return buildPacket(data);
+        JSONObject o = new JSONObject();
+        o.put("x", point.x);
+        o.put("y", point.y);
+        o.put("z", point.z);
+        o.put("yaw", point.yaw);
+        o.put("pitch", point.pitch);
+        return buildPacket(o);
     }
 
     @Override

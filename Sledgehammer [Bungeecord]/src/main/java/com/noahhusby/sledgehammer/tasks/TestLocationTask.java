@@ -18,6 +18,9 @@ import com.noahhusby.sledgehammer.util.TextElement;
 import gnu.trove.impl.sync.TSynchronizedShortByteMap;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class TestLocationTask extends Task implements IResponse {
     public TestLocationTask(TransferPacket transfer) {
@@ -30,11 +33,14 @@ public class TestLocationTask extends Task implements IResponse {
     }
 
     @Override
-    public void respond(String[] data) {
+    public void respond(JSONObject d) {
+        JSONObject data = (JSONObject) d.get("data");
+        JSONObject point = (JSONObject) data.get("point");
+
         GeographicProjection projection = new ModifiedAirocean();
         GeographicProjection uprightProj = GeographicProjection.orientProjection(projection, GeographicProjection.Orientation.upright);
         ScaleProjection scaleProj = new ScaleProjection(uprightProj, Constants.SCALE, Constants.SCALE);
-        double proj[] = scaleProj.toGeo(Double.parseDouble(data[0]), Double.parseDouble(data[2]));
+        double proj[] = scaleProj.toGeo(Double.parseDouble((String) point.get("x")), Double.parseDouble((String) point.get("z")));
         if(Double.isNaN(proj[0]) || Double.isNaN(proj[1])) {
             ProxyServer.getInstance().getPlayer(getSender()).sendMessage(ChatHelper.getInstance().makeTitleTextComponent(
                     new TextElement("This is not a valid location in the projection!", ChatColor.GRAY)));
@@ -65,8 +71,7 @@ public class TestLocationTask extends Task implements IResponse {
     }
 
     @Override
-    public boolean validateResponse(TransferPacket transfer, String[] data) {
-        if(data.length < 3) return false;
+    public boolean validateResponse(TransferPacket transfer, JSONObject data) {
         return transfer.sender.equals(getSender());
     }
 
@@ -77,7 +82,7 @@ public class TestLocationTask extends Task implements IResponse {
 
     @Override
     public TaskPacket build() {
-        return buildPacket(new String[0]);
+        return buildPacket(new JSONObject());
     }
 
     @Override

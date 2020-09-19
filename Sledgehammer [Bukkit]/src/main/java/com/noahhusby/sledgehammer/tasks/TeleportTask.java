@@ -6,16 +6,17 @@ import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
 import com.noahhusby.sledgehammer.utils.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.json.simple.JSONObject;
 
 public class TeleportTask extends Task {
 
-    public TeleportTask(TransferPacket t, String[] data) {
+    public TeleportTask(TransferPacket t, JSONObject data) {
         super(t, data);
     }
 
     @Override
     public void execute() {
-        String[] data = getData();
+        JSONObject data = getData();
         Player player = Util.getPlayerFromName(getTransferPacket().sender);
         if(player == null) {
             throwNoSender();
@@ -27,7 +28,8 @@ public class TeleportTask extends Task {
             return;
         }
 
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), String.format("tp %s %s %s %s", getTransferPacket().sender, data[0], data[1], data[2]));
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), String.format("tp %s %s %s %s %s %s", getTransferPacket().sender, data.get("x"),
+                data.get("y"), data.get("z"), data.get("yaw"), data.get("pitch")));
     }
 
     @Override
@@ -41,7 +43,7 @@ public class TeleportTask extends Task {
     }
 
     @Override
-    public void build(TransferPacket t, String[] data) {
+    public void build(TransferPacket t, JSONObject data) {
         TaskHandler.getInstance().queueTask(new TeleportTask(t, data));
     }
 }

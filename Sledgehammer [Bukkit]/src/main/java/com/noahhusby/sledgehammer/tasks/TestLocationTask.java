@@ -7,12 +7,13 @@ import com.noahhusby.sledgehammer.tasks.data.IResponse;
 import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.json.simple.JSONObject;
 
 public class TestLocationTask extends Task implements IResponse {
 
     private Point point;
 
-    public TestLocationTask(TransferPacket t, String[] data) {
+    public TestLocationTask(TransferPacket t, JSONObject data) {
         super(t, data);
     }
 
@@ -22,8 +23,10 @@ public class TestLocationTask extends Task implements IResponse {
     }
 
     @Override
-    public String[] response() {
-        return new String[]{point.x, point.y, point.z};
+    public JSONObject response() {
+        JSONObject data = new JSONObject();
+        data.put("point", point.getJSON());
+        return generateTaskHeader(data);
     }
 
     @Override
@@ -44,7 +47,8 @@ public class TestLocationTask extends Task implements IResponse {
             return;
         }
 
-        point = new Point(String.valueOf(p.getLocation().getX()), String.valueOf(p.getLocation().getY()), String.valueOf(p.getLocation().getZ()));
+        point = new Point(String.valueOf(p.getLocation().getX()), String.valueOf(p.getLocation().getY()), String.valueOf(p.getLocation().getZ()),
+                "", "");
 
         TaskHandler.getInstance().sendResponse(this);
     }
@@ -55,7 +59,7 @@ public class TestLocationTask extends Task implements IResponse {
     }
 
     @Override
-    public void build(TransferPacket t, String[] data) {
+    public void build(TransferPacket t, JSONObject data) {
         TaskHandler.getInstance().queueTask(new TestLocationTask(t, data));
     }
 }

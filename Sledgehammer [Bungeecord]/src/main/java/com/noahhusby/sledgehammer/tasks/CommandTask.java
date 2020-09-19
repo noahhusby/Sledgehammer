@@ -4,6 +4,7 @@ import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.tasks.data.IResponse;
 import com.noahhusby.sledgehammer.tasks.data.TaskPacket;
 import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
+import org.json.simple.JSONObject;
 
 public class CommandTask extends Task {
 
@@ -21,7 +22,13 @@ public class CommandTask extends Task {
 
     @Override
     public TaskPacket build() {
-        return buildPacket(args);
+        JSONObject data = new JSONObject();
+        String a = args[0];
+        for(int x = 1; x < a.length(); x++) {
+            a += " "+args[x];
+        }
+        data.put("args", a);
+        return buildPacket(data);
     }
 
     @Override

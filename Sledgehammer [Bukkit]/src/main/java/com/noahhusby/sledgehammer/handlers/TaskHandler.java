@@ -8,6 +8,9 @@ import com.noahhusby.sledgehammer.tasks.*;
 import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,28 +41,24 @@ public class TaskHandler {
     }
 
     public void newMessage(String message) {
-        String[] args = message.split(",");
-        if(args.length < 2 || !isGenuineRequest(args[1])) {
-            return;
-        }
+        try {
+            JSONObject o = (JSONObject) new JSONParser().parse(message);
+            if(!isGenuineRequest((String) o.get("uuid"))) return;
+            TransferPacket t = new TransferPacket(String.valueOf((long) o.get("time")), (String) o.get("sender"));
 
-        TransferPacket t = new TransferPacket(args[2], args[3]);
-        List<String> dataList = new ArrayList<>();
-        for(int x = 4; x < args.length; x++) {
-            dataList.add(args[x]);
-        }
-
-        String[] data = dataList.toArray(new String[dataList.size()]);
-
-        boolean success = false;
-        for(Task task : tasks) {
-            if(task.getCommandName().equals(args[0])) {
-                task.build(t, data);
-                success = true;
+            boolean success = false;
+            for(Task task : tasks) {
+                if(task.getCommandName().equals((String) o.get("command"))) {
+                    task.build(t, o);
+                    success = true;
+                }
             }
+
+            if(!success) Sledgehammer.logger.warning("The sledgehammer communication client received an unknown command!");
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
 
-        if(!success) Sledgehammer.logger.warning("The sledgehammer communication client received an unknown command!");
     }
 
     public void queueTask(Task t) {
@@ -94,9 +93,7 @@ public class TaskHandler {
             if (p == null) return;
             if (!p.isOnline()) return;
 
-            CommunicationManager.sendMessage(String.format("%s,%s,%s,%s%s",
-                    Constants.responsePrefix + t.getResponse().getResponseCommand(), ConfigHandler.authenticationCode, System.currentTimeMillis(),
-                    t.getTransferPacket().sender, getResponseFromArray(t.getResponse().response())));
+            CommunicationManager.sendMessage(Constants.responsePrefix+t.getResponse().response().toJSONString());
         }
 
     }

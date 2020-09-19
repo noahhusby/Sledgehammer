@@ -146,6 +146,7 @@ public class MapHandler {
         data.put("lat", ConfigHandler.startingLat);
         data.put("lon", ConfigHandler.startingLon);
         data.put("zoomLevel", ConfigHandler.startingZoom);
+        data.put("auth", ConfigHandler.authenticationCode);
 
         o.put("data", data);
         o.put("action", "init");
@@ -155,6 +156,9 @@ public class MapHandler {
     public void attemptHeartbeat() {
         heartbeat = true;
         JSONObject o = new JSONObject();
+        JSONObject data = new JSONObject();
+        data.put("auth", ConfigHandler.authenticationCode);
+        o.put("data", data);
         o.put("action", "alive");
         ws.sendMessage(o.toJSONString());
     }
@@ -187,7 +191,10 @@ public class MapHandler {
             waypoints.add(waypoint);
         }
         o.put("action", "warp_refresh");
-        o.put("data", waypoints.toJSONString());
+        JSONObject data = new JSONObject();
+        data.put("waypoints", waypoints.toJSONString());
+        data.put("auth", ConfigHandler.authenticationCode);
+        o.put("data", data);
         ws.sendMessage(o.toJSONString());
     }
 
