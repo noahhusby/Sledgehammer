@@ -1,8 +1,13 @@
-package com.noahhusby.sledgehammer.data.dialogs;
+package com.noahhusby.sledgehammer.data.dialogs.scenes;
 
 import com.google.common.collect.Maps;
 import com.noahhusby.sledgehammer.data.dialogs.components.IDialogComponent;
+import com.noahhusby.sledgehammer.data.dialogs.toolbars.DefaultToolbar;
+import com.noahhusby.sledgehammer.data.dialogs.toolbars.IToolbar;
 import com.noahhusby.sledgehammer.handlers.DialogHandler;
+import com.noahhusby.sledgehammer.util.ChatHelper;
+import com.noahhusby.sledgehammer.util.TextElement;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 
 import java.util.Map;
@@ -20,6 +25,7 @@ public abstract class DialogScene implements IDialogScene {
         this.sender = commandSender;
         this.currentComponent = components.get(0);
         dialogHandler.progressDialog(this, false);
+        onInitialization();
     }
 
     protected void registerComponent(IDialogComponent d) {
@@ -38,8 +44,57 @@ public abstract class DialogScene implements IDialogScene {
 
     @Override
     public void onMessage(String m) {
+        for(Map.Entry<String, String> x : getToolbar().getTools().entrySet()) {
+            if(x.getKey().equals(m.toLowerCase().trim())) {
+                onToolbarAction(m);
+                return;
+            }
+        }
+
+        progressDialog(m);
+    }
+
+    @Override
+    public IToolbar getToolbar() {
+        return new DefaultToolbar();
+    }
+
+    @Override
+    public void onToolbarAction(String m) {
+        if(m.equals("exit")) {
+            dialogHandler.discardDialog(this);
+            getCommandSender().sendMessage();
+            getCommandSender().sendMessage(ChatHelper.getInstance().makeTextComponent(new TextElement("Exited the dialog!", ChatColor.RED)));
+        }
+    }
+
+    @Override
+    public boolean isAdmin() {
+        return false;
+    }
+
+    @Override
+    public TextElement[] getTitle() {
+        return null;
+    }
+
+    @Override
+    public void onComponentFinish() { }
+
+    @Override
+    public void onInitialization() { }
+
+    public void progressDialog(String m) {
+        progressDialog(m, false);
+    }
+
+    public void progressDialog(String m, boolean override) {
         if(currentComponent.validateResponse(m)) {
             currentComponent.setValue(m);
+            if(currentComponent.isManual() && !override) {
+                onComponentFinish();
+                return;
+            }
         } else {
             dialogHandler.progressDialog(this, true);
             return;

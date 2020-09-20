@@ -31,6 +31,17 @@ public class ChatHelper {
         return bar;
     }
 
+    public TextComponent makeAdminTextComponent(TextElement... text) {
+        TextComponent bar = new TextComponent(Constants.adminMessagePrefix.replace("&","\u00A7"));
+        for(int x = 0; x < text.length; x++) {
+            TextComponent temp = new TextComponent(text[x].text);
+            temp.setColor(text[x].color);
+            temp.setBold(text[0].bold);
+            bar.addExtra(temp);
+        }
+        return bar;
+    }
+
     public TextComponent makeTitleMapComponent(TextElement text, String url) {
         TextComponent bar = new TextComponent(ConfigHandler.messagePrefix.replace("&","\u00A7"));
         TextComponent temp = new TextComponent(text.text);

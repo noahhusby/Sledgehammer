@@ -1,18 +1,11 @@
 package com.noahhusby.sledgehammer.commands;
 
 import com.noahhusby.sledgehammer.commands.fragments.CommandFragmentManager;
-import com.noahhusby.sledgehammer.commands.fragments.admin.PermissionListAdminCommand;
-import com.noahhusby.sledgehammer.commands.fragments.admin.ServerAdminCommand;
-import com.noahhusby.sledgehammer.commands.fragments.admin.SetupAdminCommand;
-import com.noahhusby.sledgehammer.commands.data.Command;
-import com.noahhusby.sledgehammer.commands.fragments.admin.TestLocationCommand;
+import com.noahhusby.sledgehammer.commands.fragments.admin.*;
 import com.noahhusby.sledgehammer.util.ChatHelper;
 import com.noahhusby.sledgehammer.util.TextElement;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SledgehammerAdminCommand extends CommandFragmentManager {
     public SledgehammerAdminCommand() {
@@ -21,10 +14,11 @@ public class SledgehammerAdminCommand extends CommandFragmentManager {
         setCommandBase("sha");
         setTitle("Sledgehammer Admin Commands:");
 
-        registerCommandFragment(new PermissionListAdminCommand());
-        registerCommandFragment(new SetupAdminCommand());
-        registerCommandFragment(new ServerAdminCommand());
-        registerCommandFragment(new TestLocationCommand());
+        registerCommandFragment(new PermissionCheckFragment());
+        registerCommandFragment(new SetupFragment());
+        registerCommandFragment(new ServerFragment());
+        registerCommandFragment(new TestLocationFragment());
+        registerCommandFragment(new TempFragment());
     }
 
     @Override

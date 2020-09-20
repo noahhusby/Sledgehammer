@@ -1,6 +1,6 @@
 package com.noahhusby.sledgehammer.commands.data;
 
-import com.noahhusby.sledgehammer.commands.fragments.admin.SetupAdminCommand;
+import com.noahhusby.sledgehammer.commands.fragments.admin.SetupFragment;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.types.Server;
 import com.noahhusby.sledgehammer.datasets.Location;
@@ -17,7 +17,7 @@ public class SetupAdminTracker {
     public List<Server> queuedServers;
 
     public Server currentServer;
-    public SetupAdminCommand.dialogAction dialogAction = SetupAdminCommand.dialogAction.SERVER_EDIT;
+    public SetupFragment.dialogAction dialogAction = SetupFragment.dialogAction.SERVER_EDIT;
     public ServerInfo currentBungeeServer;
 
     public Location locationEdit = new Location();

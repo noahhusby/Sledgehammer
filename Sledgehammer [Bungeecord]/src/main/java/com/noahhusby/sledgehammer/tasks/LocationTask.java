@@ -25,7 +25,7 @@ public class LocationTask extends Task {
     @Override
     public TaskPacket build() {
         JSONObject data = new JSONObject();
-        data.put("lat", lat);S
+        data.put("lat", lat);
         data.put("lon", lon);
         return buildPacket(data);
     }

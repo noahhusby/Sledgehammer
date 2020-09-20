@@ -16,4 +16,6 @@ public interface IDialogComponent {
     String[] getAcceptableResponses();
 
     boolean validateResponse(String v);
+
+    boolean isManual();
 }

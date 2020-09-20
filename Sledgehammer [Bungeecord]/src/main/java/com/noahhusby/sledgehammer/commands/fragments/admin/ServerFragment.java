@@ -14,9 +14,9 @@ import java.util.Map;
 
 import static net.md_5.bungee.api.ProxyServer.getInstance;
 
-public class ServerAdminCommand extends FragmentManager implements ICommandFragment {
+public class ServerFragment extends FragmentManager implements ICommandFragment {
 
-    public ServerAdminCommand() {
+    public ServerFragment() {
         setCommandBase("sha server <server name>");
         setTitle("Sledgehammer Server Commands");
         registerCommandFragment(new ServerAddLocationFragment());
@@ -32,7 +32,7 @@ public class ServerAdminCommand extends FragmentManager implements ICommandFragm
                     return;
                 }
             }
-            sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(
+            sender.sendMessage(ChatHelper.getInstance().makeAdminTextComponent(
                     new TextElement(args[0], ChatColor.DARK_RED), new TextElement(" is not a bungeecord server!", ChatColor.RED)));
             return;
         }

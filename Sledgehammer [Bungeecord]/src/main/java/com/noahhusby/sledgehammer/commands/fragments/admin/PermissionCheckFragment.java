@@ -8,7 +8,7 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-public class PermissionListAdminCommand implements ICommandFragment {
+public class PermissionCheckFragment implements ICommandFragment {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
@@ -18,14 +18,15 @@ public class PermissionListAdminCommand implements ICommandFragment {
         } else {
             p = ProxyServer.getInstance().getPlayer(args[0]);
         }
-        sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Permissions for ", ChatColor.DARK_RED),
-                new TextElement(p.getName(), ChatColor.RED)));
 
         if(p == null) {
-            sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement(args[0], ChatColor.RED),
+            sender.sendMessage(ChatHelper.getInstance().makeAdminTextComponent(new TextElement(args[0], ChatColor.RED),
                     new TextElement(" could not be found on the network!", ChatColor.DARK_RED)));
             return;
         }
+
+        sender.sendMessage(ChatHelper.getInstance().makeAdminTextComponent(new TextElement("Permissions for ", ChatColor.DARK_RED),
+                new TextElement(p.getName(), ChatColor.RED)));
 
         for(String s : p.getPermissions()) {
             if(s.contains("sledgehammer")) sender.sendMessage(ChatHelper.getInstance().makeTextComponent(new TextElement(s, ChatColor.GOLD)));

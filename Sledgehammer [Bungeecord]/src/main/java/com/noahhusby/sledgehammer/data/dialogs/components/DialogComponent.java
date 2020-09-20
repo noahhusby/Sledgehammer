@@ -1,7 +1,5 @@
 package com.noahhusby.sledgehammer.data.dialogs.components;
 
-import com.noahhusby.sledgehammer.data.dialogs.IDialogScene;
-
 public abstract class DialogComponent implements IDialogComponent {
     private String value = "";
     @Override
@@ -12,5 +10,10 @@ public abstract class DialogComponent implements IDialogComponent {
     @Override
     public void setValue(String v) {
         this.value = v;
+    }
+
+    @Override
+    public boolean isManual() {
+        return false;
     }
 }

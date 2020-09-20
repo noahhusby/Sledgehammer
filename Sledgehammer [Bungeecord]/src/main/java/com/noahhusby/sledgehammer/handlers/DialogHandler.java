@@ -2,8 +2,7 @@ package com.noahhusby.sledgehammer.handlers;
 
 import com.google.common.collect.Maps;
 import com.noahhusby.sledgehammer.Sledgehammer;
-import com.noahhusby.sledgehammer.commands.data.SetupAdminTracker;
-import com.noahhusby.sledgehammer.data.dialogs.IDialogScene;
+import com.noahhusby.sledgehammer.data.dialogs.scenes.IDialogScene;
 import com.noahhusby.sledgehammer.util.ChatHelper;
 import com.noahhusby.sledgehammer.util.TextElement;
 import net.md_5.bungee.api.ChatColor;
@@ -50,7 +49,24 @@ public class DialogHandler implements Listener {
             s.getCommandSender().sendMessage();
         }
 
-        s.getCommandSender().sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement(s.getCurrentComponent().getPrompt(), ChatColor.YELLOW)));
+        if(s.getTitle() != null) {
+            s.getCommandSender().sendMessage(ChatHelper.getInstance().makeTextComponent(s.getTitle()));
+        }
+
+        if(s.getToolbar() != null) {
+            Map<String, String> tools = s.getToolbar().getTools();
+            for(Map.Entry<String, String> x : tools.entrySet()) {
+                s.getCommandSender().sendMessage(ChatHelper.getInstance().makeTextComponent(new TextElement("Use ", ChatColor.GRAY),
+                        new TextElement(x.getKey(), ChatColor.BLUE), new TextElement(" to ", ChatColor.GRAY), new TextElement(x.getValue(), ChatColor.GRAY)));
+            }
+            s.getCommandSender().sendMessage();
+        }
+
+        if(s.isAdmin()) {
+            s.getCommandSender().sendMessage(ChatHelper.getInstance().makeAdminTextComponent(new TextElement(s.getCurrentComponent().getPrompt(), ChatColor.YELLOW)));
+        } else {
+            s.getCommandSender().sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement(s.getCurrentComponent().getPrompt(), ChatColor.YELLOW)));
+        }
         if(s.getCurrentComponent().getExplanation() != null) {
             s.getCommandSender().sendMessage(ChatHelper.getInstance().makeTextComponent(s.getCurrentComponent().getExplanation()));
         }

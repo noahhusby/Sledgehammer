@@ -15,16 +15,16 @@ public class ServerListLocationFragment implements ICommandFragment {
     public void execute(CommandSender sender, String[] args) {
         List<Location> locations = ServerConfig.getInstance().getLocationsFromServer(args[0]);
         if(locations == null) {
-            sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("No locations were found on that server!", ChatColor.GRAY)));
+            sender.sendMessage(ChatHelper.getInstance().makeAdminTextComponent(new TextElement("No locations were found on that server!", ChatColor.GRAY)));
             return;
         }
 
         if(locations.isEmpty()) {
-            sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("No locations were found on that server!", ChatColor.GRAY)));
+            sender.sendMessage(ChatHelper.getInstance().makeAdminTextComponent(new TextElement("No locations were found on that server!", ChatColor.GRAY)));
             return;
         }
 
-        sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Locations for ", ChatColor.GRAY),
+        sender.sendMessage(ChatHelper.getInstance().makeAdminTextComponent(new TextElement("Locations for ", ChatColor.GRAY),
                 new TextElement(args[0].toLowerCase(), ChatColor.BLUE), new TextElement(":", ChatColor.GRAY)));
         for(Location l : locations) {
             String x = "";

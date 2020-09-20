@@ -12,16 +12,10 @@ import com.noahhusby.sledgehammer.util.TextElement;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 
-import java.util.List;
-
-public class TestLocationCommand implements ICommandFragment {
+public class TestLocationFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
         TransferPacket t = new TransferPacket(ProxyUtil.getServerFromPlayerName(sender.getName()), sender.getName());
-        if(ServerConfig.getInstance().getLocationsFromServer(t.server.getName()) == null) {
-            sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Testing is only available on configured sledgehammer servers!", ChatColor.GRAY)));
-            return;
-        }
         TaskHandler.getInstance().execute(new TestLocationTask(t));
     }
 
