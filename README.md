@@ -1,5 +1,5 @@
 # Sledgehammer
-A set of tools for multi-server Build the Earth servers
+A set of tools for multi-server Build the Earth networks
 
 ## Features
 * Region Assigning - /tpll will automatically teleport between servers based upon region configuration
