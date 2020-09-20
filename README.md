@@ -11,7 +11,7 @@ A set of tools for multi-server Build the Earth servers
 * Border Duplication - Duplicate buildings on border for a seamless teleportation experience
 
 ## Installation
-Go to the [releases](https://github.com/noahhusby/Sledgehammer/releases) page and download the latest bungeecord plugin and forge mod.
+Go to the [releases](https://github.com/noahhusby/Sledgehammer/releases) page and download the latest bungeecord plugin and bukkit plugin.
 
 ### Bungeecord
 * Place Sledgehammer-x.x.x-bungeecord.jar in the `/plugins` folder of your Bungeecord installation.
