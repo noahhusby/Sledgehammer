@@ -4,6 +4,7 @@ A set of tools for multi-server Build the Earth servers
 ## Features
 * Region Assigning - /tpll will automatically teleport between servers based upon region configuration
 * Global Warps - Set warps and teleport across the network
+* Warp Map - Online map vizualizer with warps. Check out [Sledgehammer Map](https://github.com/noahhusby/Sledgehammer-Map/releases)
 
 #### Future Plans
 * Border Teleportation (WIP) - Teleport automatically between servers when passing through region borders
@@ -155,9 +156,8 @@ To setup regions, you must have the permission node `sledgehammer.admin`. Run `/
 * Open the `Sledgehammer [Bungeecord]` in your preferred IDE
 * Build using: Maven Package
 
-### Forge
+### Bukkit
 * Clone this repo, or download as a zip
-* Open the `Sledgehammer [Forge]` folder in IntelliJ
+* Open the `Sledgehammer [Bukkit]` folder in IntelliJ
 * Import it as a gradle project
-* Run `./gradlew setupDecompWorkshop` to download the necessary libraries
-* Run `./gradlew reofbShadowJar` to build
+* Run `./gradlew build` to build
