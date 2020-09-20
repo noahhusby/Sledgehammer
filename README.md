@@ -13,39 +13,103 @@ A set of tools for multi-server Build the Earth servers
 Go to the [releases](https://github.com/noahhusby/Sledgehammer/releases) page and download the latest bungeecord plugin and forge mod.
 
 ### Bungeecord
-* Place Sledgehammer-x.x-bungeecord.jar in the `/plugins` folder of your Bungeecord installation.
+* Place Sledgehammer-x.x.x-bungeecord.jar in the `/plugins` folder of your Bungeecord installation.
 * Run Bungeecord. The configuration files will automatically generate.
 
 Note: Sledgehammer supports any fork of Bungeecord, including Waterfall.
 
-### Forge
-* Place Sledgehammer-1.12.2-x.x.jar in the `/mods` folder of your forge server.
+### Bukkit
+* Place Sledgehammer-bukkit-1.12.2-x.x-x.jar in the `/plugins` folder of your bukkit server.
 * Run the server. The configuration files will automatically generate.
 
 ## Configuration
 
 ### Default Bungeecord Configuration:
 ```yaml
-# Generate a new key using https://uuidgenerator.net/version4
-# All corresponding sledgehammer clients must have the same code
-# Don't share this key with anyone you don't trust as it will allow anybody to run any command on connected servers.
-authentication-key: ''
+# Configuration file
 
-# The prefix of messages broadcasted to players from the proxy
-message-prefix: '&9&lBTE &8&l> '
+##########################################################################################################
+# general
+#--------------------------------------------------------------------------------------------------------#
+# General options for sledgehammer
+##########################################################################################################
 
-# Set this to false to disable global tpll [/tpll & /cs tpll]
-global-tpll: true
+general {
+    # Set this to false to disable global tpll [/tpll & /cs tpll] [default: true]
+    B:"Global Tpll"=true
 
-# The command for network-wide warping. Leave blank to disable
-# Permissions: sledgehammer.warp for teleporting, and sledgehammer.warp.admin for setting warps
-warp-command: 'nwarp'
+    # The prefix of messages broadcasted to players from the proxy [default: &9&lBTE &8&l> ]
+    S:"Message Prefix"=&9&lBTE &8&l> 
 
-# Do not edit this!
-config-version: 0.3
+    # Generate a new key using https://uuidgenerator.net/version4
+    # All corresponding sledgehammer clients must have the same code
+    # Don't share this key with anyone you don't trust as it will allow anybody to run any command on connected servers. [default: ]
+    S:"Network Authentication Code"=
+
+    # The command for network-wide warping. Leave blank to disable
+    # Permissions: sledgehammer.warp for teleporting, and sledgehammer.warp.admin for setting warps. [default: nwarp]
+    S:"Warp Command"=nwarp
+}
+
+
+##########################################################################################################
+# geography
+#--------------------------------------------------------------------------------------------------------#
+# Options for OpenStreetMaps and Teleportation.
+##########################################################################################################
+
+geography {
+    # Set to false to disable automatic border teleportation, or true to enable it. (Note: OSM Offline Mode must be set to true for this to be enabled. [default: false]
+    B:"Auto Border Teleportation"=false
+
+    # Set false for fetching the latest data from OSM (more up to date), or true for using a downloaded database.
+    # Please follow the guide on https://github.com/noahhusby/sledgehammer about downloading and configuring the offline database. [default: false]
+    B:"OSM Offline Mode"=false
+}
+
+
+##########################################################################################################
+# map
+#--------------------------------------------------------------------------------------------------------#
+# Options for sledgehammer's map
+##########################################################################################################
+
+map {
+    # Set this to true to enable sledgehammer's map [default: false]
+    B:Enable=false
+
+    # The websocket url/ip where sledgehammer map is running [default: 127.0.0.1]
+    S:Host=127.0.0.1
+
+    # The starting latitude when the map loads. [range: -90.0 ~ 90.0, default: 0.0]
+    S:Latitude=0.0
+
+    # The starting longitude when the map loads. [range: -90.0 ~ 90.0, default: 0.0]
+    S:Longitude=0.0
+
+    # The direct http link for the map. This is the link that players will interact with.
+    # NOTE: You must put either http:// or https:// at the beginning [default: http://map.bte-network.net]
+    S:"Map Link"=http://localhost:7000
+
+    # How long (in minutes) a session will last before the player needs to invoke the map command again. [range: 5 ~ 60, default: 10]
+    I:"Map Session Timeout"=10
+
+    # The port that the map websocket is running.
+    # The websocket port can be changed in the map's config file [default: 7000]
+    S:Port=7000
+
+    #  [default: IP: bte-network.net]
+    S:Subtitle=IP: bte-network.net
+
+    #  [default: A BTE Network]
+    S:Title=A BTE Network
+
+    # The starting zoom when the map loads [range: 5 ~ 18, default: 6]
+    I:Zoom=6
+}
 ```
 
-### Default Forge Configuration:
+### Default Bukkit Configuration:
 ```yaml
 # Configuration file
 
