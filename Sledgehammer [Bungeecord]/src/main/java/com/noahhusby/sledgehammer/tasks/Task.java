@@ -31,6 +31,7 @@ public abstract class Task implements ITask {
         o.put("uuid", ConfigHandler.authenticationCode);
         o.put("time", System.currentTimeMillis());
         o.put("sender", sender);
+        o.put("server", server.getName());
         o.put("data", data);
         return new TaskPacket(server, sender, o);
     }

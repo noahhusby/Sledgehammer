@@ -1,12 +1,16 @@
 package com.noahhusby.sledgehammer.config;
 
-import com.google.common.collect.Maps;
 import com.google.gson.annotations.Expose;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.config.types.Server;
 import com.noahhusby.sledgehammer.datasets.Location;
+import com.noahhusby.sledgehammer.handlers.TaskHandler;
+import com.noahhusby.sledgehammer.tasks.InitializationTask;
+import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.event.ServerConnectedEvent;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +36,24 @@ public class ServerConfig {
 
     public List<Server> getServers() {
         return servers;
+    }
+
+    public void onServerJoin(ServerConnectedEvent e) {
+        Server s = getServer(e.getServer().getInfo().getName());
+        if(s != null) {
+            if(!s.isInitialized()) {
+                TransferPacket t = new TransferPacket(e.getServer().getInfo(), e.getPlayer().getName());
+                TaskHandler.getInstance().execute(new InitializationTask(t));
+            }
+        }
+    }
+
+    public void initializeServer(ServerInfo serverInfo, JSONObject data) {
+        Server s = getServer(serverInfo.getName());
+        if(s != null) {
+            s.initialize((String) data.get("version"), (String) data.get("tpllmode"));
+            pushServer(s);
+        }
     }
 
     public List<ServerInfo> getBungeeServers() {

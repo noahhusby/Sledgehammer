@@ -48,7 +48,7 @@ public class ServerListLocationFragment implements ICommandFragment {
     }
 
     @Override
-    public String getArguments() {
+    public String[] getArguments() {
         return null;
     }
 }

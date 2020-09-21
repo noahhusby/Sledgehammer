@@ -2,6 +2,7 @@ package com.noahhusby.sledgehammer.data.dialogs.scenes.setup;
 
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.types.Server;
+import com.noahhusby.sledgehammer.data.dialogs.components.setup.EarthServerComponent;
 import com.noahhusby.sledgehammer.data.dialogs.components.setup.EditComponent;
 import com.noahhusby.sledgehammer.data.dialogs.components.setup.PermissionComponent;
 import com.noahhusby.sledgehammer.data.dialogs.scenes.DialogScene;
@@ -31,6 +32,7 @@ public class ConfigScene extends DialogScene {
             this.server = ServerConfig.getInstance().getBungeeServers().get(0);
         }
         registerComponent(new EditComponent());
+        registerComponent(new EarthServerComponent());
         registerComponent(new PermissionComponent());
     }
 
@@ -58,6 +60,7 @@ public class ConfigScene extends DialogScene {
 
         s.name = server.getName();
         s.permission_type = getValue("permission");
+        s.earthServer = true;
         ServerConfig.getInstance().pushServer(s);
 
         DialogHandler.getInstance().discardDialog(this);
@@ -96,23 +99,37 @@ public class ConfigScene extends DialogScene {
 
     @Override
     public void onComponentFinish() {
-        if(getCurrentComponent() instanceof EditComponent) {
+        if (getCurrentComponent() instanceof EditComponent) {
             String response = getValue("edit").trim().toLowerCase();
-            if(response.equals("yes") || response.equals("y")) {
+            if (response.equals("yes") || response.equals("y")) {
                 progressDialog(response, true);
-            } else if(response.equals("no") || response.equals("n")) {
+            } else if (response.equals("no") || response.equals("n")) {
                 DialogHandler.getInstance().discardDialog(this);
 
                 List<ServerInfo> servers = ServerConfig.getInstance().getBungeeServers();
                 ServerInfo currentServer = this.server;
 
-                if(servers.indexOf(currentServer) + 2 > servers.size()) {
+                if (servers.indexOf(currentServer) + 2 > servers.size()) {
                     getCommandSender().sendMessage(ChatHelper.getInstance().makeAdminTextComponent(new TextElement("Finished the setup dialog!", ChatColor.RED)));
                     DialogHandler.getInstance().discardDialog(this);
                     return;
                 }
 
-                DialogHandler.getInstance().startDialog(sender, new ConfigScene(servers.get(servers.indexOf(currentServer)+1)));
+                DialogHandler.getInstance().startDialog(sender, new ConfigScene(servers.get(servers.indexOf(currentServer) + 1)));
+            }
+        } else if (getCurrentComponent() instanceof EarthServerComponent) {
+            String response = getValue("earth").trim().toLowerCase();
+            if (response.equals("yes") || response.equals("y")) {
+                progressDialog(response, true);
+            } else if (response.equals("no") || response.equals("n")) {
+                DialogHandler.getInstance().discardDialog(this);
+
+                Server s = ServerConfig.getInstance().getServer(server.getName());
+                if(s == null) s = new Server(server.getName());
+                s.earthServer = false;
+                ServerConfig.getInstance().pushServer(s);
+
+                DialogHandler.getInstance().startDialog(sender, new ConfigScene(server, true));
             }
         }
     }

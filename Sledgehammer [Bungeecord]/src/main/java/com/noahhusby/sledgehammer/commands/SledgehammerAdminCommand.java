@@ -14,11 +14,11 @@ public class SledgehammerAdminCommand extends CommandFragmentManager {
         setCommandBase("sha");
         setTitle("Sledgehammer Admin Commands:");
 
-        registerCommandFragment(new PermissionCheckFragment());
+        registerCommandFragment(new ReloadFragment());
         registerCommandFragment(new SetupFragment());
         registerCommandFragment(new ServerFragment());
+        registerCommandFragment(new PermissionCheckFragment());
         registerCommandFragment(new TestLocationFragment());
-        registerCommandFragment(new TempFragment());
     }
 
     @Override

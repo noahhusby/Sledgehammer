@@ -54,15 +54,24 @@ public abstract class CommandFragmentManager extends Command {
     private void displayCommands(CommandSender sender, String[] args) {
         sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement(title+":", ChatColor.GRAY)));
         for(ICommandFragment f : commandFragments) {
-            String arguments;
-            if(f.getArguments() == null) {
-                arguments = "";
-            } else {
-                arguments = " "+f.getArguments();
+
+            List<TextElement> message = new ArrayList<>();
+            message.add(new TextElement(commandBase, ChatColor.YELLOW));
+            message.add(new TextElement(f.getName()+" ", ChatColor.GREEN));
+            if(f.getArguments() != null) {
+                for(int x = 0; x < f.getArguments().length; x++) {
+                    String argument = f.getArguments()[x];
+                    if(argument.startsWith("<")) {
+                        message.add(new TextElement(argument+" ", ChatColor.RED));
+                    } else {
+                        message.add(new TextElement(argument+" ", ChatColor.GRAY));
+                    }
+                }
             }
-            sender.sendMessage(ChatHelper.getInstance().makeTextComponent(new TextElement(commandBase+f.getName()
-                            +arguments, ChatColor.YELLOW),
-                    new TextElement(" - ", ChatColor.GRAY), new TextElement(f.getPurpose(), ChatColor.RED)));
+            message.add(new TextElement("- ", ChatColor.GRAY));
+            message.add(new TextElement(f.getPurpose(), ChatColor.BLUE));
+
+            sender.sendMessage(ChatHelper.getInstance().makeTextComponent(message.toArray(new TextElement[message.size()])));
         }
     }
 }

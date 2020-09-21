@@ -2,8 +2,7 @@ package com.noahhusby.sledgehammer.commands.fragments.admin;
 
 import com.noahhusby.sledgehammer.commands.fragments.FragmentManager;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.commands.fragments.admin.server.ServerAddLocationFragment;
-import com.noahhusby.sledgehammer.commands.fragments.admin.server.ServerListLocationFragment;
+import com.noahhusby.sledgehammer.commands.fragments.admin.server.*;
 import com.noahhusby.sledgehammer.util.ChatHelper;
 import com.noahhusby.sledgehammer.util.TextElement;
 import net.md_5.bungee.api.ChatColor;
@@ -19,8 +18,12 @@ public class ServerFragment extends FragmentManager implements ICommandFragment 
     public ServerFragment() {
         setCommandBase("sha server <server name>");
         setTitle("Sledgehammer Server Commands");
+        registerCommandFragment(new ServerInfoFragment());
         registerCommandFragment(new ServerAddLocationFragment());
+        registerCommandFragment(new ServerRemoveLocationFragment());
         registerCommandFragment(new ServerListLocationFragment());
+        registerCommandFragment(new ServerEarthModeFragment());
+        registerCommandFragment(new ServerPermissionFragment());
     }
 
     @Override
@@ -50,7 +53,7 @@ public class ServerFragment extends FragmentManager implements ICommandFragment 
     }
 
     @Override
-    public String getArguments() {
-        return "<server name>";
+    public String[] getArguments() {
+        return new String[]{"<server name>"};
     }
 }

@@ -2,8 +2,6 @@ package com.noahhusby.sledgehammer.commands;
 
 import com.noahhusby.sledgehammer.commands.data.Command;
 import com.noahhusby.sledgehammer.util.ChatHelper;
-import com.noahhusby.sledgehammer.util.TextElement;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 
 public class SledgehammerCommand extends Command {

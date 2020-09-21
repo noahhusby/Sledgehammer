@@ -3,7 +3,6 @@ package com.noahhusby.sledgehammer.data.dialogs.scenes.setup;
 import com.noahhusby.sledgehammer.data.dialogs.components.setup.LocationMenuComponent;
 import com.noahhusby.sledgehammer.data.dialogs.scenes.DialogScene;
 import com.noahhusby.sledgehammer.data.dialogs.scenes.location.LocationSelectionScene;
-import com.noahhusby.sledgehammer.data.dialogs.toolbars.IToolbar;
 import com.noahhusby.sledgehammer.handlers.DialogHandler;
 import com.noahhusby.sledgehammer.util.TextElement;
 import net.md_5.bungee.api.ChatColor;
@@ -33,6 +32,12 @@ public class LocationConfigScene extends DialogScene {
         } else if(v.equals("finish")) {
             DialogHandler.getInstance().discardDialog(this);
             DialogHandler.getInstance().startDialog(getCommandSender(), new ConfigScene(server, true));
+        } else if(v.equals("remove")) {
+            DialogHandler.getInstance().discardDialog(this);
+            DialogHandler.getInstance().startDialog(getCommandSender(), new LocationRemovalScene(server, new LocationConfigScene(server)));
+        } else if(v.equals("list")) {
+            DialogHandler.getInstance().discardDialog(this);
+            DialogHandler.getInstance().startDialog(getCommandSender(), new LocationListScene(server, new LocationConfigScene(server)));
         }
     }
 

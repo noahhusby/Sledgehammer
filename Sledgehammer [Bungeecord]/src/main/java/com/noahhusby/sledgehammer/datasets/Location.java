@@ -2,8 +2,6 @@ package com.noahhusby.sledgehammer.datasets;
 
 import com.google.gson.annotations.Expose;
 
-import java.time.LocalDateTime;
-
 public class Location {
     @Expose
     public detail detailType;

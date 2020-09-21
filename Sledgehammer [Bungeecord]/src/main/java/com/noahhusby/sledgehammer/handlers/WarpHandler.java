@@ -2,7 +2,6 @@ package com.noahhusby.sledgehammer.handlers;
 
 import com.google.common.collect.Maps;
 import com.google.gson.annotations.Expose;
-import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.tasks.SetWarpTask;
 import com.noahhusby.sledgehammer.tasks.data.TransferPacket;

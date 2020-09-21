@@ -2,14 +2,13 @@ package com.noahhusby.sledgehammer;
 
 import com.noahhusby.sledgehammer.commands.*;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
+import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.handlers.PlayerLocationHandler;
 import com.noahhusby.sledgehammer.handlers.TaskHandler;
 import com.noahhusby.sledgehammer.map.MapHandler;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.event.PlayerDisconnectEvent;
-import net.md_5.bungee.api.event.PluginMessageEvent;
-import net.md_5.bungee.api.event.PostLoginEvent;
+import net.md_5.bungee.api.event.*;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
@@ -96,6 +95,11 @@ public class Sledgehammer extends Plugin implements Listener {
     @EventHandler
     public void onPlayerLeave(PlayerDisconnectEvent e) {
         PlayerLocationHandler.getInstance().onPlayerQuit(e.getPlayer());
+    }
+
+    @EventHandler
+    public void onServerJoin(ServerConnectedEvent e) {
+        ServerConfig.getInstance().onServerJoin(e);
     }
 
     public static void setupListener(Listener l) {

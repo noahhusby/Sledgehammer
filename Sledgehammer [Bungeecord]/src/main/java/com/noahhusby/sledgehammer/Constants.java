@@ -10,6 +10,9 @@ public class Constants {
     public static final String locationTask = "location";
     public static final String commandTask = "command";
     public static final String testLocationTask = "test_location";
+    public static final String init = "init";
 
     public static final String adminMessagePrefix = "&9&lSH &8&l> ";
+
+    public static final String logInitPacket = "Received initialization packet from ";
 }

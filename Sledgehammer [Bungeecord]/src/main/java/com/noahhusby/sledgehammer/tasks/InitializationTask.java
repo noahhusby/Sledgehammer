@@ -1,39 +1,38 @@
 package com.noahhusby.sledgehammer.tasks;
 
 import com.noahhusby.sledgehammer.Constants;
-import com.noahhusby.sledgehammer.datasets.Point;
-import com.noahhusby.sledgehammer.handlers.WarpHandler;
+import com.noahhusby.sledgehammer.Sledgehammer;
+import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.tasks.data.IResponse;
 import com.noahhusby.sledgehammer.tasks.data.TaskPacket;
 import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
 import org.json.simple.JSONObject;
 
-public class SetWarpTask extends Task implements IResponse {
-    public SetWarpTask(TransferPacket transfer) {
+public class InitializationTask extends Task implements IResponse {
+    public InitializationTask(TransferPacket transfer) {
         super(transfer);
     }
 
     @Override
     public String getResponseCommand() {
-        return Constants.setwarpTask;
+        return Constants.init;
     }
 
     @Override
     public void respond(JSONObject d) {
+        Sledgehammer.logger.info(Constants.logInitPacket+getServer().getName());
         JSONObject data = (JSONObject) d.get("data");
-        JSONObject point = (JSONObject) data.get("point");
-        WarpHandler.getInstance().incomingLocationResponse(getSender(), new Point((String) point.get("x"),(String) point.get("y"),
-                (String) point.get("z"), (String) point.get("yaw"), (String) point.get("pitch")));
+        ServerConfig.getInstance().initializeServer(getServer(), data);
     }
 
     @Override
     public boolean validateResponse(TransferPacket transfer, JSONObject data) {
-        return transfer.sender.equals(getSender());
+        return transfer.sender.equals(getSender()) && transfer.server.getName().toLowerCase().equals(getServer().getName().toLowerCase());
     }
 
     @Override
     public String getCommandName() {
-        return Constants.setwarpTask;
+        return Constants.init;
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.noahhusby.sledgehammer.map;
 
 import com.noahhusby.sledgehammer.Sledgehammer;
 
-import java.util.Timer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;

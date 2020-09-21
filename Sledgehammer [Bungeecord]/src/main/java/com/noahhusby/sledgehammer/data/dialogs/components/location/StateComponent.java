@@ -1,7 +1,6 @@
 package com.noahhusby.sledgehammer.data.dialogs.components.location;
 
 import com.noahhusby.sledgehammer.data.dialogs.components.DialogComponent;
-import com.noahhusby.sledgehammer.util.ChatHelper;
 import com.noahhusby.sledgehammer.util.TextElement;
 
 public class StateComponent extends DialogComponent {

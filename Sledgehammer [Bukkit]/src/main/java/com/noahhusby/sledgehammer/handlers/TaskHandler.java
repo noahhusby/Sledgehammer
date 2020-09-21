@@ -31,6 +31,7 @@ public class TaskHandler {
         registerTask(new SetWarpTask(null, null));
         registerTask(new TeleportTask(null, null));
         registerTask(new TestLocationTask(null, null));
+        registerTask(new InitializationPacket(null, null));
     }
 
     List<Task> tasks = new ArrayList<>();
@@ -44,7 +45,7 @@ public class TaskHandler {
         try {
             JSONObject o = (JSONObject) new JSONParser().parse(message);
             if(!isGenuineRequest((String) o.get("uuid"))) return;
-            TransferPacket t = new TransferPacket(String.valueOf((long) o.get("time")), (String) o.get("sender"));
+            TransferPacket t = new TransferPacket(String.valueOf((long) o.get("time")), (String) o.get("sender"), (String) o.get("server"));
 
             boolean success = false;
             for(Task task : tasks) {

@@ -12,7 +12,7 @@ public abstract class Task implements ITask {
     private final double maxTime;
 
     public Task(TransferPacket t, JSONObject data) {
-        if(t == null) t = new TransferPacket("0.0", "");
+        if(t == null) t = new TransferPacket("0.0", "", "");
         if(data == null) data = new JSONObject();
         this.transfer = t;
         this.data = data;
@@ -49,6 +49,7 @@ public abstract class Task implements ITask {
         o.put("uuid", ConfigHandler.authenticationCode);
         o.put("command", getCommandName());
         o.put("sender", getTransferPacket().sender);
+        o.put("server", getTransferPacket().server);
         o.put("time", System.currentTimeMillis());
         o.put("data", data);
         return o;

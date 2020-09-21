@@ -5,8 +5,8 @@ import com.noahhusby.sledgehammer.tasks.data.IResponse;
 import com.noahhusby.sledgehammer.tasks.data.ITask;
 import com.noahhusby.sledgehammer.tasks.data.TaskPacket;
 import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
-import net.minecraftforge.common.config.Config;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -50,13 +50,14 @@ public class TaskHandler {
             String uuid = (String) data.get("uuid");
             String command = (String) data.get("command");
             String sender = (String) data.get("sender");
+            String server = (String) data.get("server");
             if(!uuid.equals(ConfigHandler.authenticationCode)) return;
 
             List<IResponse> removalList = new ArrayList<>();
 
             for(IResponse r : responses) {
                 if(r.getResponseCommand().equals(command)) {
-                    TransferPacket t = new TransferPacket(null, sender);
+                    TransferPacket t = new TransferPacket(ProxyServer.getInstance().getServerInfo(server), sender);
                     if(r.validateResponse(t, data)) {
                         r.respond(data);
                         removalList.add(r);

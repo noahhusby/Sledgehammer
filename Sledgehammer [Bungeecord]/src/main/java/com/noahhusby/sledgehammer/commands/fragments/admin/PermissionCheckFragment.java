@@ -25,8 +25,8 @@ public class PermissionCheckFragment implements ICommandFragment {
             return;
         }
 
-        sender.sendMessage(ChatHelper.getInstance().makeAdminTextComponent(new TextElement("Permissions for ", ChatColor.DARK_RED),
-                new TextElement(p.getName(), ChatColor.RED)));
+        sender.sendMessage(ChatHelper.getInstance().makeAdminTextComponent(new TextElement("Permissions for ", ChatColor.GRAY),
+                new TextElement(p.getName(), ChatColor.BLUE)));
 
         for(String s : p.getPermissions()) {
             if(s.contains("sledgehammer")) sender.sendMessage(ChatHelper.getInstance().makeTextComponent(new TextElement(s, ChatColor.GOLD)));
@@ -44,7 +44,7 @@ public class PermissionCheckFragment implements ICommandFragment {
     }
 
     @Override
-    public String getArguments() {
-        return "[player]";
+    public String[] getArguments() {
+        return new String[]{"[player]"};
     }
 }

@@ -34,8 +34,6 @@ package com.noahhusby.sledgehammer.datasets;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.MappedByteBuffer;

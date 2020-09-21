@@ -1,9 +1,7 @@
 package com.noahhusby.sledgehammer.util;
 
 import com.noahhusby.sledgehammer.Constants;
-import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
-import com.sun.org.apache.bcel.internal.generic.GotoInstruction;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;

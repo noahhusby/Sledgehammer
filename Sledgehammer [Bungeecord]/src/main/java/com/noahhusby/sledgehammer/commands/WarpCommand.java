@@ -1,6 +1,5 @@
 package com.noahhusby.sledgehammer.commands;
 
-import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.commands.data.Command;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.handlers.TaskHandler;

@@ -2,12 +2,12 @@ package com.noahhusby.sledgehammer.datasets;
 
 
 import com.noahhusby.sledgehammer.Constants;
-import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.types.Server;
 import com.noahhusby.sledgehammer.util.ProxyUtil;
 import net.md_5.bungee.api.config.ServerInfo;
+import net.minecraftforge.common.config.Config;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -18,16 +18,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.text.Normalizer;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.logging.Level;
 
 public class OpenStreetMaps {
     private static OpenStreetMaps mInstance = null;
 
-    private final String nominatimAPI = "https://nominatim.openstreetmap.org/reverse.php?osm_type=N&format=json&zoom=12";
+    private final String nominatimAPI = "https://nominatim.openstreetmap.org/reverse.php?osm_type=N&format=json&zoom={zoom}";
 
     public static OpenStreetMaps getInstance() {
         if(mInstance == null) mInstance = new OpenStreetMaps();
@@ -90,8 +86,12 @@ public class OpenStreetMaps {
     }
 
     public Location getLocation(double lon, double lat) {
+        return getLocation(lon, lat, ConfigHandler.zoom);
+    }
+
+    public Location getLocation(double lon, double lat, int zoom) {
         try {
-            String fullRequest = nominatimAPI + "&lon="+lon+"&accept-language=en&lat="+lat;
+            String fullRequest = nominatimAPI.replace("{zoom}", String.valueOf(zoom)) + "&lon="+lon+"&accept-language=en&lat="+lat;
 
             URL url = new URL(fullRequest);
             HttpURLConnection con = (HttpURLConnection)url.openConnection();
