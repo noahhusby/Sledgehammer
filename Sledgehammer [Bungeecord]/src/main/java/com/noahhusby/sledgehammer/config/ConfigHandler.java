@@ -34,7 +34,10 @@ public class ConfigHandler {
     public static String authenticationCode = "";
     public static String messagePrefix = "";
     public static boolean globalTpll = false;
+
     public static String warpCommand = "";
+    public static String warpGUISort = "";
+    public static String warpMode = "";
 
     public static boolean useOfflineMode = false;
     public static boolean borderTeleportation = false;
@@ -77,9 +80,17 @@ public class ConfigHandler {
         messagePrefix = config.getString(prop("Message Prefix"), "General", "&9&lBTE &8&l> "
                 , "The prefix of messages broadcasted to players from the proxy");
         globalTpll = config.getBoolean(prop("Global Tpll"), "General", true, "Set this to false to disable global tpll [/tpll & /cs tpll]");
-        warpCommand = config.getString(prop("Warp Command"), "General", "nwarp",
-                "The command for network-wide warping. Leave blank to disable\nPermissions: sledgehammer.warp for teleporting, and sledgehammer.warp.admin for setting warps.");
         order();
+
+        cat("Warps", "Options for warps");
+        warpCommand = config.getString(prop("Warp Command"), "Warps", "nwarp",
+                "The command for network-wide warping. Leave blank to disable\nPermissions: sledgehammer.warp for teleporting, and sledgehammer.warp.admin for setting warps.");
+        warpGUISort = config.getString(prop("Warp GUI Sort"), "Warps", "none",
+                "The sorting order for the warp GUI.\nUse 'none' to list all the warps in the GUI, or use 'server' to organize the warps by server.");
+        warpMode = config.getString(prop("Warp Mode"), "Warps", "chat",
+                "The default way to list warps.\nUse 'chat' to list the syntax for the warp command, or `gui` to open the GUI automatically.\n" +
+                        "Note: The mode will always default to 'chat' when the GUI is unavailable.");
+
 
         cat("Geography", "Options for OpenStreetMaps and Teleportation.");
         zoom = config.getInt(prop("Zoom level"), "Geography", 12, 1, 19,

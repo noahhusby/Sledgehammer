@@ -1,4 +1,4 @@
-package com.noahhusby.sledgehammer.map;
+package com.noahhusby.sledgehammer.maps;
 
 import java.net.URI;
 

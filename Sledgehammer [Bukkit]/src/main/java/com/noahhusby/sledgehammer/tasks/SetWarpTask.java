@@ -5,12 +5,9 @@ import com.noahhusby.sledgehammer.data.location.Point;
 import com.noahhusby.sledgehammer.handlers.TaskHandler;
 import com.noahhusby.sledgehammer.tasks.data.IResponse;
 import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
-import com.noahhusby.sledgehammer.utils.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
-
-import java.util.List;
 
 public class SetWarpTask extends Task implements IResponse {
 

@@ -1,11 +1,10 @@
 package com.noahhusby.sledgehammer.datasets;
 
-
 import com.noahhusby.sledgehammer.Constants;
+import com.noahhusby.sledgehammer.SledgehammerUtils;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.types.Server;
-import com.noahhusby.sledgehammer.util.ProxyUtil;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.minecraftforge.common.config.Config;
 import org.json.simple.JSONObject;
@@ -51,7 +50,7 @@ public class OpenStreetMaps {
                         if(location.city.equals(l.city) &&
                                 (location.state.equals(l.state) ||
                                 location.country.equals(l.country))) {
-                            return ProxyUtil.getServerFromName(s.name);
+                            return SledgehammerUtils.getServerFromName(s.name);
                         }
                         break;
                     case county:
@@ -59,24 +58,24 @@ public class OpenStreetMaps {
                             if(location.county.equals(l.county) &&
                                     location.state.equals(l.state) &&
                                     location.country.equals(l.country)) {
-                                return ProxyUtil.getServerFromName(s.name);
+                                return SledgehammerUtils.getServerFromName(s.name);
                             }
                         } else {
                             if(location.county.equals(l.county) &&
                                     location.state.equals(l.state)) {
-                                return ProxyUtil.getServerFromName(s.name);
+                                return SledgehammerUtils.getServerFromName(s.name);
                             }
                         }
                         break;
                     case state:
                         if(location.state.equals(l.state) &&
                                 location.country.equals(l.country)) {
-                            return ProxyUtil.getServerFromName(s.name);
+                            return SledgehammerUtils.getServerFromName(s.name);
                         }
                         break;
                     case country:
                         if(location.country.equals(l.country)) {
-                            return ProxyUtil.getServerFromName(s.name);
+                            return SledgehammerUtils.getServerFromName(s.name);
                         }
                         break;
                 }

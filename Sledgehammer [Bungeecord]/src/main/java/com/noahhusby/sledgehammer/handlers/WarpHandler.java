@@ -2,18 +2,20 @@ package com.noahhusby.sledgehammer.handlers;
 
 import com.google.common.collect.Maps;
 import com.google.gson.annotations.Expose;
+import com.noahhusby.sledgehammer.SledgehammerUtils;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.tasks.SetWarpTask;
 import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
 import com.noahhusby.sledgehammer.util.ChatHelper;
 import com.noahhusby.sledgehammer.datasets.Point;
-import com.noahhusby.sledgehammer.util.ProxyUtil;
 import com.noahhusby.sledgehammer.util.TextElement;
 import com.noahhusby.sledgehammer.util.Warp;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.util.Map;
 
@@ -46,7 +48,7 @@ public class WarpHandler {
     public void requestNewWarp(String warp, CommandSender sender) {
         requestedWarps.put(sender.getName(), warp);
 
-        TransferPacket t = new TransferPacket(ProxyUtil.getServerFromPlayerName(sender.getName()), sender.getName());
+        TransferPacket t = new TransferPacket(SledgehammerUtils.getServerFromPlayerName(sender.getName()), sender.getName());
         TaskHandler.getInstance().execute(new SetWarpTask(t));
         //CommunicationHandler.executeRequest(ProxyServer.getInstance().getPlayer(sender.getName()).getServer().getInfo(),
         //        sender.getName(), "POS");
@@ -96,6 +98,26 @@ public class WarpHandler {
         ConfigHandler.getInstance().saveWarpDB();
     }
 
+    public JSONObject generateGUIPayload() {
+        JSONObject o = new JSONObject();
+        JSONArray waypoints = new JSONArray();
+        for(Map.Entry<String, Warp> w : warps.entrySet()) {
+            JSONObject wa = new JSONObject();
+            wa.put("name", w.getKey());
+            wa.put("server", w.getValue().server);
+            waypoints.add(wa);
+        }
 
+        String mode = ConfigHandler.warpGUISort.toLowerCase().trim();
+        if(!(mode.equals("none") || mode.equals("server"))) {
+            mode = "none";
+        }
+
+        o.put("web", ConfigHandler.mapEnabled);
+        o.put("mode", mode);
+        o.put("waypoints", waypoints);
+
+        return o;
+    }
 
 }

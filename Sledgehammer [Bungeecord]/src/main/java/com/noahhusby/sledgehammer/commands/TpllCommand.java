@@ -1,12 +1,12 @@
 package com.noahhusby.sledgehammer.commands;
 
+import com.noahhusby.sledgehammer.SledgehammerUtils;
 import com.noahhusby.sledgehammer.commands.data.Command;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.handlers.TaskHandler;
 import com.noahhusby.sledgehammer.tasks.LocationTask;
 import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
 import com.noahhusby.sledgehammer.util.ChatHelper;
-import com.noahhusby.sledgehammer.util.ProxyUtil;
 import com.noahhusby.sledgehammer.util.TextElement;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -107,7 +107,7 @@ public class TpllCommand extends Command {
             return;
         }
 
-        if (ProxyUtil.getServerFromPlayerName(parsedSender) != server) {
+        if (SledgehammerUtils.getServerFromPlayerName(parsedSender) != server) {
             if(!parsedSender.equals(sender.getName())) {
                 ProxyServer.getInstance().getPlayer(parsedSender).sendMessage(
                         ChatHelper.getInstance().makeTitleTextComponent(new TextElement("You were summoned to ", ChatColor.GRAY),

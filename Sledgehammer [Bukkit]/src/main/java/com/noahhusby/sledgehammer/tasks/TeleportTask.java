@@ -3,7 +3,7 @@ package com.noahhusby.sledgehammer.tasks;
 import com.noahhusby.sledgehammer.handlers.TaskHandler;
 import com.noahhusby.sledgehammer.tasks.data.IResponse;
 import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
-import com.noahhusby.sledgehammer.utils.Util;
+import com.noahhusby.sledgehammer.SledgehammerUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
@@ -17,7 +17,7 @@ public class TeleportTask extends Task {
     @Override
     public void execute() {
         JSONObject data = getData();
-        Player player = Util.getPlayerFromName(getTransferPacket().sender);
+        Player player = SledgehammerUtil.getPlayerFromName(getTransferPacket().sender);
         if(player == null) {
             throwNoSender();
             return;

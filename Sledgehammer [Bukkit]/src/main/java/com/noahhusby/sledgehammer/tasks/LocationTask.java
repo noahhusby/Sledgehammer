@@ -8,7 +8,7 @@ import com.noahhusby.sledgehammer.projection.ModifiedAirocean;
 import com.noahhusby.sledgehammer.projection.ScaleProjection;
 import com.noahhusby.sledgehammer.tasks.data.IResponse;
 import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
-import com.noahhusby.sledgehammer.utils.Util;
+import com.noahhusby.sledgehammer.SledgehammerUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -27,7 +27,7 @@ public class LocationTask extends Task {
 
     @Override
     public void execute() {
-        Player player = Util.getPlayerFromName(getTransferPacket().sender);
+        Player player = SledgehammerUtil.getPlayerFromName(getTransferPacket().sender);
         if(player == null) {
             throwNoSender();
             return;
@@ -53,19 +53,20 @@ public class LocationTask extends Task {
         double proj[] = scaleProj.fromGeo(Double.parseDouble(lon), Double.parseDouble(lat));
 
         int x = (int) Math.floor(proj[0]);
-        int y = 256;
         int z = (int) Math.floor(proj[1]);
 
 
-        while (player.getWorld().getBlockAt(x, y, z).getType() != Material.AIR) {
-            y++;
+        int y = Constants.scanHeight;
+
+        while(player.getWorld().getBlockAt(x, y, z).getType() != Material.AIR) {
+            y += Constants.scanHeight;
         }
 
-        while (player.getWorld().getBlockAt(x, y, z).getType() == Material.AIR) {
-            y--;
+        while(player.getWorld().getBlockAt(x, y, z).getType() == Material.AIR) {
+            y -= 1;
         }
 
-        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),String.format("tp %s %s %s %s", getTransferPacket().sender, x, y+2, z));
+        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),String.format("tp %s %s %s %s", getTransferPacket().sender, x, y+1, z));
     }
 
     @Override

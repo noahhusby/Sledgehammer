@@ -32,6 +32,7 @@ public class TaskHandler {
         registerTask(new TeleportTask(null, null));
         registerTask(new TestLocationTask(null, null));
         registerTask(new InitializationPacket(null, null));
+        registerTask(new WarpGUITask(null, null));
     }
 
     List<Task> tasks = new ArrayList<>();

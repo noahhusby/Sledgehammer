@@ -1,7 +1,7 @@
 package com.noahhusby.sledgehammer.commands;
 
 import com.noahhusby.sledgehammer.commands.data.Command;
-import com.noahhusby.sledgehammer.map.MapHandler;
+import com.noahhusby.sledgehammer.maps.MapHandler;
 import net.md_5.bungee.api.CommandSender;
 
 public class WarpTemp extends Command {

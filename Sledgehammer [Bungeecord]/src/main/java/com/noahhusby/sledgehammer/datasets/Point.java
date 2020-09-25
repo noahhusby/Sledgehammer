@@ -1,6 +1,7 @@
 package com.noahhusby.sledgehammer.datasets;
 
 import com.google.gson.annotations.Expose;
+import org.json.simple.JSONObject;
 
 public class Point {
     @Expose
@@ -20,5 +21,17 @@ public class Point {
         this.z = z;
         this.yaw = yaw;
         this.pitch = pitch;
+    }
+
+    public JSONObject getJSON() {
+        JSONObject o = new JSONObject();
+
+        o.put("x", x);
+        o.put("y", y);
+        o.put("z", z);
+        o.put("pitch", pitch);
+        o.put("yaw", yaw);
+
+        return o;
     }
 }

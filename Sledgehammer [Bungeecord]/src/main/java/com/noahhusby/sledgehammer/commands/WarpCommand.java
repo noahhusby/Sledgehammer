@@ -4,7 +4,9 @@ import com.noahhusby.sledgehammer.commands.data.Command;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.handlers.TaskHandler;
 import com.noahhusby.sledgehammer.handlers.WarpHandler;
+import com.noahhusby.sledgehammer.maps.MapHandler;
 import com.noahhusby.sledgehammer.tasks.TeleportTask;
+import com.noahhusby.sledgehammer.tasks.WarpGUITask;
 import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
 import com.noahhusby.sledgehammer.util.ChatHelper;
 import com.noahhusby.sledgehammer.util.TextElement;
@@ -61,6 +63,8 @@ public class WarpCommand extends Command {
         } else if(args[0].equals("list")) {
             sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Warps: ", ChatColor.GRAY),
                     new TextElement(WarpHandler.getInstance().getWarpList(), ChatColor.RED)));
+        } if(args[0].equals("map")) {
+            MapHandler.getInstance().newMapCommand(sender);
         } else {
             Warp warp = WarpHandler.getInstance().getWarp(args[0]);
             if(warp == null) {
@@ -75,6 +79,7 @@ public class WarpCommand extends Command {
 
             sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Warping to ", ChatColor.GRAY), new TextElement(args[0], ChatColor.RED)));
             TransferPacket t = new TransferPacket(ProxyServer.getInstance().getServerInfo(warp.server), sender.getName());
+            TaskHandler.getInstance().execute(new WarpGUITask(t));
             TaskHandler.getInstance().execute(new TeleportTask(t, warp.point));
         }
     }

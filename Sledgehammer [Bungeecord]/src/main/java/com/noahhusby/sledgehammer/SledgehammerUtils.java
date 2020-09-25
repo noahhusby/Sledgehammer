@@ -1,11 +1,11 @@
-package com.noahhusby.sledgehammer.util;
+package com.noahhusby.sledgehammer;
 
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.types.Server;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 
-public class ProxyUtil {
+public class SledgehammerUtils {
     public static ServerInfo getServerFromName(String name) {
         return ProxyServer.getInstance().getServerInfo(name);
     }

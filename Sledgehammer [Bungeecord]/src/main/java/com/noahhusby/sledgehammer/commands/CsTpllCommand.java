@@ -1,11 +1,11 @@
 package com.noahhusby.sledgehammer.commands;
 
+import com.noahhusby.sledgehammer.SledgehammerUtils;
 import com.noahhusby.sledgehammer.commands.data.Command;
 import com.noahhusby.sledgehammer.handlers.TaskHandler;
 import com.noahhusby.sledgehammer.tasks.CommandTask;
 import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
 import com.noahhusby.sledgehammer.util.ChatHelper;
-import com.noahhusby.sledgehammer.util.ProxyUtil;
 import com.noahhusby.sledgehammer.util.TextElement;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -26,11 +26,11 @@ public class CsTpllCommand extends Command {
         }
 
         if (args.length == 0) {
-            TransferPacket t = new TransferPacket(ProxyUtil.getServerFromPlayerName(sender.getName()), sender.getName());
+            TransferPacket t = new TransferPacket(SledgehammerUtils.getServerFromPlayerName(sender.getName()), sender.getName());
             TaskHandler.getInstance().execute(new CommandTask(t, "cs"));
             return;
         } else if (!args[0].equals("tpll")) {
-            TransferPacket t = new TransferPacket(ProxyUtil.getServerFromPlayerName(sender.getName()), sender.getName());
+            TransferPacket t = new TransferPacket(SledgehammerUtils.getServerFromPlayerName(sender.getName()), sender.getName());
             TaskHandler.getInstance().execute(new CommandTask(t, "cs", TaskHandler.getRawArguments(args)));
             return;
         }

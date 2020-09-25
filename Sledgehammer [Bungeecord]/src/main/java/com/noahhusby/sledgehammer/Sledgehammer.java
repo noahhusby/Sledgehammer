@@ -6,7 +6,7 @@ import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.handlers.PlayerLocationHandler;
 import com.noahhusby.sledgehammer.handlers.TaskHandler;
-import com.noahhusby.sledgehammer.map.MapHandler;
+import com.noahhusby.sledgehammer.maps.MapHandler;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.*;
 import net.md_5.bungee.api.plugin.Listener;
@@ -19,6 +19,8 @@ import java.util.logging.Logger;
 public class Sledgehammer extends Plugin implements Listener {
     public static Logger logger;
     public static Plugin sledgehammer;
+
+
 
     @Override
     public void onEnable() {
