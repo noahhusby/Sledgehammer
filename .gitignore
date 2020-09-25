@@ -1,5 +1,8 @@
 # Created by https://www.gitignore.io/api/c++,java,linux,macos,gradle,windows,visualstudiocode
 
+/Sledgehammer [Bungeecord]/target/
+/Sledgehammer [Bungeecord]/.idea/
+
 ### C++ ###
 # Prerequisites
 *.d
