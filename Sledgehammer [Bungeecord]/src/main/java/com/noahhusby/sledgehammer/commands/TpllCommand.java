@@ -1,11 +1,10 @@
 package com.noahhusby.sledgehammer.commands;
 
-import com.noahhusby.sledgehammer.SledgehammerUtils;
+import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.commands.data.Command;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
-import com.noahhusby.sledgehammer.handlers.TaskHandler;
-import com.noahhusby.sledgehammer.tasks.LocationTask;
-import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
+import com.noahhusby.sledgehammer.network.P2S.P2SCommandPacket;
+import com.noahhusby.sledgehammer.network.P2S.P2SLocationPacket;
 import com.noahhusby.sledgehammer.util.ChatHelper;
 import com.noahhusby.sledgehammer.util.TextElement;
 import net.md_5.bungee.api.ChatColor;
@@ -107,7 +106,7 @@ public class TpllCommand extends Command {
             return;
         }
 
-        if (SledgehammerUtils.getServerFromPlayerName(parsedSender) != server) {
+        if (SledgehammerUtil.getServerFromPlayerName(parsedSender) != server) {
             if(!parsedSender.equals(sender.getName())) {
                 ProxyServer.getInstance().getPlayer(parsedSender).sendMessage(
                         ChatHelper.getInstance().makeTitleTextComponent(new TextElement("You were summoned to ", ChatColor.GRAY),
@@ -127,7 +126,6 @@ public class TpllCommand extends Command {
             sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Teleporting to ", ChatColor.GRAY),
                             new TextElement(lat+", "+lon, ChatColor.RED)));
         }
-        TransferPacket t = new TransferPacket(server, parsedSender);
-        TaskHandler.getInstance().execute(new LocationTask(t, String.valueOf(lat), String.valueOf(lon)));
+        getNetworkManager().sendPacket(new P2SLocationPacket(sender.getName(), server.getName(), String.valueOf(lat), String.valueOf(lon)));
     }
 }

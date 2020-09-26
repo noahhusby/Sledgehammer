@@ -1,12 +1,14 @@
 package com.noahhusby.sledgehammer;
 
+import com.noahhusby.sledgehammer.addons.AddonManager;
+import com.noahhusby.sledgehammer.addons.TerramapAddon;
 import com.noahhusby.sledgehammer.commands.*;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.handlers.PlayerLocationHandler;
-import com.noahhusby.sledgehammer.handlers.TaskHandler;
 import com.noahhusby.sledgehammer.maps.MapHandler;
+import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.*;
 import net.md_5.bungee.api.plugin.Listener;
@@ -20,16 +22,16 @@ public class Sledgehammer extends Plugin implements Listener {
     public static Logger logger;
     public static Plugin sledgehammer;
 
-
+    public static AddonManager addonManager;
 
     @Override
     public void onEnable() {
         this.sledgehammer = this;
         logger = getLogger();
 
-        ConfigHandler.getInstance().init(getDataFolder());
+        addonManager.onEnable();
 
-        ProxyServer.getInstance().getPluginManager().registerCommand(this, new WarpTemp());
+        ConfigHandler.getInstance().init(getDataFolder());
 
         if(!ConfigHandler.warpCommand.equals("")) {
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new WarpCommand());
@@ -84,9 +86,22 @@ public class Sledgehammer extends Plugin implements Listener {
         }, 10,  TimeUnit.SECONDS);
     }
 
+    @Override
+    public void onDisable() {
+        addonManager.onDisable();
+    }
+
+    @Override
+    public void onLoad() {
+        addonManager = AddonManager.getInstance();
+        addonManager.registerAddon(new TerramapAddon());
+        addonManager.onLoad();
+    }
+
     @EventHandler
     public void onMessage(PluginMessageEvent e) {
-        TaskHandler.getInstance().onIncomingMessage(e);
+        addonManager.onPluginMessage(e);
+        SledgehammerNetworkManager.getInstance().onPluginMessageReceived(e);
     }
 
     @EventHandler

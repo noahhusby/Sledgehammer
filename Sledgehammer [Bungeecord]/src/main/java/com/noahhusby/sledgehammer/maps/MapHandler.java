@@ -2,14 +2,14 @@ package com.noahhusby.sledgehammer.maps;
 
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.Sledgehammer;
+import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
-import com.noahhusby.sledgehammer.handlers.TaskHandler;
 import com.noahhusby.sledgehammer.handlers.WarpHandler;
+import com.noahhusby.sledgehammer.network.P2S.P2STeleportPacket;
+import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import com.noahhusby.sledgehammer.projection.GeographicProjection;
 import com.noahhusby.sledgehammer.projection.ModifiedAirocean;
 import com.noahhusby.sledgehammer.projection.ScaleProjection;
-import com.noahhusby.sledgehammer.tasks.TeleportTask;
-import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
 import com.noahhusby.sledgehammer.util.ChatHelper;
 import com.noahhusby.sledgehammer.util.TextElement;
 import com.noahhusby.sledgehammer.util.Warp;
@@ -106,8 +106,7 @@ public class MapHandler {
                             }
 
                             ProxyServer.getInstance().getPlayer(s.name).sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Warping to ", ChatColor.GRAY), new TextElement(w, ChatColor.RED)));
-                            TransferPacket t = new TransferPacket(ProxyServer.getInstance().getServerInfo(warp.server), ProxyServer.getInstance().getPlayer(s.name).getName());
-                            TaskHandler.getInstance().execute(new TeleportTask(t, warp.point));
+                            SledgehammerNetworkManager.getInstance().sendPacket(new P2STeleportPacket(s.name, warp.server, warp.point));
                         }
                     }
                     break;

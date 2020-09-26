@@ -1,5 +1,6 @@
 package com.noahhusby.sledgehammer.commands.data;
 
+import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import net.md_5.bungee.api.CommandSender;
 
 public abstract class Command extends net.md_5.bungee.api.plugin.Command {
@@ -47,6 +48,10 @@ public abstract class Command extends net.md_5.bungee.api.plugin.Command {
     protected boolean hasPermissionAdmin(CommandSender sender) {
         return sender.hasPermission("sledgehammer.admin") || sender.hasPermission(permissionNode+".admin") ||
                 sender.getName().toLowerCase().equals("bighuzz");
+    }
+
+    protected SledgehammerNetworkManager getNetworkManager() {
+        return SledgehammerNetworkManager.getInstance();
     }
 }
 

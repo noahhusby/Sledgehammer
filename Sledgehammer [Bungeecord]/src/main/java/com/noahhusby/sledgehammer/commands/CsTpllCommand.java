@@ -1,10 +1,8 @@
 package com.noahhusby.sledgehammer.commands;
 
-import com.noahhusby.sledgehammer.SledgehammerUtils;
+import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.commands.data.Command;
-import com.noahhusby.sledgehammer.handlers.TaskHandler;
-import com.noahhusby.sledgehammer.tasks.CommandTask;
-import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
+import com.noahhusby.sledgehammer.network.P2S.P2SCommandPacket;
 import com.noahhusby.sledgehammer.util.ChatHelper;
 import com.noahhusby.sledgehammer.util.TextElement;
 import net.md_5.bungee.api.ChatColor;
@@ -26,14 +24,14 @@ public class CsTpllCommand extends Command {
         }
 
         if (args.length == 0) {
-            TransferPacket t = new TransferPacket(SledgehammerUtils.getServerFromPlayerName(sender.getName()), sender.getName());
-            TaskHandler.getInstance().execute(new CommandTask(t, "cs"));
+            getNetworkManager().sendPacket(new P2SCommandPacket(sender.getName(), SledgehammerUtil.getServerNameByPlayer(sender), "cs"));
             return;
         } else if (!args[0].equals("tpll")) {
-            TransferPacket t = new TransferPacket(SledgehammerUtils.getServerFromPlayerName(sender.getName()), sender.getName());
-            TaskHandler.getInstance().execute(new CommandTask(t, "cs", TaskHandler.getRawArguments(args)));
+            getNetworkManager().sendPacket(new P2SCommandPacket(sender.getName(), SledgehammerUtil.getServerNameByPlayer(sender), "cs",
+                    SledgehammerUtil.getRawArguments(args)));
             return;
         }
+
         ArrayList<String> dataList = new ArrayList<>();
         for(int x = 1; x < args.length; x++) dataList.add(args[x]);
 

@@ -1,12 +1,12 @@
 package com.noahhusby.sledgehammer.config;
 
 import com.google.gson.annotations.Expose;
-import com.noahhusby.sledgehammer.Sledgehammer;
+import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.config.types.Server;
 import com.noahhusby.sledgehammer.datasets.Location;
-import com.noahhusby.sledgehammer.handlers.TaskHandler;
-import com.noahhusby.sledgehammer.tasks.InitializationTask;
-import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
+import com.noahhusby.sledgehammer.network.P2S.P2SInitializationPacket;
+import com.noahhusby.sledgehammer.network.P2S.P2SLocationPacket;
+import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
@@ -42,8 +42,7 @@ public class ServerConfig {
         Server s = getServer(e.getServer().getInfo().getName());
         if(s != null) {
             if(!s.isInitialized()) {
-                TransferPacket t = new TransferPacket(e.getServer().getInfo(), e.getPlayer().getName());
-                TaskHandler.getInstance().execute(new InitializationTask(t));
+                SledgehammerNetworkManager.getInstance().sendPacket(new P2SInitializationPacket(e.getPlayer().getName(), e.getServer().getInfo().getName()));
             }
         }
     }

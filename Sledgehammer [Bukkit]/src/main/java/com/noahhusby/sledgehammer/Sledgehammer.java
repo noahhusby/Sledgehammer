@@ -1,8 +1,7 @@
 package com.noahhusby.sledgehammer;
 
-import com.noahhusby.sledgehammer.communication.CommunicationManager;
 import com.noahhusby.sledgehammer.eventhandler.ServerEventHandler;
-import com.noahhusby.sledgehammer.handlers.TaskHandler;
+import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -28,30 +27,9 @@ public final class Sledgehammer extends JavaPlugin implements Listener {
         ConfigHandler.registerConfig();
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
         Bukkit.getServer().getPluginManager().registerEvents(new ServerEventHandler(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(SledgehammerNetworkManager.getInstance(), this);
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "sledgehammer:channel");
-        getServer().getMessenger().registerIncomingPluginChannel( this, "sledgehammer:channel", new CommunicationManager());
+        getServer().getMessenger().registerIncomingPluginChannel( this, "sledgehammer:channel", SledgehammerNetworkManager.getInstance());
     }
-
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
-    }
-
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        TaskHandler.getInstance().playerJoined(event.getPlayer());
-    }
-
-    @EventHandler
-    public void onCommand(PlayerCommandPreprocessEvent e) {
-        System.out.println(e.getMessage());
-        if(e.getMessage().toLowerCase().equals("poop") || e.getMessage().toLowerCase().equals("/poop")) {
-            Location x = e.getPlayer().getLocation();
-            Block b = e.getPlayer().getWorld().getBlockAt(x);
-            System.out.println(b.getType().name());
-        }
-    }
-
-
 }

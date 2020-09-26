@@ -1,0 +1,120 @@
+package com.noahhusby.sledgehammer.network;
+
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteStreams;
+import com.noahhusby.sledgehammer.*;
+import com.noahhusby.sledgehammer.network.P2S.*;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.messaging.PluginMessageListener;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class SledgehammerNetworkManager implements PluginMessageListener, Listener {
+    private static SledgehammerNetworkManager mInstance = null;
+
+    public static SledgehammerNetworkManager getInstance() {
+        if(mInstance == null) mInstance = new SledgehammerNetworkManager();
+        return mInstance;
+    }
+
+    private final List<IP2SPacket> registeredProxyPackets;
+    private final List<SmartObject> cachedProxyPackets;
+
+    private SledgehammerNetworkManager() {
+        registeredProxyPackets = new ArrayList<>();
+        cachedProxyPackets = new ArrayList<>();
+
+        registerProxyPacket(new P2SCommandPacket());
+        registerProxyPacket(new P2SInitilizationPacket());
+        registerProxyPacket(new P2SLocationPacket());
+        registerProxyPacket(new P2SSetwarpPacket());
+        registerProxyPacket(new P2STeleportPacket());
+        registerProxyPacket(new P2STestLocationPacket());
+        registerProxyPacket(new P2SWarpGUIPacket());
+    }
+
+    private void registerProxyPacket(IP2SPacket packet) {
+        registeredProxyPackets.add(packet);
+    }
+
+    public void sendPacket(IS2PPacket packet) {
+        JSONObject response = new JSONObject();
+        response.put("uuid", ConfigHandler.authenticationCode);
+        response.put("command", packet.getPacketInfo().getID());
+        response.put("sender", packet.getPacketInfo().getSender());
+        response.put("server", packet.getPacketInfo().getServer());
+        response.put("time", System.currentTimeMillis());
+        response.put("data", packet.getMessage(new JSONObject()));
+
+        sendMessage(Constants.responsePrefix + response.toJSONString());
+    }
+
+    private void onPacketRecieved(String m) {
+        try {
+            System.out.println(m);
+            SmartObject packet = SmartObject.fromJSON((JSONObject) new JSONParser().parse(m));
+            if(!SledgehammerUtil.isGenuineRequest(packet.getString("uuid"))) return;
+
+            SmartObject packetData = SmartObject.fromJSON((JSONObject) packet.get("data"));
+            PacketInfo packetInfo = new PacketInfo(packet.getString("command"), packet.getString("sender"),
+                    packet.getString("server"), (long) packet.get("time"));
+
+            if(!SledgehammerUtil.isPlayerAvailable(packetInfo.getSender())) {
+                cachedProxyPackets.add(packet);
+                return;
+            }
+
+            for(IP2SPacket p : registeredProxyPackets)  {
+                if(p.getPacketID().equalsIgnoreCase(packetInfo.getID())) {
+                    p.onMessage(packetInfo, packetData);
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendMessage(String message) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        DataOutputStream out = new DataOutputStream(stream);
+        try {
+            out.writeUTF(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Player[] players = Bukkit.getOnlinePlayers().toArray(new Player[0]);
+        players[0].sendPluginMessage(Sledgehammer.sledgehammer, "sledgehammer:channel", stream.toByteArray());
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        for(SmartObject p : cachedProxyPackets) {
+            String sender = p.getString("sender");
+            if(sender.equalsIgnoreCase(event.getPlayer().getName())) onPacketRecieved(p.toJSONString());
+        }
+    }
+
+
+    @Override
+    public void onPluginMessageReceived(String channel, Player player, byte[] message) {
+        if (!channel.equalsIgnoreCase( "sledgehammer:channel")) {
+            return;
+        }
+        ByteArrayDataInput in = ByteStreams.newDataInput(message);
+        String m = in.readUTF();
+
+        onPacketRecieved(m);
+    }
+}

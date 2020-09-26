@@ -10,6 +10,7 @@ public class ConfigHandler {
     public static String authenticationCode = "";
     public static String tpllMode = "";
     public static int executionTimeout = 10000;
+    public static String bungeecordName = "";
 
     public static void init(File f) {
         config = new Configuration(f);

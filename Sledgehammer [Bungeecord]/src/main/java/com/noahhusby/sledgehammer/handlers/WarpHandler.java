@@ -2,10 +2,10 @@ package com.noahhusby.sledgehammer.handlers;
 
 import com.google.common.collect.Maps;
 import com.google.gson.annotations.Expose;
-import com.noahhusby.sledgehammer.SledgehammerUtils;
+import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
-import com.noahhusby.sledgehammer.tasks.SetWarpTask;
-import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
+import com.noahhusby.sledgehammer.network.P2S.P2SSetwarpPacket;
+import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import com.noahhusby.sledgehammer.util.ChatHelper;
 import com.noahhusby.sledgehammer.datasets.Point;
 import com.noahhusby.sledgehammer.util.TextElement;
@@ -48,10 +48,7 @@ public class WarpHandler {
     public void requestNewWarp(String warp, CommandSender sender) {
         requestedWarps.put(sender.getName(), warp);
 
-        TransferPacket t = new TransferPacket(SledgehammerUtils.getServerFromPlayerName(sender.getName()), sender.getName());
-        TaskHandler.getInstance().execute(new SetWarpTask(t));
-        //CommunicationHandler.executeRequest(ProxyServer.getInstance().getPlayer(sender.getName()).getServer().getInfo(),
-        //        sender.getName(), "POS");
+        SledgehammerNetworkManager.getInstance().sendPacket(new P2SSetwarpPacket(sender.getName(), SledgehammerUtil.getServerNameByPlayer(sender)));
     }
 
     public void removeWarp(String w, CommandSender sender) {

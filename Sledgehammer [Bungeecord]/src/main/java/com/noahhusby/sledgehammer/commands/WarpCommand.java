@@ -1,13 +1,12 @@
 package com.noahhusby.sledgehammer.commands;
 
+import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.commands.data.Command;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
-import com.noahhusby.sledgehammer.handlers.TaskHandler;
 import com.noahhusby.sledgehammer.handlers.WarpHandler;
 import com.noahhusby.sledgehammer.maps.MapHandler;
-import com.noahhusby.sledgehammer.tasks.TeleportTask;
-import com.noahhusby.sledgehammer.tasks.WarpGUITask;
-import com.noahhusby.sledgehammer.tasks.data.TransferPacket;
+import com.noahhusby.sledgehammer.network.P2S.P2STeleportPacket;
+import com.noahhusby.sledgehammer.network.P2S.P2SWarpGUIPacket;
 import com.noahhusby.sledgehammer.util.ChatHelper;
 import com.noahhusby.sledgehammer.util.TextElement;
 import com.noahhusby.sledgehammer.util.Warp;
@@ -63,8 +62,11 @@ public class WarpCommand extends Command {
         } else if(args[0].equals("list")) {
             sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Warps: ", ChatColor.GRAY),
                     new TextElement(WarpHandler.getInstance().getWarpList(), ChatColor.RED)));
-        } if(args[0].equals("map")) {
+        } else if(args[0].equals("map")) {
             MapHandler.getInstance().newMapCommand(sender);
+        } else if(args[0].equalsIgnoreCase("gui")) {
+            getNetworkManager().sendPacket(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerNameByPlayer(sender)));
+
         } else {
             Warp warp = WarpHandler.getInstance().getWarp(args[0]);
             if(warp == null) {
@@ -78,11 +80,7 @@ public class WarpCommand extends Command {
             }
 
             sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Warping to ", ChatColor.GRAY), new TextElement(args[0], ChatColor.RED)));
-            TransferPacket t = new TransferPacket(ProxyServer.getInstance().getServerInfo(warp.server), sender.getName());
-            TaskHandler.getInstance().execute(new WarpGUITask(t));
-            TaskHandler.getInstance().execute(new TeleportTask(t, warp.point));
+            getNetworkManager().sendPacket(new P2STeleportPacket(sender.getName(), warp.server, warp.point));
         }
     }
-
-
 }

@@ -8,28 +8,36 @@ import org.bukkit.inventory.Inventory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class GUIRegistry {
-    private final static List<IGUIListener> registeredListeners = new ArrayList<>();
+    private final static List<GUIController> registeredControllers = new ArrayList<>();
 
-    public static void register(IGUIListener i) {
-        registeredListeners.add(i);
+    public static void register(GUIController c) {
+        removeExpiredControllers(c);
+        registeredControllers.add(c);
     }
 
     public static void onInventoryClick(InventoryClickEvent e) {
-        for(IGUIListener i : registeredListeners) {
-            for(Inventory inv : i.getInventories()) {
-                if(inv.getName().equals(e.getInventory().getName())) i.onInventoryClick(e);
-            }
+
+        for(GUIController i : registeredControllers) {
+            if(i.getInventory().getName().equals(e.getInventory().getName())) i.onInventoryClick(e);
         }
     }
 
     public static void onInventoryClose(InventoryCloseEvent e) {
-        for(IGUIListener i : registeredListeners) {
-            for(Inventory inv : i.getInventories()) {
-                if(inv.getName().equals(e.getInventory().getName())) i.onInventoryClose(e);
+
+    }
+
+    private static void removeExpiredControllers(GUIController newListener) {
+        List<GUIController> expired = new ArrayList<>();
+        for(GUIController i : registeredControllers) {
+            if (i.getPlayer() != null) {
+                if(i.getPlayer().getName().equalsIgnoreCase(newListener.getPlayer().getName())) expired.add(i);
             }
+        }
+
+        for(GUIController i : expired) {
+            registeredControllers.remove(i);
         }
     }
 }
