@@ -11,24 +11,28 @@ import org.json.simple.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WarpInventoryController extends GUIController {
-    private final List<WarpInventory> warpInventories = new ArrayList<>();
+public class SetServerWarpInventoryController extends GUIController {
+    private final List<SetServerWarpInventory> warpInventories = new ArrayList<>();
     private final JSONObject warpData;
 
-    public WarpInventoryController(Player p, SmartObject warpData) {
-        this(p, warpData.toJSON());
-    }
-
-    public WarpInventoryController(Player p, JSONObject warpData) {
-        super(54, "Warps", p);
+    public SetServerWarpInventoryController(Player p, JSONObject warpData, String server) {
+        super(54, "Warps - " + server, p);
         this.warpData = warpData;
 
-        JSONArray warps = (JSONArray) warpData.get("waypoints");
+        JSONArray rawWarps = (JSONArray) warpData.get("waypoints");
+        JSONArray warps = new JSONArray();
+        for(Object o : rawWarps) {
+            JSONObject ob = (JSONObject) o;
+            String sname = (String) ob.get("server");
+            if(sname.equalsIgnoreCase(server)) warps.add(o);
+        }
+
         boolean web = (boolean) warpData.get("web");
 
         int total_pages = (int) Math.ceil(warps.size() / 27.0);
+        if(total_pages == 0) total_pages = 1;
         for(int x = 0; x < total_pages; x++) {
-            WarpInventory w = new WarpInventory(x, warps, web);
+            SetServerWarpInventory w = new SetServerWarpInventory(x, warps, web, server);
             w.initFromController(this, getPlayer(), getInventory());
             warpInventories.add(w);
         }
@@ -37,15 +41,15 @@ public class WarpInventoryController extends GUIController {
     }
 
     public IGUIChild getChildByPage(int page) {
-        for(WarpInventory w : warpInventories) {
+        for(SetServerWarpInventory w : warpInventories) {
             if(w.getPage() == page) return w;
         }
 
         return null;
     }
 
-    public void switchToPinned() {
-        GUIRegistry.register(new PinnedWarpInventoryController(getPlayer(), warpData));
+    public void switchToAll() {
+        GUIRegistry.register(new WarpInventoryController(getPlayer(), warpData));
     }
 
     public void switchToServerList() {

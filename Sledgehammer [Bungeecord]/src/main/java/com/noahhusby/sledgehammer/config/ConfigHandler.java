@@ -36,7 +36,6 @@ public class ConfigHandler {
     public static boolean globalTpll = false;
 
     public static String warpCommand = "";
-    public static String warpGUISort = "";
     public static String warpMode = "";
 
     public static boolean useOfflineMode = false;
@@ -85,8 +84,6 @@ public class ConfigHandler {
         cat("Warps", "Options for warps");
         warpCommand = config.getString(prop("Warp Command"), "Warps", "nwarp",
                 "The command for network-wide warping. Leave blank to disable\nPermissions: sledgehammer.warp for teleporting, and sledgehammer.warp.admin for setting warps.");
-        warpGUISort = config.getString(prop("Warp GUI Sort"), "Warps", "none",
-                "The sorting order for the warp GUI.\nUse 'none' to list all the warps in the GUI, or use 'server' to organize the warps by server.");
         warpMode = config.getString(prop("Warp Mode"), "Warps", "chat",
                 "The default way to list warps.\nUse 'chat' to list the syntax for the warp command, or `gui` to open the GUI automatically.\n" +
                         "Note: The mode will always default to 'chat' when the GUI is unavailable.");

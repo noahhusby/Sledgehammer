@@ -3,6 +3,8 @@ package com.noahhusby.sledgehammer.commands;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.commands.data.Command;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
+import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.types.Server;
 import com.noahhusby.sledgehammer.handlers.WarpHandler;
 import com.noahhusby.sledgehammer.maps.MapHandler;
 import com.noahhusby.sledgehammer.network.P2S.P2STeleportPacket;
@@ -27,7 +29,15 @@ public class WarpCommand extends Command {
             return;
         }
 
+        Server sledgehammerServer = ServerConfig.getInstance().getServer(SledgehammerUtil.getServerNameByPlayer(sender));
+
         if(args.length < 1) {
+            if(sledgehammerServer != null) {
+                if(ConfigHandler.warpMode.equalsIgnoreCase("gui") && sledgehammerServer.isInitialized()) {
+                    getNetworkManager().sendPacket(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerNameByPlayer(sender)));
+                    return;
+                }
+            }
             sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Usage: /"+ConfigHandler.warpCommand+" <warp>", ChatColor.RED)));
             sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Use ", ChatColor.GRAY),
                     new TextElement("/"+ConfigHandler.warpCommand+" list", ChatColor.BLUE),new TextElement(" to see the available warps.", ChatColor.GRAY)));
@@ -42,10 +52,16 @@ public class WarpCommand extends Command {
 
             if(args.length < 2) {
                 sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Use ", ChatColor.GRAY),
-                                new TextElement("/"+ConfigHandler.warpCommand+" set <warp name>", ChatColor.BLUE), new TextElement(" to set a warp.", ChatColor.GRAY)));
+                                new TextElement("/"+ConfigHandler.warpCommand+" set <warp name> [pinned:<true/false>]", ChatColor.BLUE), new TextElement(" to set a warp.", ChatColor.GRAY)));
                 return;
             }
-            WarpHandler.getInstance().requestNewWarp(args[1], sender);
+
+            if(args.length == 2) {
+                WarpHandler.getInstance().requestNewWarp(args[1], sender, false);
+                return;
+            }
+
+            WarpHandler.getInstance().requestNewWarp(args[1], sender, Boolean.parseBoolean(args[2]));
         } else if(args[0].equals("delete") || args[0].equals("remove")) {
             if (!hasPermissionAdmin(sender)) {
                 sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("You don't have permission to run this command!", ChatColor.DARK_RED)));
@@ -65,8 +81,17 @@ public class WarpCommand extends Command {
         } else if(args[0].equals("map")) {
             MapHandler.getInstance().newMapCommand(sender);
         } else if(args[0].equalsIgnoreCase("gui")) {
-            getNetworkManager().sendPacket(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerNameByPlayer(sender)));
+            if(sledgehammerServer == null) {
+                execute(sender, new String[]{});
+                return;
+            }
 
+            if(!sledgehammerServer.isInitialized()) {
+                execute(sender, new String[]{});
+                return;
+            }
+
+            getNetworkManager().sendPacket(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerNameByPlayer(sender)));
         } else {
             Warp warp = WarpHandler.getInstance().getWarp(args[0]);
             if(warp == null) {

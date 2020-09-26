@@ -9,9 +9,12 @@ public class Warp {
     public final Point point;
     @Expose
     public final String server;
+    @Expose
+    public final boolean pinned;
 
-    public Warp(Point point, String server) {
+    public Warp(Point point, String server, boolean pinned) {
         this.point = point;
         this.server = server;
+        this.pinned = pinned;
     }
 }

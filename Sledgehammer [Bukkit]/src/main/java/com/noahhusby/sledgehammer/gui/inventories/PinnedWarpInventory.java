@@ -1,9 +1,9 @@
 package com.noahhusby.sledgehammer.gui.inventories;
 
 import com.noahhusby.sledgehammer.Constants;
-import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.gui.GUIChild;
+import com.noahhusby.sledgehammer.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.network.S2P.S2PWarpPacket;
 import com.noahhusby.sledgehammer.network.S2P.S2PWebMapPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
@@ -19,14 +19,14 @@ import org.json.simple.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WarpInventory extends GUIChild {
+public class PinnedWarpInventory extends GUIChild {
     private final int page;
     private final JSONArray warps;
     private final boolean web;
 
     private Inventory inventory;
 
-    public WarpInventory(int page, JSONArray warps, boolean web) {
+    public PinnedWarpInventory(int page, JSONArray warps, boolean web) {
         this.page = page;
         this.warps = warps;
         this.web = web;
@@ -48,8 +48,8 @@ public class WarpInventory extends GUIChild {
             inventory.setItem(x, glass);
         }
 
-        inventory.setItem(4, SledgehammerUtil.getSkull(Constants.monitorHead, ChatColor.GRAY + "" + ChatColor.BOLD + "All Warps"));
-        inventory.setItem(48, SledgehammerUtil.getSkull(Constants.lampHead, ChatColor.GOLD + "" + ChatColor.BOLD + "Pinned Warps"));
+        inventory.setItem(4, SledgehammerUtil.getSkull(Constants.lampHead, ChatColor.GRAY + "" + ChatColor.BOLD + "Pinned Warps"));
+        inventory.setItem(48, SledgehammerUtil.getSkull(Constants.monitorHead, ChatColor.GOLD + "" + ChatColor.BOLD + "All Warps"));
         inventory.setItem(49, generateExit());
         inventory.setItem(50, generateCompass());
 
@@ -91,12 +91,7 @@ public class WarpInventory extends GUIChild {
         int current = 9;
         for(int x = min; x < max; x++) {
             JSONObject o = (JSONObject) warps.get(x);
-            ItemStack warp;
-            if((boolean) o.get("pinned")) {
-                warp = new ItemStack(Material.WOOL, 1, (byte) 4);
-            } else {
-                warp = new ItemStack(Material.WOOL);
-            }
+            ItemStack warp = new ItemStack(Material.WOOL, 1, (byte) 4);
             ItemMeta meta = warp.getItemMeta();
             meta.setDisplayName(ChatColor.BLUE + "" + ChatColor.BOLD + (String) o.get("name"));
 
@@ -117,7 +112,7 @@ public class WarpInventory extends GUIChild {
         e.setCancelled(true);
         if(e.getCurrentItem() == null) return;
 
-        WarpInventoryController controller = (WarpInventoryController) getController();
+        PinnedWarpInventoryController controller = (PinnedWarpInventoryController) getController();
 
         if(e.getCurrentItem().getItemMeta().getDisplayName() == null) return;
 
@@ -148,8 +143,8 @@ public class WarpInventory extends GUIChild {
             return;
         }
 
-        if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Pinned Warps")) {
-            controller.switchToPinned();
+        if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("All Warps")) {
+            controller.switchToAll();
             return;
         }
 

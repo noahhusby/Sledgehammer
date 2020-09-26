@@ -3,6 +3,7 @@ package com.noahhusby.sledgehammer.handlers;
 import com.google.common.collect.Maps;
 import com.google.gson.annotations.Expose;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
+import com.noahhusby.sledgehammer.SmartObject;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.network.P2S.P2SSetwarpPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
@@ -35,7 +36,7 @@ public class WarpHandler {
     @Expose(serialize = true, deserialize = true)
     public Map<String, Warp> warps = Maps.newHashMap();
 
-    public Map<String, String> requestedWarps = Maps.newHashMap();
+    public Map<String, JSONObject> requestedWarps = Maps.newHashMap();
 
     public Map<String, Warp> getWarps() {
         return warps;
@@ -45,8 +46,11 @@ public class WarpHandler {
         return warps.get(w.toLowerCase());
     }
 
-    public void requestNewWarp(String warp, CommandSender sender) {
-        requestedWarps.put(sender.getName(), warp);
+    public void requestNewWarp(String warp, CommandSender sender, boolean pinned) {
+        JSONObject w = new JSONObject();
+        w.put("name", warp);
+        w.put("pinned", pinned);
+        requestedWarps.put(sender.getName(), w);
 
         SledgehammerNetworkManager.getInstance().sendPacket(new P2SSetwarpPacket(sender.getName(), SledgehammerUtil.getServerNameByPlayer(sender)));
     }
@@ -66,7 +70,8 @@ public class WarpHandler {
 
     public void incomingLocationResponse(String sender, Point p) {
         if(requestedWarps.containsKey(sender)) {
-            addWarp(sender, requestedWarps.get(sender), p, ProxyServer.getInstance().getPlayer(sender).getServer().getInfo());
+            addWarp(sender, (String) requestedWarps.get(sender).get("name"), (boolean) requestedWarps.get(sender).get("pinned"),
+                    p, ProxyServer.getInstance().getPlayer(sender).getServer().getInfo());
             requestedWarps.remove(sender);
         }
     }
@@ -85,13 +90,19 @@ public class WarpHandler {
         return warpList;
     }
 
-    private void addWarp(String sender, String w, Point p, ServerInfo s) {
+    private void addWarp(String sender, String w, boolean pinned, Point p, ServerInfo s) {
         warps.remove(w.toLowerCase());
 
-        warps.put(w.toLowerCase(), new Warp(p, s.getName()));
+        warps.put(w, new Warp(p, s.getName(), pinned));
 
-        ProxyServer.getInstance().getPlayer(sender).sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Created warp ", ChatColor.GRAY),
-                new TextElement(ChatHelper.capitalize(w), ChatColor.RED)));
+        if(pinned) {
+            ProxyServer.getInstance().getPlayer(sender).sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Created pinned warp ", ChatColor.GRAY),
+                    new TextElement(ChatHelper.capitalize(w), ChatColor.RED)));
+        } else {
+            ProxyServer.getInstance().getPlayer(sender).sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Created warp ", ChatColor.GRAY),
+                    new TextElement(ChatHelper.capitalize(w), ChatColor.RED)));
+        }
+
         ConfigHandler.getInstance().saveWarpDB();
     }
 
@@ -101,17 +112,12 @@ public class WarpHandler {
         for(Map.Entry<String, Warp> w : warps.entrySet()) {
             JSONObject wa = new JSONObject();
             wa.put("name", w.getKey());
+            wa.put("pinned", w.getValue().pinned);
             wa.put("server", w.getValue().server);
             waypoints.add(wa);
         }
 
-        String mode = ConfigHandler.warpGUISort.toLowerCase().trim();
-        if(!(mode.equals("none") || mode.equals("server"))) {
-            mode = "none";
-        }
-
         o.put("web", ConfigHandler.mapEnabled);
-        o.put("mode", mode);
         o.put("waypoints", waypoints);
 
         return o;

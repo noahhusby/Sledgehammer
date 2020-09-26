@@ -62,7 +62,6 @@ public class SledgehammerNetworkManager implements PluginMessageListener, Listen
 
     private void onPacketRecieved(String m) {
         try {
-            System.out.println(m);
             SmartObject packet = SmartObject.fromJSON((JSONObject) new JSONParser().parse(m));
             if(!SledgehammerUtil.isGenuineRequest(packet.getString("uuid"))) return;
 
