@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - AddonManager.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.addons;
 
 import com.noahhusby.sledgehammer.Sledgehammer;

@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - PacketInfo.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.network;
 
 import net.md_5.bungee.api.CommandSender;

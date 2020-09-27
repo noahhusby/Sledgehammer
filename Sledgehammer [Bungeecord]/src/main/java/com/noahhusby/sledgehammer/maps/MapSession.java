@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - MapSession.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.maps;
 
 import java.util.UUID;

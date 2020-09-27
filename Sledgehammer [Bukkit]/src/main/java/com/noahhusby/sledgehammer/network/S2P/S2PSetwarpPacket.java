@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bukkit] - S2PSetwarpPacket.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.network.S2P;
 
 import com.noahhusby.sledgehammer.Constants;

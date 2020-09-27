@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - Toolbar.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.data.dialogs.toolbars;
 
 import com.google.common.collect.Maps;

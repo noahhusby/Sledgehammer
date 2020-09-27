@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bukkit] - build.gradle
+ * All rights reserved.
+ */
+
 import org.apache.tools.ant.filters.ReplaceTokens
 
 apply plugin: 'java'

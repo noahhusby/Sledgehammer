@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - TextElement.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.util;
 
 import net.md_5.bungee.api.ChatColor;

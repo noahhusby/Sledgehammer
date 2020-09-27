@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - DialogScene.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.data.dialogs.scenes;
 
 import com.google.common.collect.Maps;

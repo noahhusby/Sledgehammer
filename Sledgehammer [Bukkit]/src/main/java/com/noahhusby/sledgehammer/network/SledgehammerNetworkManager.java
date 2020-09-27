@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bukkit] - SledgehammerNetworkManager.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.network;
 
 import com.google.common.io.ByteArrayDataInput;

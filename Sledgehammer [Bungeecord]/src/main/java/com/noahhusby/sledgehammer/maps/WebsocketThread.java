@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - WebsocketThread.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.maps;
 
 import com.noahhusby.sledgehammer.Sledgehammer;

@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bukkit] - Constants.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer;
 
 public class Constants

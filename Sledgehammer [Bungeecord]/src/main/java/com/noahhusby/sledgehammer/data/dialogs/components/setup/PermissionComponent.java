@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - PermissionComponent.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.data.dialogs.components.setup;
 
 import com.noahhusby.sledgehammer.data.dialogs.components.DialogComponent;

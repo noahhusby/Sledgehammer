@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - Point.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.datasets;
 
 import com.google.gson.annotations.Expose;

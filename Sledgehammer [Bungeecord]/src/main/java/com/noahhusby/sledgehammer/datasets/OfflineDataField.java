@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - OfflineDataField.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.datasets;
 
 public class OfflineDataField {

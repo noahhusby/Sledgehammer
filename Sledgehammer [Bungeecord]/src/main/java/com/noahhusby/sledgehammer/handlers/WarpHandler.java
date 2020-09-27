@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - WarpHandler.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.handlers;
 
 import com.google.common.collect.Maps;

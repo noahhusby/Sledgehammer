@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - SmartObject.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer;
 
 import org.json.simple.JSONObject;

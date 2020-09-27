@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - SledgehammerUtil.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer;
 
 import com.noahhusby.sledgehammer.config.ConfigHandler;
@@ -50,7 +56,7 @@ public class SledgehammerUtil {
         String arguments = args[0];
 
         for(int x = 1; x < args.length; x++) {
-            arguments+=","+args[x];
+            arguments+=" "+args[x];
         }
 
         return arguments;

@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - CsTpllCommand.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.commands;
 
 import com.noahhusby.sledgehammer.SledgehammerUtil;
@@ -27,6 +33,7 @@ public class CsTpllCommand extends Command {
             getNetworkManager().sendPacket(new P2SCommandPacket(sender.getName(), SledgehammerUtil.getServerNameByPlayer(sender), "cs"));
             return;
         } else if (!args[0].equals("tpll")) {
+
             getNetworkManager().sendPacket(new P2SCommandPacket(sender.getName(), SledgehammerUtil.getServerNameByPlayer(sender), "cs",
                     SledgehammerUtil.getRawArguments(args)));
             return;

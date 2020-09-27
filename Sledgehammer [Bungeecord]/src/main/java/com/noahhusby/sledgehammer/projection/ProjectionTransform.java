@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - ProjectionTransform.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.projection;
 
 public abstract class ProjectionTransform extends GeographicProjection {

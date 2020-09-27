@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bukkit] - GUIRegistry.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.gui;
 
 import com.google.common.collect.Maps;

@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - InvertableVectorField.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.projection;
 
 public class InvertableVectorField {

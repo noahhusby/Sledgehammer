@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - ScaleProjection.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.projection;
 
 public class ScaleProjection extends ProjectionTransform {

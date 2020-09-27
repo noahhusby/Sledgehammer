@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - ChatHelper.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.util;
 
 import com.noahhusby.sledgehammer.Constants;

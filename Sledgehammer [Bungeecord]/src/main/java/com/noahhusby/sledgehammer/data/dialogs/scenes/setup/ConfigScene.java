@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - ConfigScene.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.data.dialogs.scenes.setup;
 
 import com.noahhusby.sledgehammer.config.ServerConfig;

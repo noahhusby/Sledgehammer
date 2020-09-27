@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bukkit] - IGUIChild.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.gui;
 
 import org.bukkit.event.inventory.InventoryClickEvent;

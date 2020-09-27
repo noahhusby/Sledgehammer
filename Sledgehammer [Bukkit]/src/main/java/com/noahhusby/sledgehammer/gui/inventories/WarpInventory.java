@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bukkit] - WarpInventory.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.gui.inventories;
 
 import com.noahhusby.sledgehammer.Constants;

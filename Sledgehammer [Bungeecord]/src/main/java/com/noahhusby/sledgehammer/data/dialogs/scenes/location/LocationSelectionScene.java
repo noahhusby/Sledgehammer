@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - LocationSelectionScene.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.data.dialogs.scenes.location;
 
 import com.noahhusby.sledgehammer.data.dialogs.components.location.LocationSelectionComponent;

@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - DialogComponent.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.data.dialogs.components;
 
 public abstract class DialogComponent implements IDialogComponent {

@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - ExitSkipToolbar.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.data.dialogs.toolbars;
 
 public class ExitSkipToolbar extends Toolbar {

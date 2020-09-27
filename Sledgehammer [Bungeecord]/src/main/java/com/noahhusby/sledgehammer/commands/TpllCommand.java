@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - TpllCommand.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.commands;
 
 import com.noahhusby.sledgehammer.SledgehammerUtil;

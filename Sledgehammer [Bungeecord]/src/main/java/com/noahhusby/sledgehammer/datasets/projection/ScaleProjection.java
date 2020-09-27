@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - ScaleProjection.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.datasets.projection;
 
 import com.noahhusby.sledgehammer.projection.GeographicProjection;

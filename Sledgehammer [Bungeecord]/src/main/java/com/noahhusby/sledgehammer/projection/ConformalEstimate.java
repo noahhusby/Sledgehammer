@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - ConformalEstimate.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.projection;
 
 import java.io.IOException;

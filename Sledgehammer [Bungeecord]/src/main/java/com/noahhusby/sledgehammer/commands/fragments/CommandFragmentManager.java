@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - CommandFragmentManager.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.commands.fragments;
 
 import com.noahhusby.sledgehammer.commands.data.Command;

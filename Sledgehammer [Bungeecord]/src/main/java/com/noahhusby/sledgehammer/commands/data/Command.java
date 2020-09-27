@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - Command.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.commands.data;
 
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;

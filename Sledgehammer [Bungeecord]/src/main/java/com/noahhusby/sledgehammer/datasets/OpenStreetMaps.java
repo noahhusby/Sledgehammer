@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - OpenStreetMaps.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.datasets;
 
 import com.noahhusby.sledgehammer.Constants;

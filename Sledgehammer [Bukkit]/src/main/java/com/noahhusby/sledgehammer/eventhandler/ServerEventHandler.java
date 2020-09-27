@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bukkit] - ServerEventHandler.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.eventhandler;
 
 import com.noahhusby.sledgehammer.gui.GUIRegistry;

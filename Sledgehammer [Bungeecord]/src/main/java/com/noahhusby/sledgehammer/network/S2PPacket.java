@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - S2PPacket.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.network;
 
 import com.noahhusby.sledgehammer.Sledgehammer;

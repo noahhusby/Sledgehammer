@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - P2SCommandPacket.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.network.P2S;
 
 import com.noahhusby.sledgehammer.Constants;
@@ -26,8 +32,10 @@ public class P2SCommandPacket extends P2SPacket {
     public JSONObject getMessage(JSONObject data) {
         String a = args[0];
 
-        for(int x = 1; x < a.length(); x++) {
-            a += " "+args[x];
+        if(args.length > 1) {
+            for(int x = 1; x < args.length; x++) {
+                a += " "+args[x];
+            }
         }
 
         data.put("args", a);

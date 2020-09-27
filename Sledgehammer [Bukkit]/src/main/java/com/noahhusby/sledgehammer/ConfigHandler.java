@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bukkit] - ConfigHandler.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer;
 
 import net.minecraftforge.common.config.Configuration;

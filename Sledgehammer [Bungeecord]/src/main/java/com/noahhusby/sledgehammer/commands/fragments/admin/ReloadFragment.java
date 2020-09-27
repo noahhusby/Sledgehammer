@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - ReloadFragment.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.commands.fragments.admin;
 
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;

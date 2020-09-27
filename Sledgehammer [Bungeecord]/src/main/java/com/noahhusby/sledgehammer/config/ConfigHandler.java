@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - ConfigHandler.java
+ * All rights reserved.
+ */
+
 package com.noahhusby.sledgehammer.config;
 
 import com.google.common.collect.Maps;
