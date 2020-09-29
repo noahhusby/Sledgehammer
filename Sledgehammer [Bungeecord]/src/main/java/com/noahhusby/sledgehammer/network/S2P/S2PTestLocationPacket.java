@@ -31,7 +31,7 @@ public class S2PTestLocationPacket extends S2PPacket {
     public void onMessage(PacketInfo info, SmartObject data) {
         JSONObject point = (JSONObject) data.get("point");
 
-        int zoom = data.getInteger("zoom");
+        int zoom = Math.round((long) data.get("zoom"));
         double[] proj = SledgehammerUtil.toGeo(Double.parseDouble((String) point.get("x")), Double.parseDouble((String) point.get("z")));
         Location online = OpenStreetMaps.getInstance().getLocation(proj[0], proj[1], zoom);
         CommandSender player = ProxyServer.getInstance().getPlayer(info.getSender());

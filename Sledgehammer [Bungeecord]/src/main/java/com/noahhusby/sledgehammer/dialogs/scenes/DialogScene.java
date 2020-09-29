@@ -70,7 +70,7 @@ public abstract class DialogScene implements IDialogScene {
         if(m.equals("exit")) {
             dialogHandler.discardDialog(this);
             getCommandSender().sendMessage();
-            getCommandSender().sendMessage(ChatHelper.getInstance().makeTextComponent(new TextElement("Exited the dialog!", ChatColor.RED)));
+            getCommandSender().sendMessage(ChatHelper.makeTextComponent(new TextElement("Exited the dialog!", ChatColor.RED)));
         }
     }
 
