@@ -18,11 +18,13 @@
 
 package com.noahhusby.sledgehammer.dialogs.scenes.setup;
 
+import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
-import com.noahhusby.sledgehammer.config.types.Server;
+import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
 import com.noahhusby.sledgehammer.dialogs.components.setup.EarthServerComponent;
 import com.noahhusby.sledgehammer.dialogs.components.setup.EditComponent;
 import com.noahhusby.sledgehammer.dialogs.components.setup.PermissionComponent;
+import com.noahhusby.sledgehammer.dialogs.components.setup.SledgehammerServerComponent;
 import com.noahhusby.sledgehammer.dialogs.scenes.DialogScene;
 import com.noahhusby.sledgehammer.dialogs.toolbars.ExitSkipToolbar;
 import com.noahhusby.sledgehammer.dialogs.toolbars.IToolbar;
@@ -50,6 +52,7 @@ public class ConfigScene extends DialogScene {
             this.server = ServerConfig.getInstance().getBungeeServers().get(0);
         }
         registerComponent(new EditComponent());
+        registerComponent(new SledgehammerServerComponent());
         registerComponent(new EarthServerComponent());
         registerComponent(new PermissionComponent());
     }
@@ -72,9 +75,9 @@ public class ConfigScene extends DialogScene {
 
     @Override
     public void onFinish() {
-        Server s = ServerConfig.getInstance().getServer(server.getName());
+        SledgehammerServer s = ServerConfig.getInstance().getServer(server.getName());
 
-        if(s == null) s = new Server(server.getName());
+        if(s == null) s = new SledgehammerServer(server.getName());
 
         s.name = server.getName();
         s.permission_type = getValue("permission");
@@ -142,10 +145,22 @@ public class ConfigScene extends DialogScene {
             } else if (response.equals("no") || response.equals("n")) {
                 DialogHandler.getInstance().discardDialog(this);
 
-                Server s = ServerConfig.getInstance().getServer(server.getName());
-                if(s == null) s = new Server(server.getName());
+                SledgehammerServer s = ServerConfig.getInstance().getServer(server.getName());
+                if(s == null) s = new SledgehammerServer(server.getName());
                 s.earthServer = false;
                 ServerConfig.getInstance().pushServer(s);
+
+                DialogHandler.getInstance().startDialog(sender, new ConfigScene(server, true));
+            }
+        } else if (getCurrentComponent() instanceof SledgehammerServerComponent) {
+            String response = getValue("sledgehammer_server").trim().toLowerCase();
+            if (response.equals("yes") || response.equals("y")) {
+                progressDialog(response, true);
+            } else if (response.equals("no") || response.equals("n")) {
+                DialogHandler.getInstance().discardDialog(this);
+
+                SledgehammerServer s = ServerConfig.getInstance().getServer(server.getName());
+                if(s != null) ServerConfig.getInstance().removeServer(s);
 
                 DialogHandler.getInstance().startDialog(sender, new ConfigScene(server, true));
             }

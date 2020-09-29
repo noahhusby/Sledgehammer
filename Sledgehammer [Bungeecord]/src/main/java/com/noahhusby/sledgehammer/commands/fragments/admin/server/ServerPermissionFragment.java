@@ -21,7 +21,7 @@ package com.noahhusby.sledgehammer.commands.fragments.admin.server;
 import com.noahhusby.sledgehammer.chat.ChatConstants;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.ServerConfig;
-import com.noahhusby.sledgehammer.config.types.Server;
+import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.chat.TextElement;
 import net.md_5.bungee.api.ChatColor;
@@ -31,12 +31,18 @@ public class ServerPermissionFragment implements ICommandFragment {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+
+        if(ServerConfig.getInstance().getServer(args[0]) == null) {
+            sender.sendMessage(ChatConstants.notSledgehammerServer);
+            return;
+        }
+
         if(args.length < 3) {
             sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Usage: /sha server <server name> permission_type <global/local>", ChatColor.RED)));
         } else {
             String arg = args[2].toLowerCase();
             if(arg.equals("global") || arg.equals("local")) {
-                Server s = ServerConfig.getInstance().getServer(args[0]);
+                SledgehammerServer s = ServerConfig.getInstance().getServer(args[0]);
 
                 s.permission_type = arg;
                 ServerConfig.getInstance().pushServer(s);

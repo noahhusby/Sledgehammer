@@ -20,7 +20,7 @@ package com.noahhusby.sledgehammer;
 
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
-import com.noahhusby.sledgehammer.config.types.Server;
+import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
 import com.noahhusby.sledgehammer.projection.GeographicProjection;
 import com.noahhusby.sledgehammer.projection.ModifiedAirocean;
 import com.noahhusby.sledgehammer.projection.ScaleProjection;
@@ -59,7 +59,7 @@ public class SledgehammerUtil {
     }
 
     public static boolean isServerRegional(String name) {
-        for(Server s : ServerConfig.getInstance().getServers()) {
+        for(SledgehammerServer s : ServerConfig.getInstance().getServers()) {
             if(s.name.equals(name)) return true;
         }
         return false;

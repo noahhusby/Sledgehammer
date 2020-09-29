@@ -20,7 +20,7 @@ package com.noahhusby.sledgehammer.commands.fragments.admin.server;
 
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.ServerConfig;
-import com.noahhusby.sledgehammer.config.types.Server;
+import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.chat.TextElement;
 import net.md_5.bungee.api.*;
@@ -29,7 +29,7 @@ import net.md_5.bungee.api.config.ServerInfo;
 public class ServerInfoFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
-        Server server = ServerConfig.getInstance().getServer(args[0]);
+        SledgehammerServer server = ServerConfig.getInstance().getServer(args[0]);
         ServerInfo info = ProxyServer.getInstance().getServerInfo(args[0]);
         sender.sendMessage();
         sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Server Info - ", ChatColor.GRAY),

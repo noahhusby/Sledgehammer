@@ -80,6 +80,7 @@ public class Sledgehammer extends Plugin implements Listener {
 
         if(ConfigHandler.globalTpll) {
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new TpllCommand());
+            ProxyServer.getInstance().getPluginManager().registerCommand(this, new TplloCommand());
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new CsTpllCommand());
         }
 

@@ -26,7 +26,7 @@ import net.md_5.bungee.api.config.ServerInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Server {
+public class SledgehammerServer {
     @Expose
     public String name;
     @Expose
@@ -39,7 +39,7 @@ public class Server {
     private String shVersion = null;
     private String tpllMode = null;
 
-    public Server(String name) {
+    public SledgehammerServer(String name) {
         this.name = name;
     }
 

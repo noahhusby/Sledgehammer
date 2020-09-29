@@ -26,6 +26,11 @@ public class ChatConstants {
 
     public static final TextComponent noPermission = ChatHelper.makeTextComponent(new TextElement("You don't have permission to run this command!", ChatColor.DARK_RED));
     public static final TextComponent issueByPlayer = ChatHelper.makeTextComponent(new TextElement("This command can only be executed by a player!", ChatColor.DARK_RED));
+    public static final TextComponent notSledgehammerServer = ChatHelper.makeAdminTextComponent(new TextElement("This server is not configured as a sledgehammer server! Please use", ChatColor.GRAY),
+            new TextElement(" /sha server <server name> setsledgehammer true ", ChatColor.BLUE), new TextElement("to enable it.", ChatColor.GRAY));
+    public static final TextComponent notEarthServer = ChatHelper.makeAdminTextComponent(new TextElement("This server is not configured as an earth server! Please use", ChatColor.GRAY),
+            new TextElement(" /sha server <server name> setearth true ", ChatColor.BLUE), new TextElement("to enable it.", ChatColor.GRAY));
+
 
     public static TextComponent getValueMessage(String key, String value, String where) {
         return ChatHelper.makeAdminTextComponent(new TextElement("Set value", ChatColor.GRAY),

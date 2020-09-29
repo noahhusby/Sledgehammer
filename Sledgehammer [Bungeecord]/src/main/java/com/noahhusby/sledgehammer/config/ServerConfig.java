@@ -19,12 +19,13 @@
 package com.noahhusby.sledgehammer.config;
 
 import com.google.gson.annotations.Expose;
-import com.noahhusby.sledgehammer.config.types.Server;
+import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
 import com.noahhusby.sledgehammer.datasets.Location;
 import com.noahhusby.sledgehammer.network.P2S.P2SInitializationPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
 import org.json.simple.JSONObject;
 
@@ -46,16 +47,16 @@ public class ServerConfig {
     public ServerConfig() { }
 
     @Expose(serialize = true, deserialize = true)
-    public List<Server> servers = new ArrayList<>();
+    public List<SledgehammerServer> servers = new ArrayList<>();
 
     public List<ServerInfo> bungeeServers;
 
-    public List<Server> getServers() {
+    public List<SledgehammerServer> getServers() {
         return servers;
     }
 
     public void onServerJoin(ServerConnectedEvent e) {
-        Server s = getServer(e.getServer().getInfo().getName());
+        SledgehammerServer s = getServer(e.getServer().getInfo().getName());
         if(s != null) {
             if(!s.isInitialized()) {
                 SledgehammerNetworkManager.getInstance().sendPacket(new P2SInitializationPacket(e.getPlayer().getName(), e.getServer().getInfo().getName()));
@@ -64,7 +65,7 @@ public class ServerConfig {
     }
 
     public void initializeServer(ServerInfo serverInfo, JSONObject data) {
-        Server s = getServer(serverInfo.getName());
+        SledgehammerServer s = getServer(serverInfo.getName());
         if(s != null) {
             s.initialize((String) data.get("version"), (String) data.get("tpllmode"));
             pushServer(s);
@@ -82,25 +83,35 @@ public class ServerConfig {
         return bungeeServers;
     }
 
-    public void pushServer(Server server) {
-        List<Server> remove = new ArrayList<>();
-        for(Server s : servers) {
+    public void pushServer(SledgehammerServer server) {
+        List<SledgehammerServer> remove = new ArrayList<>();
+        for(SledgehammerServer s : servers) {
             if(s.name.toLowerCase().equals(server.name.toLowerCase())) {
                 remove.add(s);
             }
         }
 
-        for(Server s : remove) {
+        for(SledgehammerServer s : remove) {
             servers.remove(s);
         }
 
         servers.add(server);
+        if(!server.getServerInfo().getPlayers().isEmpty() && !server.isInitialized()) {
+            ProxiedPlayer player = server.getServerInfo().getPlayers().toArray(new ProxiedPlayer[
+                    server.getServerInfo().getPlayers().size()])[0];
+            SledgehammerNetworkManager.getInstance().sendPacket(new P2SInitializationPacket(player.getName(), player.getServer().getInfo().getName()));
+        }
+        ConfigHandler.getInstance().saveServerDB();
+    }
+
+    public void removeServer(SledgehammerServer server) {
+        servers.remove(server);
         ConfigHandler.getInstance().saveServerDB();
     }
 
 
-    public Server getServer(String name) {
-        for(Server s : servers) {
+    public SledgehammerServer getServer(String name) {
+        for(SledgehammerServer s : servers) {
             if(s.name.toLowerCase().equals(name.toLowerCase())) {
                 return s;
             }
@@ -109,7 +120,7 @@ public class ServerConfig {
     }
 
     public List<Location> getLocationsFromServer(String server) {
-        for(Server s : servers) {
+        for(SledgehammerServer s : servers) {
             if(s.name.toLowerCase().equals(server.toLowerCase())) {
                 return s.locations;
             }

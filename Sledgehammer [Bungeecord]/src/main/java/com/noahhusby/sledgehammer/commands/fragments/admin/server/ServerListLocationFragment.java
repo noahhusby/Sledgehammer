@@ -18,6 +18,7 @@
 
 package com.noahhusby.sledgehammer.commands.fragments.admin.server;
 
+import com.noahhusby.sledgehammer.chat.ChatConstants;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.datasets.Location;
@@ -31,6 +32,17 @@ import java.util.List;
 public class ServerListLocationFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
+
+        if(ServerConfig.getInstance().getServer(args[0]) == null) {
+            sender.sendMessage(ChatConstants.notSledgehammerServer);
+            return;
+        }
+
+        if(!ServerConfig.getInstance().getServer(args[0]).earthServer) {
+            sender.sendMessage(ChatConstants.notEarthServer);
+            return;
+        }
+
         List<Location> locations = ServerConfig.getInstance().getLocationsFromServer(args[0]);
         if(locations == null) {
             sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("No locations were found on that server!", ChatColor.GRAY)));

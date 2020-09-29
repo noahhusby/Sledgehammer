@@ -22,7 +22,7 @@ import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
-import com.noahhusby.sledgehammer.config.types.Server;
+import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -59,42 +59,44 @@ public class OpenStreetMaps {
     public ServerInfo getServerFromLocation(double lon, double lat) {
         Location location = getLocation(lon, lat);
 
-        List<Server> servers = ServerConfig.getInstance().getServers();
-        for(Server s : servers) {
-            for(Location l : s.locations) {
-                switch (l.detailType) {
-                    case city:
-                        if(location.city.equals(l.city) &&
-                                (location.state.equals(l.state) ||
-                                location.country.equals(l.country))) {
-                            return SledgehammerUtil.getServerFromName(s.name);
-                        }
-                        break;
-                    case county:
-                        if(!l.country.equals("")) {
-                            if(location.county.equals(l.county) &&
-                                    location.state.equals(l.state) &&
+        List<SledgehammerServer> servers = ServerConfig.getInstance().getServers();
+        for(SledgehammerServer s : servers) {
+            if(s.earthServer) {
+                for(Location l : s.locations) {
+                    switch (l.detailType) {
+                        case city:
+                            if(location.city.equals(l.city) &&
+                                    (location.state.equals(l.state) ||
+                                            location.country.equals(l.country))) {
+                                return SledgehammerUtil.getServerFromName(s.name);
+                            }
+                            break;
+                        case county:
+                            if(!l.country.equals("")) {
+                                if(location.county.equals(l.county) &&
+                                        location.state.equals(l.state) &&
+                                        location.country.equals(l.country)) {
+                                    return SledgehammerUtil.getServerFromName(s.name);
+                                }
+                            } else {
+                                if(location.county.equals(l.county) &&
+                                        location.state.equals(l.state)) {
+                                    return SledgehammerUtil.getServerFromName(s.name);
+                                }
+                            }
+                            break;
+                        case state:
+                            if(location.state.equals(l.state) &&
                                     location.country.equals(l.country)) {
                                 return SledgehammerUtil.getServerFromName(s.name);
                             }
-                        } else {
-                            if(location.county.equals(l.county) &&
-                                    location.state.equals(l.state)) {
+                            break;
+                        case country:
+                            if(location.country.equals(l.country)) {
                                 return SledgehammerUtil.getServerFromName(s.name);
                             }
-                        }
-                        break;
-                    case state:
-                        if(location.state.equals(l.state) &&
-                                location.country.equals(l.country)) {
-                            return SledgehammerUtil.getServerFromName(s.name);
-                        }
-                        break;
-                    case country:
-                        if(location.country.equals(l.country)) {
-                            return SledgehammerUtil.getServerFromName(s.name);
-                        }
-                        break;
+                            break;
+                    }
                 }
             }
         }

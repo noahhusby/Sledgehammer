@@ -23,7 +23,7 @@ import com.noahhusby.sledgehammer.chat.ChatConstants;
 import com.noahhusby.sledgehammer.commands.data.Command;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
-import com.noahhusby.sledgehammer.config.types.Server;
+import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
 import com.noahhusby.sledgehammer.maps.MapHandler;
 import com.noahhusby.sledgehammer.network.P2S.P2STeleportPacket;
@@ -54,7 +54,7 @@ public class WarpCommand extends Command {
             return;
         }
 
-        Server sledgehammerServer = ServerConfig.getInstance().getServer(SledgehammerUtil.getServerNameByPlayer(sender));
+        SledgehammerServer sledgehammerServer = ServerConfig.getInstance().getServer(SledgehammerUtil.getServerNameByPlayer(sender));
 
         if(args.length < 1) {
             if(sledgehammerServer != null) {

@@ -19,7 +19,7 @@
 package com.noahhusby.sledgehammer.dialogs.scenes.setup;
 
 import com.noahhusby.sledgehammer.config.ServerConfig;
-import com.noahhusby.sledgehammer.config.types.Server;
+import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
 import com.noahhusby.sledgehammer.dialogs.components.location.LocationRemovalComponent;
 import com.noahhusby.sledgehammer.dialogs.scenes.DialogScene;
 import com.noahhusby.sledgehammer.datasets.Location;
@@ -53,7 +53,7 @@ public class LocationRemovalScene extends DialogScene {
         List<Location> newLocations = ServerConfig.getInstance().getLocationsFromServer(server.getName());
         newLocations.remove(locations.get(Integer.parseInt(getValue("locationremove"))));
 
-        Server s = ServerConfig.getInstance().getServer(server.getName());
+        SledgehammerServer s = ServerConfig.getInstance().getServer(server.getName());
         s.locations = newLocations;
 
         ServerConfig.getInstance().pushServer(s);

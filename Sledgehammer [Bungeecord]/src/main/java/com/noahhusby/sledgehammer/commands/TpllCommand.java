@@ -144,6 +144,6 @@ public class TpllCommand extends Command {
             sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Teleporting to ", ChatColor.GRAY),
                             new TextElement(lat+", "+lon, ChatColor.RED)));
         }
-        getNetworkManager().sendPacket(new P2SLocationPacket(sender.getName(), server.getName(), String.valueOf(lat), String.valueOf(lon)));
+        getNetworkManager().sendPacket(new P2SLocationPacket(parsedSender, server.getName(), String.valueOf(lat), String.valueOf(lon)));
     }
 }

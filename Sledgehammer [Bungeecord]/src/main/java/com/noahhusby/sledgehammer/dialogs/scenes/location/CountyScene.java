@@ -19,7 +19,7 @@
 package com.noahhusby.sledgehammer.dialogs.scenes.location;
 
 import com.noahhusby.sledgehammer.config.ServerConfig;
-import com.noahhusby.sledgehammer.config.types.Server;
+import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
 import com.noahhusby.sledgehammer.dialogs.components.location.CountryComponent;
 import com.noahhusby.sledgehammer.dialogs.components.location.CountyComponent;
 import com.noahhusby.sledgehammer.dialogs.components.location.StateComponent;
@@ -51,9 +51,9 @@ public class CountyScene extends DialogScene {
     public void onFinish() {
         Location l = new Location(Location.detail.state, "", getValue("county"), getValue("state"), getValue("country"));
 
-        Server s = ServerConfig.getInstance().getServer(server.getName());
+        SledgehammerServer s = ServerConfig.getInstance().getServer(server.getName());
 
-        if(s == null) s = new Server(server.getName());
+        if(s == null) s = new SledgehammerServer(server.getName());
 
         s.locations.add(l);
         ServerConfig.getInstance().pushServer(s);
