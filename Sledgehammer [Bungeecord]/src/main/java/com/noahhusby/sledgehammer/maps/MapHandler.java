@@ -6,15 +6,12 @@
 
 package com.noahhusby.sledgehammer.maps;
 
-import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.Sledgehammer;
+import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
 import com.noahhusby.sledgehammer.network.P2S.P2STeleportPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
-import com.noahhusby.sledgehammer.projection.GeographicProjection;
-import com.noahhusby.sledgehammer.projection.ModifiedAirocean;
-import com.noahhusby.sledgehammer.projection.ScaleProjection;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.chat.TextElement;
 import com.noahhusby.sledgehammer.warp.Warp;
@@ -190,10 +187,7 @@ public class MapHandler {
             waypoint.put("name", ChatHelper.capitalize(w.getKey()));
             waypoint.put("info", "");
 
-            GeographicProjection projection = new ModifiedAirocean();
-            GeographicProjection uprightProj = GeographicProjection.orientProjection(projection, GeographicProjection.Orientation.upright);
-            ScaleProjection scaleProj = new ScaleProjection(uprightProj, Constants.SCALE, Constants.SCALE);
-            double proj[] = scaleProj.toGeo(Double.parseDouble(w.getValue().point.x), Double.parseDouble(w.getValue().point.z));
+            double proj[] = SledgehammerUtil.toGeo(Double.parseDouble(w.getValue().point.x), Double.parseDouble(w.getValue().point.z));
 
             waypoint.put("lon", proj[0]);
             waypoint.put("lat", proj[1]);

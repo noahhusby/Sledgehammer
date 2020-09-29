@@ -7,15 +7,13 @@
 package com.noahhusby.sledgehammer.network.S2P;
 
 import com.noahhusby.sledgehammer.Constants;
+import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.SmartObject;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.datasets.Location;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.network.PacketInfo;
 import com.noahhusby.sledgehammer.network.S2PPacket;
-import com.noahhusby.sledgehammer.projection.GeographicProjection;
-import com.noahhusby.sledgehammer.projection.ModifiedAirocean;
-import com.noahhusby.sledgehammer.projection.ScaleProjection;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.chat.TextElement;
 import net.md_5.bungee.api.ChatColor;
@@ -33,12 +31,8 @@ public class S2PTestLocationPacket extends S2PPacket {
     public void onMessage(PacketInfo info, SmartObject data) {
         JSONObject point = (JSONObject) data.get("point");
 
-        GeographicProjection projection = new ModifiedAirocean();
-        GeographicProjection uprightProj = GeographicProjection.orientProjection(projection, GeographicProjection.Orientation.upright);
-        ScaleProjection scaleProj = new ScaleProjection(uprightProj, Constants.SCALE, Constants.SCALE);
-        double proj[] = scaleProj.toGeo(Double.parseDouble((String) point.get("x")), Double.parseDouble((String) point.get("z")));
-
         int zoom = data.getInteger("zoom");
+        double[] proj = SledgehammerUtil.toGeo(Double.parseDouble((String) point.get("x")), Double.parseDouble((String) point.get("z")));
         Location online = OpenStreetMaps.getInstance().getLocation(proj[0], proj[1], zoom);
         CommandSender player = ProxyServer.getInstance().getPlayer(info.getSender());
 

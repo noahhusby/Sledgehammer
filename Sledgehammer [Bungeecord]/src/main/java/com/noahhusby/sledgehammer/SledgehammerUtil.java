@@ -9,11 +9,27 @@ package com.noahhusby.sledgehammer;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.types.Server;
+import com.noahhusby.sledgehammer.projection.GeographicProjection;
+import com.noahhusby.sledgehammer.projection.ModifiedAirocean;
+import com.noahhusby.sledgehammer.projection.ScaleProjection;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 
 public class SledgehammerUtil {
+
+    private static GeographicProjection projection = new ModifiedAirocean();
+    private static GeographicProjection uprightProj = GeographicProjection.orientProjection(projection, GeographicProjection.Orientation.upright);
+    private static ScaleProjection scaleProj = new ScaleProjection(uprightProj, Constants.SCALE, Constants.SCALE);
+
+    public static double[] toGeo(double x, double z) {
+        return scaleProj.toGeo(x, z);
+    }
+
+    public static double[] fromGeo(double lon, double lat) {
+        return scaleProj.fromGeo(lon, lat);
+    }
+
     public static ServerInfo getServerFromName(String name) {
         return ProxyServer.getInstance().getServerInfo(name);
     }

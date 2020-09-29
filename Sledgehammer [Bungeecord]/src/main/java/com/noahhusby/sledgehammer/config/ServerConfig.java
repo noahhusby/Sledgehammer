@@ -7,11 +7,9 @@
 package com.noahhusby.sledgehammer.config;
 
 import com.google.gson.annotations.Expose;
-import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.config.types.Server;
 import com.noahhusby.sledgehammer.datasets.Location;
 import com.noahhusby.sledgehammer.network.P2S.P2SInitializationPacket;
-import com.noahhusby.sledgehammer.network.P2S.P2SLocationPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
