@@ -10,7 +10,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.noahhusby.sledgehammer.Sledgehammer;
-import com.noahhusby.sledgehammer.handlers.WarpHandler;
+import com.noahhusby.sledgehammer.warp.WarpHandler;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;

@@ -7,8 +7,8 @@
 package com.noahhusby.sledgehammer.commands.fragments.admin;
 
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.data.dialogs.scenes.setup.ConfigScene;
-import com.noahhusby.sledgehammer.handlers.DialogHandler;
+import com.noahhusby.sledgehammer.dialogs.scenes.setup.ConfigScene;
+import com.noahhusby.sledgehammer.dialogs.DialogHandler;
 import net.md_5.bungee.api.CommandSender;
 
 public class SetupFragment implements ICommandFragment {

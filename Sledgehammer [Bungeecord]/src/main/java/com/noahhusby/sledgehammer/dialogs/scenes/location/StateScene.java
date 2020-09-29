@@ -1,0 +1,72 @@
+/*
+ * Copyright (c) 2020 Noah Husby
+ * Sledgehammer [Bungeecord] - StateScene.java
+ * All rights reserved.
+ */
+
+package com.noahhusby.sledgehammer.dialogs.scenes.location;
+
+import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.types.Server;
+import com.noahhusby.sledgehammer.dialogs.components.location.CountryComponent;
+import com.noahhusby.sledgehammer.dialogs.components.location.StateComponent;
+import com.noahhusby.sledgehammer.dialogs.scenes.DialogScene;
+import com.noahhusby.sledgehammer.dialogs.toolbars.ExitSkipToolbar;
+import com.noahhusby.sledgehammer.dialogs.toolbars.IToolbar;
+import com.noahhusby.sledgehammer.datasets.Location;
+import com.noahhusby.sledgehammer.dialogs.DialogHandler;
+import net.md_5.bungee.api.config.ServerInfo;
+
+public class StateScene extends DialogScene {
+
+    private ServerInfo server;
+    private DialogScene scene;
+
+    public StateScene(ServerInfo server) {
+        this(server, null);
+    }
+
+    public StateScene(ServerInfo server, DialogScene scene) {
+        this.server = server;
+        this.scene = scene;
+        registerComponent(new StateComponent());
+        registerComponent(new CountryComponent());
+    }
+
+    @Override
+    public void onFinish() {
+        Location l = new Location(Location.detail.state, "", "", getValue("state"), getValue("country"));
+
+        Server s = ServerConfig.getInstance().getServer(server.getName());
+
+        if(s == null) s = new Server(server.getName());
+
+        s.locations.add(l);
+        ServerConfig.getInstance().pushServer(s);
+
+        if(scene != null) {
+            DialogHandler.getInstance().discardDialog(this);
+            DialogHandler.getInstance().startDialog(getCommandSender(), scene);
+        }
+    }
+
+    @Override
+    public IToolbar getToolbar() {
+        return new ExitSkipToolbar();
+    }
+
+    @Override
+    public void onToolbarAction(String m) {
+        if(m.equals("exit")) {
+            DialogHandler.getInstance().discardDialog(this);
+            DialogHandler.getInstance().startDialog(getCommandSender(), new LocationSelectionScene(server));
+        } else if(m.equals("@")) {
+            progressDialog("");
+        }
+    }
+
+    @Override
+    public boolean isAdmin() {
+        return true;
+    }
+}

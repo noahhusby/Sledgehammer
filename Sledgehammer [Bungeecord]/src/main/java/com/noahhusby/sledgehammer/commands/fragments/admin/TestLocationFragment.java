@@ -10,8 +10,8 @@ import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.network.P2S.P2STestLocationPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
-import com.noahhusby.sledgehammer.util.ChatHelper;
-import com.noahhusby.sledgehammer.util.TextElement;
+import com.noahhusby.sledgehammer.chat.ChatHelper;
+import com.noahhusby.sledgehammer.chat.TextElement;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 
@@ -32,7 +32,7 @@ public class TestLocationFragment implements ICommandFragment {
                 SledgehammerNetworkManager.getInstance().sendPacket(new P2STestLocationPacket(sender.getName(),
                         SledgehammerUtil.getServerNameByPlayer(sender), zoom));
             } catch (Exception e) {
-                sender.sendMessage(ChatHelper.getInstance().makeAdminTextComponent(new TextElement("Invalid zoom level!", ChatColor.RED),
+                sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Invalid zoom level!", ChatColor.RED),
                         new TextElement(" Please enter a value between ", ChatColor.GRAY),
                         new TextElement("1", ChatColor.BLUE), new TextElement(" and ", ChatColor.GRAY), new TextElement("19", ChatColor.BLUE)));
             }

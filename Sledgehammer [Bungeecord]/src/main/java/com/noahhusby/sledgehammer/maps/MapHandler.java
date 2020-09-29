@@ -8,17 +8,16 @@ package com.noahhusby.sledgehammer.maps;
 
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.Sledgehammer;
-import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
-import com.noahhusby.sledgehammer.handlers.WarpHandler;
+import com.noahhusby.sledgehammer.warp.WarpHandler;
 import com.noahhusby.sledgehammer.network.P2S.P2STeleportPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import com.noahhusby.sledgehammer.projection.GeographicProjection;
 import com.noahhusby.sledgehammer.projection.ModifiedAirocean;
 import com.noahhusby.sledgehammer.projection.ScaleProjection;
-import com.noahhusby.sledgehammer.util.ChatHelper;
-import com.noahhusby.sledgehammer.util.TextElement;
-import com.noahhusby.sledgehammer.util.Warp;
+import com.noahhusby.sledgehammer.chat.ChatHelper;
+import com.noahhusby.sledgehammer.chat.TextElement;
+import com.noahhusby.sledgehammer.warp.Warp;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -82,7 +81,7 @@ public class MapHandler {
 
         }
 
-        sender.sendMessage(ChatHelper.getInstance().makeTitleMapComponent(new TextElement("Click here to access the warp map!", ChatColor.BLUE),
+        sender.sendMessage(ChatHelper.makeTitleMapComponent(new TextElement("Click here to access the warp map!", ChatColor.BLUE),
                 ConfigHandler.mapLink+"/session?uuid="+session.name+"&key="+session.key));
         sessions.add(session);
     }
@@ -110,16 +109,16 @@ public class MapHandler {
                         if(uuid.toLowerCase().trim().equals(s.name.toLowerCase()) && key.toLowerCase().trim().equals(s.key.toString())) {
                             Warp warp = WarpHandler.getInstance().getWarp(w);
                             if(warp == null) {
-                                ProxyServer.getInstance().getPlayer(s.name).sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Error: Warp not found", ChatColor.RED)));
+                                ProxyServer.getInstance().getPlayer(s.name).sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Error: Warp not found", ChatColor.RED)));
                                 return;
                             }
 
                             if(ProxyServer.getInstance().getPlayer(s.name).getServer().getInfo() != ProxyServer.getInstance().getServerInfo(warp.server)) {
                                 ProxyServer.getInstance().getPlayer(s.name).connect(ProxyServer.getInstance().getServerInfo(warp.server));
-                                ProxyServer.getInstance().getPlayer(s.name).sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Sending you to ", ChatColor.GRAY), new TextElement(warp.server, ChatColor.RED)));
+                                ProxyServer.getInstance().getPlayer(s.name).sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Sending you to ", ChatColor.GRAY), new TextElement(warp.server, ChatColor.RED)));
                             }
 
-                            ProxyServer.getInstance().getPlayer(s.name).sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement("Warping to ", ChatColor.GRAY), new TextElement(w, ChatColor.RED)));
+                            ProxyServer.getInstance().getPlayer(s.name).sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Warping to ", ChatColor.GRAY), new TextElement(w, ChatColor.RED)));
                             SledgehammerNetworkManager.getInstance().sendPacket(new P2STeleportPacket(s.name, warp.server, warp.point));
                         }
                     }

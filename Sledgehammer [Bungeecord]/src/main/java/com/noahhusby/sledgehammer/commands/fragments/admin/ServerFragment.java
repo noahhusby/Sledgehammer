@@ -9,8 +9,8 @@ package com.noahhusby.sledgehammer.commands.fragments.admin;
 import com.noahhusby.sledgehammer.commands.fragments.FragmentManager;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.commands.fragments.admin.server.*;
-import com.noahhusby.sledgehammer.util.ChatHelper;
-import com.noahhusby.sledgehammer.util.TextElement;
+import com.noahhusby.sledgehammer.chat.ChatHelper;
+import com.noahhusby.sledgehammer.chat.TextElement;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -41,7 +41,7 @@ public class ServerFragment extends FragmentManager implements ICommandFragment 
                     return;
                 }
             }
-            sender.sendMessage(ChatHelper.getInstance().makeAdminTextComponent(
+            sender.sendMessage(ChatHelper.makeAdminTextComponent(
                     new TextElement(args[0], ChatColor.DARK_RED), new TextElement(" is not a bungeecord server!", ChatColor.RED)));
             return;
         }

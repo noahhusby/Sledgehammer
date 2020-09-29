@@ -7,7 +7,7 @@
 package com.noahhusby.sledgehammer.commands;
 
 import com.noahhusby.sledgehammer.commands.data.Command;
-import com.noahhusby.sledgehammer.util.ChatHelper;
+import com.noahhusby.sledgehammer.chat.ChatHelper;
 import net.md_5.bungee.api.CommandSender;
 
 public class SledgehammerCommand extends Command {
@@ -18,9 +18,9 @@ public class SledgehammerCommand extends Command {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(hasPermissionAdmin(sender)) {
-            ChatHelper.getInstance().adminInfoMessage(sender);
+            ChatHelper.adminInfoMessage(sender);
         } else {
-            ChatHelper.getInstance().infoMessage(sender);
+            ChatHelper.infoMessage(sender);
         }
     }
 }

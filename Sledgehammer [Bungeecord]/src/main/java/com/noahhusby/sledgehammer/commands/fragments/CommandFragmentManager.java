@@ -7,8 +7,8 @@
 package com.noahhusby.sledgehammer.commands.fragments;
 
 import com.noahhusby.sledgehammer.commands.data.Command;
-import com.noahhusby.sledgehammer.util.ChatHelper;
-import com.noahhusby.sledgehammer.util.TextElement;
+import com.noahhusby.sledgehammer.chat.ChatHelper;
+import com.noahhusby.sledgehammer.chat.TextElement;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 
@@ -58,7 +58,7 @@ public abstract class CommandFragmentManager extends Command {
     }
 
     private void displayCommands(CommandSender sender, String[] args) {
-        sender.sendMessage(ChatHelper.getInstance().makeTitleTextComponent(new TextElement(title+":", ChatColor.GRAY)));
+        sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement(title+":", ChatColor.GRAY)));
         for(ICommandFragment f : commandFragments) {
 
             List<TextElement> message = new ArrayList<>();
@@ -77,7 +77,7 @@ public abstract class CommandFragmentManager extends Command {
             message.add(new TextElement("- ", ChatColor.GRAY));
             message.add(new TextElement(f.getPurpose(), ChatColor.BLUE));
 
-            sender.sendMessage(ChatHelper.getInstance().makeTextComponent(message.toArray(new TextElement[message.size()])));
+            sender.sendMessage(ChatHelper.makeTextComponent(message.toArray(new TextElement[message.size()])));
         }
     }
 }

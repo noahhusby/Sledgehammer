@@ -9,6 +9,7 @@ package com.noahhusby.sledgehammer.network.S2P;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.SmartObject;
+import com.noahhusby.sledgehammer.chat.ChatConstants;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.network.PacketInfo;
 import com.noahhusby.sledgehammer.network.S2PPacket;
@@ -25,7 +26,7 @@ public class S2PInitializationPacket extends S2PPacket {
     public void onMessage(PacketInfo info, SmartObject data) {
         ServerInfo server = ProxyServer.getInstance().getServerInfo(info.getServer());
 
-        Sledgehammer.logger.info(Constants.logInitPacket + server.getName());
+        Sledgehammer.logger.info(ChatConstants.logInitPacket + server.getName());
         ServerConfig.getInstance().initializeServer(server, data.toJSON());
     }
 }

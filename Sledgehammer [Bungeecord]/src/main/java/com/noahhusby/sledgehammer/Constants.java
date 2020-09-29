@@ -22,6 +22,4 @@ public class Constants {
     public static final String warpID = "warp";
 
     public static final String adminMessagePrefix = "&9&lSH &8&l> ";
-
-    public static final String logInitPacket = "Received initialization packet from ";
 }

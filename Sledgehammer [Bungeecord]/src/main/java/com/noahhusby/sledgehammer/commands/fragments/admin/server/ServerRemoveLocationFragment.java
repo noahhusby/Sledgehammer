@@ -6,12 +6,12 @@
 
 package com.noahhusby.sledgehammer.commands.fragments.admin.server;
 
+import com.noahhusby.sledgehammer.chat.ChatConstants;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.data.dialogs.scenes.location.LocationSelectionScene;
-import com.noahhusby.sledgehammer.data.dialogs.scenes.setup.LocationRemovalScene;
-import com.noahhusby.sledgehammer.handlers.DialogHandler;
-import com.noahhusby.sledgehammer.util.ChatHelper;
-import com.noahhusby.sledgehammer.util.TextElement;
+import com.noahhusby.sledgehammer.dialogs.scenes.setup.LocationRemovalScene;
+import com.noahhusby.sledgehammer.dialogs.DialogHandler;
+import com.noahhusby.sledgehammer.chat.ChatHelper;
+import com.noahhusby.sledgehammer.chat.TextElement;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -22,7 +22,7 @@ public class ServerRemoveLocationFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(!(sender instanceof ProxiedPlayer)) {
-            sender.sendMessage(ChatHelper.getInstance().makeTextComponent(new TextElement("This command can only be executed by a player!", ChatColor.DARK_RED)));
+            sender.sendMessage(ChatConstants.issueByPlayer);
             return;
         }
         DialogHandler.getInstance().startDialog(sender, new LocationRemovalScene(ProxyServer.getInstance().getServerInfo(args[0]), null));
