@@ -20,6 +20,8 @@ package com.noahhusby.sledgehammer;
 
 import com.noahhusby.sledgehammer.addons.AddonManager;
 import com.noahhusby.sledgehammer.addons.TerramapAddon;
+import com.noahhusby.sledgehammer.chat.ChatConstants;
+import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.commands.*;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
@@ -47,9 +49,30 @@ public class Sledgehammer extends Plugin implements Listener {
         this.sledgehammer = this;
         logger = getLogger();
 
+        ConfigHandler.getInstance().init(getDataFolder());
+
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerCommand());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerAdminCommand());
+        ProxyServer.getInstance().getPluginManager().registerListener(this, this);
+
+        if(!ConfigHandler.getInstance().isAuthCodeConfigured()) {
+            logger.severe("------------------------------");
+            for(int x = 0; x < 2; x++) {
+                logger.severe("");
+            }
+            logger.severe("The authentication code is not configured, or configured incorrectly.");
+            logger.severe("Please generate a valid authentication code using https://www.uuidgenerator.net/version4");
+            logger.severe("Most Sledgehammer features will now be disabled.");
+            for(int x = 0; x < 2; x++) {
+                logger.severe("");
+            }
+            logger.severe("------------------------------");
+            return;
+        }
+
+
         addonManager.onEnable();
 
-        ConfigHandler.getInstance().init(getDataFolder());
 
         if(!ConfigHandler.warpCommand.equals("")) {
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new WarpCommand());
@@ -89,19 +112,11 @@ public class Sledgehammer extends Plugin implements Listener {
             ConfigHandler.borderTeleportation = false;
         }
 
-        ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerCommand());
-        ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerAdminCommand());
-
         ProxyServer.getInstance().registerChannel("sledgehammer:channel");
-        ProxyServer.getInstance().getPluginManager().registerListener(this, this);
 
         OpenStreetMaps.getInstance();
 
         MapHandler.getInstance().init();
-
-        getProxy().getScheduler().schedule(this, () -> {
-
-        }, 10,  TimeUnit.SECONDS);
     }
 
     @Override
@@ -125,6 +140,9 @@ public class Sledgehammer extends Plugin implements Listener {
     @EventHandler
     public void onPlayerJoin(PostLoginEvent e) {
         PlayerLocationHandler.getInstance().onPlayerJoin(e.getPlayer());
+        if(e.getPlayer().hasPermission("sledgehammer.admin") && !ConfigHandler.getInstance().isAuthCodeConfigured()) {
+            ChatHelper.sendAuthCodeWarning(e.getPlayer());
+        }
     }
 
     @EventHandler

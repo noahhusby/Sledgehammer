@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 public class ConfigHandler {
     private static ConfigHandler mInstance = null;
@@ -48,6 +49,7 @@ public class ConfigHandler {
     private ConfigHandler() { }
 
     public static net.minecraftforge.common.config.Configuration config;
+    private boolean authCodeConfigured;
 
     public static String authenticationCode = "";
     public static String messagePrefix = "";
@@ -94,6 +96,10 @@ public class ConfigHandler {
         cat("General", "General options for sledgehammer");
         authenticationCode = config.getString(prop("Network Authentication Code"), "General", ""
                 , "Generate a new key using https://uuidgenerator.net/version4\nAll corresponding sledgehammer clients must have the same code\nDon't share this key with anyone you don't trust as it will allow anybody to run any command on connected servers.");
+
+        Pattern p = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
+        authCodeConfigured = p.matcher(authenticationCode).matches();
+
         messagePrefix = config.getString(prop("Message Prefix"), "General", "&9&lBTE &8&l> "
                 , "The prefix of messages broadcasted to players from the proxy");
         globalTpll = config.getBoolean(prop("Global Tpll"), "General", true, "Set this to false to disable global tpll [/tpll & /cs tpll]");
@@ -142,6 +148,10 @@ public class ConfigHandler {
         doesOfflineExist = f.exists();
 
         config.save();
+    }
+
+    public boolean isAuthCodeConfigured() {
+        return authCodeConfigured;
     }
 
     public void reload() {

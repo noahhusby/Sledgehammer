@@ -89,6 +89,16 @@ public class ChatHelper {
                 new TextElement("\n/sha ", ChatColor.YELLOW), new TextElement("- Sledgehammer admin command", ChatColor.RED)));
     }
 
+    public static void sendAuthCodeWarning(CommandSender sender) {
+        sender.sendMessage(makeTextComponent(new TextElement("----------------------------------------------", ChatColor.DARK_RED)));
+        sender.sendMessage();
+        sender.sendMessage(makeTextComponent(new TextElement("The sledgehammer authentication code is not properly configured. " +
+                "Please check the console for more details!", ChatColor.RED)));
+        sender.sendMessage(makeTextComponent(new TextElement("Most sledgehammer features will be disabled.", ChatColor.GRAY)));
+        sender.sendMessage();
+        sender.sendMessage(makeTextComponent(new TextElement("----------------------------------------------", ChatColor.DARK_RED)));
+    }
+
     public static String capitalize(final String str) {
         final int strLen = length(str);
         if (strLen == 0) {

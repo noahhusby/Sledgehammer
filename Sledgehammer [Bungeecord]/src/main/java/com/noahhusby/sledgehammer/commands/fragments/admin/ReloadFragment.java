@@ -18,6 +18,7 @@
 
 package com.noahhusby.sledgehammer.commands.fragments.admin;
 
+import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
@@ -29,7 +30,7 @@ public class ReloadFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
         ConfigHandler.getInstance().reload();
-        sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Reloaded the config", ChatColor.BLUE)));
+        sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Reloaded sledgehammer", ChatColor.BLUE)));
     }
 
     @Override
