@@ -59,20 +59,28 @@ public class MapHandler {
 
     public void newMapCommand(CommandSender sender) {
         List<MapSession> temp = new ArrayList<>();
+        MapSession session = null;
         for(MapSession m : sessions) {
             if(m.name.toLowerCase().equals(sender.getName())) {
-                temp.add(m);
+                if(m.time > System.currentTimeMillis()) {
+                    temp.add(m);
+                } else {
+                    session = m;
+                }
             }
         }
         for(MapSession m : temp) {
             sessions.remove(m);
         }
 
-        MapSession session = new MapSession();
-        session.name = sender.getName();
-        session.key = UUID.randomUUID();
-        session.time = System.currentTimeMillis();
-        session.timeout = System.currentTimeMillis() + (60000*ConfigHandler.mapTimeout);
+        if(session == null) {
+            session = new MapSession();
+            session.name = sender.getName();
+            session.key = UUID.randomUUID();
+            session.time = System.currentTimeMillis();
+            session.timeout = System.currentTimeMillis() + (60000*ConfigHandler.mapTimeout);
+
+        }
 
         sender.sendMessage(ChatHelper.getInstance().makeTitleMapComponent(new TextElement("Click here to access the warp map!", ChatColor.BLUE),
                 ConfigHandler.mapLink+"/session?uuid="+session.name+"&key="+session.key));

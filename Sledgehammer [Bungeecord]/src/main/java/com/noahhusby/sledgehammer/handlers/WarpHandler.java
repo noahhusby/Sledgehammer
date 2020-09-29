@@ -49,7 +49,9 @@ public class WarpHandler {
     }
 
     public Warp getWarp(String w) {
-        return warps.get(w.toLowerCase());
+        for(Map.Entry<String, Warp> s : warps.entrySet())
+            if(s.getKey().equalsIgnoreCase(w)) return s.getValue();
+        return null;
     }
 
     public void requestNewWarp(String warp, CommandSender sender, boolean pinned) {
