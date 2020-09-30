@@ -20,13 +20,12 @@ package com.noahhusby.sledgehammer;
 
 import com.noahhusby.sledgehammer.addons.AddonManager;
 import com.noahhusby.sledgehammer.addons.TerramapAddon;
-import com.noahhusby.sledgehammer.chat.ChatConstants;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.commands.*;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
-import com.noahhusby.sledgehammer.players.PlayerLocationHandler;
+import com.noahhusby.sledgehammer.players.PlayerManager;
 import com.noahhusby.sledgehammer.maps.MapHandler;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import net.md_5.bungee.api.ProxyServer;
@@ -35,7 +34,6 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
 
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class Sledgehammer extends Plugin implements Listener {
@@ -140,7 +138,7 @@ public class Sledgehammer extends Plugin implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PostLoginEvent e) {
-        PlayerLocationHandler.getInstance().onPlayerJoin(e.getPlayer());
+        PlayerManager.getInstance().onPlayerJoin(e.getPlayer());
         if(e.getPlayer().hasPermission("sledgehammer.admin") && !ConfigHandler.getInstance().isAuthCodeConfigured()) {
             ChatHelper.sendAuthCodeWarning(e.getPlayer());
         }
@@ -148,7 +146,7 @@ public class Sledgehammer extends Plugin implements Listener {
 
     @EventHandler
     public void onPlayerLeave(PlayerDisconnectEvent e) {
-        PlayerLocationHandler.getInstance().onPlayerQuit(e.getPlayer());
+        PlayerManager.getInstance().onPlayerQuit(e.getPlayer());
     }
 
     @EventHandler
