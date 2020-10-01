@@ -22,6 +22,7 @@ import java.util.UUID;
 public class SledgehammerPlayer implements ProxiedPlayer {
 
     private ProxiedPlayer player;
+    private Point location;
 
     public SledgehammerPlayer(ProxiedPlayer player) {
         this.player = player;
@@ -287,7 +288,11 @@ public class SledgehammerPlayer implements ProxiedPlayer {
     }
 
     public Point getLocation() {
-        return null;
+        return location;
+    }
+
+    public void setLocation(Point p) {
+        this.location = p;
     }
 
     public static SledgehammerPlayer getPlayer(String s) {

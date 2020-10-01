@@ -39,7 +39,7 @@ public class PlayerManager {
 
     public void onPlayerJoin(ProxiedPlayer player) {
         onPlayerDisconnect(player);
-        players.add(SledgehammerPlayer.getPlayer(player));
+        players.add(new SledgehammerPlayer(player));
     }
 
     public void onPlayerDisconnect(ProxiedPlayer player) {
@@ -56,8 +56,6 @@ public class PlayerManager {
     }
 
     public SledgehammerPlayer getPlayer(String s) {
-        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(s);
-
         for(SledgehammerPlayer p : players) {
             if(p.getName().equalsIgnoreCase(s)) {
                 p.update();

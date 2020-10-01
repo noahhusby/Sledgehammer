@@ -20,14 +20,9 @@ package com.noahhusby.sledgehammer;
 
 import com.noahhusby.sledgehammer.eventhandler.ServerEventHandler;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
+import com.noahhusby.sledgehammer.players.PlayerManager;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -49,5 +44,7 @@ public final class Sledgehammer extends JavaPlugin implements Listener {
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "sledgehammer:channel");
         getServer().getMessenger().registerIncomingPluginChannel( this, "sledgehammer:channel", SledgehammerNetworkManager.getInstance());
+
+        PlayerManager.getInstance();
     }
 }

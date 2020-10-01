@@ -145,8 +145,8 @@ public class Sledgehammer extends Plugin implements Listener {
     }
 
     @EventHandler
-    public void onPlayerLeave(PlayerDisconnectEvent e) {
-        PlayerManager.getInstance().onPlayerQuit(e.getPlayer());
+    public void onPlayerDisconnect(PlayerDisconnectEvent e) {
+        PlayerManager.getInstance().onPlayerDisconnect(e.getPlayer());
     }
 
     @EventHandler
