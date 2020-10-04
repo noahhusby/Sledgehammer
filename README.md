@@ -1,6 +1,9 @@
 # Sledgehammer
 A set of tools for multi-server Build the Earth networks
 
+[![sledgehammer-bungeecord Actions Status](https://github.com/noahhusby/sledgehammer/workflows/sledgehammer-bungeecord/badge.svg)](https://github.com/noahhusby/sledgehammer/actions)
+[![sledgehammer-bukkit Actions Status](https://github.com/noahhusby/sledgehammer/workflows/sledgehammer-bukkit/badge.svg)](https://github.com/noahhusby/sledgehammer/actions)
+
 ## Features
 * Region Assigning - /tpll will automatically teleport between servers based upon region configuration
 * Global Warps - Set warps and teleport across the network
