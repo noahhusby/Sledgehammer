@@ -28,11 +28,6 @@ public abstract class Addon implements IAddon {
     }
 
     @Override
-    public void onLoad() {
-
-    }
-
-    @Override
     public void onPluginMessage(PluginMessageEvent e) {
 
     }

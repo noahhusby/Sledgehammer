@@ -25,8 +25,6 @@ public interface IAddon {
 
     void onDisable();
 
-    void onLoad();
-
     void onPluginMessage(PluginMessageEvent e);
 
     String[] getMessageChannels();
