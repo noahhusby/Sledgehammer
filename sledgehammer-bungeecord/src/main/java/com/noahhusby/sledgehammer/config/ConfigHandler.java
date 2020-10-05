@@ -77,6 +77,8 @@ public class ConfigHandler {
     public static int mapTimeout = 15;
     public static String mapLink = "";
 
+    public static boolean terramapEnabled;
+
     private String category;
 
     Map<String, List<String>> categories = Maps.newHashMap();
@@ -142,6 +144,12 @@ public class ConfigHandler {
         mapLink = config.getString(prop("Map Link"), "Map", "http://map.bte-network.net",
                 "The direct http link for the map. This is the link that players will interact with.\n" +
                         "NOTE: You must put either http:// or https:// at the beginning");
+        order();
+
+        cat("Addons", "Options for Sledgehammer Addons");
+        terramapEnabled = config.getBoolean(prop("Terramap Compatibility"), "Addons", false,
+                "Set to 'true' to enable Terramap compatibility.\nThis will allow clients to see players across the entire network on the map.\n" +
+                        "It will also display network warps on the map.");
         order();
 
         File f = new File(dataFolder, "offline.bin");

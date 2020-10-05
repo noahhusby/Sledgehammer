@@ -33,6 +33,7 @@ import net.md_5.bungee.api.event.*;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
+import net.minecraftforge.common.config.Config;
 
 import java.util.logging.Logger;
 
@@ -69,9 +70,9 @@ public class Sledgehammer extends Plugin implements Listener {
         }
 
         addonManager = AddonManager.getInstance();
+        if(ConfigHandler.terramapEnabled) addonManager.registerAddon(new TerramapAddon());
 
         addonManager.onEnable();
-
 
         if(!ConfigHandler.warpCommand.equals("")) {
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new WarpCommand());
