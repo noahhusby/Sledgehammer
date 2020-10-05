@@ -68,6 +68,7 @@ public class Sledgehammer extends Plugin implements Listener {
             return;
         }
 
+        addonManager = AddonManager.getInstance();
 
         addonManager.onEnable();
 
@@ -121,13 +122,6 @@ public class Sledgehammer extends Plugin implements Listener {
     @Override
     public void onDisable() {
         addonManager.onDisable();
-    }
-
-    @Override
-    public void onLoad() {
-        addonManager = AddonManager.getInstance();
-        addonManager.registerAddon(new TerramapAddon());
-        addonManager.onLoad();
     }
 
     @EventHandler

@@ -53,10 +53,6 @@ public class AddonManager implements Listener {
         addons.forEach(IAddon::onDisable);
     }
 
-    public void onLoad() {
-        addons.forEach(IAddon::onLoad);
-    }
-
     @EventHandler
     public void onPluginMessage(PluginMessageEvent e) {
         IAddon addon = getServerByChannel(e.getTag());
