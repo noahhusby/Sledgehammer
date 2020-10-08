@@ -57,7 +57,17 @@ public class OpenStreetMaps {
     private ReverseGeocoder offlineGeocoder;
 
     public ServerInfo getServerFromLocation(double lon, double lat) {
-        Location location = getLocation(lon, lat);
+        return getServerFromLocation(lon, lat, false);
+    }
+
+    public ServerInfo getServerFromLocation(double lon, double lat, boolean offline) {
+        Location location;
+
+        if(offline) {
+            location = getOfflineLocation(lon, lat);
+        } else {
+            location = getLocation(lon, lat);
+        }
 
         List<SledgehammerServer> servers = ServerConfig.getInstance().getServers();
         for(SledgehammerServer s : servers) {

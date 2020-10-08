@@ -25,7 +25,7 @@ import jakarta.websocket.*;
 @ClientEndpoint
 public class WebsocketEndpoint {
 
-    Session userSession = null;
+    public Session userSession = null;
     private MessageHandler messageHandler;
 
     public WebsocketEndpoint(URI endpointURI) {

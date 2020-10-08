@@ -35,4 +35,6 @@ public class Constants {
     public static final String playerUpdateID = "player_update";
 
     public static final String adminMessagePrefix = "&9&lSH &8&l> ";
+
+    public static final int borderZone = 500;
 }

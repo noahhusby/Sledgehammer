@@ -25,6 +25,9 @@ import com.noahhusby.sledgehammer.commands.*;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
+import com.noahhusby.sledgehammer.maps.MapThread;
+import com.noahhusby.sledgehammer.players.BorderCheckerThread;
+import com.noahhusby.sledgehammer.players.FlaggedBorderCheckerThread;
 import com.noahhusby.sledgehammer.players.PlayerManager;
 import com.noahhusby.sledgehammer.maps.MapHandler;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
@@ -34,6 +37,9 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class Sledgehammer extends Plugin implements Listener {
@@ -41,6 +47,8 @@ public class Sledgehammer extends Plugin implements Listener {
     public static Plugin sledgehammer;
 
     public static AddonManager addonManager;
+
+    private final ScheduledExecutorService alternativeThreads = Executors.newScheduledThreadPool(2);
 
     @Override
     public void onEnable() {
@@ -113,6 +121,15 @@ public class Sledgehammer extends Plugin implements Listener {
         }
 
         ProxyServer.getInstance().registerChannel("sledgehammer:channel");
+
+        if(ConfigHandler.mapEnabled) {
+            alternativeThreads.scheduleAtFixedRate(new MapThread(), 0, 30, TimeUnit.SECONDS);
+        }
+
+        if(ConfigHandler.borderTeleportation) {
+            alternativeThreads.scheduleAtFixedRate(new BorderCheckerThread(), 0, 5, TimeUnit.SECONDS);
+            alternativeThreads.scheduleAtFixedRate(new FlaggedBorderCheckerThread(), 0, 10, TimeUnit.SECONDS);
+        }
 
         OpenStreetMaps.getInstance();
 

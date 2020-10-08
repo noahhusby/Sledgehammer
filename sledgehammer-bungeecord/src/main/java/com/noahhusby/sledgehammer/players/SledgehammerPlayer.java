@@ -22,7 +22,10 @@ import java.util.UUID;
 public class SledgehammerPlayer implements ProxiedPlayer {
 
     private ProxiedPlayer player;
+
+    private boolean flagged = false;
     private Point location;
+    private Point track;
 
     public SledgehammerPlayer(ProxiedPlayer player) {
         this.player = player;
@@ -293,6 +296,22 @@ public class SledgehammerPlayer implements ProxiedPlayer {
 
     public void setLocation(Point p) {
         this.location = p;
+    }
+
+    public Point getTrackingPoint() {
+        return track;
+    }
+
+    public void setTrackingPoint(Point p) {
+        this.track = p;
+    }
+
+    public boolean isFlagged() {
+        return flagged;
+    }
+
+    public void setFlagged(boolean flagged) {
+        this.flagged = flagged;
     }
 
     public static SledgehammerPlayer getPlayer(String s) {

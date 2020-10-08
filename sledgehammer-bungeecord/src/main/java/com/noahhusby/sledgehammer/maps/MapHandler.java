@@ -59,9 +59,7 @@ public class MapHandler {
     private boolean heartbeat = false;
 
     public void init() {
-        if(ConfigHandler.mapEnabled) {
-            new WebsocketThread().t();
-        }
+
     }
 
 

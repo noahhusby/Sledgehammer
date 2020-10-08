@@ -55,6 +55,11 @@ public class PlayerManager {
         }
     }
 
+    public List<SledgehammerPlayer> getPlayers() {
+        for(SledgehammerPlayer p : players) p.update();
+        return players;
+    }
+
     public SledgehammerPlayer getPlayer(String s) {
         for(SledgehammerPlayer p : players) {
             if(p.getName().equalsIgnoreCase(s)) {
@@ -76,4 +81,6 @@ public class PlayerManager {
 
         return null;
     }
+
+
 }
