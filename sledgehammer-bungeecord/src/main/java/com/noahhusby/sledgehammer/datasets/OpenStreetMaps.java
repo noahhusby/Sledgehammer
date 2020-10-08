@@ -46,9 +46,12 @@ public class OpenStreetMaps {
         return mInstance;
     }
 
-    private OpenStreetMaps() {
+    private OpenStreetMaps() {}
+
+    public void init() {
         try {
-            offlineGeocoder = new ReverseGeocoder(ConfigHandler.getInstance().getOfflineBin());
+            if(ConfigHandler.borderTeleportation)
+                offlineGeocoder = new ReverseGeocoder(ConfigHandler.getInstance().getOfflineBin());
         } catch (IOException e) {
             e.printStackTrace();
         }

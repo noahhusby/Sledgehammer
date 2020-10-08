@@ -93,6 +93,14 @@ public class ConfigHandler {
         createConfig();
 
         config = new net.minecraftforge.common.config.Configuration(configurationFile);
+
+        loadData();
+
+        config.save();
+    }
+
+    public void loadData() {
+        config.load();
         cat("General", "General options for sledgehammer");
         authenticationCode = config.getString(prop("Network Authentication Code"), "General", ""
                 , "Generate a new key using https://uuidgenerator.net/version4\nAll corresponding sledgehammer clients must have the same code\nDon't share this key with anyone you don't trust as it will allow anybody to run any command on connected servers.");
@@ -146,8 +154,6 @@ public class ConfigHandler {
 
         File f = new File(dataFolder, "offline.bin");
         doesOfflineExist = f.exists();
-
-        config.save();
     }
 
     public boolean isAuthCodeConfigured() {
@@ -156,7 +162,8 @@ public class ConfigHandler {
 
     public void reload() {
         Sledgehammer.logger.info("Reloaded the config");
-        init(dataFolder);
+        loadData();
+        Sledgehammer.sledgehammer.registerFromConfig();
     }
 
     public String prop(String n) {
