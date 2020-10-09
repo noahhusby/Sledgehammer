@@ -12,19 +12,24 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
 package com.noahhusby.sledgehammer;
 
+import com.google.common.collect.Maps;
 import com.noahhusby.sledgehammer.addons.AddonManager;
 import com.noahhusby.sledgehammer.addons.TerramapAddon;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.commands.*;
+import com.noahhusby.sledgehammer.commands.data.Command;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
+import com.noahhusby.sledgehammer.maps.MapThread;
+import com.noahhusby.sledgehammer.players.BorderCheckerThread;
+import com.noahhusby.sledgehammer.players.FlaggedBorderCheckerThread;
 import com.noahhusby.sledgehammer.players.PlayerManager;
 import com.noahhusby.sledgehammer.maps.MapHandler;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
@@ -35,24 +40,53 @@ import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
 import net.minecraftforge.common.config.Config;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class Sledgehammer extends Plugin implements Listener {
     public static Logger logger;
-    public static Plugin sledgehammer;
+    public static Sledgehammer sledgehammer;
 
     public static AddonManager addonManager;
+
+    private final ScheduledThreadPoolExecutor alternativeThreads = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(2);
 
     @Override
     public void onEnable() {
         this.sledgehammer = this;
         logger = getLogger();
 
+        alternativeThreads.setRemoveOnCancelPolicy(true);
+
+        ProxyServer.getInstance().getPluginManager().registerListener(this, this);
         ConfigHandler.getInstance().init(getDataFolder());
+
+        registerFromConfig();
+    }
+
+    @Override
+    public void onDisable() {
+        addonManager.onDisable();
+    }
+
+    public void registerFromConfig() {
+        List<Runnable> remove = new ArrayList<>();
+        for(Runnable r : alternativeThreads.getQueue()) {
+            remove.add(r);
+        }
+
+        for(Runnable r : remove) alternativeThreads.remove(r);
+
+        ProxyServer.getInstance().getPluginManager().unregisterCommands(this);
 
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerCommand());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerAdminCommand());
-        ProxyServer.getInstance().getPluginManager().registerListener(this, this);
 
         if(!ConfigHandler.getInstance().isAuthCodeConfigured()) {
             logger.severe("------------------------------");
@@ -98,7 +132,7 @@ public class Sledgehammer extends Plugin implements Listener {
             ConfigHandler.borderTeleportation = false;
         }
 
-        if(ConfigHandler.borderTeleportation && !ConfigHandler.doesOfflineExist) {
+        if(ConfigHandler.useOfflineMode && !ConfigHandler.doesOfflineExist) {
             logger.warning("------------------------------");
             for(int x = 0; x < 2; x++) {
                 logger.warning("");
@@ -110,19 +144,24 @@ public class Sledgehammer extends Plugin implements Listener {
                 logger.warning("");
             }
             logger.warning("------------------------------");
-            ConfigHandler.borderTeleportation = false;
+            ConfigHandler.useOfflineMode = false;
         }
 
         ProxyServer.getInstance().registerChannel("sledgehammer:channel");
 
-        OpenStreetMaps.getInstance();
+        if(ConfigHandler.mapEnabled) {
+            alternativeThreads.scheduleAtFixedRate(new MapThread(), 0, 30, TimeUnit.SECONDS);
+        }
+
+        if(ConfigHandler.borderTeleportation) {
+            alternativeThreads.scheduleAtFixedRate(new BorderCheckerThread(), 0, 5, TimeUnit.SECONDS);
+            alternativeThreads.scheduleAtFixedRate(new FlaggedBorderCheckerThread(), 0, 10, TimeUnit.SECONDS);
+        }
+
+        OpenStreetMaps.getInstance().init();
 
         MapHandler.getInstance().init();
-    }
 
-    @Override
-    public void onDisable() {
-        addonManager.onDisable();
     }
 
     @EventHandler

@@ -12,8 +12,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
 package com.noahhusby.sledgehammer.datasets;
@@ -46,9 +46,12 @@ public class OpenStreetMaps {
         return mInstance;
     }
 
-    private OpenStreetMaps() {
+    private OpenStreetMaps() {}
+
+    public void init() {
         try {
-            offlineGeocoder = new ReverseGeocoder(ConfigHandler.getInstance().getOfflineBin());
+            if(ConfigHandler.borderTeleportation)
+                offlineGeocoder = new ReverseGeocoder(ConfigHandler.getInstance().getOfflineBin());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -57,7 +60,17 @@ public class OpenStreetMaps {
     private ReverseGeocoder offlineGeocoder;
 
     public ServerInfo getServerFromLocation(double lon, double lat) {
-        Location location = getLocation(lon, lat);
+        return getServerFromLocation(lon, lat, false);
+    }
+
+    public ServerInfo getServerFromLocation(double lon, double lat, boolean offline) {
+        Location location;
+
+        if(offline) {
+            location = getOfflineLocation(lon, lat);
+        } else {
+            location = getLocation(lon, lat);
+        }
 
         List<SledgehammerServer> servers = ServerConfig.getInstance().getServers();
         for(SledgehammerServer s : servers) {
@@ -154,13 +167,13 @@ public class OpenStreetMaps {
         String country = null;
         for(int x = 0; x < data.length; x++) {
             OfflineDataField o = getDataField(data[x]);
-            if (o.type.equals("city")) {
+            if (o.type.equalsIgnoreCase("city")) {
                 city = o.data;
-            } else if(o.type.equals("county")) {
+            } else if(o.type.equalsIgnoreCase("county")) {
                 county = o.data;
-            } else if(o.type.equals("state")) {
+            } else if(o.type.equalsIgnoreCase("state")) {
                 state = o.data;
-            } else if(o.type.equals("country")) {
+            } else if(o.type.equalsIgnoreCase("country")) {
                 country = o.data;
             } else if (o.admin.equals("8") && city == null) {
                 city = o.data;
@@ -170,7 +183,13 @@ public class OpenStreetMaps {
                 state = o.data;
             } else if(o.admin.equals("2") && country == null) {
                 country = o.data;
-            } else if (city == null) {
+            }
+        }
+
+        /*
+        for(int x = 0; x < data.length; x++) {
+            OfflineDataField o = getDataField(data[x]);
+            if (city == null) {
                 city = o.data;
             } else if(county == null) {
                 county = o.data;
@@ -179,8 +198,8 @@ public class OpenStreetMaps {
             } else if(country == null) {
                 country = o.data;
             }
-
         }
+         */
 
         Location l = new Location(Location.detail.none, city, county, state, country);
         return l;
@@ -190,11 +209,11 @@ public class OpenStreetMaps {
         if(f == null) return null;
         String[] data = f.trim().replaceAll(" ", "space").replaceAll("\\s+", ";;")
                 .replaceAll("space", " ").trim().split(";;");
+
         String a = "";
         String b = "";
         String c = "";
 
-        System.out.println();
         if(data.length > 1) {
             a = data[1];
         }

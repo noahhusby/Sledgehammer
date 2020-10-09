@@ -12,8 +12,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
 package com.noahhusby.sledgehammer.maps;
@@ -25,7 +25,7 @@ import jakarta.websocket.*;
 @ClientEndpoint
 public class WebsocketEndpoint {
 
-    Session userSession = null;
+    public Session userSession = null;
     private MessageHandler messageHandler;
 
     public WebsocketEndpoint(URI endpointURI) {

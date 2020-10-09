@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2020 Noah Husby
- * Sledgehammer [Bungeecord] - PlayerLocationHandler.java
+ * Sledgehammer [Bungeecord] - PlayerManager.java
  *
  * Sledgehammer is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,8 +12,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
 package com.noahhusby.sledgehammer.players;
@@ -55,6 +55,11 @@ public class PlayerManager {
         }
     }
 
+    public List<SledgehammerPlayer> getPlayers() {
+        for(SledgehammerPlayer p : players) p.update();
+        return players;
+    }
+
     public SledgehammerPlayer getPlayer(String s) {
         for(SledgehammerPlayer p : players) {
             if(p.getName().equalsIgnoreCase(s)) {
@@ -76,4 +81,6 @@ public class PlayerManager {
 
         return null;
     }
+
+
 }

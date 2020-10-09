@@ -12,12 +12,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
 package com.noahhusby.sledgehammer.config;
 
+import com.google.common.collect.Lists;
 import com.google.gson.annotations.Expose;
 import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
 import com.noahhusby.sledgehammer.datasets.Location;
@@ -30,6 +31,7 @@ import net.md_5.bungee.api.event.ServerConnectedEvent;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +51,7 @@ public class ServerConfig {
     @Expose(serialize = true, deserialize = true)
     public List<SledgehammerServer> servers = new ArrayList<>();
 
-    public List<ServerInfo> bungeeServers;
+    public LinkedList<ServerInfo> bungeeServers = Lists.newLinkedList();
 
     public List<SledgehammerServer> getServers() {
         return servers;
@@ -72,9 +74,8 @@ public class ServerConfig {
         }
     }
 
-    public List<ServerInfo> getBungeeServers() {
-        if(bungeeServers == null) {
-            bungeeServers = new ArrayList<>();
+    public LinkedList<ServerInfo> getBungeeServers() {
+        if(bungeeServers.isEmpty()) {
             Map<String, ServerInfo> serversTemp = ProxyServer.getInstance().getServers();
             for(Map.Entry<String, ServerInfo> s : serversTemp.entrySet()) {
                 bungeeServers.add(s.getValue());

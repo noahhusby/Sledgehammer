@@ -12,8 +12,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
 package com.noahhusby.sledgehammer.dialogs.scenes.setup;
@@ -32,8 +32,11 @@ import com.noahhusby.sledgehammer.dialogs.DialogHandler;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.chat.TextElement;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ConfigScene extends DialogScene {
@@ -61,15 +64,16 @@ public class ConfigScene extends DialogScene {
     public void onInitialization() {
         if(increase) {
             increase = false;
-            List<ServerInfo> servers = ServerConfig.getInstance().getBungeeServers();
+            LinkedList<ServerInfo> servers = ServerConfig.getInstance().getBungeeServers();
 
-            if(servers.indexOf(server) + 2 > servers.size()) {
+            DialogHandler.getInstance().discardDialog(this);
+
+            if(indexOf(server) + 2 > servers.size()) {
                 getCommandSender().sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Finished the setup dialog!", ChatColor.RED)));
-                DialogHandler.getInstance().discardDialog(this);
                 return;
             }
 
-            DialogHandler.getInstance().startDialog(sender, new ConfigScene(servers.get(servers.indexOf(server)+1)));
+            DialogHandler.getInstance().startDialog(sender, new ConfigScene(servers.get(indexOf(server)+1)));
         }
     }
 
@@ -113,7 +117,8 @@ public class ConfigScene extends DialogScene {
         List<ServerInfo> servers = ServerConfig.getInstance().getBungeeServers();
         ServerInfo currentServer = this.server;
 
-        return new TextElement[]{new TextElement("Server ", ChatColor.GRAY), new TextElement(String.valueOf(servers.indexOf(currentServer)+1), ChatColor.GREEN),
+        return new TextElement[]{new TextElement("Server ", ChatColor.GRAY), new TextElement(String.valueOf(
+                indexOf(currentServer)+1), ChatColor.GREEN),
         new TextElement(" of ", ChatColor.GRAY), new TextElement(String.valueOf(servers.size()), ChatColor.GREEN), new TextElement(" - ", ChatColor.GRAY),
         new TextElement(currentServer.getName(), ChatColor.RED)};
     }
@@ -130,13 +135,13 @@ public class ConfigScene extends DialogScene {
                 List<ServerInfo> servers = ServerConfig.getInstance().getBungeeServers();
                 ServerInfo currentServer = this.server;
 
-                if (servers.indexOf(currentServer) + 2 > servers.size()) {
+                if (indexOf(currentServer) + 2 > servers.size()) {
                     getCommandSender().sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Finished the setup dialog!", ChatColor.RED)));
                     DialogHandler.getInstance().discardDialog(this);
                     return;
                 }
 
-                DialogHandler.getInstance().startDialog(sender, new ConfigScene(servers.get(servers.indexOf(currentServer) + 1)));
+                DialogHandler.getInstance().startDialog(sender, new ConfigScene(server, true));
             }
         } else if (getCurrentComponent() instanceof EarthServerComponent) {
             String response = getValue("earth").trim().toLowerCase();
@@ -165,5 +170,13 @@ public class ConfigScene extends DialogScene {
                 DialogHandler.getInstance().startDialog(sender, new ConfigScene(server, true));
             }
         }
+    }
+
+    private int indexOf(ServerInfo info) {
+        for(int x = 0; x < ServerConfig.getInstance().getBungeeServers().size(); x++) {
+            if(ServerConfig.getInstance().getBungeeServers().get(x).getName().equalsIgnoreCase(info.getName())) return x;
+        }
+
+        return -1;
     }
 }

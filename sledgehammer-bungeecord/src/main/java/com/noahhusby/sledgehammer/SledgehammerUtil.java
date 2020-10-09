@@ -12,8 +12,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
 package com.noahhusby.sledgehammer;
@@ -21,6 +21,7 @@ package com.noahhusby.sledgehammer;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
+import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.projection.GeographicProjection;
 import com.noahhusby.sledgehammer.projection.ModifiedAirocean;
 import com.noahhusby.sledgehammer.projection.ScaleProjection;
@@ -72,6 +73,11 @@ public class SledgehammerUtil {
             Sledgehammer.logger.info("Error occurred while parsing incoming authentication command!");
             return false;
         }
+    }
+
+    public static boolean inEarthRegion(SledgehammerPlayer player) {
+        double[] geo = toGeo(Double.parseDouble(player.getLocation().x), Double.parseDouble(player.getLocation().z));
+        return !(geo == null || geo.length < 1 || Double.isNaN(geo[0]) || Double.isNaN(geo[1]));
     }
 
     public static String getRawArguments(String[] args) {
