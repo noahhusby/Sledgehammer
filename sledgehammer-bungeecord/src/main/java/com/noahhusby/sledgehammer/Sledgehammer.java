@@ -170,7 +170,6 @@ public class Sledgehammer extends Plugin implements Listener {
 
     @EventHandler
     public void onMessage(PluginMessageEvent e) {
-        addonManager.onPluginMessage(e);
         SledgehammerNetworkManager.getInstance().onPluginMessageReceived(e);
     }
 

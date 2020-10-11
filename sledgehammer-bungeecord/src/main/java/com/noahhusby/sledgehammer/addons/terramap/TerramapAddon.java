@@ -49,7 +49,6 @@ public class TerramapAddon extends Addon {
 
     @Override
     public void onPluginMessage(PluginMessageEvent event) {
-    	//FIXME called twice for each packet
         if(event.getTag().equals(MAPSYNC_CHANNEL_NAME)) {
         	mapSyncChannel.process(event);
         } else if(event.getTag().equals(SLEDGEHAMMER_CHANNEL_NAME)) {
