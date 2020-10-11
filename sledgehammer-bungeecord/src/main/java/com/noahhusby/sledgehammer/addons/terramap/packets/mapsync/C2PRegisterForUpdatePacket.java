@@ -1,6 +1,7 @@
-package com.noahhusby.sledgehammer.addons.terramap.packets;
+package com.noahhusby.sledgehammer.addons.terramap.packets.mapsync;
 
 import com.noahhusby.sledgehammer.Sledgehammer;
+import com.noahhusby.sledgehammer.addons.terramap.packets.ForgePacket;
 
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

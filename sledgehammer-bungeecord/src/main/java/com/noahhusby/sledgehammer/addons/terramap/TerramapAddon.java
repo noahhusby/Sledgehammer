@@ -20,8 +20,8 @@ package com.noahhusby.sledgehammer.addons.terramap;
 
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.addons.Addon;
-import com.noahhusby.sledgehammer.addons.terramap.packets.C2PRegisterForUpdatePacket;
 import com.noahhusby.sledgehammer.addons.terramap.packets.P2CSledgehammerHelloPacket;
+import com.noahhusby.sledgehammer.addons.terramap.packets.mapsync.C2PRegisterForUpdatePacket;
 
 import net.md_5.bungee.api.event.PluginMessageEvent;
 
@@ -43,7 +43,7 @@ public class TerramapAddon extends Addon {
     public void onEnable() {
     	this.mapSyncChannel.registerPacket(0, C2PRegisterForUpdatePacket.class);
     	this.sledgehammerChannel.registerPacket(0, P2CSledgehammerHelloPacket.class);
-    	Sledgehammer.setupListener(new EventHandler());
+    	Sledgehammer.setupListener(new TerramapAddonEventHandler());
     	Sledgehammer.logger.info("Enabled Terramap integration addon");
     }
 
