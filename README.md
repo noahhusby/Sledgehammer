@@ -8,9 +8,9 @@ A set of tools for multi-server Build the Earth networks
 * Region Assigning - /tpll will automatically teleport between servers based upon region configuration
 * Global Warps - Set warps and teleport across the network
 * Warp Map - Online map vizualizer with warps. Check out [Sledgehammer Map](https://github.com/noahhusby/Sledgehammer-Map/releases)
+* Border Teleportation (WIP) - Teleport automatically between servers when passing through region borders
 
 #### Future Plans
-* Border Teleportation (WIP) - Teleport automatically between servers when passing through region borders
 * Border Duplication - Duplicate buildings on border for a seamless teleportation experience
 
 ## Installation
