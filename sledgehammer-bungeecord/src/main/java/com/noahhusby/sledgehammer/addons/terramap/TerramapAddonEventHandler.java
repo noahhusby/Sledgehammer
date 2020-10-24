@@ -20,6 +20,7 @@ public class TerramapAddonEventHandler implements Listener {
     			PlayerSyncStatus.getFromBoolean(true),
     			PlayerSyncStatus.getFromBoolean(true),
     			true,
+    			false,
     			false
     		));
     }

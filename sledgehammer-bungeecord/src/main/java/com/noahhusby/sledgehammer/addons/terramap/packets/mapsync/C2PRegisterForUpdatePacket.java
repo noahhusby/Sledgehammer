@@ -1,7 +1,10 @@
 package com.noahhusby.sledgehammer.addons.terramap.packets.mapsync;
 
 import com.noahhusby.sledgehammer.Sledgehammer;
+import com.noahhusby.sledgehammer.addons.terramap.TerramapAddon;
 import com.noahhusby.sledgehammer.addons.terramap.packets.ForgePacket;
+import com.noahhusby.sledgehammer.players.PlayerManager;
+import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -12,7 +15,8 @@ public class C2PRegisterForUpdatePacket extends ForgePacket {
 	boolean register;
 
 	@Override
-	public void encode(ByteBuf stream) {
+	public void encode(ByteBuf buf) {
+		buf.writeBoolean(this.register);
 	}
 
 	@Override
@@ -28,8 +32,14 @@ public class C2PRegisterForUpdatePacket extends ForgePacket {
 
 	@Override
 	public boolean processFromClient(String channel, ProxiedPlayer fromPlayer, Server toServer) {
-		//TODO Implement instead of logging
-		Sledgehammer.logger.info("Got player register for " + fromPlayer.getDisplayName() + "/" + fromPlayer.getUniqueId() + ", value=" + this.register);
+		SledgehammerPlayer player = PlayerManager.getInstance().getPlayer(fromPlayer.getName());
+		if(this.register) {
+			Sledgehammer.sledgehammer.getProxy().getScheduler().runAsync(Sledgehammer.sledgehammer, 
+				() -> TerramapAddon.instance.synchronizer.registerPlayer(player) );
+		} else {
+			Sledgehammer.sledgehammer.getProxy().getScheduler().runAsync(Sledgehammer.sledgehammer,
+				() -> TerramapAddon.instance.synchronizer.unregisterPlayer(player) );
+		}
 		return true; // Do not send to server
 	}
 

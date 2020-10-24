@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.addons.terramap.packets.ForgePacket;
+import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -68,6 +69,10 @@ public class ForgeChannel {
 		stream.writeByte(discriminator);
 		pkt.encode(stream);
 		to.sendData(this.channelName, stream.array());
+	}
+	
+	public void send(SledgehammerPlayer to, ForgePacket pkt) {
+		this.send((ProxiedPlayer)to, pkt);
 	}
 	
 	// This method is duplicated because ProxiedPlayer::sendData and Server::sendData do not share a supertype description
