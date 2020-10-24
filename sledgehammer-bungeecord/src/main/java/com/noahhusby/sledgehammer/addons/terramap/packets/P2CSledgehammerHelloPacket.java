@@ -14,13 +14,15 @@ public class P2CSledgehammerHelloPacket extends ForgePacket {
 	public PlayerSyncStatus syncSpectators = PlayerSyncStatus.DISABLED;
 	public boolean globalmap = true; // If true, the Terramap allows users to open the map on non-terra worlds
 	public boolean globalSettings = false; // Should settings and preferences be saved for the whole network (true) or per server (false)
+	public boolean hasWarpSupport = false; // Do this server have warp support
 	
-	public P2CSledgehammerHelloPacket(String version, PlayerSyncStatus syncPlayers, PlayerSyncStatus syncSpectators, boolean globalMap, boolean globalSettings) {
+	public P2CSledgehammerHelloPacket(String version, PlayerSyncStatus syncPlayers, PlayerSyncStatus syncSpectators, boolean globalMap, boolean globalSettings, boolean hasWarpSupport) {
 		this.version = version;
 		this.syncPlayers = syncPlayers;
 		this.syncSpectators = syncSpectators;
 		this.globalmap = globalMap;
 		this.globalSettings = globalSettings;
+		this.hasWarpSupport = hasWarpSupport;
 	}
 	
 	public P2CSledgehammerHelloPacket() {}
@@ -32,6 +34,7 @@ public class P2CSledgehammerHelloPacket extends ForgePacket {
 		buf.writeByte(this.syncSpectators.VALUE);
 		buf.writeBoolean(this.globalmap);
 		buf.writeBoolean(this.globalSettings);
+		buf.writeBoolean(this.hasWarpSupport);
 	}
 
 	@Override
@@ -41,6 +44,7 @@ public class P2CSledgehammerHelloPacket extends ForgePacket {
 		this.syncSpectators = PlayerSyncStatus.getFromNetworkCode(buf.readByte());
 		this.globalmap = buf.readBoolean();
 		this.globalSettings = buf.readBoolean();
+		this.hasWarpSupport = buf.readBoolean();
 	}
 
 	@Override
