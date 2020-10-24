@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.addons.terramap.packets.ForgePacket;
-import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -31,18 +30,17 @@ public class ForgeChannel {
 		try {
 			ByteBuf stream = Unpooled.copiedBuffer(event.getData());
 			int discriminator = stream.readByte();
-			Class<? extends ForgePacket> clazz = packetMap.get(discriminator);
-			if(clazz == null) {
-				Sledgehammer.logger.warning("Received an unregistered packet! Discriminator: " + discriminator);
-				return;
-			}
-			ForgePacket packetHandler = clazz.newInstance();
-			packetHandler.decode(stream);
-			boolean cancel = false;
+			ProxiedPlayer player;
+			Server server;
+			boolean player2server = true;
 			if(event.getSender() instanceof ProxiedPlayer && event.getReceiver() instanceof Server) {
-				cancel = packetHandler.processFromClient(this.channelName, (ProxiedPlayer)event.getSender(), (Server)event.getReceiver());
+				player = (ProxiedPlayer)event.getSender();
+				server = (Server)event.getReceiver();
+				player2server = true;
 			} else if(event.getSender() instanceof Server && event.getReceiver() instanceof ProxiedPlayer) {
-				cancel = packetHandler.processFromServer(this.channelName, (Server)event.getSender(), (ProxiedPlayer)event.getReceiver());
+				player = (ProxiedPlayer)event.getReceiver();
+				server = (Server)event.getSender();
+				player2server = false;
 			} else {
 				Sledgehammer.logger.warning(
 						"Got an unknow combination of sender/receiver in Forge channel " + this.channelName + " channel. " +
@@ -51,6 +49,22 @@ public class ForgeChannel {
 						", Packet discriminator " + discriminator);
 				return;
 			}
+			Class<? extends ForgePacket> clazz = packetMap.get(discriminator);
+			if(clazz == null) {
+				if(player2server) {
+					throw new PacketEncodingException("Received an unregistered packet from player" + player.getName() + "/" + player.getUniqueId() + "/" + player.getSocketAddress() + " for server" + server.getInfo().getName() + "! Discriminator: " + discriminator);
+				} else if(event.getSender() instanceof Server && event.getReceiver() instanceof ProxiedPlayer) {
+					throw new PacketEncodingException("Received an unregistered packet from server " + server.getInfo().getName() + " for player " + player.getName() + "/" + player.getUniqueId() + "/" + player.getSocketAddress() + "! Discriminator: " + discriminator);
+				}
+			}
+			ForgePacket packetHandler = clazz.newInstance();
+			packetHandler.decode(stream);
+			boolean cancel = false;
+			if(player2server) {
+				cancel = packetHandler.processFromClient(this.channelName, player, server);
+			} else {
+				cancel = packetHandler.processFromServer(this.channelName, server, player);
+			}
 			if(cancel) event.setCancelled(cancel);
 		} catch(Exception e) {
 			Sledgehammer.logger.warning("Failed to process a Forge packet!");
@@ -58,34 +72,44 @@ public class ForgeChannel {
 		}
 	}
 	
-	// This method is duplicated because ProxiedPlayer::sendData and Server::sendData do not share a supertype description
-	public void send(ProxiedPlayer to, ForgePacket pkt) {
+	public void send(ForgePacket pkt, ProxiedPlayer to) {
+		try {
+			to.sendData(this.channelName, this.encode(pkt));
+		} catch(Exception e) {
+			Sledgehammer.logger.warning("Failed to send a Forge packet to player " + to.getName() + "/" + to.getUniqueId() + " in channel " + this.channelName + " : " + e);
+		}
+	}
+	
+	public void send(ForgePacket pkt, ProxiedPlayer... to) {
+		int sent = 0;
+		try {
+			byte[] data = this.encode(pkt);
+			for(ProxiedPlayer player: to) {
+				player.sendData(this.channelName, data);
+				sent++;
+			}
+		} catch(Exception e) {
+			Sledgehammer.logger.warning("Failed to send a Forge packet to " + (to.length - sent) + "players in channel " + this.channelName + " : " + e);
+		}
+	}
+	
+	public void send(ForgePacket pkt, Server to) {
+		try {
+			to.sendData(this.channelName, this.encode(pkt));
+		} catch(Exception e) {
+			Sledgehammer.logger.warning("Failed to send a Forge packet to server " + to.getInfo().getName() + " in channel " + this.channelName + " : " + e);
+		}
+	}
+	
+	private byte[] encode(ForgePacket pkt) throws PacketEncodingException {
 		if(!discriminatorMap.containsKey(pkt.getClass())) {
-			Sledgehammer.logger.warning("Tried to send a Forge packet which has not been registered!");
-			return;
+			throw new PacketEncodingException("Could not encode packet of class " + pkt.getClass().getCanonicalName() + " as it has not been registered to this channel");
 		}
 		int discriminator = discriminatorMap.get(pkt.getClass());
 		ByteBuf stream = Unpooled.buffer();
 		stream.writeByte(discriminator);
 		pkt.encode(stream);
-		to.sendData(this.channelName, stream.array());
-	}
-	
-	public void send(SledgehammerPlayer to, ForgePacket pkt) {
-		this.send((ProxiedPlayer)to, pkt);
-	}
-	
-	// This method is duplicated because ProxiedPlayer::sendData and Server::sendData do not share a supertype description
-	public void send(Server to, ForgePacket pkt) {
-		if(!discriminatorMap.containsKey(pkt.getClass())) {
-			Sledgehammer.logger.warning("Tried to send a Forge packet which has not been registered!");
-			return;
-		}
-		int discriminator = discriminatorMap.get(pkt.getClass());
-		ByteBuf stream = Unpooled.buffer();
-		stream.writeByte(discriminator);
-		pkt.encode(stream);
-		to.sendData(this.channelName, stream.array());
+		return stream.array();
 	}
 
 	public void registerPacket(int discriminator, Class<? extends ForgePacket> clazz) {

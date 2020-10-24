@@ -18,6 +18,7 @@ public class RemoteSynchronizer {
 	public Map<UUID, RegisteredForUpdatePlayer> playersToUpdate = new HashMap<UUID, RegisteredForUpdatePlayer>();
 
 	public void syncPlayers() {
+		if(this.playersToUpdate.size() <= 0) return;
 		long ctime = System.currentTimeMillis();
 		List<SledgehammerPlayer> players = new ArrayList<SledgehammerPlayer>();
 		for(SledgehammerPlayer player: PlayerManager.getInstance().getPlayers()) {
@@ -27,14 +28,17 @@ public class RemoteSynchronizer {
 			//if(terraPlayer.isSpectator() && !TerramapConfig.ServerConfig.synchronizeSpectators) continue;
 			players.add(player);
 		}
-		P2CPlayerSyncPacket pkt = new P2CPlayerSyncPacket(players.toArray(new SledgehammerPlayer[players.size()]));
+		SledgehammerPlayer[] players2send2 = new SledgehammerPlayer[this.playersToUpdate.size()];
+		int i = 0;
 		for(RegisteredForUpdatePlayer player: this.playersToUpdate.values()) {
-			TerramapAddon.instance.mapSyncChannel.send(player.player, pkt);
+			players2send2[i++] = player.player;
 		}
+		P2CPlayerSyncPacket pkt = new P2CPlayerSyncPacket(players.toArray(new SledgehammerPlayer[players.size()]));
+		TerramapAddon.instance.mapSyncChannel.send(pkt, players2send2);
 		for(RegisteredForUpdatePlayer player: this.playersToUpdate.values()) {
 			if(ctime - player.lastRegisterTime > ConfigHandler.terramapSyncTimeout - 10000 && !player.noticeSent) {
 				Sledgehammer.logger.fine("Sending registration expires notice to " + player.player.getName());
-				TerramapAddon.instance.mapSyncChannel.send(player.player, new P2CRegistrationExpiresPacket());
+				TerramapAddon.instance.mapSyncChannel.send(new P2CRegistrationExpiresPacket(), player.player);
 				player.noticeSent = true;
 			}
 		}
@@ -42,7 +46,7 @@ public class RemoteSynchronizer {
 			if(ctime - player.lastRegisterTime > ConfigHandler.terramapSyncTimeout) {
 				Sledgehammer.logger.fine("Unregistering " + player.player.getName() + " from map update as it did not renew its registration");
 				this.playersToUpdate.remove(player.player.getUniqueId());
-				TerramapAddon.instance.mapSyncChannel.send(player.player, new P2CRegistrationExpiresPacket());
+				TerramapAddon.instance.mapSyncChannel.send(new P2CRegistrationExpiresPacket(), player.player);
 			}
 		}
 	}

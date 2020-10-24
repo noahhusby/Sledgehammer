@@ -15,14 +15,14 @@ public class TerramapAddonEventHandler implements Listener {
 		String version = ProxyServer.getInstance().getPluginManager().getPlugin("Sledgehammer").getDescription().getVersion();
 		
 		//TODO Config options for player sync, spec sync, global map and global settings
-    	TerramapAddon.instance.sledgehammerChannel.send(event.getPlayer(), new P2CSledgehammerHelloPacket(
+    	TerramapAddon.instance.sledgehammerChannel.send(new P2CSledgehammerHelloPacket(
     			version,
     			PlayerSyncStatus.getFromBoolean(true),
     			PlayerSyncStatus.getFromBoolean(true),
     			true,
     			false,
     			false
-    		));
+    		), event.getPlayer());
     }
 
 }
