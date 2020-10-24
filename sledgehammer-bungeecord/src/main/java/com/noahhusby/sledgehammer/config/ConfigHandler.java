@@ -84,6 +84,8 @@ public class ConfigHandler {
     public static int terramapSyncTimeout;
     public static boolean terramapPlayersDisplayDefault;
     public static boolean terramapSendCustomMapsToClient;
+    public static boolean terramapGlobalMap;
+    public static boolean terramapGlobalSettings;
 
     private String category;
 
@@ -176,7 +178,10 @@ public class ConfigHandler {
         		"If player sync is enabled, sould players be displayed by default (true) or should they opt-in (false)");
         terramapSendCustomMapsToClient = config.getBoolean(prop("Send Custom Maps to Clients"), "Terramap", true, //TODO Send cusom maps to clients
         		"Set to false if you do not want to send custom maps to clients. This is only for testing, as if you don't want to send map styles to client, the first thing to do is to not configure any.");
-        
+        terramapGlobalMap = config.getBoolean(prop("Global Map"), "Terramap", true,
+        		"Set this to false to only allow players to use the map when they are on an Earth world.");
+        terramapGlobalMap = config.getBoolean(prop("Global Settings"), "Terramap", true,
+        		"Set this to true is you want client's settings to be saved for the entire network instead of per-world.");
         order();
 
         File f = new File(dataFolder, "offline.bin");

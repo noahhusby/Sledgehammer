@@ -2,6 +2,7 @@ package com.noahhusby.sledgehammer.addons.terramap;
 
 import com.noahhusby.sledgehammer.addons.terramap.network.packets.P2CSledgehammerHelloPacket;
 import com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync.PlayerSyncStatus;
+import com.noahhusby.sledgehammer.config.ConfigHandler;
 
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PostLoginEvent;
@@ -13,15 +14,14 @@ public class TerramapAddonEventHandler implements Listener {
 	@EventHandler
     public void onPostLogin(PostLoginEvent event) {
 		String version = ProxyServer.getInstance().getPluginManager().getPlugin("Sledgehammer").getDescription().getVersion();
-		
-		//TODO Config options for player sync, spec sync, global map and global settings
+		PlayerSyncStatus syncStatus = PlayerSyncStatus.getFromBoolean(ConfigHandler.terramapSyncPlayers);
     	TerramapAddon.instance.sledgehammerChannel.send(new P2CSledgehammerHelloPacket(
     			version,
-    			PlayerSyncStatus.getFromBoolean(true),
-    			PlayerSyncStatus.getFromBoolean(true),
-    			true,
-    			false,
-    			false
+    			syncStatus,
+    			syncStatus,
+    			ConfigHandler.terramapGlobalMap,
+    			ConfigHandler.terramapGlobalSettings,
+    			false // We do not have warp support yet
     		), event.getPlayer());
     }
 
