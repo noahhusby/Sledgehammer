@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.noahhusby.sledgehammer.Sledgehammer;
-import com.noahhusby.sledgehammer.addons.terramap.packets.mapsync.P2CPlayerSyncPacket;
-import com.noahhusby.sledgehammer.addons.terramap.packets.mapsync.P2CRegistrationExpiresPacket;
+import com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync.P2CPlayerSyncPacket;
+import com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync.P2CRegistrationExpiresPacket;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.players.PlayerManager;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;

@@ -1,4 +1,4 @@
-package com.noahhusby.sledgehammer.addons.terramap;
+package com.noahhusby.sledgehammer.addons.terramap.network;
 
 public class PacketEncodingException extends Exception {
 

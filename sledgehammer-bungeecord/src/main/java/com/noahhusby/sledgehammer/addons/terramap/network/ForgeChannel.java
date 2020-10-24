@@ -1,10 +1,10 @@
-package com.noahhusby.sledgehammer.addons.terramap;
+package com.noahhusby.sledgehammer.addons.terramap.network;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import com.noahhusby.sledgehammer.Sledgehammer;
-import com.noahhusby.sledgehammer.addons.terramap.packets.ForgePacket;
+import com.noahhusby.sledgehammer.addons.terramap.network.packets.ForgePacket;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

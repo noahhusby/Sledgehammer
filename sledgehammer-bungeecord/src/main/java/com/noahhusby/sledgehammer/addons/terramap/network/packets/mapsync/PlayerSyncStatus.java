@@ -1,4 +1,4 @@
-package com.noahhusby.sledgehammer.addons.terramap.packets.mapsync;
+package com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync;
 
 public enum PlayerSyncStatus {
 		

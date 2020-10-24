@@ -1,6 +1,6 @@
-package com.noahhusby.sledgehammer.addons.terramap.packets;
+package com.noahhusby.sledgehammer.addons.terramap.network.packets;
 
-import com.noahhusby.sledgehammer.addons.terramap.packets.mapsync.PlayerSyncStatus;
+import com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync.PlayerSyncStatus;
 
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

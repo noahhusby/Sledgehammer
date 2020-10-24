@@ -1,7 +1,7 @@
 package com.noahhusby.sledgehammer.addons.terramap;
 
-import com.noahhusby.sledgehammer.addons.terramap.packets.P2CSledgehammerHelloPacket;
-import com.noahhusby.sledgehammer.addons.terramap.packets.mapsync.PlayerSyncStatus;
+import com.noahhusby.sledgehammer.addons.terramap.network.packets.P2CSledgehammerHelloPacket;
+import com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync.PlayerSyncStatus;
 
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PostLoginEvent;

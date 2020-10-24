@@ -22,9 +22,10 @@ import java.util.concurrent.TimeUnit;
 
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.addons.Addon;
-import com.noahhusby.sledgehammer.addons.terramap.packets.P2CSledgehammerHelloPacket;
-import com.noahhusby.sledgehammer.addons.terramap.packets.mapsync.C2PRegisterForUpdatePacket;
-import com.noahhusby.sledgehammer.addons.terramap.packets.mapsync.P2CPlayerSyncPacket;
+import com.noahhusby.sledgehammer.addons.terramap.network.ForgeChannel;
+import com.noahhusby.sledgehammer.addons.terramap.network.packets.P2CSledgehammerHelloPacket;
+import com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync.C2PRegisterForUpdatePacket;
+import com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync.P2CPlayerSyncPacket;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 
 import net.md_5.bungee.api.event.PluginMessageEvent;

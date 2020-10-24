@@ -1,8 +1,8 @@
-package com.noahhusby.sledgehammer.addons.terramap.packets.mapsync;
+package com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync;
 
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.addons.terramap.TerramapAddon;
-import com.noahhusby.sledgehammer.addons.terramap.packets.ForgePacket;
+import com.noahhusby.sledgehammer.addons.terramap.network.packets.ForgePacket;
 import com.noahhusby.sledgehammer.players.PlayerManager;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 
