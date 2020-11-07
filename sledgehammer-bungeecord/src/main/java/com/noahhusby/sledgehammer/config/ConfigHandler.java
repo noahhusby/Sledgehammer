@@ -18,19 +18,20 @@
 
 package com.noahhusby.sledgehammer.config;
 
-import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.noahhusby.sledgehammer.Sledgehammer;
-import com.noahhusby.sledgehammer.warp.WarpHandler;
-import org.apache.commons.io.FileUtils;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
+
+import org.apache.commons.io.FileUtils;
+
+import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.noahhusby.sledgehammer.Sledgehammer;
+import com.noahhusby.sledgehammer.warp.WarpHandler;
 
 public class ConfigHandler {
     private static ConfigHandler mInstance = null;
@@ -78,6 +79,13 @@ public class ConfigHandler {
     public static String mapLink = "";
 
     public static boolean terramapEnabled;
+    public static boolean terramapSyncPlayers;
+    public static int terramapSyncInterval;
+    public static int terramapSyncTimeout;
+    public static boolean terramapPlayersDisplayDefault;
+    public static boolean terramapSendCustomMapsToClient;
+    public static boolean terramapGlobalMap;
+    public static boolean terramapGlobalSettings;
 
     private String category;
 
@@ -158,6 +166,22 @@ public class ConfigHandler {
         terramapEnabled = config.getBoolean(prop("Terramap Compatibility"), "Addons", false,
                 "Set to 'true' to enable Terramap compatibility.\nThis will allow clients to see players across the entire network on the map.\n" +
                         "It will also display network warps on the map.");
+        
+        cat("Terramap", "Terramap addon configuration. The addon needs to be enabled.");
+        terramapSyncPlayers = config.getBoolean(prop("Sync Players"), "Terramap", true,
+        		"Wether or not to synchronize players from server to client so everyone appears on the map, no matter the distance");
+        terramapSyncInterval = config.getInt(prop("Sync Interval"), "Terramap", 500, 1, Integer.MAX_VALUE,
+        		"The time interval at which to synchronize players with clients");
+        terramapSyncTimeout = config.getInt(prop("Sync Timeout"), "Terramap", 1500, 120000, Integer.MAX_VALUE,
+                "The default time interval, in milliseconds, before a clients needs to register again to continue getting player updates.");
+        terramapPlayersDisplayDefault = config.getBoolean(prop("Player Display Default"), "Terramap", true, //TODO Player display preferences
+        		"If player sync is enabled, sould players be displayed by default (true) or should they opt-in (false)");
+        terramapSendCustomMapsToClient = config.getBoolean(prop("Send Custom Maps to Clients"), "Terramap", true, //TODO Send cusom maps to clients
+        		"Set to false if you do not want to send custom maps to clients. This is only for testing, as if you don't want to send map styles to client, the first thing to do is to not configure any.");
+        terramapGlobalMap = config.getBoolean(prop("Global Map"), "Terramap", true,
+        		"Set this to false to only allow players to use the map when they are on an Earth world.");
+        terramapGlobalMap = config.getBoolean(prop("Global Settings"), "Terramap", true,
+        		"Set this to true is you want client's settings to be saved for the entire network instead of per-world.");
         order();
 
         File f = new File(dataFolder, "offline.bin");

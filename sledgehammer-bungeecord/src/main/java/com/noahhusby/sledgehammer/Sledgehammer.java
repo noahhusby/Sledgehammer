@@ -18,36 +18,40 @@
 
 package com.noahhusby.sledgehammer;
 
-import com.google.common.collect.Maps;
-import com.noahhusby.sledgehammer.addons.AddonManager;
-import com.noahhusby.sledgehammer.addons.TerramapAddon;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
-import com.noahhusby.sledgehammer.commands.*;
-import com.noahhusby.sledgehammer.commands.data.Command;
-import com.noahhusby.sledgehammer.config.ConfigHandler;
-import com.noahhusby.sledgehammer.config.ServerConfig;
-import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
-import com.noahhusby.sledgehammer.maps.MapThread;
-import com.noahhusby.sledgehammer.players.BorderCheckerThread;
-import com.noahhusby.sledgehammer.players.FlaggedBorderCheckerThread;
-import com.noahhusby.sledgehammer.players.PlayerManager;
-import com.noahhusby.sledgehammer.maps.MapHandler;
-import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.event.*;
-import net.md_5.bungee.api.plugin.Listener;
-import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.event.EventHandler;
-import net.minecraftforge.common.config.Config;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+
+import com.noahhusby.sledgehammer.addons.AddonManager;
+import com.noahhusby.sledgehammer.addons.terramap.TerramapAddon;
+import com.noahhusby.sledgehammer.chat.ChatHelper;
+import com.noahhusby.sledgehammer.commands.CsTpllCommand;
+import com.noahhusby.sledgehammer.commands.SledgehammerAdminCommand;
+import com.noahhusby.sledgehammer.commands.SledgehammerCommand;
+import com.noahhusby.sledgehammer.commands.TpllCommand;
+import com.noahhusby.sledgehammer.commands.TplloCommand;
+import com.noahhusby.sledgehammer.commands.WarpCommand;
+import com.noahhusby.sledgehammer.config.ConfigHandler;
+import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
+import com.noahhusby.sledgehammer.maps.MapHandler;
+import com.noahhusby.sledgehammer.maps.MapThread;
+import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
+import com.noahhusby.sledgehammer.players.BorderCheckerThread;
+import com.noahhusby.sledgehammer.players.FlaggedBorderCheckerThread;
+import com.noahhusby.sledgehammer.players.PlayerManager;
+
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.event.PlayerDisconnectEvent;
+import net.md_5.bungee.api.event.PluginMessageEvent;
+import net.md_5.bungee.api.event.PostLoginEvent;
+import net.md_5.bungee.api.event.ServerConnectedEvent;
+import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.event.EventHandler;
 
 public class Sledgehammer extends Plugin implements Listener {
     public static Logger logger;
@@ -59,7 +63,7 @@ public class Sledgehammer extends Plugin implements Listener {
 
     @Override
     public void onEnable() {
-        this.sledgehammer = this;
+        sledgehammer = this;
         logger = getLogger();
 
         alternativeThreads.setRemoveOnCancelPolicy(true);
@@ -166,7 +170,6 @@ public class Sledgehammer extends Plugin implements Listener {
 
     @EventHandler
     public void onMessage(PluginMessageEvent e) {
-        addonManager.onPluginMessage(e);
         SledgehammerNetworkManager.getInstance().onPluginMessageReceived(e);
     }
 
