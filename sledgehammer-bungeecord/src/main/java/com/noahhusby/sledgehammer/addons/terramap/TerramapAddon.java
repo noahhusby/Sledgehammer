@@ -18,6 +18,7 @@
 
 package com.noahhusby.sledgehammer.addons.terramap;
 
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import com.noahhusby.sledgehammer.Sledgehammer;
@@ -45,6 +46,8 @@ public class TerramapAddon extends Addon {
 	public final ForgeChannel sledgehammerChannel = new ForgeChannel(SLEDGEHAMMER_CHANNEL_NAME);
 	
 	public final RemoteSynchronizer synchronizer = new RemoteSynchronizer();
+	
+	private UUID proxyUUID = new UUID(0, 0);
 
 	
 	public TerramapAddon() {
@@ -57,6 +60,11 @@ public class TerramapAddon extends Addon {
     	this.mapSyncChannel.registerPacket(1, P2CPlayerSyncPacket.class);
     	this.mapSyncChannel.registerPacket(2, P2CRegistrationExpiresPacket.class);
     	this.sledgehammerChannel.registerPacket(0, P2CSledgehammerHelloPacket.class);
+    	try {
+    		this.proxyUUID = UUID.fromString(ConfigHandler.terramapProxyUUID);
+    	} catch(IllegalArgumentException e) {
+    		Sledgehammer.logger.warning("Failed to parse Terramap proxy uuid. Will be using 0.");
+    	}
     	Sledgehammer.setupListener(new TerramapAddonEventHandler());
     	if(ConfigHandler.terramapSyncPlayers) {
     		Sledgehammer.sledgehammer.getProxy().getScheduler().schedule(Sledgehammer.sledgehammer, this.synchronizer::syncPlayers, 0, ConfigHandler.terramapSyncInterval, TimeUnit.MILLISECONDS);
@@ -78,4 +86,9 @@ public class TerramapAddon extends Addon {
     public String[] getMessageChannels() {
         return new String[]{SLEDGEHAMMER_CHANNEL_NAME, MAPSYNC_CHANNEL_NAME};
     }
+    
+    public UUID getProxyUUID() {
+    	return this.proxyUUID;
+    }
+    
 }

@@ -21,7 +21,8 @@ public class TerramapAddonEventHandler implements Listener {
     			syncStatus,
     			ConfigHandler.terramapGlobalMap,
     			ConfigHandler.terramapGlobalSettings,
-    			false // We do not have warp support yet
+    			false, // We do not have warp support yet
+    			TerramapAddon.instance.getProxyUUID()
     		), event.getPlayer());
     }
 

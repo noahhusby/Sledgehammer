@@ -22,6 +22,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -87,6 +88,7 @@ public class ConfigHandler {
     public static boolean terramapSendCustomMapsToClient;
     public static boolean terramapGlobalMap;
     public static boolean terramapGlobalSettings;
+    public static String terramapProxyUUID;
 
     private String category;
 
@@ -182,8 +184,10 @@ public class ConfigHandler {
         		"Set to false if you do not want to send custom maps to clients. This is only for testing, as if you don't want to send map styles to client, the first thing to do is to not configure any.");
         terramapGlobalMap = config.getBoolean(prop("Global Map"), "Terramap", true,
         		"Set this to false to only allow players to use the map when they are on an Earth world.");
-        terramapGlobalMap = config.getBoolean(prop("Global Settings"), "Terramap", true,
+        terramapGlobalSettings = config.getBoolean(prop("Global Settings"), "Terramap", true,
         		"Set this to true is you want client's settings to be saved for the entire network instead of per-world.");
+        terramapProxyUUID = config.getString(prop("Proxy UUID"), "terramap", UUID.randomUUID().toString(), 
+        		"A UUID v4 that will be used by Terramap clients to identify this network. DO NOT PUT YOUR NETWORK AUTHENTIFICATION CODE IN HERE, THIS IS SHARED WITH CLIENTS! You want this to be the same on all your network's proxies. The default value is randomly generated.");
         order();
 
         File f = new File(dataFolder, "offline.bin");
