@@ -18,6 +18,8 @@
 
 package com.noahhusby.sledgehammer.players;
 
+import com.noahhusby.sledgehammer.addons.terramap.TerramapAddon;
+import com.noahhusby.sledgehammer.addons.terramap.TerramapVersion;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
 import com.noahhusby.sledgehammer.datasets.Point;
@@ -308,6 +310,15 @@ public class SledgehammerPlayer implements ProxiedPlayer {
         SledgehammerServer server = ServerConfig.getInstance().getServer(playerServer.getInfo().getName());
         if(server == null) return false;
         return server.earthServer;
+    }
+    
+    /**
+     * @author SmylerMC
+     * 
+     * @return whether or not this player has compatible version of Terramap installed
+     */
+    public boolean hasCompatibleTerramap() {
+    	return TerramapAddon.MINIMUM_COMPATIBLE_VERSION.isOlderOrSame(TerramapVersion.getClientVersion(this));
     }
 
     public Point getLocation() {

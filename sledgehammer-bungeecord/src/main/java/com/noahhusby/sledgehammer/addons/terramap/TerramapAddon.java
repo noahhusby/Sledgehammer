@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.addons.Addon;
+import com.noahhusby.sledgehammer.addons.terramap.TerramapVersion.ReleaseType;
 import com.noahhusby.sledgehammer.addons.terramap.commands.TerrashowCommand;
 import com.noahhusby.sledgehammer.addons.terramap.network.ForgeChannel;
 import com.noahhusby.sledgehammer.addons.terramap.network.packets.P2CMapStylePacket;
@@ -42,6 +43,7 @@ public class TerramapAddon extends Addon {
 	public static final String TERRAMAP_MODID = "terramap";
 	public static final String MAPSYNC_CHANNEL_NAME = "terramap:mapsync";
 	public static final String SLEDGEHAMMER_CHANNEL_NAME = "terramap:sh"; // Forge does not support channel names longer than 20
+	public static final TerramapVersion MINIMUM_COMPATIBLE_VERSION = new TerramapVersion(1, 0, 0, ReleaseType.BETA, 6, 0);
 	
 	public final ForgeChannel mapSyncChannel = new ForgeChannel(MAPSYNC_CHANNEL_NAME);
 	public final ForgeChannel sledgehammerChannel = new ForgeChannel(SLEDGEHAMMER_CHANNEL_NAME);

@@ -12,7 +12,6 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 
-//TODO Only actually send messages if clients have this channel registered
 public class ForgeChannel {
 
 	private String channelName;
