@@ -89,7 +89,7 @@ public class ForgeChannel {
 				sent++;
 			}
 		} catch(Exception e) {
-			Sledgehammer.logger.warning("Failed to send a Forge packet to " + (to.length - sent) + "players in channel " + this.channelName + " : " + e);
+			Sledgehammer.logger.warning("Failed to send a Forge packet to " + (to.length - sent) + " players in channel " + this.channelName + " : " + e);
 		}
 	}
 	

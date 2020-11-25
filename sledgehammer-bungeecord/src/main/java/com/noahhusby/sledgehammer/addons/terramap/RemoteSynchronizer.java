@@ -23,9 +23,7 @@ public class RemoteSynchronizer {
 		List<SledgehammerPlayer> players = new ArrayList<SledgehammerPlayer>();
 		for(SledgehammerPlayer player: PlayerManager.getInstance().getPlayers()) {
 			if(!player.onEarthServer()) continue;
-			//TODO Handle display preferences and sync configuration
-			//if(!TerramapServerPreferences.shouldDisplayPlayer(player.getPersistentID())) continue;
-			//if(terraPlayer.isSpectator() && !TerramapConfig.ServerConfig.synchronizeSpectators) continue;
+			if(!PlayerDisplayPreferences.shouldDisplayPlayer(player.getUniqueId())) continue;
 			players.add(player);
 		}
 		SledgehammerPlayer[] players2send2 = new SledgehammerPlayer[this.playersToUpdate.size()];

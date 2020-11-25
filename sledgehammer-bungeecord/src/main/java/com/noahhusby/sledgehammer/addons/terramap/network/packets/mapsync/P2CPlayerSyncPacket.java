@@ -11,6 +11,7 @@ import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.protocol.DefinedPacket;
 
+//TODO Do not intercept is the proxy has player sync disabled
 public class P2CPlayerSyncPacket extends ForgePacket {
 
 	public SledgehammerPlayer[] players;

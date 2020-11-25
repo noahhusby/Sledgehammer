@@ -10,6 +10,7 @@ import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 
+//TODO Do not intercept is the proxy has player sync disabled
 public class C2PRegisterForUpdatePacket extends ForgePacket {
 	
 	boolean register;

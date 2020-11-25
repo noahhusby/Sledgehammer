@@ -31,6 +31,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.noahhusby.sledgehammer.Sledgehammer;
+import com.noahhusby.sledgehammer.addons.terramap.PlayerDisplayPreferences;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
 
 public class ConfigHandler {
@@ -186,6 +187,10 @@ public class ConfigHandler {
 
         File f = new File(dataFolder, "offline.bin");
         doesOfflineExist = f.exists();
+        
+    	File serverPrefs = new File(dataFolder + PlayerDisplayPreferences.FILENAME);
+    	PlayerDisplayPreferences.setFile(serverPrefs);
+    	PlayerDisplayPreferences.load();
     }
 
     public boolean isAuthCodeConfigured() {
