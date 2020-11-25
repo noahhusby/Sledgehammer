@@ -1,5 +1,6 @@
 package com.noahhusby.sledgehammer.addons.terramap;
 
+import com.noahhusby.sledgehammer.addons.terramap.network.packets.P2CMapStylePacket;
 import com.noahhusby.sledgehammer.addons.terramap.network.packets.P2CSledgehammerHelloPacket;
 import com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync.PlayerSyncStatus;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
@@ -24,6 +25,11 @@ public class TerramapAddonEventHandler implements Listener {
     			false, // We do not have warp support yet
     			TerramapAddon.instance.getProxyUUID()
     		), event.getPlayer());
+    	if(ConfigHandler.terramapSendCustomMapsToClient) {
+    		for(P2CMapStylePacket packet: MapStyleRegistry.getMaps().values()) {
+    			TerramapAddon.instance.sledgehammerChannel.send(packet, event.getPlayer());
+    		}
+    	}
     }
 
 }

@@ -32,6 +32,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.noahhusby.sledgehammer.Sledgehammer;
+import com.noahhusby.sledgehammer.addons.terramap.MapStyleRegistry;
 import com.noahhusby.sledgehammer.addons.terramap.PlayerDisplayPreferences;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
 
@@ -180,7 +181,7 @@ public class ConfigHandler {
         terramapPlayersDisplayDefault = config.getBoolean(prop("Player Display Default"), "Terramap", true,
         		"If player sync is enabled, sould players be displayed by default (true) or should they opt-in (false)");
         
-        terramapSendCustomMapsToClient = config.getBoolean(prop("Send Custom Maps to Clients"), "Terramap", true, //TODO Send cusom maps to clients
+        terramapSendCustomMapsToClient = config.getBoolean(prop("Send Custom Maps to Clients"), "Terramap", true,
         		"Set to false if you do not want to send custom maps to clients. This is only for testing, as if you don't want to send map styles to client, the first thing to do is to not configure any.");
         terramapGlobalMap = config.getBoolean(prop("Global Map"), "Terramap", true,
         		"Set this to false to only allow players to use the map when they are on an Earth world.");
@@ -193,9 +194,15 @@ public class ConfigHandler {
         File f = new File(dataFolder, "offline.bin");
         doesOfflineExist = f.exists();
         
-    	File serverPrefs = new File(dataFolder + PlayerDisplayPreferences.FILENAME);
-    	PlayerDisplayPreferences.setFile(serverPrefs);
-    	PlayerDisplayPreferences.load();
+        if(terramapEnabled) {
+        	File serverPrefs = new File(dataFolder + "/" + PlayerDisplayPreferences.FILENAME);
+        	PlayerDisplayPreferences.setFile(serverPrefs);
+        	PlayerDisplayPreferences.load();
+        	
+        	File customMaps = new File(dataFolder + "/" + MapStyleRegistry.FILENAME);
+        	MapStyleRegistry.setConfigMapFile(customMaps);
+        	MapStyleRegistry.loadFromConfigFile();
+        }
     }
 
     public boolean isAuthCodeConfigured() {

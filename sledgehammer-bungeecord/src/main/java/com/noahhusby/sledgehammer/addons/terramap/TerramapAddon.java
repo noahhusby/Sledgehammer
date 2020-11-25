@@ -25,6 +25,7 @@ import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.addons.Addon;
 import com.noahhusby.sledgehammer.addons.terramap.commands.TerrashowCommand;
 import com.noahhusby.sledgehammer.addons.terramap.network.ForgeChannel;
+import com.noahhusby.sledgehammer.addons.terramap.network.packets.P2CMapStylePacket;
 import com.noahhusby.sledgehammer.addons.terramap.network.packets.P2CSledgehammerHelloPacket;
 import com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync.C2PRegisterForUpdatePacket;
 import com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync.P2CPlayerSyncPacket;
@@ -60,6 +61,7 @@ public class TerramapAddon extends Addon {
     	this.mapSyncChannel.registerPacket(1, P2CPlayerSyncPacket.class);
     	this.mapSyncChannel.registerPacket(2, P2CRegistrationExpiresPacket.class);
     	this.sledgehammerChannel.registerPacket(0, P2CSledgehammerHelloPacket.class);
+    	this.sledgehammerChannel.registerPacket(2, P2CMapStylePacket.class);
     	try {
     		this.proxyUUID = UUID.fromString(ConfigHandler.terramapProxyUUID);
     	} catch(IllegalArgumentException e) {

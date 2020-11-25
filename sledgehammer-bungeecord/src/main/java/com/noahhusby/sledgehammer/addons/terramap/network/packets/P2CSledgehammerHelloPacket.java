@@ -33,7 +33,7 @@ public class P2CSledgehammerHelloPacket implements IForgePacket {
 
 	@Override
 	public void encode(ByteBuf buf) {
-		DefinedPacket.writeString(this.version, buf);
+		DefinedPacket.writeString(this.version, buf); //TODO Only use API Bungee classes
 		buf.writeByte(this.syncPlayers.VALUE);
 		buf.writeByte(this.syncSpectators.VALUE);
 		buf.writeBoolean(this.globalmap);

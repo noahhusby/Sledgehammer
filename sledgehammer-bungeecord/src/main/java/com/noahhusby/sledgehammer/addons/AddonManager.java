@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+//FIXME Addons are registered for each time the proxy is reloaded without being removed first
 public class AddonManager implements Listener {
     private static AddonManager mInstance = null;
 

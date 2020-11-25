@@ -7,6 +7,13 @@ import com.noahhusby.sledgehammer.Sledgehammer;
 
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+/**
+ * Represents a version of Terramap
+ * 
+ * @author SmylerMC
+ * This file was originally written for Terramap
+ *
+ */
 public class TerramapVersion implements Comparable<TerramapVersion> {
 
 	public final int majorTarget;
