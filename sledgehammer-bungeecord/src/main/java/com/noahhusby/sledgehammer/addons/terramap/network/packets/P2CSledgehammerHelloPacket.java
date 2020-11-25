@@ -9,7 +9,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.protocol.DefinedPacket;
 
-public class P2CSledgehammerHelloPacket extends ForgePacket {
+public class P2CSledgehammerHelloPacket implements IForgePacket {
 	
 	public String version = "";
 	public PlayerSyncStatus syncPlayers = PlayerSyncStatus.DISABLED;

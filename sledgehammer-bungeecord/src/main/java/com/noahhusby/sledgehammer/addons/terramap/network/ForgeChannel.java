@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.noahhusby.sledgehammer.Sledgehammer;
-import com.noahhusby.sledgehammer.addons.terramap.network.packets.ForgePacket;
+import com.noahhusby.sledgehammer.addons.terramap.network.packets.IForgePacket;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -15,8 +15,8 @@ import net.md_5.bungee.api.event.PluginMessageEvent;
 public class ForgeChannel {
 
 	private String channelName;
-	private Map<Integer, Class<? extends ForgePacket>> packetMap = new HashMap<Integer, Class<? extends ForgePacket>>();
-	private Map<Class<? extends ForgePacket>, Integer> discriminatorMap = new HashMap<Class<? extends ForgePacket>, Integer>();
+	private Map<Integer, Class<? extends IForgePacket>> packetMap = new HashMap<Integer, Class<? extends IForgePacket>>();
+	private Map<Class<? extends IForgePacket>, Integer> discriminatorMap = new HashMap<Class<? extends IForgePacket>, Integer>();
 	
 	public ForgeChannel(String channelName) {
 		this.channelName = channelName;
@@ -49,7 +49,7 @@ public class ForgeChannel {
 						", Packet discriminator " + discriminator);
 				return;
 			}
-			Class<? extends ForgePacket> clazz = packetMap.get(discriminator);
+			Class<? extends IForgePacket> clazz = packetMap.get(discriminator);
 			if(clazz == null) {
 				if(player2server) {
 					throw new PacketEncodingException("Received an unregistered packet from player" + player.getName() + "/" + player.getUniqueId() + "/" + player.getSocketAddress() + " for server" + server.getInfo().getName() + "! Discriminator: " + discriminator);
@@ -57,7 +57,7 @@ public class ForgeChannel {
 					throw new PacketEncodingException("Received an unregistered packet from server " + server.getInfo().getName() + " for player " + player.getName() + "/" + player.getUniqueId() + "/" + player.getSocketAddress() + "! Discriminator: " + discriminator);
 				}
 			}
-			ForgePacket packetHandler = clazz.newInstance();
+			IForgePacket packetHandler = clazz.newInstance();
 			packetHandler.decode(stream);
 			boolean cancel = false;
 			if(player2server) {
@@ -72,7 +72,7 @@ public class ForgeChannel {
 		}
 	}
 	
-	public void send(ForgePacket pkt, ProxiedPlayer to) {
+	public void send(IForgePacket pkt, ProxiedPlayer to) {
 		try {
 			to.sendData(this.channelName, this.encode(pkt));
 		} catch(Exception e) {
@@ -80,7 +80,7 @@ public class ForgeChannel {
 		}
 	}
 	
-	public void send(ForgePacket pkt, ProxiedPlayer... to) {
+	public void send(IForgePacket pkt, ProxiedPlayer... to) {
 		int sent = 0;
 		try {
 			byte[] data = this.encode(pkt);
@@ -93,7 +93,7 @@ public class ForgeChannel {
 		}
 	}
 	
-	public void send(ForgePacket pkt, Server to) {
+	public void send(IForgePacket pkt, Server to) {
 		try {
 			to.sendData(this.channelName, this.encode(pkt));
 		} catch(Exception e) {
@@ -101,7 +101,7 @@ public class ForgeChannel {
 		}
 	}
 	
-	private byte[] encode(ForgePacket pkt) throws PacketEncodingException {
+	private byte[] encode(IForgePacket pkt) throws PacketEncodingException {
 		if(!discriminatorMap.containsKey(pkt.getClass())) {
 			throw new PacketEncodingException("Could not encode packet of class " + pkt.getClass().getCanonicalName() + " as it has not been registered to this channel");
 		}
@@ -112,7 +112,7 @@ public class ForgeChannel {
 		return stream.array();
 	}
 
-	public void registerPacket(int discriminator, Class<? extends ForgePacket> clazz) {
+	public void registerPacket(int discriminator, Class<? extends IForgePacket> clazz) {
 		packetMap.put(discriminator, clazz);
 		discriminatorMap.put(clazz, discriminator);
 	}

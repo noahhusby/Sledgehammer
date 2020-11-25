@@ -2,7 +2,7 @@ package com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync;
 
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.addons.terramap.TerramapAddon;
-import com.noahhusby.sledgehammer.addons.terramap.network.packets.ForgePacket;
+import com.noahhusby.sledgehammer.addons.terramap.network.packets.IForgePacket;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.players.PlayerManager;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
@@ -11,7 +11,7 @@ import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 
-public class C2PRegisterForUpdatePacket extends ForgePacket {
+public class C2PRegisterForUpdatePacket implements IForgePacket {
 	
 	boolean register;
 

@@ -1,7 +1,7 @@
 package com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync;
 
 import com.noahhusby.sledgehammer.SledgehammerUtil;
-import com.noahhusby.sledgehammer.addons.terramap.network.packets.ForgePacket;
+import com.noahhusby.sledgehammer.addons.terramap.network.packets.IForgePacket;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 
@@ -12,7 +12,7 @@ import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.protocol.DefinedPacket;
 
-public class P2CPlayerSyncPacket extends ForgePacket {
+public class P2CPlayerSyncPacket implements IForgePacket {
 
 	public SledgehammerPlayer[] players;
 
