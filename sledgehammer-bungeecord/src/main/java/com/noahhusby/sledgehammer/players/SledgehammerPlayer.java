@@ -303,7 +303,9 @@ public class SledgehammerPlayer implements ProxiedPlayer {
     }
 
     public boolean onEarthServer() {
-        SledgehammerServer server = ServerConfig.getInstance().getServer(getServer().getInfo().getName());
+    	Server playerServer = getServer();
+    	if(playerServer == null) return false;
+        SledgehammerServer server = ServerConfig.getInstance().getServer(playerServer.getInfo().getName());
         if(server == null) return false;
         return server.earthServer;
     }
