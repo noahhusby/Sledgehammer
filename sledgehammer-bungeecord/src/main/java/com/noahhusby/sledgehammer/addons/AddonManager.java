@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-//FIXME Addons are registered for each time the proxy is reloaded without being removed first
 public class AddonManager implements Listener {
     private static AddonManager mInstance = null;
 
@@ -52,6 +51,7 @@ public class AddonManager implements Listener {
 
     public void onDisable() {
         addons.forEach(IAddon::onDisable);
+        addons.clear(); // If the plugin is reloading, new instances of the add-ons will be registered again
     }
 
     @EventHandler
