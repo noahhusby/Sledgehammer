@@ -3,6 +3,7 @@ package com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.addons.terramap.TerramapAddon;
 import com.noahhusby.sledgehammer.addons.terramap.network.packets.ForgePacket;
+import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.players.PlayerManager;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 
@@ -10,7 +11,6 @@ import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 
-//TODO Do not intercept is the proxy has player sync disabled
 public class C2PRegisterForUpdatePacket extends ForgePacket {
 	
 	boolean register;
@@ -28,11 +28,12 @@ public class C2PRegisterForUpdatePacket extends ForgePacket {
 	@Override
 	public boolean processFromServer(String channel, Server fromServer, ProxiedPlayer toPlayer) {
 		// Should never receive this from a server
-		return false;
+		return ConfigHandler.terramapSyncPlayers;
 	}
 
 	@Override
 	public boolean processFromClient(String channel, ProxiedPlayer fromPlayer, Server toServer) {
+		if(!ConfigHandler.terramapSyncPlayers) return false;
 		SledgehammerPlayer player = PlayerManager.getInstance().getPlayer(fromPlayer.getName());
 		if(this.register) {
 			Sledgehammer.sledgehammer.getProxy().getScheduler().runAsync(Sledgehammer.sledgehammer, 

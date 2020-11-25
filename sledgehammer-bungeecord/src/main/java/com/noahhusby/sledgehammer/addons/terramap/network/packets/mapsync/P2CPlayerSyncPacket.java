@@ -2,6 +2,7 @@ package com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync;
 
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.addons.terramap.network.packets.ForgePacket;
+import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 
 import io.netty.buffer.ByteBuf;
@@ -11,7 +12,6 @@ import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.protocol.DefinedPacket;
 
-//TODO Do not intercept is the proxy has player sync disabled
 public class P2CPlayerSyncPacket extends ForgePacket {
 
 	public SledgehammerPlayer[] players;
@@ -45,13 +45,13 @@ public class P2CPlayerSyncPacket extends ForgePacket {
 	@Override
 	public boolean processFromServer(String channel, Server fromServer, ProxiedPlayer toPlayer) {
 		// We will never receive this here
-		return false;
+		return ConfigHandler.terramapSyncPlayers;
 	}
 
 	@Override
 	public boolean processFromClient(String channel, ProxiedPlayer fromPlayer, Server toServer) {
 		// We will never receive this here
-		return false;
+		return ConfigHandler.terramapSyncPlayers;
 	}
 
 }

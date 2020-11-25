@@ -175,8 +175,9 @@ public class ConfigHandler {
         		"The time interval at which to synchronize players with clients");
         terramapSyncTimeout = config.getInt(prop("Sync Timeout"), "Terramap", 1500, 120000, Integer.MAX_VALUE,
                 "The default time interval, in milliseconds, before a clients needs to register again to continue getting player updates.");
-        terramapPlayersDisplayDefault = config.getBoolean(prop("Player Display Default"), "Terramap", true, //TODO Player display preferences
+        terramapPlayersDisplayDefault = config.getBoolean(prop("Player Display Default"), "Terramap", true,
         		"If player sync is enabled, sould players be displayed by default (true) or should they opt-in (false)");
+        
         terramapSendCustomMapsToClient = config.getBoolean(prop("Send Custom Maps to Clients"), "Terramap", true, //TODO Send cusom maps to clients
         		"Set to false if you do not want to send custom maps to clients. This is only for testing, as if you don't want to send map styles to client, the first thing to do is to not configure any.");
         terramapGlobalMap = config.getBoolean(prop("Global Map"), "Terramap", true,
