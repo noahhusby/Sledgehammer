@@ -2,12 +2,12 @@ package com.noahhusby.sledgehammer.addons.terramap.network.packets;
 
 import java.util.UUID;
 
+import com.noahhusby.sledgehammer.addons.terramap.network.ForgeChannel;
 import com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync.PlayerSyncStatus;
 
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
-import net.md_5.bungee.protocol.DefinedPacket;
 
 public class P2CSledgehammerHelloPacket implements IForgePacket {
 	
@@ -33,7 +33,7 @@ public class P2CSledgehammerHelloPacket implements IForgePacket {
 
 	@Override
 	public void encode(ByteBuf buf) {
-		DefinedPacket.writeString(this.version, buf); //TODO Only use API Bungee classes
+		ForgeChannel.writeStringToBuf(this.version, buf); //TODO Only use API Bungee classes
 		buf.writeByte(this.syncPlayers.VALUE);
 		buf.writeByte(this.syncSpectators.VALUE);
 		buf.writeBoolean(this.globalmap);
@@ -45,7 +45,7 @@ public class P2CSledgehammerHelloPacket implements IForgePacket {
 
 	@Override
 	public void decode(ByteBuf buf) {
-		this.version = DefinedPacket.readString(buf);
+		this.version = ForgeChannel.readStringFromBuf(buf);
 		this.syncPlayers = PlayerSyncStatus.getFromNetworkCode(buf.readByte());
 		this.syncSpectators = PlayerSyncStatus.getFromNetworkCode(buf.readByte());
 		this.globalmap = buf.readBoolean();

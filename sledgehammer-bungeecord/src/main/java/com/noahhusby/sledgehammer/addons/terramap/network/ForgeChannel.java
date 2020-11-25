@@ -11,6 +11,7 @@ import io.netty.buffer.Unpooled;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.event.PluginMessageEvent;
+import net.md_5.bungee.protocol.DefinedPacket;
 
 public class ForgeChannel {
 
@@ -115,6 +116,16 @@ public class ForgeChannel {
 	public void registerPacket(int discriminator, Class<? extends IForgePacket> clazz) {
 		packetMap.put(discriminator, clazz);
 		discriminatorMap.put(clazz, discriminator);
+	}
+	
+	//FIXME Implement without non API Bungee
+	public static void writeStringToBuf(String str, ByteBuf buf) {
+		DefinedPacket.writeString(str, buf);
+	}
+	
+	//FIXME Implement without non API Bungee
+	public static String readStringFromBuf(ByteBuf buf) {
+		return DefinedPacket.readString(buf);
 	}
 
 }

@@ -3,10 +3,11 @@ package com.noahhusby.sledgehammer.addons.terramap.network.packets;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.noahhusby.sledgehammer.addons.terramap.network.ForgeChannel;
+
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
-import net.md_5.bungee.protocol.DefinedPacket;
 
 public class P2CMapStylePacket implements IForgePacket {
 
@@ -50,22 +51,22 @@ public class P2CMapStylePacket implements IForgePacket {
 
 	@Override
 	public void decode(ByteBuf buf) {
-		this.id = DefinedPacket.readString(buf);
+		this.id = ForgeChannel.readStringFromBuf(buf);
 		this.providerVersion = buf.readLong();
-		this.urlPattern = DefinedPacket.readString(buf);
+		this.urlPattern = ForgeChannel.readStringFromBuf(buf);
 		int nameCount = buf.readInt();
 		Map<String, String> names = new HashMap<String, String>();
 		for(int i=0; i < nameCount; i++) {
-			String key = DefinedPacket.readString(buf);
-			String name = DefinedPacket.readString(buf);
+			String key = ForgeChannel.readStringFromBuf(buf);
+			String name = ForgeChannel.readStringFromBuf(buf);
 			names.put(key, name);
 		}
 		this.names = names;
 		int copyrightCount = buf.readInt();
 		Map<String, String> copyrights = new HashMap<String, String>();
 		for(int i=0; i < copyrightCount; i++) {
-			String key = DefinedPacket.readString(buf);
-			String copyright = DefinedPacket.readString(buf);
+			String key = ForgeChannel.readStringFromBuf(buf);
+			String copyright = ForgeChannel.readStringFromBuf(buf);
 			copyrights.put(key, copyright);
 		}
 		this.copyrights = copyrights;
@@ -73,29 +74,29 @@ public class P2CMapStylePacket implements IForgePacket {
 		this.maxZoom = buf.readInt();
 		this.displayPriority = buf.readInt();
 		this.isAllowedOnMinimap = buf.readBoolean();
-		this.comment = DefinedPacket.readString(buf);
+		this.comment = ForgeChannel.readStringFromBuf(buf);
 	}
 
 	@Override
 	public void encode(ByteBuf buf) {
-		DefinedPacket.writeString(this.id, buf);
+		ForgeChannel.writeStringToBuf(this.id, buf);
 		buf.writeLong(this.providerVersion);
-		DefinedPacket.writeString(this.urlPattern, buf);
+		ForgeChannel.writeStringToBuf(this.urlPattern, buf);
 		buf.writeInt(this.names.size());
 		for(String key: this.names.keySet()) {
-			DefinedPacket.writeString(key, buf);
-			DefinedPacket.writeString(this.names.get(key), buf);
+			ForgeChannel.writeStringToBuf(key, buf);
+			ForgeChannel.writeStringToBuf(this.names.get(key), buf);
 		}
 		buf.writeInt(this.copyrights.size());
 		for(String key: this.copyrights.keySet()) {
-			DefinedPacket.writeString(key, buf);
-			DefinedPacket.writeString(this.copyrights.get(key), buf);
+			ForgeChannel.writeStringToBuf(key, buf);
+			ForgeChannel.writeStringToBuf(this.copyrights.get(key), buf);
 		}
 		buf.writeInt(this.minZoom);
 		buf.writeInt(this.maxZoom);
 		buf.writeInt(this.displayPriority);
 		buf.writeBoolean(this.isAllowedOnMinimap);
-		DefinedPacket.writeString(this.comment, buf);
+		ForgeChannel.writeStringToBuf(this.comment, buf);
 	}
 
 	@Override

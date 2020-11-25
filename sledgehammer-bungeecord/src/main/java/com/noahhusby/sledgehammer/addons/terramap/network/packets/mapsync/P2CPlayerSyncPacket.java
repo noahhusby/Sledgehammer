@@ -1,6 +1,7 @@
 package com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync;
 
 import com.noahhusby.sledgehammer.SledgehammerUtil;
+import com.noahhusby.sledgehammer.addons.terramap.network.ForgeChannel;
 import com.noahhusby.sledgehammer.addons.terramap.network.packets.IForgePacket;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
@@ -10,7 +11,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.chat.ComponentSerializer;
-import net.md_5.bungee.protocol.DefinedPacket;
 
 public class P2CPlayerSyncPacket implements IForgePacket {
 
@@ -28,11 +28,11 @@ public class P2CPlayerSyncPacket implements IForgePacket {
 			buf.writeLong(player.getUniqueId().getLeastSignificantBits());
 			buf.writeLong(player.getUniqueId().getMostSignificantBits());
 			String playerDisplayName = ComponentSerializer.toString(TextComponent.fromLegacyText(player.getDisplayName()));
-			DefinedPacket.writeString(playerDisplayName, buf);
+			ForgeChannel.writeStringToBuf(playerDisplayName, buf);
 			buf.writeDouble(coordinates[0]);
 			buf.writeDouble(coordinates[1]);
 			buf.writeFloat(0); //TODO Terramap azimuts
-			DefinedPacket.writeString("unknown", buf); //TODO Terramap gamemode
+			ForgeChannel.writeStringToBuf("unknown", buf); //TODO Terramap gamemode
 		}
 
 	}
