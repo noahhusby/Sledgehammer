@@ -1,9 +1,17 @@
 package com.noahhusby.sledgehammer.addons.terramap.network.packets;
 
+import com.noahhusby.sledgehammer.addons.terramap.network.ForgeChannel;
+
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 
+/**
+ * Represents a Forge plugin message that's being sent or received via a {@link ForgeChannel}.
+ * 
+ * @author SmylerMC
+ *
+ */
 public interface IForgePacket {
 	
 	/**

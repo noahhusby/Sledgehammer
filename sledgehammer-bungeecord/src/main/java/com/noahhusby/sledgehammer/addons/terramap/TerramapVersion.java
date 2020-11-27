@@ -8,10 +8,20 @@ import com.noahhusby.sledgehammer.Sledgehammer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 /**
- * Represents a version of Terramap
+ * Represents a version of Terramap.
+ * The format for Terramap version number are as follows:</br>
+ * [marjor target].[minor target].[build target](-[release type][release build](.[release revision]))(-dev)</br>
+ * major target, minor target, build target, release build, and release revision are integers. </br>
+ * Release type is one of: alpha, beta, rc or is absent. </br>
+ * Parts in parentheses can be omitted (will assume 0 for numbers and normal release for release type.
+ * -dev is only present on dev builds that are not available to the public.
+ * In all places this class would be use, a null version means Terramap is not installed
+ * 
+ * A ${version} version means the mod is running in a development environment.
+ * 
+ * This file was originally written for Terramap.
  * 
  * @author SmylerMC
- * This file was originally written for Terramap
  *
  */
 public class TerramapVersion implements Comparable<TerramapVersion> {
@@ -28,6 +38,17 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
 	public final boolean devBuild;
 	public final boolean devRun;
 
+	/**
+	 * Creates a new version object
+	 * 
+	 * @param majorTarget
+	 * @param minorTarget
+	 * @param buildTarget
+	 * @param releaseType
+	 * @param build
+	 * @param revision
+	 * @param devBuild
+	 */
 	public TerramapVersion(
 			int majorTarget,
 			int minorTarget,
@@ -47,6 +68,15 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
 		this.devRun = false;
 	}
 	
+	/**
+	 * 
+	 * @param majorTarget
+	 * @param minorTarget
+	 * @param buildTarget
+	 * @param type
+	 * @param build
+	 * @param revision
+	 */
 	public TerramapVersion(int majorTarget, int minorTarget, int buildTarget, ReleaseType type, int build, int revision) {
 		this(majorTarget, minorTarget, buildTarget, type, build, revision, false);
 	}
@@ -59,6 +89,13 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
 		this(majorTarget, minorTarget, buildTarget, ReleaseType.RELEASE, 0, 0, false);
 	}
 
+	/**
+	 * Creates a version object by parsing a version String
+	 * 
+	 * @param versionString - version to parse
+	 * @throws InvalidVersionString if the given string is not a valid version number.
+	 * See other constructors to safely create version numbers if you don't need to do it by parsing a version String.
+	 */
 	public TerramapVersion(String versionString) throws InvalidVersionString {
 		if("${version}".equals(versionString)) {
 			this.majorTarget = this.minorTarget = this.buildTarget = this.build = this.revision = 0;
@@ -135,6 +172,9 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
 		}
 	}
 	
+	/**
+	 * Returns a version String for this version
+	 */
 	@Override
 	public String toString() {
 		if(this.isDev()) {
@@ -180,6 +220,9 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
 		return result;
 	}
 
+	/**
+	 * True if the other object is a version equal to this one
+	 */
 	@Override
 	public boolean equals(Object other) {
 		if(other == null) return false;
@@ -187,6 +230,10 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
 		return this.compareTo((TerramapVersion) other) == 0;
 	}
 
+	/**
+	 * Returns a positive integer if this version is newer than the other,
+	 * 0 if they are the same and a negative number otherwise.
+	 */
 	@Override
 	public int compareTo(TerramapVersion other) {
 		
@@ -263,6 +310,9 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
 		return this.compareTo(other) < 0;
 	}
 	
+	/*
+	 * Get's the given player's Terramap version
+	 */
 	public static TerramapVersion getClientVersion(ProxiedPlayer player) {
 		Map<String, String> modList = player.getModList();
 		TerramapVersion version = null;
@@ -277,7 +327,13 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
 		return version;
 	}
 
-	public enum ReleaseType {
+	/**
+	 * Different types of Terramap releases
+	 * 
+	 * @author SmylerMC
+	 *
+	 */
+	public static enum ReleaseType {
 
 		RELEASE("", 4),
 		RELEASE_CANDIDATE("rc", 3),

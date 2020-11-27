@@ -4,11 +4,25 @@ import java.util.UUID;
 
 import com.noahhusby.sledgehammer.addons.terramap.network.ForgeChannel;
 import com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync.PlayerSyncStatus;
+import com.noahhusby.sledgehammer.config.ConfigHandler;
 
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 
+/**
+ * Sent to clients joining the network to inform them of this proxy's specific settings, such as:
+ *  <ul>
+ *  <li>The Sledgehammer version</li>
+ *  <li>Whether or not players are being synchronized. See {@link ConfigHandler#terramapSyncPlayers}</li>
+ *  <li>Whether or not to enable the map on all worlds and not just on Terra121's. See {@link ConfigHandler#terramapGlobalMap}</li>
+ *  <li>Whether or not to save settings per world or for the whole network. See See {@link ConfigHandler#terramapGlobalSettings}</li>
+ *  <li>Whether or not warps are supported.</li>
+ *  <li>The proxy UUID. See {@link ConfigHandler#terramapProxyUUID}.</li>
+ *  </ul>
+ * @author SmylerMC
+ *
+ */
 public class P2CSledgehammerHelloPacket implements IForgePacket {
 	
 	public String version = "";

@@ -36,6 +36,12 @@ import com.noahhusby.sledgehammer.config.ConfigHandler;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 
+/**
+ * Main Terramap addon class
+ * 
+ * @author SmylerMC
+ *
+ */
 public class TerramapAddon extends Addon {
 	
 	public static TerramapAddon instance;

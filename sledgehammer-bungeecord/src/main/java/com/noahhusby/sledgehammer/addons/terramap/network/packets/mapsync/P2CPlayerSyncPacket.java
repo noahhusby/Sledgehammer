@@ -12,6 +12,15 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.chat.ComponentSerializer;
 
+/**
+ * Sent at regular intervals to players that registered with a {@link C2PRegisterForUpdatePacket}.
+ * Contains the display name (JSON formatted), uuid, longitude, latitude, Azimuth and gamemode.
+ * The interval at which packets are sent can be configured in {@link ConfigHandler#terramapSyncInterval}
+ * 
+ * @see com.noahhusby.sledgehammer.addons.terramap.RemoteSynchronizer
+ * @author SmylerMC
+ *
+ */
 public class P2CPlayerSyncPacket implements IForgePacket {
 
 	public SledgehammerPlayer[] players;
@@ -31,7 +40,7 @@ public class P2CPlayerSyncPacket implements IForgePacket {
 			ForgeChannel.writeStringToBuf(playerDisplayName, buf);
 			buf.writeDouble(coordinates[0]);
 			buf.writeDouble(coordinates[1]);
-			buf.writeFloat(0); //TODO Terramap azimuts
+			buf.writeFloat(0); //TODO Terramap azimuth
 			ForgeChannel.writeStringToBuf("unknown", buf); //TODO Terramap gamemode
 		}
 

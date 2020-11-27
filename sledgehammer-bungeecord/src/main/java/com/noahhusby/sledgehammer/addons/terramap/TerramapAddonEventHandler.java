@@ -11,12 +11,18 @@ import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
+/**
+ * Handles all event's needed for Terramap integration
+ * 
+ * @author SmylerMC
+ *
+ */
 public class TerramapAddonEventHandler implements Listener {
 	
 	@EventHandler
     public void onPostLogin(PostLoginEvent event) {
 		
-		// Avoid spamming the logs of people with unknown channel reports
+		// Avoid spamming the peaple's logs with unknown channel reports
 		if(!SledgehammerPlayer.getPlayer(event.getPlayer()).hasCompatibleTerramap()) return;
 		
 		String version = ProxyServer.getInstance().getPluginManager().getPlugin("Sledgehammer").getDescription().getVersion();

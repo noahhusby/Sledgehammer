@@ -15,6 +15,7 @@ import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 
 /**
+ * Manages player display preferences
  * 
  * @author SmylerMC
  *
@@ -29,6 +30,12 @@ public class PlayerDisplayPreferences {
 	private static boolean loggedDebugError = false;
 	private static long lastNullSaveTime = Long.MIN_VALUE;
 
+	/**
+	 * Indicates if the player should be visible on the map to others
+	 * 
+	 * @param uuid - UUID of the player
+	 * @return a boolean
+	 */
 	public static boolean shouldDisplayPlayer(UUID uuid) {
 		try {
 			synchronized(preferences) {
@@ -44,6 +51,12 @@ public class PlayerDisplayPreferences {
 		}
 	}
 
+	/**
+	 * Set whether or not a player should be visible on the map to others
+	 * 
+	 * @param uuid - The player's UUID
+	 * @param yesNo
+	 */
 	public static void setShouldDisplayPlayer(UUID uuid, boolean yesNo) {
 		try {
 			synchronized(preferences) {
@@ -58,6 +71,9 @@ public class PlayerDisplayPreferences {
 		}
 	}
 
+	/**
+	 * Save preferences to the file
+	 */
 	public static void save() {
 		if(file == null) {
 			Sledgehammer.logger.warning("Trying to save player display preferences to a null file, aborting");
@@ -82,6 +98,9 @@ public class PlayerDisplayPreferences {
 		}
 	}
 
+	/**
+	 * Load preferences from the file
+	 */
 	public static void load() {
 		if(!file.exists()) {
 			preferences = new Preferences();
@@ -99,6 +118,11 @@ public class PlayerDisplayPreferences {
 		}
 	}
 
+	/**
+	 * Set the file from which to load and save preferences
+	 * 
+	 * @param file
+	 */
 	public static void setFile(File file) {
 		PlayerDisplayPreferences.file = file;
 	}

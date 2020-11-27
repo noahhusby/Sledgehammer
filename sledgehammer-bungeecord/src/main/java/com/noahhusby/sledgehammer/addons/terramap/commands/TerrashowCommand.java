@@ -17,6 +17,14 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
+/**
+ * Implements the /terrashow command,
+ * that lets player control whether or not they should visible to others on the map.
+ * This command is critical for privacy reasons.
+ * 
+ * @author SmylerMC
+ *
+ */
 public class TerrashowCommand extends Command implements TabExecutor {
 
 	public static final String CMD_NAME = "terrashow";

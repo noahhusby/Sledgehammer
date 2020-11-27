@@ -11,9 +11,16 @@ import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 
+/**
+ * Packet received from players that wish to start or stop receiving player position updates.
+ * 
+ * @see com.noahhusby.sledgehammer.addons.terramap.RemoteSynchronizer
+ * @author SmylerMC
+ *
+ */
 public class C2PRegisterForUpdatePacket implements IForgePacket {
 	
-	boolean register;
+	public boolean register;
 
 	@Override
 	public void encode(ByteBuf buf) {

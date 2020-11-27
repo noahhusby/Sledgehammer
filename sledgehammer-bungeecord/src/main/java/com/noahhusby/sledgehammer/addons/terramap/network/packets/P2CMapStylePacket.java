@@ -9,6 +9,13 @@ import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 
+/**
+ * Sent to players joining the network to give them access to this proxy's custom map styles.
+ * 
+ * @see com.noahhusby.sledgehammer.addons.terramap.MapStyleRegistry
+ * @author SmylerMC
+ *
+ */
 public class P2CMapStylePacket implements IForgePacket {
 
 	public String id;

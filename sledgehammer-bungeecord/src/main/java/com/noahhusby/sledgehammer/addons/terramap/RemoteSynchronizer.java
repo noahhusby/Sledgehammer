@@ -13,10 +13,18 @@ import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.players.PlayerManager;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 
+/**
+ * Handles sending player position updates to registered players
+ * @author SmylerMC
+ *
+ */
 public class RemoteSynchronizer {
 
-	public Map<UUID, RegisteredForUpdatePlayer> playersToUpdate = new HashMap<UUID, RegisteredForUpdatePlayer>();
+	private Map<UUID, RegisteredForUpdatePlayer> playersToUpdate = new HashMap<UUID, RegisteredForUpdatePlayer>();
 
+	/**
+	 * Sends position updates to registered players
+	 */
 	public void syncPlayers() {
 		if(this.playersToUpdate.size() <= 0) return;
 		long ctime = System.currentTimeMillis();
@@ -49,17 +57,25 @@ public class RemoteSynchronizer {
 		}
 	}
 	
+	/**
+	 * Registers a players so it gets position updates
+	 * @param player - The player
+	 */
 	public void registerPlayer(SledgehammerPlayer player) {
 		Sledgehammer.logger.fine("Registering player for map updates: " + player.getName());
 		TerramapAddon.instance.synchronizer.playersToUpdate.put(player.getUniqueId(), new RegisteredForUpdatePlayer(player, System.currentTimeMillis()));
 	}
 	
+	/**
+	 * Unregisters a player so it stops getting position updates
+	 * @param player - The player
+	 */
 	public void unregisterPlayer(SledgehammerPlayer player) {
 		Sledgehammer.logger.fine("Unregistering player for map updates: " + player.getName());
 		TerramapAddon.instance.synchronizer.playersToUpdate.remove(player.getUniqueId());
 	}
 
-	public static class RegisteredForUpdatePlayer {
+	private static class RegisteredForUpdatePlayer {
 
 		public SledgehammerPlayer player;
 		public long lastRegisterTime;

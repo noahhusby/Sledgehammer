@@ -12,6 +12,11 @@ import com.google.gson.GsonBuilder;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.addons.terramap.network.packets.P2CMapStylePacket;
 
+/**
+ * Handles loading map styles
+ * @author SmylerMC
+ *
+ */
 public class MapStyleRegistry {
 
 	public static final String FILENAME = "terramap_user_styles.json";
@@ -19,10 +24,16 @@ public class MapStyleRegistry {
 	private static File configMapsFile;
 	private static Map<String, P2CMapStylePacket> availableMaps = new HashMap<String, P2CMapStylePacket>();
 
+	/**
+	 * @return the map styles that are available
+	 */
 	public static Map<String, P2CMapStylePacket> getMaps() {
 		return availableMaps;
 	}
 	
+	/**
+	 * Loads map styles from the config file
+	 */
 	public static void loadFromConfigFile() {
 		if(configMapsFile == null) {
 			Sledgehammer.logger.warning("Map config file was null! Did not load.");
@@ -80,6 +91,11 @@ public class MapStyleRegistry {
 		return styles;
 	}
 	
+	/**
+	 * Set the map styles config file
+	 * 
+	 * @param file
+	 */
 	public static void setConfigMapFile(File file) {
 		configMapsFile = file;
 	}
