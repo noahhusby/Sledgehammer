@@ -89,9 +89,11 @@ public class PlayerDisplayPreferences {
 			return;
 		}
 		try {
-			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			String str = gson.toJson(preferences);
-			Files.write(str, file, Charset.defaultCharset());
+			synchronized(preferences) {
+				Gson gson = new GsonBuilder().setPrettyPrinting().create();
+				String str = gson.toJson(preferences);
+				Files.write(str, file, Charset.defaultCharset());
+			}
 		} catch (Exception e) {
 			Sledgehammer.logger.warning("Failed to write player display preferences to " + file.getAbsolutePath());
 			e.printStackTrace();
