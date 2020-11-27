@@ -108,6 +108,8 @@ public class Sledgehammer extends Plugin implements Listener {
         }
 
         addonManager = AddonManager.getInstance();
+        addonManager.onDisable();
+        
         if(ConfigHandler.terramapEnabled) addonManager.registerAddon(new TerramapAddon());
 
         addonManager.onEnable();
@@ -193,5 +195,13 @@ public class Sledgehammer extends Plugin implements Listener {
 
     public static void setupListener(Listener l) {
         ProxyServer.getInstance().getPluginManager().registerListener(sledgehammer, l);
+    }
+    
+    /**
+     * @author SmylerMC
+     * @param l
+     */
+    public static void terminateListener(Listener l) {
+        ProxyServer.getInstance().getPluginManager().unregisterListener(l);
     }
 }

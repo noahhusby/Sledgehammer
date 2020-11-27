@@ -74,6 +74,13 @@ public class RemoteSynchronizer {
 		Sledgehammer.logger.fine("Unregistering player for map updates: " + player.getName());
 		TerramapAddon.instance.synchronizer.playersToUpdate.remove(player.getUniqueId());
 	}
+	
+	/**
+	 * Unregisters all players so they stop getting map updates
+	 */
+	public void unregisterAllPlayers() {
+		this.playersToUpdate.clear();
+	}
 
 	private static class RegisteredForUpdatePlayer {
 

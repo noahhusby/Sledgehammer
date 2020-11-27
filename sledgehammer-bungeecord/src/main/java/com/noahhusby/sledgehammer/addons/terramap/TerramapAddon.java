@@ -35,6 +35,8 @@ import com.noahhusby.sledgehammer.config.ConfigHandler;
 
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
+import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 /**
  * Main Terramap addon class
@@ -56,6 +58,9 @@ public class TerramapAddon extends Addon {
 	
 	public final RemoteSynchronizer synchronizer = new RemoteSynchronizer();
 	
+	private Listener listener;
+	private ScheduledTask syncTask;
+	
 	private UUID proxyUUID = new UUID(0, 0);
 
 	
@@ -75,9 +80,10 @@ public class TerramapAddon extends Addon {
     	} catch(IllegalArgumentException e) {
     		Sledgehammer.logger.warning("Failed to parse Terramap proxy uuid. Will be using 0.");
     	}
-    	Sledgehammer.setupListener(new TerramapAddonEventHandler());
+    	this.listener = new TerramapAddonEventHandler();
+    	Sledgehammer.setupListener(this.listener);
     	if(ConfigHandler.terramapSyncPlayers) {
-    		Sledgehammer.sledgehammer.getProxy().getScheduler().schedule(Sledgehammer.sledgehammer, this.synchronizer::syncPlayers, 0, ConfigHandler.terramapSyncInterval, TimeUnit.MILLISECONDS);
+    		this.syncTask = Sledgehammer.sledgehammer.getProxy().getScheduler().schedule(Sledgehammer.sledgehammer, this.synchronizer::syncPlayers, 0, ConfigHandler.terramapSyncInterval, TimeUnit.MILLISECONDS);
     	}
     	ProxyServer.getInstance().getPluginManager().registerCommand(Sledgehammer.sledgehammer, new TerrashowCommand());
     	Sledgehammer.logger.info("Enabled Terramap integration addon");
@@ -93,6 +99,18 @@ public class TerramapAddon extends Addon {
     }
 
     @Override
+	public void onDisable() {
+		this.mapSyncChannel.resetPacketRegistration();
+		this.sledgehammerChannel.resetPacketRegistration();
+		this.proxyUUID = new UUID(0, 0);
+		this.synchronizer.unregisterAllPlayers();
+		Sledgehammer.terminateListener(this.listener);
+		if(this.syncTask != null) Sledgehammer.sledgehammer.getProxy().getScheduler().cancel(this.syncTask);
+		// We don't need to unregister commands, Sledgehammer should be taking care of it already when the plugin gets enabled
+		Sledgehammer.logger.info("Disabled Terramap integration add-on");
+	}
+
+	@Override
     public String[] getMessageChannels() {
         return new String[]{SLEDGEHAMMER_CHANNEL_NAME, MAPSYNC_CHANNEL_NAME};
     }

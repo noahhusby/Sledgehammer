@@ -152,6 +152,14 @@ public class ForgeChannel {
 	}
 	
 	/**
+	 * Unregisters all packets
+	 */
+	public void resetPacketRegistration() {
+		this.discriminatorMap.clear();
+		this.packetMap.clear();
+	}
+	
+	/**
 	 * Encodes a String to a byte buffer using the [size (varint) | string (utf-8)] format
 	 * @param str - String to write
 	 * @param buf - Buffer to write to
