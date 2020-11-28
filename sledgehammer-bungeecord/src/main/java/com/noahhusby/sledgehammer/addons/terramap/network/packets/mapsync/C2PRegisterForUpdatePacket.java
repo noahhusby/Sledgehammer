@@ -1,6 +1,5 @@
 package com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync;
 
-import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.addons.terramap.TerramapAddon;
 import com.noahhusby.sledgehammer.addons.terramap.network.packets.IForgePacket;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
@@ -43,11 +42,9 @@ public class C2PRegisterForUpdatePacket implements IForgePacket {
 		if(!ConfigHandler.terramapSyncPlayers) return false;
 		SledgehammerPlayer player = PlayerManager.getInstance().getPlayer(fromPlayer.getName());
 		if(this.register) {
-			Sledgehammer.sledgehammer.getProxy().getScheduler().runAsync(Sledgehammer.sledgehammer, 
-				() -> TerramapAddon.instance.synchronizer.registerPlayer(player) );
+			if(player.hasPermission(TerramapAddon.PLAYER_SYNC_PERMISSION_NODE)) TerramapAddon.instance.synchronizer.registerPlayer(player);
 		} else {
-			Sledgehammer.sledgehammer.getProxy().getScheduler().runAsync(Sledgehammer.sledgehammer,
-				() -> TerramapAddon.instance.synchronizer.unregisterPlayer(player) );
+			TerramapAddon.instance.synchronizer.unregisterPlayer(player);
 		}
 		return true; // Do not send to server
 	}

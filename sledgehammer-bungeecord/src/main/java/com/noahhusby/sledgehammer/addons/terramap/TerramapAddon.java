@@ -53,6 +53,11 @@ public class TerramapAddon extends Addon {
 	public static final String SLEDGEHAMMER_CHANNEL_NAME = "terramap:sh"; // Forge does not support channel names longer than 20
 	public static final TerramapVersion MINIMUM_COMPATIBLE_VERSION = new TerramapVersion(1, 0, 0, ReleaseType.BETA, 6, 0);
 	
+	public static final String PLAYER_SYNC_PERMISSION_NODE = "sledgehammer.terramap.playersync";
+	public static final String TERRASHOW_BASE_PERMISSION_NODE = "sledgehammer.terramap.terrashow";
+	public static final String TERRASHOW_SELF_PERMISSION_NODE = "sledgehammer.terramap.terrashow.self";
+	public static final String TERRASHOW_OTHERS_PERMISSION_NODE = "sledgehammer.terramap.terrashow.other";
+	
 	public final ForgeChannel mapSyncChannel = new ForgeChannel(MAPSYNC_CHANNEL_NAME);
 	public final ForgeChannel sledgehammerChannel = new ForgeChannel(SLEDGEHAMMER_CHANNEL_NAME);
 	

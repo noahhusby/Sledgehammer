@@ -22,11 +22,12 @@ public class TerramapAddonEventHandler implements Listener {
 	@EventHandler
     public void onPostLogin(PostLoginEvent event) {
 		
-		// Avoid spamming the peaple's logs with unknown channel reports
+		// Avoid spamming people's logs with unknown channel reports
 		if(!SledgehammerPlayer.getPlayer(event.getPlayer()).hasCompatibleTerramap()) return;
 		
 		String version = ProxyServer.getInstance().getPluginManager().getPlugin("Sledgehammer").getDescription().getVersion();
-		PlayerSyncStatus syncStatus = PlayerSyncStatus.getFromBoolean(ConfigHandler.terramapSyncPlayers);
+		boolean playerSync = ConfigHandler.terramapSyncPlayers && event.getPlayer().hasPermission(TerramapAddon.PLAYER_SYNC_PERMISSION_NODE);
+		PlayerSyncStatus syncStatus = PlayerSyncStatus.getFromBoolean(playerSync);
     	TerramapAddon.instance.sledgehammerChannel.send(new P2CSledgehammerHelloPacket(
     			version,
     			syncStatus,

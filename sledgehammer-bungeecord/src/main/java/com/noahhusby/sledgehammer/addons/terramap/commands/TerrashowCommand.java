@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.noahhusby.sledgehammer.addons.terramap.PlayerDisplayPreferences;
+import com.noahhusby.sledgehammer.addons.terramap.TerramapAddon;
 import com.noahhusby.sledgehammer.addons.terramap.TerramapVersion;
 import com.noahhusby.sledgehammer.addons.terramap.TerramapVersion.ReleaseType;
 import com.noahhusby.sledgehammer.addons.terramap.commands.TranslationContextBuilder.TranslationContext;
@@ -28,15 +29,12 @@ import net.md_5.bungee.api.plugin.TabExecutor;
 public class TerrashowCommand extends Command implements TabExecutor {
 
 	public static final String CMD_NAME = "terrashow";
-	public static final String CMD_NODE = "sledgehammer.terramap.terrashow";
-	public static final String CMD_SELF_NODE = "sledgehammer.terramap.terrashow.self";
-	public static final String CMD_OTHER_NODE = "sledgehammer.terramap.terrashow.other";
 	public static final String USAGE = "/terrashow <show|hide|status> [playername (optional)]";
 
 	private final TranslationContextBuilder translation;
 
 	public TerrashowCommand() {
-		super(CMD_NAME, CMD_NODE);
+		super(CMD_NAME, TerramapAddon.TERRASHOW_BASE_PERMISSION_NODE);
 		this.translation = new TranslationContextBuilder()
 				.setMinimumVersion(new TerramapVersion(1, 0, 0, ReleaseType.BETA, 6, 3))
 				.addTranslation("terramap.commands.terrashow.usage", "/terrashow <show|hide|status> [player name (optional)]")
@@ -139,11 +137,11 @@ public class TerrashowCommand extends Command implements TabExecutor {
 	}
 	
 	private boolean canPlayerHideOthers(ProxiedPlayer player) {
-		return player.hasPermission(CMD_SELF_NODE) || this.hasPermissionAdmin(player);
+		return player.hasPermission(TerramapAddon.TERRASHOW_SELF_PERMISSION_NODE) || this.hasPermissionAdmin(player);
 	}
 	
 	private boolean canPlayerHideSelf(ProxiedPlayer player) {
-		return player.hasPermission(CMD_OTHER_NODE) || this.hasPermissionAdmin(player);
+		return player.hasPermission(TerramapAddon.TERRASHOW_OTHERS_PERMISSION_NODE) || this.hasPermissionAdmin(player);
 	}
 
 	@Override
