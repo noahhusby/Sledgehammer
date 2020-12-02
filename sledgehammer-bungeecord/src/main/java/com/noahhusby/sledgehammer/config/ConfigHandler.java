@@ -48,6 +48,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
+import org.json.simple.JSONArray;
 
 public class ConfigHandler {
     private static ConfigHandler mInstance = null;

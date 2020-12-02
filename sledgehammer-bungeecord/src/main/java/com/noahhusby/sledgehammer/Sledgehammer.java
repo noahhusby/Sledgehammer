@@ -164,6 +164,10 @@ public class Sledgehammer extends Plugin implements Listener {
             alternativeThreads.scheduleAtFixedRate(new FlaggedBorderCheckerThread(), 0, 10, TimeUnit.SECONDS);
         }
 
+        alternativeThreads.scheduleAtFixedRate(() -> {
+            ServerConfig.getInstance().checkReadyServers();
+        }, 0, 10, TimeUnit.SECONDS);
+
         OpenStreetMaps.getInstance().init();
 
         MapHandler.getInstance().init();

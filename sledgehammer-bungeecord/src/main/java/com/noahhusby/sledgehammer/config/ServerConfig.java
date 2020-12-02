@@ -31,6 +31,8 @@ import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
 import com.noahhusby.sledgehammer.datasets.Location;
 import com.noahhusby.sledgehammer.network.P2S.P2SInitializationPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
+import com.noahhusby.sledgehammer.players.PlayerManager;
+import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -138,5 +140,18 @@ public class ServerConfig {
         }
 
         return null;
+    }
+
+    public void checkReadyServers() {
+        for(SledgehammerServer server : servers) {
+            if(!server.isInitialized()) {
+                for(SledgehammerPlayer player : PlayerManager.getInstance().getPlayers()) {
+                    if(player.getServer().getInfo().getName().equalsIgnoreCase(server.name)) {
+                        SledgehammerNetworkManager.getInstance().sendPacket(new P2SInitializationPacket(player.getName(), server.name));
+                        continue;
+                    }
+                }
+            }
+        }
     }
 }
