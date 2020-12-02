@@ -72,7 +72,7 @@ public class ServerConfig {
     public void initializeServer(ServerInfo serverInfo, JSONObject data) {
         SledgehammerServer s = getServer(serverInfo.getName());
         if(s != null) {
-            s.initialize((String) data.get("version"), (String) data.get("tpllmode"));
+            s.initialize((String) data.get("version"));
             pushServer(s);
         }
     }

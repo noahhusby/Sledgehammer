@@ -60,7 +60,6 @@ public class SledgehammerNetworkManager {
 
     public void sendPacket(IP2SPacket packet) {
         JSONObject response = new JSONObject();
-        response.put("uuid", ConfigHandler.authenticationCode);
         response.put("command", packet.getPacketInfo().getID());
         response.put("sender", packet.getPacketInfo().getSender());
         response.put("server", packet.getPacketInfo().getServer());
@@ -73,7 +72,6 @@ public class SledgehammerNetworkManager {
     private void onPacketRecieved(String m) {
         try {
             SmartObject packet = SmartObject.fromJSON((JSONObject) new JSONParser().parse(m));
-            if(!SledgehammerUtil.isGenuineRequest(packet.getString("uuid"))) return;
 
             SmartObject packetData = SmartObject.fromJSON((JSONObject) packet.get("data"));
             PacketInfo packetInfo = new PacketInfo(packet.getString("command"), packet.getString("sender"),

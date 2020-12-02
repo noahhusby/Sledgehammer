@@ -32,12 +32,12 @@ public final class Sledgehammer extends JavaPlugin implements Listener {
 
     public static Logger logger;
     public static Plugin sledgehammer;
+    public static String bungeecordName = "";
 
     @Override
     public void onEnable() {
         logger = getLogger();
         sledgehammer = this;
-        ConfigHandler.registerConfig();
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
         Bukkit.getServer().getPluginManager().registerEvents(new ServerEventHandler(), this);
         Bukkit.getServer().getPluginManager().registerEvents(SledgehammerNetworkManager.getInstance(), this);

@@ -20,13 +20,11 @@ package com.noahhusby.sledgehammer;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import com.noahhusby.sledgehammer.ConfigHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.json.simple.JSONObject;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -62,8 +60,6 @@ public class SledgehammerUtil {
             }
             metaSetProfileMethod.invoke(meta, makeProfile(b64));
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ex) {
-            // if in an older API where there is no setProfile method,
-            // we set the profile field directly.
             try {
                 if (metaProfileField == null) {
                     metaProfileField = meta.getClass().getDeclaredField("profile");
@@ -85,16 +81,6 @@ public class SledgehammerUtil {
         GameProfile profile = new GameProfile(id, "aaaaa");
         profile.getProperties().put("textures", new Property("textures", b64));
         return profile;
-    }
-
-
-    public static boolean isGenuineRequest(String u) {
-        try {
-            return u.equals(ConfigHandler.authenticationCode);
-        } catch (Exception e) {
-            Sledgehammer.logger.info("Error occurred while parsing incoming authentication command!");
-            return false;
-        }
     }
 
     public static boolean isPlayerAvailable(String p) {

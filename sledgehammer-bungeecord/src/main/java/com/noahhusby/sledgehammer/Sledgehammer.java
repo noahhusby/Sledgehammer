@@ -70,7 +70,7 @@ public class Sledgehammer extends Plugin implements Listener {
     }
 
     @Override
-    public void nonDisable() {
+    public void onDisable() {
         addonManager.onDisable();
     }
 

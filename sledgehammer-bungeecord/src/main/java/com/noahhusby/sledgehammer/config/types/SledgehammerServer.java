@@ -41,7 +41,6 @@ public class SledgehammerServer implements Storable {
     public List<Location> locations = new ArrayList<>();
 
     private String shVersion = null;
-    private String tpllMode = null;
 
     public SledgehammerServer() {}
 
@@ -61,13 +60,8 @@ public class SledgehammerServer implements Storable {
         return shVersion;
     }
 
-    public String getTpllMode() {
-        return tpllMode;
-    }
-
-    public void initialize(String version, String tpllMode) {
+    public void initialize(String version) {
         this.shVersion = version;
-        this.tpllMode = tpllMode;
     }
 
     @Override
