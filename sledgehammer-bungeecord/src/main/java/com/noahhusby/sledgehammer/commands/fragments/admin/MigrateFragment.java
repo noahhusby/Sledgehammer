@@ -30,8 +30,8 @@ public class MigrateFragment implements ICommandFragment {
     public void execute(CommandSender sender, String[] args) {
         if(args.length < 1) {
             sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Type '", ChatColor.GRAY),
-                    new TextElement("/sha migrate ", ChatColor.YELLOW), new TextElement("confirm'", ChatColor.RED),
-                    new TextElement("to migrate local storage.", ChatColor.GRAY)));
+                    new TextElement("/sha migrate ", ChatColor.YELLOW), new TextElement("confirm", ChatColor.RED),
+                    new TextElement("' ", ChatColor.GRAY), new TextElement("to migrate local storage.", ChatColor.GRAY)));
             return;
         }
 

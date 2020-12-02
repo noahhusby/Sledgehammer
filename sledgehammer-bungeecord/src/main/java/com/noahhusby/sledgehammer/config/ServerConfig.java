@@ -111,7 +111,8 @@ public class ServerConfig {
                     server.getServerInfo().getPlayers().size()])[0];
             SledgehammerNetworkManager.getInstance().sendPacket(new P2SInitializationPacket(player.getName(), player.getServer().getInfo().getName()));
         }
-        ServerConfig.getInstance().getServers().save();
+
+        servers.save();
     }
 
     public void removeServer(SledgehammerServer server) {
