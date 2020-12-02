@@ -188,21 +188,22 @@ public class MapHandler {
     }
 
     public void attemptWarpRefresh() {
-        Map<String, Warp> warps = WarpHandler.getInstance().getWarps();
+        List<Warp> warps = WarpHandler.getInstance().getWarps();
         JSONObject o = new JSONObject();
         JSONArray waypoints = new JSONArray();
-        for(Map.Entry<String, Warp> w : warps.entrySet()) {
+        for(Warp w : warps) {
             JSONObject waypoint = new JSONObject();
 
-            waypoint.put("name", ChatHelper.capitalize(w.getKey()));
+            waypoint.put("name", ChatHelper.capitalize(w.name));
             waypoint.put("info", "");
 
-            double proj[] = SledgehammerUtil.toGeo(Double.parseDouble(w.getValue().point.x), Double.parseDouble(w.getValue().point.z));
+            double proj[] = SledgehammerUtil.toGeo(Double.parseDouble(w.point.x), Double.parseDouble(w.point.z));
 
             waypoint.put("lon", proj[0]);
             waypoint.put("lat", proj[1]);
             waypoints.add(waypoint);
         }
+
         o.put("action", "warp_refresh");
         JSONObject data = new JSONObject();
         data.put("waypoints", waypoints.toJSONString());

@@ -19,14 +19,18 @@
 package com.noahhusby.sledgehammer.config.types;
 
 import com.google.gson.annotations.Expose;
+import com.noahhusby.lib.data.storage.Storable;
+import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.datasets.Location;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SledgehammerServer {
+public class SledgehammerServer implements Storable {
     @Expose
     public String name;
     @Expose
@@ -38,6 +42,8 @@ public class SledgehammerServer {
 
     private String shVersion = null;
     private String tpllMode = null;
+
+    public SledgehammerServer() {}
 
     public SledgehammerServer(String name) {
         this.name = name;
@@ -62,5 +68,33 @@ public class SledgehammerServer {
     public void initialize(String version, String tpllMode) {
         this.shVersion = version;
         this.tpllMode = tpllMode;
+    }
+
+    @Override
+    public Storable load(JSONObject data) {
+        SledgehammerServer server = new SledgehammerServer((String) data.get("name"));
+        JSONArray storedLocs = (JSONArray) data.get("locations");
+        for(Object o : storedLocs) {
+            JSONObject location = (JSONObject) o;
+            server.locations.add((Location) new Location().load(location));
+        }
+
+        server.earthServer = (boolean) data.get("earthServer");
+        server.permission_type = (String) data.get("permission_type");
+
+        return server;
+    }
+
+    @Override
+    public JSONObject save(JSONObject data) {
+        data.put("name", name);
+        data.put("earthServer", earthServer);
+        data.put("permission_type", permission_type);
+        JSONArray locs = new JSONArray();
+        for(Location l : locations)
+            locs.add(l.save(new JSONObject()));
+        data.put("locations", locs);
+
+        return data;
     }
 }

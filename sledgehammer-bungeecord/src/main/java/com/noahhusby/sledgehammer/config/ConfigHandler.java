@@ -21,7 +21,15 @@ package com.noahhusby.sledgehammer.config;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.noahhusby.lib.data.sql.Credentials;
+import com.noahhusby.lib.data.sql.ISQLDatabase;
+import com.noahhusby.lib.data.sql.MySQL;
+import com.noahhusby.lib.data.storage.Storage;
+import com.noahhusby.lib.data.storage.handlers.LocalStorageHandler;
+import com.noahhusby.lib.data.storage.handlers.SQLStorageHandler;
+import com.noahhusby.lib.data.storage.handlers.StorageHandler;
 import com.noahhusby.sledgehammer.Sledgehammer;
+import com.noahhusby.sledgehammer.warp.Warp;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
 import org.apache.commons.io.FileUtils;
 
@@ -29,6 +37,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -43,8 +52,8 @@ public class ConfigHandler {
     private File dataFolder;
 
     private File configurationFile;
-    private File warpFile;
-    private File serverFile;
+    public static File warpFile;
+    public static File serverFile;
 
     private ConfigHandler() { }
 
@@ -57,6 +66,14 @@ public class ConfigHandler {
 
     public static String warpCommand = "";
     public static String warpMode = "";
+
+    public static boolean useSql;
+    public static String sqlHost;
+    public static int sqlPort;
+    public static String sqlUser;
+    public static String sqlPassword;
+    public static String sqlDb;
+    public static long autoLoad;
 
     public static boolean useOfflineMode = false;
     public static boolean borderTeleportation = false;
@@ -87,8 +104,8 @@ public class ConfigHandler {
         warpFile = new File(dataFolder, "warps.json");
         serverFile = new File(dataFolder, "servers.json");
 
-        loadWarpDB();
-        loadServerDB();
+        WarpHandler.getInstance().getWarps().load();
+        ServerConfig.getInstance().getServers().load();
 
         createConfig();
 
@@ -100,6 +117,12 @@ public class ConfigHandler {
     }
 
     public void loadData() {
+        Storage serverData = ServerConfig.getInstance().getServers();
+        if(serverData != null) serverData.clearHandlers();
+
+        Storage warpData = WarpHandler.getInstance().getWarps();
+        if(warpData != null) warpData.clearHandlers();
+
         config.load();
         cat("General", "General options for sledgehammer");
         authenticationCode = config.getString(prop("Network Authentication Code"), "General", ""
@@ -111,6 +134,17 @@ public class ConfigHandler {
         messagePrefix = config.getString(prop("Message Prefix"), "General", "&9&lBTE &8&l> "
                 , "The prefix of messages broadcasted to players from the proxy");
         globalTpll = config.getBoolean(prop("Global Tpll"), "General", true, "Set this to false to disable global tpll [/tpll & /cs tpll]");
+        order();
+
+        cat("MySQL Database", "Settings for the MySQL Database");
+        useSql = config.getBoolean(prop("Enable SQL"), category, false, "Should SQL be used to synchronize/store data?");
+        sqlHost = config.getString(prop("Host"), category, "127.0.0.1", "The host IP for the database.");
+        sqlPort = config.getInt(prop("Port"), category, 3306, 0, 65535,"The port for the database.");
+        sqlUser = config.getString(prop("Username"), category, "", "The username for the database.");
+        sqlPassword = config.getString(prop("Password"), category, "", "The password for the database.");
+        sqlDb = config.getString(prop("Database"), category, "", "The name of the database.");
+        autoLoad = config.getInt(prop("Auto Load Time"), category, 30, 10, 3600, "How often SH should automatically refresh storage data (in seconds).");
+
         order();
 
         cat("Warps", "Options for warps");
@@ -154,6 +188,30 @@ public class ConfigHandler {
 
         File f = new File(dataFolder, "offline.bin");
         doesOfflineExist = f.exists();
+
+        serverData.registerHandler(new LocalStorageHandler(ConfigHandler.serverFile));
+
+        if(useSql) {
+            SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(new Credentials(sqlHost,
+                    sqlPort, sqlUser, sqlPassword, sqlDb)), "servers");
+            sqlStorageHandler.setPriority(100);
+            serverData.registerHandler(sqlStorageHandler);
+        }
+
+        serverData.load(true);
+        serverData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
+
+        warpData.registerHandler(new LocalStorageHandler(ConfigHandler.warpFile));
+
+        if(useSql) {
+            SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(new Credentials(sqlHost,
+                    sqlPort, sqlUser, sqlPassword, sqlDb)), "warps");
+            sqlStorageHandler.setPriority(100);
+            warpData.registerHandler(sqlStorageHandler);
+        }
+
+        warpData.load(true);
+        warpData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
     }
 
     public boolean isAuthCodeConfigured() {
@@ -192,96 +250,7 @@ public class ConfigHandler {
             dataFolder.mkdir();
     }
 
-    public void loadWarpDB() {
-        if (warpFile.exists())
-        {
-            String json = null;
-            try
-            {
-                Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting()
-                        .create();
-                json = FileUtils.readFileToString(warpFile, "UTF-8");
-                WarpHandler.setInstance(gson.fromJson(json, WarpHandler.class));
-                WarpHandler.getInstance();
-                saveWarpDB();
-            }
-            catch (Throwable e)
-            {
-                e.printStackTrace();
-                System.err.println("\n" + json);
-            }
-            return;
-        }
-
-        WarpHandler.setInstance(new WarpHandler());
-        WarpHandler.getInstance();
-        saveWarpDB();
+    public void migrate() {
+        ServerConfig.getInstance().getServers().migrate(0);
     }
-
-    public void saveWarpDB() {
-        try
-        {
-            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
-            Predicate<String> nonnull = new Predicate<String>()
-            {
-                @Override
-                public boolean test(String t)
-                {
-                    return t == null || t.isEmpty();
-                }
-            };
-            FileUtils.writeStringToFile(warpFile, gson.toJson(WarpHandler.getInstance()), "UTF-8");
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    public void loadServerDB() {
-        if (serverFile.exists())
-        {
-            String json = null;
-            try
-            {
-                Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting()
-                        .create();
-                json = FileUtils.readFileToString(serverFile, "UTF-8");
-                ServerConfig.setInstance(gson.fromJson(json, ServerConfig.class));
-                ServerConfig.getInstance();
-                saveServerDB();
-            }
-            catch (Throwable e)
-            {
-                e.printStackTrace();
-                System.err.println("\n" + json);
-            }
-            return;
-        }
-
-        ServerConfig.setInstance(new ServerConfig());
-        ServerConfig.getInstance();
-        saveServerDB();
-    }
-
-    public void saveServerDB() {
-        try
-        {
-            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
-            Predicate<String> nonnull = new Predicate<String>()
-            {
-                @Override
-                public boolean test(String t)
-                {
-                    return t == null || t.isEmpty();
-                }
-            };
-            FileUtils.writeStringToFile(serverFile, gson.toJson(ServerConfig.getInstance()), "UTF-8");
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
 }

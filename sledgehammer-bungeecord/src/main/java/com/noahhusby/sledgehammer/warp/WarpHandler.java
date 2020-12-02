@@ -20,6 +20,7 @@ package com.noahhusby.sledgehammer.warp;
 
 import com.google.common.collect.Maps;
 import com.google.gson.annotations.Expose;
+import com.noahhusby.lib.data.storage.StorageList;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.network.P2S.P2SSetwarpPacket;
@@ -40,27 +41,23 @@ public class WarpHandler {
     private static WarpHandler instance;
 
     public static WarpHandler getInstance() {
+        if(instance == null) instance = new WarpHandler();
         return instance;
-    }
-
-    public static void setInstance(WarpHandler instance) {
-        WarpHandler.instance = instance;
     }
 
     public WarpHandler() {}
 
-    @Expose(serialize = true, deserialize = true)
-    public Map<String, Warp> warps = Maps.newHashMap();
+    public StorageList<Warp> warps = new StorageList<>(Warp.class);
 
     public Map<String, JSONObject> requestedWarps = Maps.newHashMap();
 
-    public Map<String, Warp> getWarps() {
+    public StorageList<Warp> getWarps() {
         return warps;
     }
 
-    public Warp getWarp(String w) {
-        for(Map.Entry<String, Warp> s : warps.entrySet())
-            if(s.getKey().equalsIgnoreCase(w)) return s.getValue();
+    public Warp getWarp(String wn) {
+        for(Warp w : warps)
+            if(w.name.equalsIgnoreCase(wn)) return w;
         return null;
     }
 
@@ -74,11 +71,18 @@ public class WarpHandler {
     }
 
     public void removeWarp(String w, CommandSender sender) {
-        if(warps.containsKey(w.toLowerCase())) {
-            warps.remove(w.toLowerCase());
-            sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Successfully removed ", ChatColor.GRAY),
-                    new TextElement(ChatHelper.capitalize(w), ChatColor.RED)));
-            ConfigHandler.getInstance().saveWarpDB();
+        Warp remove = null;
+        for(Warp wp : warps) {
+            if(wp.name.equalsIgnoreCase(w)) {
+                remove = wp;
+                sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Successfully removed ", ChatColor.GRAY),
+                        new TextElement(ChatHelper.capitalize(w), ChatColor.RED)));
+                warps.save();
+            }
+        }
+
+        if(remove != null)  {
+            warps.remove(remove);
             return;
         }
 
@@ -97,21 +101,21 @@ public class WarpHandler {
     public String getWarpList() {
         String warpList = "";
         boolean first = true;
-        for(String s : warps.keySet()) {
+        for(Warp w : warps) {
             if(first) {
-                warpList = ChatHelper.capitalize(s);
-                first = false;
+                warpList = ChatHelper.capitalize(w.name);
             } else {
-                warpList += ", "+ChatHelper.capitalize(s);
+                warpList += ", "+ChatHelper.capitalize(w.name);
             }
         }
+
         return warpList;
     }
 
     private void addWarp(String sender, String w, boolean pinned, Point p, ServerInfo s) {
         warps.remove(w.toLowerCase());
 
-        warps.put(w, new Warp(p, s.getName(), pinned));
+        warps.add(new Warp(w, p, s.getName(), pinned));
 
         if(pinned) {
             ProxyServer.getInstance().getPlayer(sender).sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Created pinned warp ", ChatColor.GRAY),
@@ -121,17 +125,17 @@ public class WarpHandler {
                     new TextElement(ChatHelper.capitalize(w), ChatColor.RED)));
         }
 
-        ConfigHandler.getInstance().saveWarpDB();
+        warps.save();
     }
 
     public JSONObject generateGUIPayload() {
         JSONObject o = new JSONObject();
         JSONArray waypoints = new JSONArray();
-        for(Map.Entry<String, Warp> w : warps.entrySet()) {
+        for(Warp w : warps) {
             JSONObject wa = new JSONObject();
-            wa.put("name", w.getKey());
-            wa.put("pinned", w.getValue().pinned);
-            wa.put("server", w.getValue().server);
+            wa.put("name", w.name);
+            wa.put("pinned", w.pinned);
+            wa.put("server", w.server);
             waypoints.add(wa);
         }
 

@@ -20,6 +20,12 @@ package com.noahhusby.sledgehammer.config;
 
 import com.google.common.collect.Lists;
 import com.google.gson.annotations.Expose;
+import com.noahhusby.lib.data.sql.Credentials;
+import com.noahhusby.lib.data.sql.ISQLDatabase;
+import com.noahhusby.lib.data.sql.MySQL;
+import com.noahhusby.lib.data.storage.StorageList;
+import com.noahhusby.lib.data.storage.handlers.LocalStorageHandler;
+import com.noahhusby.lib.data.storage.handlers.SQLStorageHandler;
 import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
 import com.noahhusby.sledgehammer.datasets.Location;
 import com.noahhusby.sledgehammer.network.P2S.P2SInitializationPacket;
@@ -34,26 +40,23 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class ServerConfig {
     private static ServerConfig instance;
 
     public static ServerConfig getInstance() {
+        if(instance == null) instance = new ServerConfig();
         return instance;
-    }
-
-    public static void setInstance(ServerConfig instance) {
-        ServerConfig.instance = instance;
     }
 
     public ServerConfig() { }
 
-    @Expose(serialize = true, deserialize = true)
-    public List<SledgehammerServer> servers = new ArrayList<>();
+    public StorageList<SledgehammerServer> servers = new StorageList<>(SledgehammerServer.class);
 
     public LinkedList<ServerInfo> bungeeServers = Lists.newLinkedList();
 
-    public List<SledgehammerServer> getServers() {
+    public StorageList<SledgehammerServer> getServers() {
         return servers;
     }
 
@@ -102,12 +105,12 @@ public class ServerConfig {
                     server.getServerInfo().getPlayers().size()])[0];
             SledgehammerNetworkManager.getInstance().sendPacket(new P2SInitializationPacket(player.getName(), player.getServer().getInfo().getName()));
         }
-        ConfigHandler.getInstance().saveServerDB();
+        ServerConfig.getInstance().getServers().save();
     }
 
     public void removeServer(SledgehammerServer server) {
         servers.remove(server);
-        ConfigHandler.getInstance().saveServerDB();
+        ServerConfig.getInstance().getServers().save();
     }
 
 

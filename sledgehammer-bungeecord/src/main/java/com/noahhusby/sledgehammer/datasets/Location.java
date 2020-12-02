@@ -19,18 +19,17 @@
 package com.noahhusby.sledgehammer.datasets;
 
 import com.google.gson.annotations.Expose;
+import com.noahhusby.lib.data.storage.Storable;
+import org.json.simple.JSONObject;
 
-public class Location {
-    @Expose
+public class Location implements Storable {
     public detail detailType;
-    @Expose
     public String city = "";
-    @Expose
     public String county = "";
-    @Expose
     public String state = "";
-    @Expose
     public String country = "";
+
+    public Location() {}
 
     public Location(detail detailType, String city, String county, String state, String country) {
         this.detailType = detailType;
@@ -51,7 +50,21 @@ public class Location {
         }
     }
 
-    public Location() {}
+    @Override
+    public Storable load(JSONObject data) {
+        return new Location(detail.valueOf((String) data.get("detailType")), (String)  data.get("city"),
+                (String) data.get("county"), (String) data.get("state"), (String) data.get("country"));
+    }
+
+    @Override
+    public JSONObject save(JSONObject data) {
+        data.put("detailType", detailType.name());
+        data.put("city", city);
+        data.put("county", county);
+        data.put("state", state);
+        data.put("country", country);
+        return data;
+    }
 
     public enum detail {
         none, city, county, state, country;

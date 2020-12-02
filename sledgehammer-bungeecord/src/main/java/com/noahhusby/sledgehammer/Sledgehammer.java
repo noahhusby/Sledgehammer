@@ -70,7 +70,7 @@ public class Sledgehammer extends Plugin implements Listener {
     }
 
     @Override
-    public void onDisable() {
+    public void nonDisable() {
         addonManager.onDisable();
     }
 
@@ -86,6 +86,8 @@ public class Sledgehammer extends Plugin implements Listener {
 
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerCommand());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerAdminCommand());
+
+        ServerConfig.getInstance();
 
         if(!ConfigHandler.getInstance().isAuthCodeConfigured()) {
             logger.severe("------------------------------");

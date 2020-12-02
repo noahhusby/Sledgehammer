@@ -26,6 +26,8 @@ import com.noahhusby.sledgehammer.network.PacketInfo;
 import com.noahhusby.sledgehammer.network.S2PPacket;
 import org.json.simple.JSONObject;
 
+import java.text.DecimalFormat;
+
 public class S2PSetwarpPacket extends S2PPacket {
     @Override
     public String getPacketID() {
@@ -35,7 +37,8 @@ public class S2PSetwarpPacket extends S2PPacket {
     @Override
     public void onMessage(PacketInfo info, SmartObject data) {
         SmartObject point = SmartObject.fromJSON((JSONObject) data.get("point"));
-        WarpHandler.getInstance().incomingLocationResponse(info.getSender(), new Point(point.getString("x"), point.getString("y"),
-                point.getString("z"), point.getString("yaw"), point.getString("pitch")));
+        DecimalFormat format = new DecimalFormat("0.000");
+        WarpHandler.getInstance().incomingLocationResponse(info.getSender(), new Point(format.format(point.getString("x")), format.format(point.getString("y")),
+                format.format(point.getString("z")), format.format(point.getString("yaw")), format.format(point.getString("pitch"))));
     }
 }

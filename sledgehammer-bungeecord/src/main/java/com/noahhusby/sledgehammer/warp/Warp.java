@@ -18,20 +18,40 @@
 
 package com.noahhusby.sledgehammer.warp;
 
-import com.google.gson.annotations.Expose;
+import com.noahhusby.lib.data.storage.Storable;
 import com.noahhusby.sledgehammer.datasets.Point;
+import org.json.simple.JSONObject;
 
-public class Warp {
-    @Expose
+public class Warp implements Storable {
+    public final String name;
     public final Point point;
-    @Expose
     public final String server;
-    @Expose
     public final boolean pinned;
 
-    public Warp(Point point, String server, boolean pinned) {
+    public Warp() {
+        this("", new Point(), "", false);
+    }
+
+    public Warp(String name, Point point, String server, boolean pinned) {
+        this.name = name;
         this.point = point;
         this.server = server;
         this.pinned = pinned;
+    }
+
+    @Override
+    public Storable load(JSONObject data) {
+        Point p = (Point) new Point().load((JSONObject) data.get("point"));
+        return new Warp((String) data.get("name"), p, (String) data.get("server"), (boolean) data.get("pinned"));
+    }
+
+    @Override
+    public JSONObject save(JSONObject data) {
+        data.put("name", name);
+        data.put("server", server);
+        data.put("pinned", pinned);
+        data.put("point", point.getJSON());
+
+        return data;
     }
 }
