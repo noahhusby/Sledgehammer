@@ -18,13 +18,31 @@
 
 package com.noahhusby.sledgehammer.commands.fragments.admin;
 
+import com.noahhusby.sledgehammer.chat.ChatHelper;
+import com.noahhusby.sledgehammer.chat.TextElement;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
+import com.noahhusby.sledgehammer.config.ConfigHandler;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 
 public class MigrateFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
+        if(args.length < 1) {
+            sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Type '", ChatColor.GRAY),
+                    new TextElement("/sha migrate ", ChatColor.YELLOW), new TextElement("confirm'", ChatColor.RED),
+                    new TextElement("to migrate local storage.", ChatColor.GRAY)));
+            return;
+        }
 
+        if(args[0].equalsIgnoreCase("confirm")) {
+            sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Succesfully migrated data!", ChatColor.BLUE)));
+            ConfigHandler.getInstance().migrate();
+        } else {
+            sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Type '", ChatColor.GRAY),
+                    new TextElement("/sha migrate ", ChatColor.YELLOW), new TextElement("confirm", ChatColor.RED),
+                    new TextElement("' ", ChatColor.GRAY), new TextElement("to migrate local storage.", ChatColor.GRAY)));
+        }
     }
 
     @Override

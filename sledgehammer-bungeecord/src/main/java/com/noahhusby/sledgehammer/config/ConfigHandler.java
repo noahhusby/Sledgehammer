@@ -291,5 +291,6 @@ public class ConfigHandler {
 
     public void migrate() {
         ServerConfig.getInstance().getServers().migrate(0);
+        WarpHandler.getInstance().getWarps().migrate(0);
     }
 }
