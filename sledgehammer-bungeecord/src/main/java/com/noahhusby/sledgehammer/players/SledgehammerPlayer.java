@@ -42,6 +42,7 @@ public class SledgehammerPlayer implements ProxiedPlayer {
     private ProxiedPlayer player;
 
     private boolean flagged = false;
+    private GameMode gameMode = GameMode.NONE;
     private Point location;
     private Point track;
 
@@ -330,6 +331,14 @@ public class SledgehammerPlayer implements ProxiedPlayer {
 
     public void setFlagged(boolean flagged) {
         this.flagged = flagged;
+    }
+
+    public GameMode getGameMode() {
+        return gameMode;
+    }
+
+    public void setGameMode(GameMode gameMode) {
+        this.gameMode = gameMode;
     }
 
     public static SledgehammerPlayer getPlayer(String s) {
