@@ -69,8 +69,6 @@ public class ServerInfoFragment implements ICommandFragment {
             sender.sendMessage();
             sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("SH Version: ", ChatColor.GRAY),
                     new TextElement(server.getSledgehammerVersion(), ChatColor.BLUE)));
-            sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Tpll Mode: ", ChatColor.GRAY),
-                    new TextElement(server.getTpllMode(), ChatColor.BLUE)));
         }
     }
 

@@ -19,6 +19,7 @@
 package com.noahhusby.sledgehammer.config;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.gson.annotations.Expose;
 import com.noahhusby.lib.data.sql.Credentials;
 import com.noahhusby.lib.data.sql.ISQLDatabase;
@@ -54,6 +55,8 @@ public class ServerConfig {
 
     public StorageList<SledgehammerServer> servers = new StorageList<>(SledgehammerServer.class);
 
+    public Map<String, String> initializedServers = Maps.newHashMap();
+
     public LinkedList<ServerInfo> bungeeServers = Lists.newLinkedList();
 
     public StorageList<SledgehammerServer> getServers() {
@@ -70,10 +73,13 @@ public class ServerConfig {
     }
 
     public void initializeServer(ServerInfo serverInfo, JSONObject data) {
-        SledgehammerServer s = getServer(serverInfo.getName());
+        String version = (String) data.get("version");
+        String name = serverInfo.getName();
+        initializedServers.remove(name);
+        initializedServers.put(serverInfo.getName(), version);
+        SledgehammerServer s = getServer(name);
         if(s != null) {
-            s.initialize((String) data.get("version"));
-            pushServer(s);
+            s.initialize(version);
         }
     }
 
