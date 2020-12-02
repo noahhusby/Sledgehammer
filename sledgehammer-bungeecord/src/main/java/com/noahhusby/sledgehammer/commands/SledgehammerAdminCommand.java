@@ -35,6 +35,7 @@ public class SledgehammerAdminCommand extends CommandFragmentManager {
         registerCommandFragment(new ServerFragment());
         registerCommandFragment(new PermissionCheckFragment());
         registerCommandFragment(new TestLocationFragment());
+        registerCommandFragment(new MigrateFragment());
     }
 
     @Override
