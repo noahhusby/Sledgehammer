@@ -34,7 +34,7 @@ public class ChatHelper {
         for(int x = 0; x < text.length; x++) {
             TextComponent temp = new TextComponent(text[x].text);
             temp.setColor(text[x].color);
-            temp.setBold(text[0].bold);
+            temp.setBold(text[x].bold);
             bar.addExtra(temp);
         }
         return bar;
@@ -68,7 +68,7 @@ public class ChatHelper {
         for(int x = 0; x < text.length; x++) {
             TextComponent temp = new TextComponent(text[x].text);
             temp.setColor(text[x].color);
-            temp.setBold(text[0].bold);
+            temp.setBold(text[x].bold);
             bar.addExtra(temp);
         }
         return bar;

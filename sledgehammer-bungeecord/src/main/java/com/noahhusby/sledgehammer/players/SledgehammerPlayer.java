@@ -32,10 +32,7 @@ import net.md_5.bungee.api.score.Scoreboard;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.Collection;
-import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class SledgehammerPlayer implements ProxiedPlayer {
 
@@ -45,6 +42,7 @@ public class SledgehammerPlayer implements ProxiedPlayer {
     private GameMode gameMode = GameMode.NONE;
     private Point location;
     private Point track;
+    List<String> attributes = new ArrayList<>();
 
     public SledgehammerPlayer(ProxiedPlayer player) {
         this.player = player;
@@ -339,6 +337,10 @@ public class SledgehammerPlayer implements ProxiedPlayer {
 
     public void setGameMode(GameMode gameMode) {
         this.gameMode = gameMode;
+    }
+
+    public List<String> getAttributes() {
+        return attributes;
     }
 
     public static SledgehammerPlayer getPlayer(String s) {

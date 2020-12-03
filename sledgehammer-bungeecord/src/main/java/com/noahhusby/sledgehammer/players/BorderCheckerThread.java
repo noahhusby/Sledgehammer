@@ -72,14 +72,13 @@ public class BorderCheckerThread implements Runnable {
             }
 
             if(checkLocation) {
-                System.out.println("Checking: " + p.getTrackingPoint().getJSON());
                 Point track = p.getTrackingPoint();
 
                 double[] proj = SledgehammerUtil.toGeo(Double.parseDouble(track.x), Double.parseDouble(track.z));
                 ServerInfo info = OpenStreetMaps.getInstance().getServerFromLocation(proj[0], proj[1], true);
 
                 if(info != null && !info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
-                    System.out.println(info.getName());
+                    p.setFlagged(true);
                     continue;
                 }
 
