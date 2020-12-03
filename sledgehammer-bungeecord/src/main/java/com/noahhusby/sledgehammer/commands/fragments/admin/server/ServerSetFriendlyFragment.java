@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2020 Noah Husby
- * Sledgehammer [Bungeecord] - ServerAddLocationFragment.java
+ * Sledgehammer [Bungeecord] - ServerSetFriendlyFragment.java
  *
  * Sledgehammer is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,49 +18,50 @@
 
 package com.noahhusby.sledgehammer.commands.fragments.admin.server;
 
-import com.noahhusby.sledgehammer.chat.ChatConstants;
+import com.noahhusby.sledgehammer.chat.ChatHelper;
+import com.noahhusby.sledgehammer.chat.TextElement;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.ServerConfig;
-import com.noahhusby.sledgehammer.dialogs.scenes.location.LocationSelectionScene;
-import com.noahhusby.sledgehammer.dialogs.DialogHandler;
+import com.noahhusby.sledgehammer.config.SledgehammerServer;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-public class ServerAddLocationFragment implements ICommandFragment {
+public class ServerSetFriendlyFragment implements ICommandFragment {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(!(sender instanceof ProxiedPlayer)) {
-            sender.sendMessage(ChatConstants.issueByPlayer);
+        if(args.length < 3) {
+            sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Usage: /sha server <server name> setname <name>", ChatColor.RED)));
             return;
         }
 
-        if(ServerConfig.getInstance().getServer(args[0]) == null) {
-            sender.sendMessage(ChatConstants.notSledgehammerServer);
-            return;
+        StringBuilder name = new StringBuilder(args[2]);
+        for(int i = 3; i < args.length; i++) {
+            name.append(" ").append(args[i]);
         }
 
-        if(!ServerConfig.getInstance().getServer(args[0]).earthServer) {
-            sender.sendMessage(ChatConstants.notEarthServer);
-            return;
-        }
+        SledgehammerServer s = ServerConfig.getInstance().getServer(args[0]);
+        s.friendly_name = name.toString();
 
-        DialogHandler.getInstance().startDialog(sender, new LocationSelectionScene(ProxyServer.getInstance().getServerInfo(args[0])));
+        ServerConfig.getInstance().pushServer(s);
+
+        sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Changed name of ", ChatColor.GRAY),
+                new TextElement(s.name, ChatColor.BLUE), new TextElement(" to ", ChatColor.GRAY),
+                new TextElement(name.toString(), ChatColor.YELLOW)));
     }
 
     @Override
     public String getName() {
-        return "addlocation";
+        return "setname";
     }
 
     @Override
     public String getPurpose() {
-        return "Add a location to the server";
+        return "Set nickname for server";
     }
 
     @Override
     public String[] getArguments() {
-        return null;
+        return new String[]{"<name>"};
     }
 }

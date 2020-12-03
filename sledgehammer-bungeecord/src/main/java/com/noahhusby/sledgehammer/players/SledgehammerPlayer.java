@@ -19,7 +19,7 @@
 package com.noahhusby.sledgehammer.players;
 
 import com.noahhusby.sledgehammer.config.ServerConfig;
-import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
+import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.datasets.Point;
 import net.md_5.bungee.api.*;
 import net.md_5.bungee.api.chat.BaseComponent;

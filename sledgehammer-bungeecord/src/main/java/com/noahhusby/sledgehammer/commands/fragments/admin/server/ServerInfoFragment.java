@@ -20,7 +20,7 @@ package com.noahhusby.sledgehammer.commands.fragments.admin.server;
 
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.ServerConfig;
-import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
+import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.chat.TextElement;
 import net.md_5.bungee.api.*;
@@ -51,6 +51,8 @@ public class ServerInfoFragment implements ICommandFragment {
                 sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Earth: ", ChatColor.GRAY),
                         new TextElement("No", ChatColor.RED)));
             }
+            sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Friendly Name: ", ChatColor.GRAY),
+                    new TextElement(server.friendly_name, ChatColor.BLUE)));
         } else {
             sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Status: ", ChatColor.GRAY),
                     new TextElement("Initialized", ChatColor.GREEN)));
@@ -62,6 +64,8 @@ public class ServerInfoFragment implements ICommandFragment {
                 sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Earth: ", ChatColor.GRAY),
                         new TextElement("No", ChatColor.RED)));
             }
+            sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Friendly Name: ", ChatColor.GRAY),
+                    new TextElement(server.friendly_name, ChatColor.BLUE)));
             sender.sendMessage();
             sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("SH Version: ", ChatColor.GRAY),
                     new TextElement(server.getSledgehammerVersion(), ChatColor.BLUE)));

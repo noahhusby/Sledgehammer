@@ -22,7 +22,7 @@ import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
-import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
+import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

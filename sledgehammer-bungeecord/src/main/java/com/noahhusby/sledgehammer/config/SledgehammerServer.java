@@ -16,12 +16,9 @@
  *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
-package com.noahhusby.sledgehammer.config.types;
+package com.noahhusby.sledgehammer.config;
 
-import com.google.gson.annotations.Expose;
 import com.noahhusby.lib.data.storage.Storable;
-import com.noahhusby.sledgehammer.Sledgehammer;
-import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.datasets.Location;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -46,6 +43,7 @@ public class SledgehammerServer implements Storable {
 
     public SledgehammerServer(String name) {
         this.name = name;
+        this.friendly_name = name;
     }
 
     public ServerInfo getServerInfo() {
@@ -77,6 +75,7 @@ public class SledgehammerServer implements Storable {
         if(version != null) server.shVersion = version;
 
         server.earthServer = (boolean) data.get("earthServer");
+        if(data.get("friendlyName") != null) server.friendly_name = (String) data.get("friendlyName");
 
         return server;
     }
@@ -85,10 +84,12 @@ public class SledgehammerServer implements Storable {
     public JSONObject save(JSONObject data) {
         data.put("name", name);
         data.put("earthServer", earthServer);
-        data.put("friendly_name", friendly_name);
+        data.put("friendlyName", friendly_name);
+
         JSONArray locs = new JSONArray();
         for(Location l : locations)
             locs.add(l.save(new JSONObject()));
+
         data.put("locations", locs);
 
         return data;

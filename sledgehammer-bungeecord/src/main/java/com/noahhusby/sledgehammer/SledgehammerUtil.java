@@ -20,7 +20,7 @@ package com.noahhusby.sledgehammer;
 
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
-import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
+import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.projection.GeographicProjection;
 import com.noahhusby.sledgehammer.projection.ModifiedAirocean;

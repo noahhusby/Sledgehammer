@@ -20,14 +20,7 @@ package com.noahhusby.sledgehammer.config;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.gson.annotations.Expose;
-import com.noahhusby.lib.data.sql.Credentials;
-import com.noahhusby.lib.data.sql.ISQLDatabase;
-import com.noahhusby.lib.data.sql.MySQL;
 import com.noahhusby.lib.data.storage.StorageList;
-import com.noahhusby.lib.data.storage.handlers.LocalStorageHandler;
-import com.noahhusby.lib.data.storage.handlers.SQLStorageHandler;
-import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
 import com.noahhusby.sledgehammer.datasets.Location;
 import com.noahhusby.sledgehammer.network.P2S.P2SInitializationPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;

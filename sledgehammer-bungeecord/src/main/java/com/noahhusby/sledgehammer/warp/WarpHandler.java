@@ -23,6 +23,7 @@ import com.google.gson.annotations.Expose;
 import com.noahhusby.lib.data.storage.StorageList;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
+import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.network.P2S.P2SSetwarpPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
@@ -133,9 +134,12 @@ public class WarpHandler {
         JSONArray waypoints = new JSONArray();
         for(Warp w : warps) {
             JSONObject wa = new JSONObject();
+            String friendlyName = ServerConfig.getInstance().getServer(w.server).friendly_name;
+            if(friendlyName == null) friendlyName = w.server;
+
             wa.put("name", w.name);
             wa.put("pinned", w.pinned);
-            wa.put("server", w.server);
+            wa.put("server", friendlyName);
             waypoints.add(wa);
         }
 

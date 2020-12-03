@@ -19,7 +19,7 @@
 package com.noahhusby.sledgehammer.dialogs.scenes.setup;
 
 import com.noahhusby.sledgehammer.config.ServerConfig;
-import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
+import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.dialogs.components.setup.EarthServerComponent;
 import com.noahhusby.sledgehammer.dialogs.components.setup.EditComponent;
 import com.noahhusby.sledgehammer.dialogs.components.setup.SledgehammerServerComponent;
