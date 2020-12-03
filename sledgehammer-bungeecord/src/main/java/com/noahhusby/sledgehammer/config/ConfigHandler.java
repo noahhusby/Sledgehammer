@@ -28,6 +28,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -58,6 +59,7 @@ public class ConfigHandler {
     public static String authenticationCode = "";
     public static String messagePrefix = "";
     public static boolean globalTpll = false;
+    public static boolean debug = false;
 
     public static String warpCommand = "";
     public static String warpMode = "";
@@ -140,6 +142,7 @@ public class ConfigHandler {
         messagePrefix = config.getString(prop("Message Prefix"), "General", "&9&lBTE &8&l> "
                 , "The prefix of messages broadcasted to players from the proxy");
         globalTpll = config.getBoolean(prop("Global Tpll"), "General", true, "Set this to false to disable global tpll [/tpll & /cs tpll]");
+        debug = config.getBoolean(prop("Debug"), category, false, "Enable to see advanced logging information.");
         order();
 
         cat("MySQL Database", "Settings for the MySQL Database");
@@ -196,6 +199,7 @@ public class ConfigHandler {
         terramapEnabled = config.getBoolean(prop("Terramap Compatibility"), "Addons", false,
                 "Set to 'true' to enable Terramap compatibility.\nThis will allow clients to see players across the entire network on the map.\n" +
                         "It will also display network warps on the map.");
+        order();
         
         cat("Terramap", "Terramap addon configuration. The addon needs to be enabled.");
         terramapSyncPlayers = config.getBoolean(prop("Sync Players"), "Terramap", true,
@@ -226,7 +230,6 @@ public class ConfigHandler {
             serverData.registerHandler(sqlStorageHandler);
         }
 
-        serverData.load(true);
         serverData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
 
         warpData.registerHandler(new LocalStorageHandler(ConfigHandler.warpFile));
@@ -238,8 +241,12 @@ public class ConfigHandler {
             warpData.registerHandler(sqlStorageHandler);
         }
 
-        warpData.load(true);
         warpData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
+
+        Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+            serverData.load(true);
+            warpData.load(true);
+        }, 5, TimeUnit.SECONDS);
     }
 
     public boolean isAuthCodeConfigured() {

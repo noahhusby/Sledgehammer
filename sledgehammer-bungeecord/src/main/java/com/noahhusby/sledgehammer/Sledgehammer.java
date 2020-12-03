@@ -200,4 +200,8 @@ public class Sledgehammer extends Plugin implements Listener {
     public static void setupListener(Listener l) {
         ProxyServer.getInstance().getPluginManager().registerListener(sledgehammer, l);
     }
+
+    public static void debug(String m) {
+        if(ConfigHandler.debug) logger.info(m);
+    }
 }
