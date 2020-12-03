@@ -21,10 +21,6 @@ package com.noahhusby.sledgehammer.maps;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.maps.MapHandler;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 public class MapThread implements Runnable {
 
     private MapHandler mapHandler = MapHandler.getInstance();

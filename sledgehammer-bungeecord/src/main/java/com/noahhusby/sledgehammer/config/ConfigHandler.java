@@ -18,37 +18,22 @@
 
 package com.noahhusby.sledgehammer.config;
 
-import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.noahhusby.lib.data.sql.Credentials;
-import com.noahhusby.lib.data.sql.ISQLDatabase;
 import com.noahhusby.lib.data.sql.MySQL;
 import com.noahhusby.lib.data.storage.Storage;
 import com.noahhusby.lib.data.storage.handlers.LocalStorageHandler;
 import com.noahhusby.lib.data.storage.handlers.SQLStorageHandler;
-import com.noahhusby.lib.data.storage.handlers.StorageHandler;
-import com.noahhusby.sledgehammer.Sledgehammer;
-import com.noahhusby.sledgehammer.warp.Warp;
-import com.noahhusby.sledgehammer.warp.WarpHandler;
-import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.FileUtils;
-
 import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
-import org.json.simple.JSONArray;
 
 public class ConfigHandler {
     private static ConfigHandler mInstance = null;

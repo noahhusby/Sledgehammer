@@ -19,9 +19,7 @@
 package com.noahhusby.sledgehammer.players;
 
 import com.noahhusby.sledgehammer.Constants;
-import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
-import com.noahhusby.sledgehammer.datasets.Location;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.datasets.Point;
 import net.md_5.bungee.api.config.ServerInfo;

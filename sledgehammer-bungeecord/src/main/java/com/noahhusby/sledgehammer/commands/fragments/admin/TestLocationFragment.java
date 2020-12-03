@@ -19,6 +19,7 @@
 package com.noahhusby.sledgehammer.commands.fragments.admin;
 
 import com.noahhusby.sledgehammer.SledgehammerUtil;
+import com.noahhusby.sledgehammer.chat.ChatConstants;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.network.P2S.P2STestLocationPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
@@ -26,10 +27,16 @@ import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.chat.TextElement;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class TestLocationFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
+        if(!(sender instanceof ProxiedPlayer)) {
+            sender.sendMessage(ChatConstants.issueByPlayer);
+            return;
+        }
+
         if(args.length == 0) {
             SledgehammerNetworkManager.getInstance().sendPacket(new P2STestLocationPacket(sender.getName(),
                     SledgehammerUtil.getServerNameByPlayer(sender), -1));

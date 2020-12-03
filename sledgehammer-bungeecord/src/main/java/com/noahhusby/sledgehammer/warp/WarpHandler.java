@@ -19,7 +19,6 @@
 package com.noahhusby.sledgehammer.warp;
 
 import com.google.common.collect.Maps;
-import com.google.gson.annotations.Expose;
 import com.noahhusby.lib.data.storage.StorageList;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.config.ConfigHandler;

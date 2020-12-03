@@ -18,7 +18,6 @@
 
 package com.noahhusby.sledgehammer.datasets;
 
-import com.google.gson.annotations.Expose;
 import com.noahhusby.lib.data.storage.Storable;
 import org.json.simple.JSONObject;
 
