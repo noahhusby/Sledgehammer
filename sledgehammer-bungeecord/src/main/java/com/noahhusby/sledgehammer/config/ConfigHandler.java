@@ -48,6 +48,7 @@ public class ConfigHandler {
     private File configurationFile;
     public static File warpFile;
     public static File serverFile;
+    public static File localStorage;
 
     private ConfigHandler() { }
 
@@ -103,9 +104,11 @@ public class ConfigHandler {
 
     public void init(File dataFolder) {
         this.dataFolder = dataFolder;
+        localStorage = new File(dataFolder, "local");
+        if(!localStorage.exists()) localStorage.mkdir();
         configurationFile = new File(dataFolder, "sledgehammer.cfg");
-        warpFile = new File(dataFolder, "warps.json");
-        serverFile = new File(dataFolder, "servers.json");
+        warpFile = new File(localStorage, "warps.json");
+        serverFile = new File(localStorage, "servers.json");
 
         WarpHandler.getInstance().getWarps().load();
         ServerConfig.getInstance().getServers().load();
@@ -211,7 +214,7 @@ public class ConfigHandler {
         		"Set this to true is you want client's settings to be saved for the entire network instead of per-world.");
         order();
 
-        File f = new File(dataFolder, "offline.bin");
+        File f = new File(localStorage, "offline.bin");
         doesOfflineExist = f.exists();
 
         serverData.registerHandler(new LocalStorageHandler(ConfigHandler.serverFile));
@@ -267,7 +270,7 @@ public class ConfigHandler {
     }
 
     public File getOfflineBin() {
-        return new File(dataFolder, "offline.bin");
+        return new File(localStorage, "offline.bin");
     }
 
     private void createConfig() {
