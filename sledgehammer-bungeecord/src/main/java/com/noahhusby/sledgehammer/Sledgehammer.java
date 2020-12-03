@@ -28,12 +28,7 @@ import java.util.logging.Logger;
 import com.noahhusby.sledgehammer.addons.AddonManager;
 import com.noahhusby.sledgehammer.addons.terramap.TerramapAddon;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
-import com.noahhusby.sledgehammer.commands.CsTpllCommand;
-import com.noahhusby.sledgehammer.commands.SledgehammerAdminCommand;
-import com.noahhusby.sledgehammer.commands.SledgehammerCommand;
-import com.noahhusby.sledgehammer.commands.TpllCommand;
-import com.noahhusby.sledgehammer.commands.TplloCommand;
-import com.noahhusby.sledgehammer.commands.WarpCommand;
+import com.noahhusby.sledgehammer.commands.*;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
@@ -160,8 +155,9 @@ public class Sledgehammer extends Plugin implements Listener {
         }
 
         if(ConfigHandler.borderTeleportation) {
+            ProxyServer.getInstance().getPluginManager().registerCommand(this, new BorderCommand());
             alternativeThreads.scheduleAtFixedRate(new BorderCheckerThread(), 0, 5, TimeUnit.SECONDS);
-            alternativeThreads.scheduleAtFixedRate(new FlaggedBorderCheckerThread(), 0, 10, TimeUnit.SECONDS);
+            alternativeThreads.scheduleAtFixedRate(new FlaggedBorderCheckerThread(), 0, 5, TimeUnit.SECONDS);
         }
 
         alternativeThreads.scheduleAtFixedRate(() -> {
