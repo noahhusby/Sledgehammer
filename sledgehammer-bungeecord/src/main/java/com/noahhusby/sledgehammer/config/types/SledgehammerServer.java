@@ -32,13 +32,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SledgehammerServer implements Storable {
-    @Expose
     public String name;
-    @Expose
+
+    public String friendly_name;
+
     public boolean earthServer;
-    @Expose
-    public String permission_type;
-    @Expose
+
     public List<Location> locations = new ArrayList<>();
 
     private String shVersion = null;
@@ -78,7 +77,6 @@ public class SledgehammerServer implements Storable {
         if(version != null) server.shVersion = version;
 
         server.earthServer = (boolean) data.get("earthServer");
-        server.permission_type = (String) data.get("permission_type");
 
         return server;
     }
@@ -87,7 +85,7 @@ public class SledgehammerServer implements Storable {
     public JSONObject save(JSONObject data) {
         data.put("name", name);
         data.put("earthServer", earthServer);
-        data.put("permission_type", permission_type);
+        data.put("friendly_name", friendly_name);
         JSONArray locs = new JSONArray();
         for(Location l : locations)
             locs.add(l.save(new JSONObject()));

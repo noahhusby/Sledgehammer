@@ -47,8 +47,6 @@ public class ServerInfoFragment implements ICommandFragment {
             if(server.earthServer) {
                 sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Earth: ", ChatColor.GRAY),
                         new TextElement("Yes", ChatColor.GREEN)));
-                sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Permission Mode: ", ChatColor.GRAY),
-                        new TextElement(ChatHelper.capitalize(server.permission_type), ChatColor.RED)));
             } else {
                 sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Earth: ", ChatColor.GRAY),
                         new TextElement("No", ChatColor.RED)));
@@ -60,8 +58,6 @@ public class ServerInfoFragment implements ICommandFragment {
             if(server.earthServer) {
                 sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Earth: ", ChatColor.GRAY),
                         new TextElement("Yes", ChatColor.GREEN)));
-                sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Permission Mode: ", ChatColor.GRAY),
-                        new TextElement(ChatHelper.capitalize(server.permission_type), ChatColor.RED)));
             } else {
                 sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Earth: ", ChatColor.GRAY),
                         new TextElement("No", ChatColor.RED)));
