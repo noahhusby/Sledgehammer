@@ -45,7 +45,7 @@ public class ServerSHSelectFragment implements ICommandFragment {
                     ServerConfig.getInstance().pushServer(s);
                 }
 
-                sender.sendMessage(ChatConstants.getValueMessage("runs_sledgehammer", arg, s.name));
+                sender.sendMessage(ChatConstants.getValueMessage("runs_sledgehammer", arg, s.getName()));
             } else {
                 sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Usage: /sha server <server name> setsledgehammer <true/false>", ChatColor.RED)));
             }

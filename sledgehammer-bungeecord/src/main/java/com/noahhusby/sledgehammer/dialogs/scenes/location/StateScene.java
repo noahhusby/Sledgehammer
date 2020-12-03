@@ -34,8 +34,8 @@ import net.md_5.bungee.api.config.ServerInfo;
 
 public class StateScene extends DialogScene {
 
-    private ServerInfo server;
-    private DialogScene scene;
+    private final ServerInfo server;
+    private final DialogScene scene;
 
     public StateScene(ServerInfo server) {
         this(server, null);
@@ -56,7 +56,7 @@ public class StateScene extends DialogScene {
 
         if(s == null) s = new SledgehammerServer(server.getName());
 
-        s.locations.add(l);
+        s.getLocations().add(l);
         ServerConfig.getInstance().pushServer(s);
 
         if(scene != null) {

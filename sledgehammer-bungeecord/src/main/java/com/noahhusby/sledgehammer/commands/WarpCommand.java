@@ -24,6 +24,7 @@ import com.noahhusby.sledgehammer.commands.data.Command;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
+import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
 import com.noahhusby.sledgehammer.maps.MapHandler;
 import com.noahhusby.sledgehammer.network.P2S.P2STeleportPacket;
@@ -49,17 +50,27 @@ public class WarpCommand extends Command {
             return;
         }
 
-        if(!hasGeneralPermission(sender)) {
+        if(!hasPerms(sender)) {
             sender.sendMessage(ChatConstants.noPermission);
             return;
         }
 
-        SledgehammerServer sledgehammerServer = ServerConfig.getInstance().getServer(SledgehammerUtil.getServerNameByPlayer(sender));
+        if(hasPerms(sender, "shpresent") && !SledgehammerPlayer.getPlayer(sender).onSledgehammer() && !isAdmin(sender)) {
+            sender.sendMessage(ChatConstants.noPermission);
+            return;
+        }
+
+        if(hasPerms(sender, "earthpresent") && !SledgehammerPlayer.getPlayer(sender).onEarthServer() && !isAdmin(sender)) {
+            sender.sendMessage(ChatConstants.noPermission);
+            return;
+        }
+
+        SledgehammerServer sledgehammerServer = ServerConfig.getInstance().getServer(SledgehammerUtil.getServerFromSender(sender).getName());
 
         if(args.length < 1) {
             if(sledgehammerServer != null) {
                 if(ConfigHandler.warpMode.equalsIgnoreCase("gui") && sledgehammerServer.isInitialized()) {
-                    getNetworkManager().sendPacket(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerNameByPlayer(sender)));
+                    getNetworkManager().send(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName()));
                     return;
                 }
             }
@@ -70,7 +81,7 @@ public class WarpCommand extends Command {
         }
 
         if(args[0].equals("set")) {
-            if(!hasPermissionAdmin(sender)) {
+            if(!hasPerms(sender, "admin")) {
                 sender.sendMessage(ChatConstants.noPermission);
                 return;
             }
@@ -88,7 +99,7 @@ public class WarpCommand extends Command {
 
             WarpHandler.getInstance().requestNewWarp(args[1], sender, Boolean.parseBoolean(args[2]));
         } else if(args[0].equals("delete") || args[0].equals("remove")) {
-            if (!hasPermissionAdmin(sender)) {
+            if (!hasPerms(sender, "admin")) {
                 sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("You don't have permission to run this command!", ChatColor.DARK_RED)));
                 return;
             }
@@ -116,7 +127,7 @@ public class WarpCommand extends Command {
                 return;
             }
 
-            getNetworkManager().sendPacket(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerNameByPlayer(sender)));
+            getNetworkManager().send(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName()));
         } else {
             Warp warp = WarpHandler.getInstance().getWarp(args[0]);
             if(warp == null) {
@@ -130,7 +141,7 @@ public class WarpCommand extends Command {
             }
 
             sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Warping to ", ChatColor.GRAY), new TextElement(args[0], ChatColor.RED)));
-            getNetworkManager().sendPacket(new P2STeleportPacket(sender.getName(), warp.server, warp.point));
+            getNetworkManager().send(new P2STeleportPacket(sender.getName(), warp.server, warp.point));
         }
     }
 }

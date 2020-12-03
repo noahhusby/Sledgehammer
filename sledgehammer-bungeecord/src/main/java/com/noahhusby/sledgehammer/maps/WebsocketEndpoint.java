@@ -33,8 +33,6 @@ public class WebsocketEndpoint {
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             container.connectToServer(this, endpointURI);
-        } catch (DeploymentException e) {
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -65,7 +63,7 @@ public class WebsocketEndpoint {
         this.userSession.getAsyncRemote().sendText(message);
     }
 
-    public static interface MessageHandler {
-        public void handleMessage(String message);
+    public interface MessageHandler {
+        void handleMessage(String message);
     }
 }

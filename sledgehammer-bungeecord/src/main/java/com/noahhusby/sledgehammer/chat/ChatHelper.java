@@ -75,18 +75,8 @@ public class ChatHelper {
     }
 
     public static void infoMessage(CommandSender sender) {
-        sender.sendMessage(makeTextComponent(new TextElement("-----------------------", ChatColor.GRAY),
-                new TextElement("\nSledgehammer ", ChatColor.BLUE), new TextElement("v."+ Constants.VERSION, ChatColor.RED),
-                new TextElement("\nDeveloped by: ", ChatColor.BLUE), new TextElement("Noah Husby", ChatColor.RED),
-                new TextElement("\n-----------------------",ChatColor.GRAY)));
-    }
-
-    public static void adminInfoMessage(CommandSender sender) {
-        sender.sendMessage(makeTextComponent(
-                new TextElement("Sledgehammer ", ChatColor.BLUE), new TextElement("v."+ Constants.VERSION, ChatColor.RED),
-                new TextElement("\nDeveloped by: ", ChatColor.BLUE), new TextElement("Noah Husby", ChatColor.RED),
-                new TextElement("\n", ChatColor.RESET), new TextElement("\nCommands: ", ChatColor.GRAY),
-                new TextElement("\n/sha ", ChatColor.YELLOW), new TextElement("- Sledgehammer admin command", ChatColor.RED)));
+        sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Sledgehammer v"+ Constants.VERSION, ChatColor.RED),
+                new TextElement(" by ", ChatColor.GRAY), new TextElement("Noah Husby", ChatColor.BLUE)));
     }
 
     public static void sendAuthCodeWarning(CommandSender sender) {

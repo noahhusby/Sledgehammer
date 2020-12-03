@@ -18,6 +18,7 @@
 
 package com.noahhusby.sledgehammer.players;
 
+import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.datasets.Point;
@@ -34,6 +35,11 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.*;
 
+/**
+ * An object representing a player on the network with Sledgehammer specific access.
+ * Check ProxiedPlayer.java docs from Bungeecord for those methods
+ */
+@SuppressWarnings("deprecation")
 public class SledgehammerPlayer implements ProxiedPlayer {
 
     private ProxiedPlayer player;
@@ -48,6 +54,9 @@ public class SledgehammerPlayer implements ProxiedPlayer {
         this.player = player;
     }
 
+    /**
+     * Updates the ProxiedPlayer object from the proxy
+     */
     public void update() {
         this.player = ProxyServer.getInstance().getPlayer(player.getName());
     }
@@ -297,60 +306,119 @@ public class SledgehammerPlayer implements ProxiedPlayer {
         return player.unsafe();
     }
 
+    /**
+     * Checks if player is on a sledgehammer server
+     * @return True if on a sledgehammer server, false if not
+     */
     public boolean onSledgehammer() {
-        return ServerConfig.getInstance().getServer(getServer().getInfo().getName()) != null;
+        return SledgehammerUtil.isSledgehammerServer(getServer().getInfo());
     }
 
+    /**
+     * Checks if the player is on a build server
+     * @return True if on a build server, false if not
+     */
     public boolean onEarthServer() {
         SledgehammerServer server = ServerConfig.getInstance().getServer(getServer().getInfo().getName());
         if(server == null) return false;
-        return server.earthServer;
+        return server.isEarthServer();
     }
 
+    /**
+     * Gets the current location of the player
+     * @return Location of player if known, null if not
+     */
     public Point getLocation() {
         return location;
     }
 
+    /**
+     * Sets the current location of the player
+     * @param p Location of player
+     */
     public void setLocation(Point p) {
         this.location = p;
     }
 
+    /**
+     * Gets the current tracking point for border teleportation
+     * @return The current tracking point if known, null if not
+     */
     public Point getTrackingPoint() {
         return track;
     }
 
+    /**
+     * Set the current tracking point for border teleportation
+     * @param p Location of tracking point
+     */
     public void setTrackingPoint(Point p) {
         this.track = p;
     }
 
+    /**
+     * Checks whether the player is flagged for border checking
+     * @return True if flagged, false if not
+     */
     public boolean isFlagged() {
         return flagged;
     }
 
+    /**
+     * Set whether the player is flagged for border checking
+     * @param flagged True to flag, false to not
+     */
     public void setFlagged(boolean flagged) {
         this.flagged = flagged;
     }
 
+    /**
+     * Gets the current GameMode of the player
+     * @return {@link GameMode}
+     */
     public GameMode getGameMode() {
         return gameMode;
     }
 
+    /**
+     * Set the current GameMode of the player
+     * @param gameMode GameMode of Player
+     */
     public void setGameMode(GameMode gameMode) {
         this.gameMode = gameMode;
     }
 
+    /**
+     * Get the list of player attributes
+     * @return List of attributes
+     */
     public List<String> getAttributes() {
         return attributes;
     }
 
+    /**
+     * Set the list of attributes
+     * Only use this to set the entire list. To add, check, or remove an item, use {@link #getAttributes().add()}
+     * @param attributes The new list of attributes
+     */
     public void setAttributes(List<String> attributes) {
         this.attributes = attributes;
     }
 
+    /**
+     * Get SledgehammerPlayer from player name
+     * @param s Name of player
+     * @return {@link SledgehammerPlayer}
+     */
     public static SledgehammerPlayer getPlayer(String s) {
         return PlayerManager.getInstance().getPlayer(s);
     }
 
+    /**
+     * Get SledgehammerPlayer by command sender
+     * @param s CommandSender
+     * @return {@link SledgehammerPlayer}
+     */
     public static SledgehammerPlayer getPlayer(CommandSender s) {
         return PlayerManager.getInstance().getPlayer(s);
     }

@@ -20,7 +20,6 @@ package com.noahhusby.sledgehammer.players;
 
 import com.google.common.collect.Sets;
 import com.noahhusby.lib.data.storage.StorageHashMap;
-import com.noahhusby.lib.data.storage.StorageList;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -39,6 +38,10 @@ public class PlayerManager {
 
     private PlayerManager() {}
 
+    /**
+     * Creates a new SledgehammerPlayer and sets attributes from storage upon player joining
+     * @param player ProxiedPlayer joining the proxy
+     */
     public void onPlayerJoin(ProxiedPlayer player) {
         onPlayerDisconnect(player);
         SledgehammerPlayer newPlayer = new SledgehammerPlayer(player);
@@ -53,6 +56,10 @@ public class PlayerManager {
         players.add(newPlayer);
     }
 
+    /**
+     * Removes the SledgehammerPlayer and saves the attributes to storage upon player leaving
+     * @param player ProxiedPlayer leaving the proxy
+     */
     public void onPlayerDisconnect(ProxiedPlayer player) {
         List<SledgehammerPlayer> remove = new ArrayList<>();
         for(SledgehammerPlayer p : players) {
@@ -77,11 +84,20 @@ public class PlayerManager {
         }
     }
 
+    /**
+     * Gets the list of Sledgehammer players
+     * @return List of Sledgehammer players
+     */
     public List<SledgehammerPlayer> getPlayers() {
         for(SledgehammerPlayer p : players) p.update();
         return players;
     }
 
+    /**
+     * Gets SledgehammerPlayer by player name
+     * @param s Player name
+     * @return {@link SledgehammerPlayer}
+     */
     public SledgehammerPlayer getPlayer(String s) {
         for(SledgehammerPlayer p : players) {
             if(p.getName().equalsIgnoreCase(s)) {
@@ -93,6 +109,11 @@ public class PlayerManager {
         return null;
     }
 
+    /**
+     * Gets SledgehammerPlayer by command sender
+     * @param s {@link CommandSender}
+     * @return {@link SledgehammerPlayer}
+     */
     public SledgehammerPlayer getPlayer(CommandSender s) {
         for(SledgehammerPlayer p : players) {
             if(p.getName().equalsIgnoreCase(s.getName())) {
@@ -104,9 +125,12 @@ public class PlayerManager {
         return null;
     }
 
+    /**
+     * Gets the hash map of player attributes
+     * Use {@link SledgehammerPlayer#getAttributes()} to get attributes
+     * @return Hash map of attributes
+     */
     public StorageHashMap<String, StorableStringArray> getAttributes() {
         return attributes;
     }
-
-
 }

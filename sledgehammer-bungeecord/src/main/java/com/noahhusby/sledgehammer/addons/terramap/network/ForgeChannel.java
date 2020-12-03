@@ -14,9 +14,9 @@ import net.md_5.bungee.api.event.PluginMessageEvent;
 
 public class ForgeChannel {
 
-	private String channelName;
-	private Map<Integer, Class<? extends ForgePacket>> packetMap = new HashMap<Integer, Class<? extends ForgePacket>>();
-	private Map<Class<? extends ForgePacket>, Integer> discriminatorMap = new HashMap<Class<? extends ForgePacket>, Integer>();
+	private final String channelName;
+	private final Map<Integer, Class<? extends ForgePacket>> packetMap = new HashMap<Integer, Class<? extends ForgePacket>>();
+	private final Map<Class<? extends ForgePacket>, Integer> discriminatorMap = new HashMap<Class<? extends ForgePacket>, Integer>();
 	
 	public ForgeChannel(String channelName) {
 		this.channelName = channelName;

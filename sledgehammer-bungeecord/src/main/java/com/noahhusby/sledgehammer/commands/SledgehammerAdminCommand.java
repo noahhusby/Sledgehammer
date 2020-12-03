@@ -28,7 +28,7 @@ public class SledgehammerAdminCommand extends CommandFragmentManager {
         super("sha", "sledgehammer.admin");
 
         setCommandBase("sha");
-        setTitle("Sledgehammer Admin Commands:");
+        setTitle("Sledgehammer Admin Commands");
 
         registerCommandFragment(new ReloadFragment());
         registerCommandFragment(new SetupFragment());
@@ -40,7 +40,7 @@ public class SledgehammerAdminCommand extends CommandFragmentManager {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(!hasPermissionAdmin(sender)) {
+        if(!hasPerms(sender)) {
             sender.sendMessage(ChatConstants.noPermission);
             return;
         }

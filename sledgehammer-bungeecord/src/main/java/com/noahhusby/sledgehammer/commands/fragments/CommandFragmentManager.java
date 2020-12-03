@@ -60,7 +60,7 @@ public abstract class CommandFragmentManager extends Command {
 
     }
 
-    private List<ICommandFragment> commandFragments = new ArrayList<>();
+    private final List<ICommandFragment> commandFragments = new ArrayList<>();
     private String title = "";
     private String commandBase = "";
 

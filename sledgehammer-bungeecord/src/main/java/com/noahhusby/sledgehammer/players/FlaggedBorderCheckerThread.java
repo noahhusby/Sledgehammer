@@ -33,11 +33,20 @@ import net.md_5.bungee.api.config.ServerInfo;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Checks flagged players and teleports them if within region
+ */
 public class FlaggedBorderCheckerThread implements Runnable{
     @Override
     public void run() {
         for(SledgehammerPlayer p : PlayerManager.getInstance().getPlayers()) {
             if(p.isFlagged()) {
+                if(p.getAttributes().contains("NO_BORDER")) {
+                    p.setFlagged(false);
+                    p.setTrackingPoint(null);
+                    return;
+                }
+
                 Point location = p.getLocation();
 
                 double[] proj = SledgehammerUtil.toGeo(Double.parseDouble(location.x), Double.parseDouble(location.z));
@@ -45,7 +54,7 @@ public class FlaggedBorderCheckerThread implements Runnable{
 
                 if(info != null && !info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
                     p.connect(info);
-                    SledgehammerNetworkManager.getInstance().sendPacket(new P2STeleportPacket(p.getName(), info.getName(), location));
+                    SledgehammerNetworkManager.getInstance().send(new P2STeleportPacket(p.getName(), info.getName(), location));
                     Title title = ProxyServer.getInstance().createTitle();
                     title.subTitle(ChatHelper.makeTextComponent(new TextElement("You've crossed the border!", ChatColor.RED)));
                     title.title(ChatHelper.makeTextComponent(new TextElement("Teleporting to ", ChatColor.GRAY), new TextElement(info.getName(), ChatColor.BLUE)));

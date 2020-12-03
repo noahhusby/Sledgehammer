@@ -33,8 +33,8 @@ import java.util.List;
 
 public class LocationRemovalScene extends DialogScene {
 
-    private ServerInfo server;
-    private DialogScene scene;
+    private final ServerInfo server;
+    private final DialogScene scene;
 
     public LocationRemovalScene(ServerInfo server, DialogScene scene) {
         this.server = server;
@@ -56,7 +56,7 @@ public class LocationRemovalScene extends DialogScene {
         newLocations.remove(l);
 
         SledgehammerServer s = ServerConfig.getInstance().getServer(server.getName());
-        s.locations = newLocations;
+        s.setLocations(newLocations);
 
         ServerConfig.getInstance().pushServer(s);
         if(scene != null) {

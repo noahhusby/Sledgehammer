@@ -47,7 +47,6 @@ public class ConfigHandler {
 
     private File dataFolder;
 
-    private File configurationFile;
     public static File warpFile;
     public static File serverFile;
     public static File localStorage;
@@ -106,11 +105,14 @@ public class ConfigHandler {
 
     Map<String, List<String>> categories = Maps.newHashMap();
 
+    /**
+     * Creates initial data structures upon startup
+     * @param dataFolder Sledgehammer plugin folder
+     */
     public void init(File dataFolder) {
         this.dataFolder = dataFolder;
         localStorage = new File(dataFolder, "local");
         if(!localStorage.exists()) localStorage.mkdir();
-        configurationFile = new File(dataFolder, "sledgehammer.cfg");
         warpFile = new File(localStorage, "warps.json");
         serverFile = new File(localStorage, "servers.json");
         attributeFile = new File(localStorage, "attributes.json");
@@ -120,13 +122,16 @@ public class ConfigHandler {
 
         createConfig();
 
-        config = new net.minecraftforge.common.config.Configuration(configurationFile);
+        config = new net.minecraftforge.common.config.Configuration(new File(dataFolder, "sledgehammer.cfg"));
 
         loadData();
 
         config.save();
     }
 
+    /**
+     * Reloads all data/data fields. Called upon startup or reload
+     */
     public void loadData() {
         Storage serverData = ServerConfig.getInstance().getServers();
         if(serverData != null) serverData.clearHandlers();
@@ -200,14 +205,9 @@ public class ConfigHandler {
                 "The direct http link for the map. This is the link that players will interact with.\n" +
                         "NOTE: You must put either http:// or https:// at the beginning");
         order();
-
-        cat("Addons", "Options for Sledgehammer Addons");
-        terramapEnabled = config.getBoolean(prop("Terramap Compatibility"), "Addons", false,
-                "Set to 'true' to enable Terramap compatibility.\nThis will allow clients to see players across the entire network on the map.\n" +
-                        "It will also display network warps on the map.");
-        order();
         
-        cat("Terramap", "Terramap addon configuration. The addon needs to be enabled.");
+        cat("Terramap", "Terramap Addon Configuration.");
+        terramapEnabled = config.getBoolean(prop("Enabled"), category, false, "Enables the Terramap integration");
         terramapSyncPlayers = config.getBoolean(prop("Sync Players"), "Terramap", true,
         		"Wether or not to synchronize players from server to client so everyone appears on the map, no matter the distance");
         terramapSyncInterval = config.getInt(prop("Sync Interval"), "Terramap", 500, 1, Integer.MAX_VALUE,
@@ -256,33 +256,54 @@ public class ConfigHandler {
             attributeData.registerHandler(sqlStorageHandler);
         }
 
+        serverData.load(true);
+        warpData.load(true);
+        attributeData.load(true);
+
         serverData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
         warpData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
         attributeData.setAutoLoad(5, TimeUnit.SECONDS);
-
-        Executors.newSingleThreadScheduledExecutor().schedule(() -> {
-            serverData.load(true);
-            warpData.load(true);
-            attributeData.load(true);
-        }, 5, TimeUnit.SECONDS);
     }
 
+    /**
+     * Gets whether the authentication code is configured correctly
+     * @return True if configured correctly, false if not
+     */
     public boolean isAuthCodeConfigured() {
         return authCodeConfigured;
     }
 
+    /**
+     * Reloads the config
+     */
     public void reload() {
         Sledgehammer.logger.info("Reloaded the config");
         loadData();
         Sledgehammer.sledgehammer.registerFromConfig();
     }
 
-    public String prop(String n) {
+    /**
+     * Migrates the data from local storage to databases
+     */
+    public void migrate() {
+        ServerConfig.getInstance().getServers().migrate(0);
+        WarpHandler.getInstance().getWarps().migrate(0);
+    }
+
+    /**
+     * Gets the file for the offline OSM database
+     * @return {@link File}
+     */
+    public File getOfflineBin() {
+        return new File(localStorage, "offline.bin");
+    }
+
+    private String prop(String n) {
         categories.get(category).add(n);
         return n;
     }
 
-    public void cat(String category, String comment) {
+    private void cat(String category, String comment) {
         this.category = category;
         if(!categories.containsKey(category)) {
             categories.put(category, new ArrayList<>());
@@ -290,21 +311,11 @@ public class ConfigHandler {
         config.addCustomCategoryComment(category, comment);
     }
 
-    public void order() {
+    private void order() {
         config.setCategoryPropertyOrder(category, categories.get(category));
     }
 
-    public File getOfflineBin() {
-        return new File(localStorage, "offline.bin");
-    }
-
     private void createConfig() {
-        if (!dataFolder.exists())
-            dataFolder.mkdir();
-    }
-
-    public void migrate() {
-        ServerConfig.getInstance().getServers().migrate(0);
-        WarpHandler.getInstance().getWarps().migrate(0);
+        if (!dataFolder.exists()) dataFolder.mkdir();
     }
 }

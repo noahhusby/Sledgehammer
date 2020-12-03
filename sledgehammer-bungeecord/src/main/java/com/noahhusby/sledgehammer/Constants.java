@@ -23,6 +23,8 @@ public class Constants {
     public static final String VERSION = "0.4.0";
     public static final double SCALE = 7318261.522857145;
 
+    public static final String nominatimAPI = "https://nominatim.openstreetmap.org/reverse.php?osm_type=N&format=json&zoom={zoom}";
+
     public static final String teleportID = "teleport";
     public static final String setwarpID = "warp_position";
     public static final String locationID = "location";

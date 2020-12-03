@@ -39,12 +39,11 @@ public class ServerInfoFragment implements ICommandFragment {
         if(server == null) {
             sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Status: ", ChatColor.GRAY),
                     new TextElement("Unconfigured", ChatColor.RED)));
-            return;
-        } else if (!server.isInitialized()){
+        } else if (!server.isInitialized()) {
             sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Status: ", ChatColor.GRAY),
                     new TextElement("Configured", ChatColor.GREEN), new TextElement(" (Not Initialized)", ChatColor.RED)));
             sender.sendMessage();
-            if(server.earthServer) {
+            if(server.isEarthServer()) {
                 sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Earth: ", ChatColor.GRAY),
                         new TextElement("Yes", ChatColor.GREEN)));
             } else {
@@ -52,12 +51,12 @@ public class ServerInfoFragment implements ICommandFragment {
                         new TextElement("No", ChatColor.RED)));
             }
             sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Friendly Name: ", ChatColor.GRAY),
-                    new TextElement(server.friendly_name, ChatColor.BLUE)));
+                    new TextElement(server.getFriendlyName(), ChatColor.BLUE)));
         } else {
             sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Status: ", ChatColor.GRAY),
                     new TextElement("Initialized", ChatColor.GREEN)));
             sender.sendMessage();
-            if(server.earthServer) {
+            if(server.isEarthServer()) {
                 sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Earth: ", ChatColor.GRAY),
                         new TextElement("Yes", ChatColor.GREEN)));
             } else {
@@ -65,7 +64,7 @@ public class ServerInfoFragment implements ICommandFragment {
                         new TextElement("No", ChatColor.RED)));
             }
             sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Friendly Name: ", ChatColor.GRAY),
-                    new TextElement(server.friendly_name, ChatColor.BLUE)));
+                    new TextElement(server.getFriendlyName(), ChatColor.BLUE)));
             sender.sendMessage();
             sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("SH Version: ", ChatColor.GRAY),
                     new TextElement(server.getSledgehammerVersion(), ChatColor.BLUE)));

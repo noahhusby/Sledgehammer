@@ -46,17 +46,31 @@ public class DialogHandler implements Listener {
         Sledgehammer.setupListener(this);
     }
 
-    private Map<CommandSender, IDialogScene> activeScenes = Maps.newHashMap();
+    private final Map<CommandSender, IDialogScene> activeScenes = Maps.newHashMap();
 
+    /**
+     * Start a dialog scene
+     * @param c The {@link CommandSender} that the dialog should be shown to
+     * @param s The {@link com.noahhusby.sledgehammer.dialogs.scenes.DialogScene} that should be shown
+     */
     public void startDialog(CommandSender c, IDialogScene s) {
         activeScenes.put(c, s);
         s.init(c);
     }
 
+    /**
+     * Stop the dialog from running
+     * @param s The {@link IDialogScene} to discard
+     */
     public void discardDialog(IDialogScene s) {
         activeScenes.remove(s.getCommandSender(), s);
     }
 
+    /**
+     * Move the dialog to the next component
+     * @param s The scene to progress
+     * @param error True if the last entry was incorrect, false if correct
+     */
     public void progressDialog(IDialogScene s, boolean error) {
         for(int x = 0; x < 20; x++) {
             s.getCommandSender().sendMessage();

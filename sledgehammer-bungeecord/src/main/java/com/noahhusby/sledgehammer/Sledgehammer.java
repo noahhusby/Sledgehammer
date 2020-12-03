@@ -74,11 +74,12 @@ public class Sledgehammer extends Plugin implements Listener {
         addonManager.onDisable();
     }
 
+    /**
+     * Called upon startup or reload. These are settings that can be changed without a restart
+     */
     public void registerFromConfig() {
         List<Runnable> remove = new ArrayList<>();
-        for(Runnable r : alternativeThreads.getQueue()) {
-            remove.add(r);
-        }
+        remove.addAll(alternativeThreads.getQueue());
 
         for(Runnable r : remove) alternativeThreads.remove(r);
 
@@ -166,13 +167,30 @@ public class Sledgehammer extends Plugin implements Listener {
 
         OpenStreetMaps.getInstance().init();
 
-        MapHandler.getInstance().init();
+        MapHandler.getInstance();
 
     }
 
+    /**
+     * Add a new listener to the Sledgehammer plugin
+     * @param listener The Bungeecord listener
+     */
+    public static void setupListener(Listener listener) {
+        ProxyServer.getInstance().getPluginManager().registerListener(sledgehammer, listener);
+    }
+
+    /**
+     * Print a message on the debug logger. Only outputs with debug mode enabled
+     * @param m The debug message
+     */
+    public static void debug(String m) {
+        if(ConfigHandler.debug) logger.info(m);
+    }
+
+
     @EventHandler
     public void onMessage(PluginMessageEvent e) {
-        SledgehammerNetworkManager.getInstance().onPluginMessageReceived(e);
+        SledgehammerNetworkManager.getInstance().onIncomingPacket(e);
     }
 
     @EventHandler
@@ -193,11 +211,4 @@ public class Sledgehammer extends Plugin implements Listener {
         ServerConfig.getInstance().onServerJoin(e);
     }
 
-    public static void setupListener(Listener l) {
-        ProxyServer.getInstance().getPluginManager().registerListener(sledgehammer, l);
-    }
-
-    public static void debug(String m) {
-        if(ConfigHandler.debug) logger.info(m);
-    }
 }

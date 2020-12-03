@@ -26,6 +26,10 @@ import net.md_5.bungee.api.config.ServerInfo;
 
 import java.util.List;
 
+/**
+ * Finds players and flags them if they are within a certain region of a border
+ * Flagged players are then tracked in {@link FlaggedBorderCheckerThread}
+ */
 public class BorderCheckerThread implements Runnable {
     @Override
     public void run() {
@@ -117,9 +121,7 @@ public class BorderCheckerThread implements Runnable {
 
                 if(info != null && !info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
                     p.setFlagged(true);
-                    continue;
                 }
-
             }
         }
     }

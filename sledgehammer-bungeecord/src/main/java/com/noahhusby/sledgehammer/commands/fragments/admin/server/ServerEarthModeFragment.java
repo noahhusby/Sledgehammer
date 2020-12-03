@@ -39,18 +39,19 @@ public class ServerEarthModeFragment implements ICommandFragment {
 
         if(args.length < 3) {
             sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Usage: /sha server <server name> setearth <true/false>", ChatColor.RED)));
-        } else {
-            String arg = args[2].toLowerCase();
-            if(arg.equals("true") || arg.equals("false")) {
-                SledgehammerServer s = ServerConfig.getInstance().getServer(args[0]);
-
-                s.earthServer = Boolean.parseBoolean(arg);
-                ServerConfig.getInstance().pushServer(s);
-                sender.sendMessage(ChatConstants.getValueMessage("earth", arg, s.name));
-            } else {
-                sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Usage: /sha server <server name> setearth <true/false>", ChatColor.RED)));
-            }
+            return;
         }
+
+        String arg = args[2].toLowerCase();
+        if(arg.equals("true") || arg.equals("false")) {
+            SledgehammerServer s = ServerConfig.getInstance().getServer(args[0]);
+            s.setEarthServer(Boolean.parseBoolean(arg));
+            ServerConfig.getInstance().pushServer(s);
+            sender.sendMessage(ChatConstants.getValueMessage("earth", arg, s.getName()));
+        } else {
+            sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Usage: /sha server <server name> setearth <true/false>", ChatColor.RED)));
+        }
+
     }
 
     @Override

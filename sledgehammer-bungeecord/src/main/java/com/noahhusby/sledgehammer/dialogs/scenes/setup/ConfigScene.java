@@ -78,8 +78,7 @@ public class ConfigScene extends DialogScene {
 
         if(s == null) s = new SledgehammerServer(server.getName());
 
-        s.name = server.getName();
-        s.earthServer = true;
+        s.setEarthServer(true);
         ServerConfig.getInstance().pushServer(s);
 
         DialogHandler.getInstance().discardDialog(this);
@@ -146,7 +145,7 @@ public class ConfigScene extends DialogScene {
 
                 SledgehammerServer s = ServerConfig.getInstance().getServer(server.getName());
                 if(s == null) s = new SledgehammerServer(server.getName());
-                s.earthServer = false;
+                s.setEarthServer(false);
                 ServerConfig.getInstance().pushServer(s);
 
                 DialogHandler.getInstance().startDialog(sender, new ConfigScene(server, true));

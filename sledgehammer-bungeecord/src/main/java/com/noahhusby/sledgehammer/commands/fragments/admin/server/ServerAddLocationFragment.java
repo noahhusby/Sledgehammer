@@ -41,7 +41,7 @@ public class ServerAddLocationFragment implements ICommandFragment {
             return;
         }
 
-        if(!ServerConfig.getInstance().getServer(args[0]).earthServer) {
+        if(!ServerConfig.getInstance().getServer(args[0]).isEarthServer()) {
             sender.sendMessage(ChatConstants.notEarthServer);
             return;
         }

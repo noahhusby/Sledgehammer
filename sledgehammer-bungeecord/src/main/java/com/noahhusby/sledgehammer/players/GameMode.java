@@ -31,7 +31,7 @@ public enum GameMode {
     SPECTATOR(3);
 
     private final int value;
-    private GameMode(final int value) {
+    GameMode(final int value) {
         this.value = value;
     }
 }

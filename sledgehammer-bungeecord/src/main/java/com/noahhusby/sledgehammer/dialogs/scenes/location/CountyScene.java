@@ -35,8 +35,8 @@ import net.md_5.bungee.api.config.ServerInfo;
 
 public class CountyScene extends DialogScene {
 
-    private ServerInfo server;
-    private DialogScene scene;
+    private final ServerInfo server;
+    private final DialogScene scene;
 
     public CountyScene(ServerInfo server) {
         this(server, null);
@@ -58,7 +58,7 @@ public class CountyScene extends DialogScene {
 
         if(s == null) s = new SledgehammerServer(server.getName());
 
-        s.locations.add(l);
+        s.getLocations().add(l);
         ServerConfig.getInstance().pushServer(s);
         if(scene != null) {
             DialogHandler.getInstance().discardDialog(this);

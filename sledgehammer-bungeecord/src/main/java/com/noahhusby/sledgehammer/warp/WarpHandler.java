@@ -31,7 +31,6 @@ import com.noahhusby.sledgehammer.chat.TextElement;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.config.ServerInfo;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -45,31 +44,48 @@ public class WarpHandler {
         return instance;
     }
 
-    public WarpHandler() {}
-
     public StorageList<Warp> warps = new StorageList<>(Warp.class);
-
     public Map<String, JSONObject> requestedWarps = Maps.newHashMap();
 
+    /**
+     * Gets a list of warps
+     * @return List of warps
+     */
     public StorageList<Warp> getWarps() {
         return warps;
     }
 
-    public Warp getWarp(String wn) {
+    /**
+     * Gets a warp by name
+     * @param name Name of warp
+     * @return Warp if found, null if not
+     */
+    public Warp getWarp(String name) {
         for(Warp w : warps)
-            if(w.name.equalsIgnoreCase(wn)) return w;
+            if(w.name.equalsIgnoreCase(name)) return w;
         return null;
     }
 
+    /**
+     * Requests that a new warp should be created
+     * @param warp The name of the warp
+     * @param sender The command sender
+     * @param pinned True if the warp should be pinned, false if not
+     */
     public void requestNewWarp(String warp, CommandSender sender, boolean pinned) {
         JSONObject w = new JSONObject();
         w.put("name", warp);
         w.put("pinned", pinned);
         requestedWarps.put(sender.getName(), w);
 
-        SledgehammerNetworkManager.getInstance().sendPacket(new P2SSetwarpPacket(sender.getName(), SledgehammerUtil.getServerNameByPlayer(sender)));
+        SledgehammerNetworkManager.getInstance().send(new P2SSetwarpPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName()));
     }
 
+    /**
+     * Deletes a warp by name
+     * @param w Warp name
+     * @param sender Command sender
+     */
     public void removeWarp(String w, CommandSender sender) {
         Warp remove = null;
         for(Warp wp : warps) {
@@ -90,50 +106,58 @@ public class WarpHandler {
 
     }
 
+    /**
+     * Called by incoming location packet to register a warp
+     * @param sender Name of sender
+     * @param p Location of warp
+     */
     public void incomingLocationResponse(String sender, Point p) {
         if(requestedWarps.containsKey(sender)) {
-            addWarp(sender, (String) requestedWarps.get(sender).get("name"), (boolean) requestedWarps.get(sender).get("pinned"),
-                    p, ProxyServer.getInstance().getPlayer(sender).getServer().getInfo());
+            String warpName = (String) requestedWarps.get(sender).get("name");
+            boolean pinned = (boolean) requestedWarps.get(sender).get("pinned");
+
+            warps.remove(getWarp(warpName));
+            warps.add(new Warp(warpName, p,ProxyServer.getInstance().getPlayer(sender).getServer().getInfo().getName(), pinned));
+
+            String message = pinned ? "Created warp " : "Created pinned warp ";
+            ProxyServer.getInstance().getPlayer(sender).sendMessage(ChatHelper.makeTitleTextComponent(new TextElement(message, ChatColor.GRAY),
+                    new TextElement(ChatHelper.capitalize(warpName), ChatColor.RED)));
+
+            warps.save();
+
             requestedWarps.remove(sender);
         }
     }
 
+    /**
+     * Gets list of warps as a String
+     * @return List of warps as String
+     */
     public String getWarpList() {
-        String warpList = "";
+        StringBuilder warpList = new StringBuilder();
         boolean first = true;
         for(Warp w : warps) {
             if(first) {
-                warpList = ChatHelper.capitalize(w.name);
+                warpList = new StringBuilder(ChatHelper.capitalize(w.name));
+                first = false;
             } else {
-                warpList += ", "+ChatHelper.capitalize(w.name);
+                warpList.append(", ").append(ChatHelper.capitalize(w.name));
             }
         }
 
-        return warpList;
+        return warpList.toString();
     }
 
-    private void addWarp(String sender, String w, boolean pinned, Point p, ServerInfo s) {
-        warps.remove(w.toLowerCase());
-
-        warps.add(new Warp(w, p, s.getName(), pinned));
-
-        if(pinned) {
-            ProxyServer.getInstance().getPlayer(sender).sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Created pinned warp ", ChatColor.GRAY),
-                    new TextElement(ChatHelper.capitalize(w), ChatColor.RED)));
-        } else {
-            ProxyServer.getInstance().getPlayer(sender).sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Created warp ", ChatColor.GRAY),
-                    new TextElement(ChatHelper.capitalize(w), ChatColor.RED)));
-        }
-
-        warps.save();
-    }
-
+    /**
+     * Generates a list of warp data for the warp GUI
+     * @return Warp GUI Payload
+     */
     public JSONObject generateGUIPayload() {
         JSONObject o = new JSONObject();
         JSONArray waypoints = new JSONArray();
         for(Warp w : warps) {
             JSONObject wa = new JSONObject();
-            String friendlyName = ServerConfig.getInstance().getServer(w.server).friendly_name;
+            String friendlyName = ServerConfig.getInstance().getServer(w.server).getFriendlyName();
             if(friendlyName == null) friendlyName = w.server;
 
             wa.put("name", w.name);

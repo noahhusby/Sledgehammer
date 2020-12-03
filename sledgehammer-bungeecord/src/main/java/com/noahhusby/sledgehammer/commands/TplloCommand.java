@@ -41,7 +41,7 @@ public class TplloCommand extends Command {
             return;
         }
 
-        if(!hasAdmin(sender)) {
+        if(!isAdmin(sender)) {
             sender.sendMessage(ChatConstants.noPermission);
             return;
         }
@@ -84,6 +84,6 @@ public class TplloCommand extends Command {
         sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("(Override) Teleporting to ", ChatColor.GRAY),
                 new TextElement(lat+", "+lon, ChatColor.RED)));
 
-        getNetworkManager().sendPacket(new P2SLocationPacket(sender.getName(), server.getName(), String.valueOf(lat), String.valueOf(lon)));
+        getNetworkManager().send(new P2SLocationPacket(sender.getName(), server.getName(), String.valueOf(lat), String.valueOf(lon)));
     }
 }

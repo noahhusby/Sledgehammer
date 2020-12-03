@@ -26,8 +26,8 @@ import java.nio.CharBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel.MapMode;
 import java.nio.charset.CharacterCodingException;
-import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Class to perform a reverse geocode operation.
@@ -41,13 +41,13 @@ public class ReverseGeocoder implements AutoCloseable {
     private static final int HEADER_SIZE = 32;
 
     /** Decoder */
-    private static final CharsetDecoder DECODER = Charset.forName("UTF-8").newDecoder();
+    private static final CharsetDecoder DECODER = StandardCharsets.UTF_8.newDecoder();
 
     /** Empty array - no match */
     private static final String[] EMPTY = new String[0];
 
     /** File name */
-    private File filename;
+    private final File filename;
 
     /** Java file object */
     private RandomAccessFile file;

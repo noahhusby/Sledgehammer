@@ -39,13 +39,13 @@ import com.google.common.collect.ImmutableSet;
 
 public class ConfigCategory implements Map<String, Property>
 {
-    private String name;
+    private final String name;
     private String comment;
     private String languagekey;
-    private ArrayList<ConfigCategory> children = new ArrayList<ConfigCategory>();
-    private Map<String, Property> properties = new TreeMap<String, Property>();
+    private final ArrayList<ConfigCategory> children = new ArrayList<ConfigCategory>();
+    private final Map<String, Property> properties = new TreeMap<String, Property>();
     @SuppressWarnings("unused")
-    private int propNumber = 0;
+    private final int propNumber = 0;
     public final ConfigCategory parent;
     private boolean changed = false;
     private boolean requiresWorldRestart = false;
@@ -346,7 +346,7 @@ public class ConfigCategory implements Map<String, Property>
 
     private String getIndent(int indent)
     {
-        StringBuilder buf = new StringBuilder("");
+        StringBuilder buf = new StringBuilder();
         for (int x = 0; x < indent; x++)
         {
             buf.append("    ");

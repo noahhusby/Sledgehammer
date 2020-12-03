@@ -32,21 +32,10 @@ public class Location implements Storable {
 
     public Location(detail detailType, String city, String county, String state, String country) {
         this.detailType = detailType;
-        if(city != null) {
-            this.city = city.toLowerCase();
-        }
-
-        if(county != null) {
-            this.county = county.toLowerCase();
-        }
-
-        if(state != null) {
-            this.state = state.toLowerCase();
-        }
-
-        if(country != null) {
-            this.country = country.toLowerCase();
-        }
+        if(city != null) this.city = city.toLowerCase();
+        if(county != null) this.county = county.toLowerCase();
+        if(state != null) this.state = state.toLowerCase();
+        if(country != null) this.country = country.toLowerCase();
     }
 
     @Override
@@ -66,6 +55,6 @@ public class Location implements Storable {
     }
 
     public enum detail {
-        none, city, county, state, country;
+        none, city, county, state, country
     }
 }

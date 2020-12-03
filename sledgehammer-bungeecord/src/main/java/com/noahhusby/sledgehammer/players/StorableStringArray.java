@@ -21,8 +21,8 @@ package com.noahhusby.sledgehammer.players;
 import com.noahhusby.lib.data.storage.Storable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+
+import java.util.Arrays;
 
 public class StorableStringArray implements Storable {
     public final String[] stringArray;
@@ -47,9 +47,7 @@ public class StorableStringArray implements Storable {
     @Override
     public JSONObject save(JSONObject data) {
         JSONArray array = new JSONArray();
-        for(String s : stringArray) {
-            array.add(s);
-        }
+        array.addAll(Arrays.asList(stringArray));
 
         data.put("array", array);
         return data;

@@ -38,8 +38,8 @@ public class TestLocationFragment implements ICommandFragment {
         }
 
         if(args.length == 0) {
-            SledgehammerNetworkManager.getInstance().sendPacket(new P2STestLocationPacket(sender.getName(),
-                    SledgehammerUtil.getServerNameByPlayer(sender), -1));
+            SledgehammerNetworkManager.getInstance().send(new P2STestLocationPacket(sender.getName(),
+                    SledgehammerUtil.getServerFromSender(sender).getName(), -1));
         } else {
             try {
                 int zoom = Integer.parseInt(args[0]);
@@ -48,8 +48,8 @@ public class TestLocationFragment implements ICommandFragment {
                     throw new Exception();
                 }
 
-                SledgehammerNetworkManager.getInstance().sendPacket(new P2STestLocationPacket(sender.getName(),
-                        SledgehammerUtil.getServerNameByPlayer(sender), zoom));
+                SledgehammerNetworkManager.getInstance().send(new P2STestLocationPacket(sender.getName(),
+                        SledgehammerUtil.getServerFromSender(sender).getName(), zoom));
             } catch (Exception e) {
                 sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Invalid zoom level!", ChatColor.RED),
                         new TextElement(" Please enter a value between ", ChatColor.GRAY),

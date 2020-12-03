@@ -29,10 +29,6 @@ public class SledgehammerCommand extends Command {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(hasPermissionAdmin(sender)) {
-            ChatHelper.adminInfoMessage(sender);
-        } else {
-            ChatHelper.infoMessage(sender);
-        }
+        ChatHelper.infoMessage(sender);
     }
 }

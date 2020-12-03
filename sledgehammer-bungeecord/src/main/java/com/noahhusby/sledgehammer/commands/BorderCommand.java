@@ -18,7 +18,7 @@
 
 package com.noahhusby.sledgehammer.commands;
 
-import com.noahhusby.sledgehammer.Sledgehammer;
+import com.noahhusby.sledgehammer.chat.ChatConstants;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.chat.TextElement;
 import com.noahhusby.sledgehammer.commands.data.Command;
@@ -26,14 +26,30 @@ import com.noahhusby.sledgehammer.players.PlayerManager;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class BorderCommand extends Command {
     public BorderCommand() {
-        super("border", "");
+        super("border", "sledgehammer.border");
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+        if(!(sender instanceof ProxiedPlayer)) {
+            sender.sendMessage(ChatConstants.issueByPlayer);
+            return;
+        }
+
+        if(hasPerms(sender, "shpresent") && !SledgehammerPlayer.getPlayer(sender).onSledgehammer() && !isAdmin(sender)) {
+            sender.sendMessage(ChatConstants.noPermission);
+            return;
+        }
+
+        if(hasPerms(sender, "earthpresent") && !SledgehammerPlayer.getPlayer(sender).onEarthServer() && !isAdmin(sender)) {
+            sender.sendMessage(ChatConstants.noPermission);
+            return;
+        }
+
         SledgehammerPlayer p = PlayerManager.getInstance().getPlayer(sender);
         if(args.length == 0) {
             if(p.getAttributes().contains("NO_BORDER")) {
@@ -57,6 +73,7 @@ public class BorderCommand extends Command {
             sender.sendMessage(ChatHelper.makeTitleTextComponent(
                     new TextElement("Border teleportation has been set to ", ChatColor.GRAY), new TextElement("on!", ChatColor.GREEN)));
             p.getAttributes().remove("NO_BORDER");
+
             return;
         }
 

