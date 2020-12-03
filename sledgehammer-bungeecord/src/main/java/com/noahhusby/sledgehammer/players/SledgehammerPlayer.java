@@ -343,6 +343,10 @@ public class SledgehammerPlayer implements ProxiedPlayer {
         return attributes;
     }
 
+    public void setAttributes(List<String> attributes) {
+        this.attributes = attributes;
+    }
+
     public static SledgehammerPlayer getPlayer(String s) {
         return PlayerManager.getInstance().getPlayer(s);
     }

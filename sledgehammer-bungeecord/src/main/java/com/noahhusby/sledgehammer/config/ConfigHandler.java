@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
 
 import com.google.common.collect.Maps;
 import com.noahhusby.sledgehammer.Sledgehammer;
+import com.noahhusby.sledgehammer.players.PlayerManager;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
 
 public class ConfigHandler {
@@ -50,6 +51,7 @@ public class ConfigHandler {
     public static File warpFile;
     public static File serverFile;
     public static File localStorage;
+    public static File attributeFile;
 
     private ConfigHandler() { }
 
@@ -111,6 +113,7 @@ public class ConfigHandler {
         configurationFile = new File(dataFolder, "sledgehammer.cfg");
         warpFile = new File(localStorage, "warps.json");
         serverFile = new File(localStorage, "servers.json");
+        attributeFile = new File(localStorage, "attributes.json");
 
         WarpHandler.getInstance().getWarps().load();
         ServerConfig.getInstance().getServers().load();
@@ -130,6 +133,9 @@ public class ConfigHandler {
 
         Storage warpData = WarpHandler.getInstance().getWarps();
         if(warpData != null) warpData.clearHandlers();
+
+        Storage attributeData = PlayerManager.getInstance().getAttributes();
+        if(attributeData != null) attributeData.clearHandlers();
 
         config.load();
         cat("General", "General options for sledgehammer");
@@ -230,7 +236,6 @@ public class ConfigHandler {
             serverData.registerHandler(sqlStorageHandler);
         }
 
-        serverData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
 
         warpData.registerHandler(new LocalStorageHandler(ConfigHandler.warpFile));
 
@@ -241,11 +246,24 @@ public class ConfigHandler {
             warpData.registerHandler(sqlStorageHandler);
         }
 
+
+        attributeData.registerHandler(new LocalStorageHandler(ConfigHandler.attributeFile));
+
+        if(useSql) {
+            SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(new Credentials(sqlHost,
+                    sqlPort, sqlUser, sqlPassword, sqlDb)), "attributes");
+            sqlStorageHandler.setPriority(100);
+            attributeData.registerHandler(sqlStorageHandler);
+        }
+
+        serverData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
         warpData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
+        attributeData.setAutoLoad(5, TimeUnit.SECONDS);
 
         Executors.newSingleThreadScheduledExecutor().schedule(() -> {
             serverData.load(true);
             warpData.load(true);
+            attributeData.load(true);
         }, 5, TimeUnit.SECONDS);
     }
 

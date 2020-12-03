@@ -18,11 +18,13 @@
 
 package com.noahhusby.sledgehammer.players;
 
+import com.google.common.collect.Sets;
+import com.noahhusby.lib.data.storage.StorageHashMap;
+import com.noahhusby.lib.data.storage.StorageList;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class PlayerManager {
     private static PlayerManager mInstance = null;
@@ -33,12 +35,22 @@ public class PlayerManager {
     }
 
     List<SledgehammerPlayer> players = new ArrayList<>();
+    StorageHashMap<String, StorableStringArray> attributes = new StorageHashMap<>(StorableStringArray.class);
 
     private PlayerManager() {}
 
     public void onPlayerJoin(ProxiedPlayer player) {
         onPlayerDisconnect(player);
-        players.add(new SledgehammerPlayer(player));
+        SledgehammerPlayer newPlayer = new SledgehammerPlayer(player);
+
+        StorableStringArray storableStringArray = attributes.get(player.getUniqueId().toString());
+        try {
+            if(storableStringArray != null) newPlayer.setAttributes(new ArrayList<>(Arrays.asList(storableStringArray.stringArray)));
+        } catch (NullPointerException e) {
+            newPlayer.setAttributes(new ArrayList<>());
+        }
+
+        players.add(newPlayer);
     }
 
     public void onPlayerDisconnect(ProxiedPlayer player) {
@@ -49,8 +61,19 @@ public class PlayerManager {
             }
         }
 
-        for(SledgehammerPlayer p : remove) {
-            players.remove(p);
+        if(!remove.isEmpty()) {
+            SledgehammerPlayer p = remove.get(0);
+            List<String> playerAttributes = p.getAttributes();
+
+            Set<String> set = Sets.newHashSet();
+            set.add(p.getUniqueId().toString());
+            attributes.keySet().removeAll(set);
+            attributes.put(p.getUniqueId().toString(), new StorableStringArray(playerAttributes.toArray(new String[playerAttributes.size()])));
+            attributes.save(true);
+        }
+
+        for(SledgehammerPlayer pl : remove) {
+            players.remove(pl);
         }
     }
 
@@ -79,6 +102,10 @@ public class PlayerManager {
         }
 
         return null;
+    }
+
+    public StorageHashMap<String, StorableStringArray> getAttributes() {
+        return attributes;
     }
 
 
