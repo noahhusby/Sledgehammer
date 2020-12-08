@@ -41,7 +41,7 @@ public class P2CPlayerSyncPacket implements IForgePacket {
 			buf.writeDouble(coordinates[0]);
 			buf.writeDouble(coordinates[1]);
 			buf.writeFloat(0); //TODO Terramap azimuth
-			ForgeChannel.writeStringToBuf("unknown", buf); //TODO Terramap gamemode
+			ForgeChannel.writeStringToBuf(player.getGameMode().toString(), buf);
 		}
 
 	}
