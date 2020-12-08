@@ -54,7 +54,7 @@ public class Sledgehammer extends Plugin implements Listener {
 
     public static AddonManager addonManager;
 
-    private final ScheduledThreadPoolExecutor alternativeThreads = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(2);
+    public final ScheduledThreadPoolExecutor alternativeThreads = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(2);
 
     @Override
     public void onEnable() {
@@ -87,6 +87,7 @@ public class Sledgehammer extends Plugin implements Listener {
 
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerCommand());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerAdminCommand());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new TestCommand());
 
         ServerConfig.getInstance();
 
@@ -111,7 +112,7 @@ public class Sledgehammer extends Plugin implements Listener {
         addonManager.onEnable();
 
         if(!ConfigHandler.warpCommand.equals("")) {
-            ProxyServer.getInstance().getPluginManager().registerCommand(this, new WarpCommand());
+            ProxyServer.getInstance().getPluginManager().registerCommand(this, new WarpCommand(ConfigHandler.warpCommand));
         }
 
         if(ConfigHandler.globalTpll) {

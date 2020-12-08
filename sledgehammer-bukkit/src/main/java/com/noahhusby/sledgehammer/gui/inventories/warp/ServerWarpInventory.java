@@ -16,22 +16,18 @@
  * along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
-package com.noahhusby.sledgehammer.gui.inventories;
+package com.noahhusby.sledgehammer.gui.inventories.warp;
 
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
-import com.noahhusby.sledgehammer.gui.GUIChild;
-import com.noahhusby.sledgehammer.network.S2P.S2PWarpPacket;
-import com.noahhusby.sledgehammer.network.S2P.S2PWebMapPacket;
-import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
+import com.noahhusby.sledgehammer.gui.inventories.general.GUIChild;
+import com.noahhusby.sledgehammer.gui.inventories.general.GUIHelper;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
@@ -42,10 +38,12 @@ public class ServerWarpInventory extends GUIChild {
     private final List<String> servers;
 
     private Inventory inventory;
+    private JSONObject heads;
 
-    public ServerWarpInventory(int page, List<String> servers) {
+    public ServerWarpInventory(int page, List<String> servers, JSONObject heads) {
         this.page = page;
         this.servers = servers;
+        this.heads = heads;
     }
 
     @Override
@@ -64,8 +62,8 @@ public class ServerWarpInventory extends GUIChild {
             inventory.setItem(x, glass);
         }
 
-        inventory.setItem(40, generateCompass());
-        inventory.setItem(49, generateExit());
+        inventory.setItem(49, GUIHelper.generateExit());
+        inventory.setItem(40, GUIHelper.generateCompass());
 
         if(page != 0) {
             ItemStack head = SledgehammerUtil.getSkull(Constants.arrowLeftHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Previous Page");
@@ -101,9 +99,9 @@ public class ServerWarpInventory extends GUIChild {
         int current = 9;
         for(int x = min; x < max; x++) {
             String server = servers.get(x);
-            ItemStack warp = new ItemStack(Material.WOOL, 1, (byte) 3);
+            String headID = heads.get(server).equals("*") ? Constants.goldenBlankHead : "";
+            ItemStack warp = SledgehammerUtil.getSkull(headID,ChatColor.AQUA + "" + ChatColor.BOLD + server);
             ItemMeta meta = warp.getItemMeta();
-            meta.setDisplayName(ChatColor.AQUA + "" + ChatColor.BOLD + server);
 
             List<String> lore = new ArrayList<>();
             lore.add(ChatColor.BLUE + "" + ChatColor.STRIKETHROUGH + "------------------");
@@ -135,13 +133,8 @@ public class ServerWarpInventory extends GUIChild {
             return;
         }
 
-        if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Close GUI")) {
+        if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Close")) {
             controller.close();
-            return;
-        }
-
-        if(e.getCurrentItem().getType() == Material.WOOL) {
-            controller.switchToServer(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()));
             return;
         }
 
@@ -149,29 +142,9 @@ public class ServerWarpInventory extends GUIChild {
             controller.switchToAll();
             return;
         }
-    }
 
-    private ItemStack generateExit() {
-        ItemStack exit = new ItemStack(Material.BARRIER);
-        ItemMeta m = exit.getItemMeta();
-        m.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "Close GUI");
-        exit.setItemMeta(m);
+        controller.switchToServer(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()));
 
-        return exit;
-    }
-
-    private ItemStack generateCompass() {
-        ItemStack compass = new ItemStack(Material.COMPASS);
-        ItemMeta m = compass.getItemMeta();
-
-        m.setDisplayName(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Return to Main Menu");
-        List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.GRAY + "View all warps");
-        m.setLore(lore);
-
-        compass.setItemMeta(m);
-
-        return compass;
     }
 
     public int getPage() {

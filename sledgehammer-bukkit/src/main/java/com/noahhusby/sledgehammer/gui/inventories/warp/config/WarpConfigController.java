@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2020 Noah Husby
- * sledgehammer - GUIChild.java
+ * sledgehammer - WarpInventoryController.java
  *
  * Sledgehammer is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,34 +16,28 @@
  * along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
-package com.noahhusby.sledgehammer.gui;
+package com.noahhusby.sledgehammer.gui.inventories.warp.config;
 
-import org.bukkit.Bukkit;
+import com.noahhusby.sledgehammer.gui.inventories.general.GUIController;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 
-public abstract class GUIChild implements IGUIChild {
-    protected Inventory inventory;
-    protected GUIController controller;
-    protected Player player;
+public class WarpConfigController extends GUIController {
 
-    public void initFromController(GUIController controller, Player player, Inventory inventory) {
-        this.inventory = Bukkit.createInventory(null, inventory.getSize());
-        this.controller = controller;
-        this.player = player;
+    public WarpConfigController(Player p) {
+        super(27, "Warp Config", p);
+        init();
+    }
+
+    public WarpConfigController(GUIController controller) {
+        super(controller);
         init();
     }
 
     @Override
-    public Inventory getInventory() {
-        return inventory;
+    public void init() {
+        WarpConfig warpConfig = new WarpConfig();
+        warpConfig.initFromController(this, getPlayer(), getInventory());
+        openChild(warpConfig);
     }
 
-    protected Player getPlayer() {
-        return player;
-    }
-
-    protected GUIController getController() {
-        return controller;
-    }
 }

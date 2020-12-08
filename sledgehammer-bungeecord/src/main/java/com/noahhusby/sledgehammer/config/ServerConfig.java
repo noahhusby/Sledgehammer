@@ -41,7 +41,8 @@ public class ServerConfig {
         return instance;
     }
 
-    public StorageList<SledgehammerServer> servers = new StorageList<>(SledgehammerServer.class);
+    private StorageList<SledgehammerServer> servers = new StorageList<>(SledgehammerServer.class);
+    private StorageList<ServerGroup> groups = new StorageList<>(ServerGroup.class);
     public Map<String, String> initializedServers = Maps.newHashMap();
 
     /**
@@ -108,8 +109,10 @@ public class ServerConfig {
      * @return {@link SledgehammerServer}
      */
     public SledgehammerServer getServer(String name) {
-        for(SledgehammerServer s : servers)
+        for(SledgehammerServer s : servers) {
             if(s.getName().equalsIgnoreCase(name)) return s;
+
+        }
 
         return null;
     }
@@ -124,6 +127,10 @@ public class ServerConfig {
             if(s.getName().equalsIgnoreCase(server)) return s.getLocations();
 
         return null;
+    }
+
+    public StorageList<ServerGroup> getGroups() {
+        return groups;
     }
 
     /**

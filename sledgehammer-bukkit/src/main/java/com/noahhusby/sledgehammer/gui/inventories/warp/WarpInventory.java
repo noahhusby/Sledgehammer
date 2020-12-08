@@ -16,12 +16,12 @@
  * along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
-package com.noahhusby.sledgehammer.gui.inventories;
+package com.noahhusby.sledgehammer.gui.inventories.warp;
 
 import com.noahhusby.sledgehammer.Constants;
-import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
-import com.noahhusby.sledgehammer.gui.GUIChild;
+import com.noahhusby.sledgehammer.gui.inventories.general.GUIChild;
+import com.noahhusby.sledgehammer.gui.inventories.general.GUIHelper;
 import com.noahhusby.sledgehammer.network.S2P.S2PWarpPacket;
 import com.noahhusby.sledgehammer.network.S2P.S2PWebMapPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
@@ -68,8 +68,8 @@ public class WarpInventory extends GUIChild {
 
         inventory.setItem(4, SledgehammerUtil.getSkull(Constants.monitorHead, ChatColor.GRAY + "" + ChatColor.BOLD + "All Warps"));
         inventory.setItem(48, SledgehammerUtil.getSkull(Constants.lampHead, ChatColor.GOLD + "" + ChatColor.BOLD + "Pinned Warps"));
-        inventory.setItem(49, generateExit());
-        inventory.setItem(50, generateCompass());
+        inventory.setItem(49, GUIHelper.generateExit());
+        inventory.setItem(50, GUIHelper.generateCompass());
 
         if(web) {
             inventory.setItem(40, SledgehammerUtil.getSkull(Constants.globeHead, ChatColor.GREEN + "" + ChatColor.BOLD + "Open Web Map"));
@@ -149,7 +149,7 @@ public class WarpInventory extends GUIChild {
             return;
         }
 
-        if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Close GUI")) {
+        if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Close")) {
             controller.close();
             return;
         }
@@ -175,29 +175,6 @@ public class WarpInventory extends GUIChild {
             controller.switchToServerList();
             return;
         }
-    }
-
-    private ItemStack generateExit() {
-        ItemStack exit = new ItemStack(Material.BARRIER);
-        ItemMeta m = exit.getItemMeta();
-        m.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "Close GUI");
-        exit.setItemMeta(m);
-
-        return exit;
-    }
-
-    private ItemStack generateCompass() {
-        ItemStack compass = new ItemStack(Material.COMPASS);
-        ItemMeta m = compass.getItemMeta();
-
-        m.setDisplayName(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Server Warps");
-        List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.GRAY + "Sort warps by server");
-        m.setLore(lore);
-
-        compass.setItemMeta(m);
-
-        return compass;
     }
 
     public int getPage() {

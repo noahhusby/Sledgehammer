@@ -16,14 +16,14 @@
  * along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
-package com.noahhusby.sledgehammer.gui;
+package com.noahhusby.sledgehammer.gui.inventories.general;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
-public class GUIController {
+public class GUIController implements IController {
     private IGUIChild currentChild = null;
     private final Inventory inventory;
     private final Player player;
@@ -32,6 +32,11 @@ public class GUIController {
         inventory = Bukkit.createInventory(null, size, name);
         player.openInventory(inventory);
         this.player = player;
+    }
+
+    public GUIController(GUIController controller) {
+        this.player = controller.player;
+        this.inventory = controller.inventory;
     }
 
     public void onInventoryClick(InventoryClickEvent e) {
@@ -56,4 +61,6 @@ public class GUIController {
     public void close() {
         player.closeInventory();
     }
+
+    public void init() {}
 }

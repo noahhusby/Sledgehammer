@@ -35,6 +35,7 @@ public class Constants {
     public static final String webmapID = "webmap";
     public static final String warpID = "warp";
     public static final String playerUpdateID = "player_update";
+    public static final String permissionCheckID = "permission_check";
 
     public static final String adminMessagePrefix = "&9&lSH &8&l> ";
 

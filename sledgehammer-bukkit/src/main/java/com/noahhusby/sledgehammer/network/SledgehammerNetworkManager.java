@@ -60,6 +60,7 @@ public class SledgehammerNetworkManager implements PluginMessageListener, Listen
         registerProxyPacket(new P2STeleportPacket());
         registerProxyPacket(new P2STestLocationPacket());
         registerProxyPacket(new P2SWarpGUIPacket());
+        registerProxyPacket(new P2SPermissionPacket());
     }
 
     private void registerProxyPacket(IP2SPacket packet) {

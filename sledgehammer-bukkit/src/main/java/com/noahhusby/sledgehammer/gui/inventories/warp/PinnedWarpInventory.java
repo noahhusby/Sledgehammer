@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2020 Noah Husby
- * sledgehammer - SetServerWarpInventory.java
+ * sledgehammer - PinnedWarpInventory.java
  *
  * Sledgehammer is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,11 +16,12 @@
  * along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
-package com.noahhusby.sledgehammer.gui.inventories;
+package com.noahhusby.sledgehammer.gui.inventories.warp;
 
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
-import com.noahhusby.sledgehammer.gui.GUIChild;
+import com.noahhusby.sledgehammer.gui.inventories.general.GUIChild;
+import com.noahhusby.sledgehammer.gui.inventories.general.GUIHelper;
 import com.noahhusby.sledgehammer.network.S2P.S2PWarpPacket;
 import com.noahhusby.sledgehammer.network.S2P.S2PWebMapPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
@@ -36,19 +37,17 @@ import org.json.simple.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SetServerWarpInventory extends GUIChild {
+public class PinnedWarpInventory extends GUIChild {
     private final int page;
     private final JSONArray warps;
     private final boolean web;
-    private final String server;
 
     private Inventory inventory;
 
-    public SetServerWarpInventory(int page, JSONArray warps, boolean web, String server) {
+    public PinnedWarpInventory(int page, JSONArray warps, boolean web) {
         this.page = page;
         this.warps = warps;
         this.web = web;
-        this.server = server;
     }
 
     @Override
@@ -67,10 +66,10 @@ public class SetServerWarpInventory extends GUIChild {
             inventory.setItem(x, glass);
         }
 
-        inventory.setItem(4, SledgehammerUtil.getSkull(Constants.netherPortalHead, ChatColor.GRAY + "" + ChatColor.BOLD + server));
+        inventory.setItem(4, SledgehammerUtil.getSkull(Constants.lampHead, ChatColor.GRAY + "" + ChatColor.BOLD + "Pinned Warps"));
         inventory.setItem(48, SledgehammerUtil.getSkull(Constants.monitorHead, ChatColor.GOLD + "" + ChatColor.BOLD + "All Warps"));
-        inventory.setItem(49, generateExit());
-        inventory.setItem(50, generateCompass());
+        inventory.setItem(49, GUIHelper.generateExit());
+        inventory.setItem(50, GUIHelper.generateCompass());
 
         if(web) {
             inventory.setItem(40, SledgehammerUtil.getSkull(Constants.globeHead, ChatColor.GREEN + "" + ChatColor.BOLD + "Open Web Map"));
@@ -110,7 +109,7 @@ public class SetServerWarpInventory extends GUIChild {
         int current = 9;
         for(int x = min; x < max; x++) {
             JSONObject o = (JSONObject) warps.get(x);
-            ItemStack warp = new ItemStack(Material.WOOL, 1, (byte) 5);
+            ItemStack warp = new ItemStack(Material.WOOL, 1, (byte) 4);
             ItemMeta meta = warp.getItemMeta();
             meta.setDisplayName(ChatColor.BLUE + "" + ChatColor.BOLD + (String) o.get("name"));
 
@@ -129,71 +128,48 @@ public class SetServerWarpInventory extends GUIChild {
     @Override
     public void onInventoryClick(InventoryClickEvent e) {
         e.setCancelled(true);
-        if(e.getCurrentItem() == null) return;
+        if (e.getCurrentItem() == null) return;
 
-        SetServerWarpInventoryController controller = (SetServerWarpInventoryController) getController();
+        PinnedWarpInventoryController controller = (PinnedWarpInventoryController) getController();
 
-        if(e.getCurrentItem().getItemMeta().getDisplayName() == null) return;
+        if (e.getCurrentItem().getItemMeta().getDisplayName() == null) return;
 
-        if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Previous Page")) {
-            controller.openChild(controller.getChildByPage(page-1));
+        if (ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Previous Page")) {
+            controller.openChild(controller.getChildByPage(page - 1));
             return;
         }
 
-        if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Next Page")) {
-            controller.openChild(controller.getChildByPage(page+1));
+        if (ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Next Page")) {
+            controller.openChild(controller.getChildByPage(page + 1));
             return;
         }
 
-        if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Close GUI")) {
+        if (ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Close")) {
             controller.close();
             return;
         }
 
-        if(e.getCurrentItem().getType() == Material.WOOL) {
+        if (e.getCurrentItem().getType() == Material.WOOL) {
             SledgehammerNetworkManager.getInstance().sendPacket(new S2PWarpPacket(player, ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName())));
             controller.close();
             return;
         }
 
-        if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Open Web Map")) {
+        if (ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Open Web Map")) {
             SledgehammerNetworkManager.getInstance().sendPacket(new S2PWebMapPacket(player));
             controller.close();
             return;
         }
 
-        if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("All Warps")) {
+        if (ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("All Warps")) {
             controller.switchToAll();
             return;
         }
 
-        if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Server Warps")) {
+        if (ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Server Warps")) {
             controller.switchToServerList();
             return;
         }
-    }
-
-    private ItemStack generateExit() {
-        ItemStack exit = new ItemStack(Material.BARRIER);
-        ItemMeta m = exit.getItemMeta();
-        m.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "Close GUI");
-        exit.setItemMeta(m);
-
-        return exit;
-    }
-
-    private ItemStack generateCompass() {
-        ItemStack compass = new ItemStack(Material.COMPASS);
-        ItemMeta m = compass.getItemMeta();
-
-        m.setDisplayName(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Server Warps");
-        List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.GRAY + "Sort warps by server");
-        m.setLore(lore);
-
-        compass.setItemMeta(m);
-
-        return compass;
     }
 
     public int getPage() {

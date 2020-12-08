@@ -21,6 +21,7 @@ package com.noahhusby.sledgehammer.players;
 import com.google.common.collect.Maps;
 import com.noahhusby.sledgehammer.network.S2P.S2PPlayerUpdatePacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
+import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

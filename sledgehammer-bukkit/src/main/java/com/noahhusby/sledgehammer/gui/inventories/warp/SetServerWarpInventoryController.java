@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2020 Noah Husby
- * sledgehammer - ServerWarpInventoryController.java
+ * sledgehammer - SetServerWarpInventoryController.java
  *
  * Sledgehammer is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,12 +16,11 @@
  * along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
-package com.noahhusby.sledgehammer.gui.inventories;
+package com.noahhusby.sledgehammer.gui.inventories.warp;
 
-import com.noahhusby.sledgehammer.SmartObject;
-import com.noahhusby.sledgehammer.gui.GUIController;
-import com.noahhusby.sledgehammer.gui.GUIRegistry;
-import com.noahhusby.sledgehammer.gui.IGUIChild;
+import com.noahhusby.sledgehammer.gui.inventories.general.GUIController;
+import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
+import com.noahhusby.sledgehammer.gui.inventories.general.IGUIChild;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -29,30 +28,41 @@ import org.json.simple.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServerWarpInventoryController extends GUIController {
-    private final List<ServerWarpInventory> warpInventories = new ArrayList<>();
+public class SetServerWarpInventoryController extends GUIController {
+    private final List<SetServerWarpInventory> warpInventories = new ArrayList<>();
     private final JSONObject warpData;
+    private final String server;
 
-    public ServerWarpInventoryController(Player p, SmartObject warpData) {
-        this(p, warpData.toJSON());
+    public SetServerWarpInventoryController(Player p, JSONObject warpData, String server) {
+        super(54, "Warps - " + server, p);
+        this.warpData = warpData;
+        this.server = server;
+        init();
     }
 
-    public ServerWarpInventoryController(Player p, JSONObject warpData) {
-        super(54, "Warps - Server Selector", p);
+    public SetServerWarpInventoryController(GUIController controller, JSONObject warpData, String server){
+        super(controller);
         this.warpData = warpData;
+        this.server = server;
+        init();
+    }
 
+    @Override
+    public void init() {
         JSONArray rawWarps = (JSONArray) warpData.get("waypoints");
-        List<String> servers = new ArrayList<>();
+        JSONArray warps = new JSONArray();
         for(Object o : rawWarps) {
             JSONObject ob = (JSONObject) o;
-            String server = (String) ob.get("server");
-            if(!servers.contains(server)) servers.add(server);
+            String sname = (String) ob.get("server");
+            if(sname.equalsIgnoreCase(server)) warps.add(o);
         }
 
-        int total_pages = (int) Math.ceil(servers.size() / 27.0);
+        boolean web = (boolean) warpData.get("web");
+
+        int total_pages = (int) Math.ceil(warps.size() / 27.0);
         if(total_pages == 0) total_pages = 1;
         for(int x = 0; x < total_pages; x++) {
-            ServerWarpInventory w = new ServerWarpInventory(x, servers);
+            SetServerWarpInventory w = new SetServerWarpInventory(x, warps, web, server);
             w.initFromController(this, getPlayer(), getInventory());
             warpInventories.add(w);
         }
@@ -61,7 +71,7 @@ public class ServerWarpInventoryController extends GUIController {
     }
 
     public IGUIChild getChildByPage(int page) {
-        for(ServerWarpInventory w : warpInventories) {
+        for(SetServerWarpInventory w : warpInventories) {
             if(w.getPage() == page) return w;
         }
 
@@ -69,14 +79,10 @@ public class ServerWarpInventoryController extends GUIController {
     }
 
     public void switchToAll() {
-        GUIRegistry.register(new WarpInventoryController(getPlayer(), warpData));
+        GUIRegistry.register(new WarpInventoryController(this, warpData));
     }
 
     public void switchToServerList() {
-        GUIRegistry.register(new ServerWarpInventoryController(getPlayer(), warpData));
-    }
-
-    public void switchToServer(String server) {
-        GUIRegistry.register(new SetServerWarpInventoryController(getPlayer(), warpData, server));
+        GUIRegistry.register(new ServerWarpInventoryController(this, warpData));
     }
 }

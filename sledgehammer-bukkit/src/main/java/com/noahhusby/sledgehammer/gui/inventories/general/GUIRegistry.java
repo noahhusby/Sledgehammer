@@ -16,29 +16,29 @@
  * along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
-package com.noahhusby.sledgehammer.gui;
+package com.noahhusby.sledgehammer.gui.inventories.general;
 
-import com.google.common.collect.Maps;
-import org.bukkit.event.EventHandler;
+import com.noahhusby.sledgehammer.gui.inventories.anvil.AnvilController;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.Inventory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GUIRegistry {
-    private final static List<GUIController> registeredControllers = new ArrayList<>();
+    private final static List<IController> registeredControllers = new ArrayList<>();
 
-    public static void register(GUIController c) {
+    public static void register(IController c) {
         removeExpiredControllers(c);
         registeredControllers.add(c);
     }
 
     public static void onInventoryClick(InventoryClickEvent e) {
 
-        for(GUIController i : registeredControllers) {
-            if(i.getInventory().getName().equals(e.getInventory().getName())) i.onInventoryClick(e);
+        for(IController i : registeredControllers) {
+            if(i instanceof AnvilController) continue;
+            GUIController gui = (GUIController) i;
+            if(gui.getInventory().getName().equals(e.getInventory().getName())) gui.onInventoryClick(e);
         }
     }
 
@@ -46,15 +46,15 @@ public class GUIRegistry {
 
     }
 
-    private static void removeExpiredControllers(GUIController newListener) {
-        List<GUIController> expired = new ArrayList<>();
-        for(GUIController i : registeredControllers) {
+    private static void removeExpiredControllers(IController newListener) {
+        List<IController> expired = new ArrayList<>();
+        for(IController i : registeredControllers) {
             if (i.getPlayer() != null) {
                 if(i.getPlayer().getName().equalsIgnoreCase(newListener.getPlayer().getName())) expired.add(i);
             }
         }
 
-        for(GUIController i : expired) {
+        for(IController i : expired) {
             registeredControllers.remove(i);
         }
     }

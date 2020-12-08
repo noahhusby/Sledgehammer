@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2020 Noah Husby
- * Sledgehammer [Bungeecord] - PlayerAttribute.java
+ * Sledgehammer [Bungeecord] - Attribute.java
  *
  * Sledgehammer is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,37 +19,50 @@
 package com.noahhusby.sledgehammer.players;
 
 import com.noahhusby.lib.data.storage.Storable;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
-public class StorableStringArray implements Storable {
-    public final String[] stringArray;
+public class Attribute implements Storable {
+    private UUID uuid;
+    private List<String> attributes;
 
-    public StorableStringArray() {
-        this(new String[]{});
+    public Attribute() {
+        this(UUID.randomUUID(), new ArrayList<>());
     }
 
-    public StorableStringArray(String[] array) {
-        this.stringArray = array;
+    public Attribute(String uuid, List<String> attributes) {
+        this(UUID.fromString(uuid), attributes);
+    }
+
+    public Attribute(UUID uuid, List<String> attributes) {
+        this.uuid = uuid;
+        this.attributes = attributes;
+    }
+
+    public List<String> getAttributes() {
+        return attributes;
+    }
+
+    public UUID getUuid() {
+        return uuid;
     }
 
     @Override
     public Storable load(JSONObject data) {
-        JSONArray array = new JSONArray();
+        String att = (String) data.get("Attributes");
+        List<String> atts = new ArrayList<>(Arrays.asList(att.split(",")));
+        return new Attribute(UUID.fromString((String) data.get("UUID")), atts);
 
-            array = (JSONArray) data.get("array");
-
-        return new StorableStringArray((String[]) array.toArray(new String[array.size()]));
     }
 
     @Override
     public JSONObject save(JSONObject data) {
-        JSONArray array = new JSONArray();
-        array.addAll(Arrays.asList(stringArray));
-
-        data.put("array", array);
+        data.put("UUID", uuid.toString());
+        data.put("Attributes", String.join(",", attributes));
         return data;
     }
 }

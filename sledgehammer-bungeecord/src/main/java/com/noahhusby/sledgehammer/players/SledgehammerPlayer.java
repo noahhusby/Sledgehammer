@@ -325,6 +325,14 @@ public class SledgehammerPlayer implements ProxiedPlayer {
     }
 
     /**
+     * Gets {@link SledgehammerServer} from player
+     * @return {@link SledgehammerServer}
+     */
+    public SledgehammerServer getSledgehammerServer() {
+        return ServerConfig.getInstance().getServer(getServer().getInfo().getName());
+    }
+
+    /**
      * Gets the current location of the player
      * @return Location of player if known, null if not
      */

@@ -20,6 +20,7 @@ package com.noahhusby.sledgehammer.players;
 
 import com.google.common.collect.Sets;
 import com.noahhusby.lib.data.storage.StorageHashMap;
+import com.noahhusby.lib.data.storage.StorageList;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -34,7 +35,8 @@ public class PlayerManager {
     }
 
     List<SledgehammerPlayer> players = new ArrayList<>();
-    StorageHashMap<String, StorableStringArray> attributes = new StorageHashMap<>(StorableStringArray.class);
+    StorageList<Attribute> attributes = new StorageList<>(Attribute.class);
+    //StorageHashMap<String, StorableStringArray> attributes = new StorageHashMap<>(StorableStringArray.class);
 
     private PlayerManager() {}
 
@@ -46,11 +48,12 @@ public class PlayerManager {
         onPlayerDisconnect(player);
         SledgehammerPlayer newPlayer = new SledgehammerPlayer(player);
 
-        StorableStringArray storableStringArray = attributes.get(player.getUniqueId().toString());
-        try {
-            if(storableStringArray != null) newPlayer.setAttributes(new ArrayList<>(Arrays.asList(storableStringArray.stringArray)));
-        } catch (NullPointerException e) {
-            newPlayer.setAttributes(new ArrayList<>());
+        Attribute attribute = null;
+        for(Attribute a : attributes)
+            if(a.getUuid().toString().equals(player.getUniqueId().toString())) attribute = a;
+
+        if(attribute != null) {
+            newPlayer.setAttributes(attribute.getAttributes());
         }
 
         players.add(newPlayer);
@@ -72,10 +75,18 @@ public class PlayerManager {
             SledgehammerPlayer p = remove.get(0);
             List<String> playerAttributes = p.getAttributes();
 
-            Set<String> set = Sets.newHashSet();
-            set.add(p.getUniqueId().toString());
-            attributes.keySet().removeAll(set);
-            attributes.put(p.getUniqueId().toString(), new StorableStringArray(playerAttributes.toArray(new String[playerAttributes.size()])));
+            Attribute attribute = null;
+            for(Attribute a : attributes)
+                if(a.getUuid().toString().equals(player.getUniqueId().toString())) attribute = a;
+
+            if(attribute != null) {
+                attribute.getAttributes().clear();
+                attribute.getAttributes().addAll(p.getAttributes());
+            } else {
+                Attribute a = new Attribute(player.getUniqueId(), p.getAttributes());
+                attributes.add(a);
+            }
+
             attributes.save(true);
         }
 
@@ -130,7 +141,7 @@ public class PlayerManager {
      * Use {@link SledgehammerPlayer#getAttributes()} to get attributes
      * @return Hash map of attributes
      */
-    public StorageHashMap<String, StorableStringArray> getAttributes() {
+    public StorageList<Attribute> getAttributes() {
         return attributes;
     }
 }
