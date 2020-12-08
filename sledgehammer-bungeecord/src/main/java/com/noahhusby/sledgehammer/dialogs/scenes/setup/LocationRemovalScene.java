@@ -18,8 +18,9 @@
 
 package com.noahhusby.sledgehammer.dialogs.scenes.setup;
 
+import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.config.ServerConfig;
-import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
+import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.dialogs.components.location.LocationRemovalComponent;
 import com.noahhusby.sledgehammer.dialogs.scenes.DialogScene;
 import com.noahhusby.sledgehammer.datasets.Location;
@@ -32,8 +33,8 @@ import java.util.List;
 
 public class LocationRemovalScene extends DialogScene {
 
-    private ServerInfo server;
-    private DialogScene scene;
+    private final ServerInfo server;
+    private final DialogScene scene;
 
     public LocationRemovalScene(ServerInfo server, DialogScene scene) {
         this.server = server;
@@ -51,16 +52,28 @@ public class LocationRemovalScene extends DialogScene {
     public void onFinish() {
         List<Location> locations = ServerConfig.getInstance().getLocationsFromServer(server.getName());
         List<Location> newLocations = ServerConfig.getInstance().getLocationsFromServer(server.getName());
-        newLocations.remove(locations.get(Integer.parseInt(getValue("locationremove"))));
+        Location l = locations.get(Integer.parseInt(getValue("locationremove")));
+        newLocations.remove(l);
 
         SledgehammerServer s = ServerConfig.getInstance().getServer(server.getName());
-        s.locations = newLocations;
+        s.setLocations(newLocations);
 
         ServerConfig.getInstance().pushServer(s);
         if(scene != null) {
             DialogHandler.getInstance().discardDialog(this);
             DialogHandler.getInstance().startDialog(getCommandSender(), scene);
+            return;
         }
+
+        String x = "";
+        if(!l.city.equals("")) x+= ChatHelper.capitalize(l.city)+", ";
+        if(!l.county.equals("")) x+= ChatHelper.capitalize(l.county)+", ";
+        if(!l.state.equals("")) x+= ChatHelper.capitalize(l.state)+", ";
+        if(!l.country.equals("")) x+= ChatHelper.capitalize(l.country);
+        sender.sendMessage(ChatHelper.makeTextComponent(
+                new TextElement("Successfully removed location: ", ChatColor.GRAY),
+                new TextElement(ChatHelper.capitalize(l.detailType.name())+" - ", ChatColor.RED),
+                new TextElement(x, ChatColor.GOLD)));
     }
 
     @Override

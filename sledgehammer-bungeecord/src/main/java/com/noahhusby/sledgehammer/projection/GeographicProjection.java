@@ -53,9 +53,9 @@ public class GeographicProjection {
         return base;
     }
 
-    public static enum Orientation {
+    public enum Orientation {
         none, upright, swapped
-    };
+    }
 
     public double[] toGeo(double x, double y) {
         return new double[] {x,y};
@@ -99,10 +99,10 @@ public class GeographicProjection {
     }
 
     public double[] vector(double x, double y, double north, double east) {
-        double geo[] = toGeo(x,y);
+        double[] geo = toGeo(x,y);
 
         //TODO: east may be slightly off because earth not a sphere
-        double off[] = fromGeo(geo[0] + east*360.0/(Math.cos(geo[1]*Math.PI/180.0)*EARTH_CIRCUMFERENCE),
+        double[] off = fromGeo(geo[0] + east*360.0/(Math.cos(geo[1]*Math.PI/180.0)*EARTH_CIRCUMFERENCE),
                 geo[1] + north*360.0/EARTH_POLAR_CIRCUMFERENCE);
 
         return new double[] {off[0]-x,off[1]-y};

@@ -19,15 +19,17 @@
 package com.noahhusby.sledgehammer.players;
 
 import com.noahhusby.sledgehammer.Constants;
-import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
-import com.noahhusby.sledgehammer.datasets.Location;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.datasets.Point;
 import net.md_5.bungee.api.config.ServerInfo;
 
 import java.util.List;
 
+/**
+ * Finds players and flags them if they are within a certain region of a border
+ * Flagged players are then tracked in {@link FlaggedBorderCheckerThread}
+ */
 public class BorderCheckerThread implements Runnable {
     @Override
     public void run() {
@@ -41,6 +43,12 @@ public class BorderCheckerThread implements Runnable {
             }
 
             if(!SledgehammerUtil.inEarthRegion(p)) {
+                p.setTrackingPoint(null);
+                p.setFlagged(false);
+                continue;
+            }
+
+            if(p.getAttributes().contains("NO_BORDER")) {
                 p.setTrackingPoint(null);
                 p.setFlagged(false);
                 continue;
@@ -74,14 +82,13 @@ public class BorderCheckerThread implements Runnable {
             }
 
             if(checkLocation) {
-                System.out.println("Checking: " + p.getTrackingPoint().getJSON());
                 Point track = p.getTrackingPoint();
 
                 double[] proj = SledgehammerUtil.toGeo(Double.parseDouble(track.x), Double.parseDouble(track.z));
                 ServerInfo info = OpenStreetMaps.getInstance().getServerFromLocation(proj[0], proj[1], true);
 
                 if(info != null && !info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
-                    System.out.println(info.getName());
+                    p.setFlagged(true);
                     continue;
                 }
 
@@ -114,9 +121,7 @@ public class BorderCheckerThread implements Runnable {
 
                 if(info != null && !info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
                     p.setFlagged(true);
-                    continue;
                 }
-
             }
         }
     }

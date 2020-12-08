@@ -22,9 +22,9 @@ import net.md_5.bungee.protocol.DefinedPacket;
  */
 public class ForgeChannel {
 
-	private String channelName;
-	private Map<Integer, Class<? extends IForgePacket>> packetMap = new HashMap<Integer, Class<? extends IForgePacket>>();
-	private Map<Class<? extends IForgePacket>, Integer> discriminatorMap = new HashMap<Class<? extends IForgePacket>, Integer>();
+	private final String channelName;
+	private final Map<Integer, Class<? extends IForgePacket>> packetMap = new HashMap<Integer, Class<? extends IForgePacket>>();
+	private final Map<Class<? extends IForgePacket>, Integer> discriminatorMap = new HashMap<Class<? extends IForgePacket>, Integer>();
 	
 	public ForgeChannel(String channelName) {
 		this.channelName = channelName;

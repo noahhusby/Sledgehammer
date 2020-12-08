@@ -19,10 +19,9 @@
 package com.noahhusby.sledgehammer.datasets;
 
 import com.noahhusby.sledgehammer.Constants;
-import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
-import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
+import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -34,23 +33,19 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 public class OpenStreetMaps {
-    private static OpenStreetMaps mInstance = null;
-
-    private final String nominatimAPI = "https://nominatim.openstreetmap.org/reverse.php?osm_type=N&format=json&zoom={zoom}";
+    private static OpenStreetMaps instance = null;
 
     public static OpenStreetMaps getInstance() {
-        if(mInstance == null) mInstance = new OpenStreetMaps();
-        return mInstance;
+        return instance == null ? instance = new OpenStreetMaps() : instance;
     }
 
     private OpenStreetMaps() {}
 
     public void init() {
         try {
-            if(ConfigHandler.borderTeleportation)
+            if(ConfigHandler.borderTeleportation && ConfigHandler.getInstance().getOfflineBin().exists())
                 offlineGeocoder = new ReverseGeocoder(ConfigHandler.getInstance().getOfflineBin());
         } catch (IOException e) {
             e.printStackTrace();
@@ -59,70 +54,88 @@ public class OpenStreetMaps {
 
     private ReverseGeocoder offlineGeocoder;
 
+    /**
+     * Gets a server from geographical coordinates
+     * @param lon Longitude
+     * @param lat Latitude
+     * @return Returns {@link ServerInfo} if a valid region is found, or null if not
+     */
     public ServerInfo getServerFromLocation(double lon, double lat) {
         return getServerFromLocation(lon, lat, false);
     }
 
+    /**
+     * Gets a server from geographical coordinates
+     * @param lon Longitude
+     * @param lat Latitude
+     * @param offline True to use offline database
+     * @return Returns {@link ServerInfo} if a valid region is found, or null if not
+     */
     public ServerInfo getServerFromLocation(double lon, double lat, boolean offline) {
-        Location location;
+        Location location = offline ? getOfflineLocation(lon, lat) : getLocation(lon, lat);
 
-        if(offline) {
-            location = getOfflineLocation(lon, lat);
-        } else {
-            location = getLocation(lon, lat);
-        }
-
-        List<SledgehammerServer> servers = ServerConfig.getInstance().getServers();
-        for(SledgehammerServer s : servers) {
-            if(s.earthServer) {
-                for(Location l : s.locations) {
-                    switch (l.detailType) {
-                        case city:
-                            if(location.city.equals(l.city) &&
-                                    (location.state.equals(l.state) ||
-                                            location.country.equals(l.country))) {
-                                return SledgehammerUtil.getServerFromName(s.name);
-                            }
-                            break;
-                        case county:
-                            if(!l.country.equals("")) {
-                                if(location.county.equals(l.county) &&
-                                        location.state.equals(l.state) &&
-                                        location.country.equals(l.country)) {
-                                    return SledgehammerUtil.getServerFromName(s.name);
-                                }
-                            } else {
-                                if(location.county.equals(l.county) &&
-                                        location.state.equals(l.state)) {
-                                    return SledgehammerUtil.getServerFromName(s.name);
-                                }
-                            }
-                            break;
-                        case state:
-                            if(location.state.equals(l.state) &&
+        for(SledgehammerServer s : ServerConfig.getInstance().getServers()) {
+            if(!s.isEarthServer()) continue;
+            for(Location l : s.getLocations()) {
+                switch (l.detailType) {
+                    case city:
+                        if(location.city.equals(l.city) &&
+                                (location.state.equals(l.state) ||
+                                        location.country.equals(l.country))) {
+                            return s.getServerInfo();
+                        }
+                        break;
+                    case county:
+                        if(!l.country.equals("")) {
+                            if(location.county.equals(l.county) &&
+                                    location.state.equals(l.state) &&
                                     location.country.equals(l.country)) {
-                                return SledgehammerUtil.getServerFromName(s.name);
+                                return s.getServerInfo();
                             }
-                            break;
-                        case country:
-                            if(location.country.equals(l.country)) {
-                                return SledgehammerUtil.getServerFromName(s.name);
+                        } else {
+                            if(location.county.equals(l.county) &&
+                                    location.state.equals(l.state)) {
+                                return s.getServerInfo();
                             }
-                            break;
-                    }
+                        }
+                        break;
+                    case state:
+                        if(location.state.equals(l.state) &&
+                                location.country.equals(l.country)) {
+                            return s.getServerInfo();
+                        }
+                        break;
+                    case country:
+                        if(location.country.equals(l.country)) {
+                            return s.getServerInfo();
+                        }
+                        break;
                 }
             }
         }
         return null;
     }
 
+    /**
+     * Generates {@link Location} from geographical coordinates
+     * @param lon Longitude
+     * @param lat Latitude
+     * @return {@link Location}
+     */
     public Location getLocation(double lon, double lat) {
         return getLocation(lon, lat, ConfigHandler.zoom);
     }
 
+    /**
+     * Generates {@link Location} from geographical coordinates
+     * @param lon Longitude
+     * @param lat Latitude
+     * @param zoom Zoom level
+     * @return {@link Location}
+     */
     public Location getLocation(double lon, double lat, int zoom) {
         try {
-            String fullRequest = nominatimAPI.replace("{zoom}", String.valueOf(zoom)) + "&lon="+lon+"&accept-language=en&lat="+lat;
+            String fullRequest = Constants.nominatimAPI.replace("{zoom}", String.valueOf(zoom)) + "&lon="+lon+"&accept-language=en&lat="+lat;
 
             URL url = new URL(fullRequest);
             HttpURLConnection con = (HttpURLConnection)url.openConnection();
@@ -142,12 +155,12 @@ public class OpenStreetMaps {
                 JSONObject address = (JSONObject) geocode.get("address");
 
                 String city = (String) address.get("city");
-                if(city == null && ((String) address.get("town") != null)) {
+                if(city == null && (address.get("town") != null)) {
                     city = (String) address.get("town");
                 }
                 String county = (String) address.get("county");
                 String state = (String) address.get("state");
-                if(state == null && ((String) address.get("territory") != null)) {
+                if(state == null && (address.get("territory") != null)) {
                     state = (String) address.get("territory");
                 }
                 String country = (String) address.get("country");
@@ -159,6 +172,12 @@ public class OpenStreetMaps {
         }
     }
 
+    /**
+     * Get location from geographical coordinates from an offline bin
+     * @param lon Longitude
+     * @param lat Latitude
+     * @return {@link Location}
+     */
     public Location getOfflineLocation(double lon, double lat) {
         String[] data = offlineGeocoder.lookup((float) lon, (float) lat);
         String city = null;
@@ -186,25 +205,15 @@ public class OpenStreetMaps {
             }
         }
 
-        /*
-        for(int x = 0; x < data.length; x++) {
-            OfflineDataField o = getDataField(data[x]);
-            if (city == null) {
-                city = o.data;
-            } else if(county == null) {
-                county = o.data;
-            } else if(state == null) {
-                state = o.data;
-            } else if(country == null) {
-                country = o.data;
-            }
-        }
-         */
-
         Location l = new Location(Location.detail.none, city, county, state, country);
         return l;
     }
 
+    /**
+     * Gets estimated data from offline OSM database
+     * @param f The parsed offline data field
+     * @return {@link OfflineDataField}
+     */
     private static OfflineDataField getDataField(String f) {
         if(f == null) return null;
         String[] data = f.trim().replaceAll(" ", "space").replaceAll("\\s+", ";;")
@@ -214,13 +223,8 @@ public class OpenStreetMaps {
         String b = "";
         String c = "";
 
-        if(data.length > 1) {
-            a = data[1];
-        }
-
-        if(data.length > 2) {
-            b = data[2];
-        }
+        if(data.length > 1) a = data[1];
+        if(data.length > 2) b = data[2];
 
         c = data[data.length-1].trim();
 

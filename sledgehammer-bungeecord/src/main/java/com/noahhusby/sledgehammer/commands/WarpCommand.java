@@ -20,26 +20,34 @@ package com.noahhusby.sledgehammer.commands;
 
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.chat.ChatConstants;
-import com.noahhusby.sledgehammer.commands.data.Command;
-import com.noahhusby.sledgehammer.config.ConfigHandler;
-import com.noahhusby.sledgehammer.config.ServerConfig;
-import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
-import com.noahhusby.sledgehammer.warp.WarpHandler;
-import com.noahhusby.sledgehammer.maps.MapHandler;
-import com.noahhusby.sledgehammer.network.P2S.P2STeleportPacket;
-import com.noahhusby.sledgehammer.network.P2S.P2SWarpGUIPacket;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.chat.TextElement;
+import com.noahhusby.sledgehammer.commands.fragments.warps.*;
+import com.noahhusby.sledgehammer.config.ConfigHandler;
+import com.noahhusby.sledgehammer.config.SledgehammerServer;
+import com.noahhusby.sledgehammer.network.P2S.P2STeleportPacket;
+import com.noahhusby.sledgehammer.network.P2S.P2SWarpGUIPacket;
+import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
+import com.noahhusby.sledgehammer.permissions.PermissionHandler;
+import com.noahhusby.sledgehammer.permissions.PermissionRequest;
+import com.noahhusby.sledgehammer.permissions.PermissionResponse;
+import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.warp.Warp;
+import com.noahhusby.sledgehammer.warp.WarpHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-public class WarpCommand extends Command {
+import java.util.ArrayList;
+import java.util.List;
 
-    public WarpCommand() {
-        super(ConfigHandler.warpCommand, "sledgehammer.warp");
+public class WarpCommand extends WarpFragmentManager {
+    public WarpCommand(String name) {
+        super(name, "sledgehammer.warp");
+        registerCommandFragment(new WarpSetFragment());
+        registerCommandFragment(new WarpRemoveFragment());
+        registerCommandFragment(new WarpListFragment());
+        registerCommandFragment(new WarpMenuFragment());
     }
 
     @Override
@@ -49,88 +57,77 @@ public class WarpCommand extends Command {
             return;
         }
 
-        if(!hasGeneralPermission(sender)) {
-            sender.sendMessage(ChatConstants.noPermission);
-            return;
+        if(executeFragment(sender, args)) return;
+
+        boolean local = ConfigHandler.localWarp;
+        boolean hasPerms = PermissionHandler.getInstance().isAdmin(sender) || hasPerms(sender);
+        if(local && !hasPerms) {
+            PermissionHandler.getInstance().check(code -> {
+                if(code == PermissionRequest.PermissionCode.PERMISSION) {
+                    run(sender, args);
+                    return;
+                }
+                sender.sendMessage(ChatConstants.noPermission);
+            }, SledgehammerPlayer.getPlayer(sender), "sledgehammer.warp");
+        } else {
+            run(sender, args);
         }
+    }
 
-        SledgehammerServer sledgehammerServer = ServerConfig.getInstance().getServer(SledgehammerUtil.getServerNameByPlayer(sender));
+    private void run(CommandSender sender, String[] args) {
 
-        if(args.length < 1) {
-            if(sledgehammerServer != null) {
-                if(ConfigHandler.warpMode.equalsIgnoreCase("gui") && sledgehammerServer.isInitialized()) {
-                    getNetworkManager().sendPacket(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerNameByPlayer(sender)));
+
+
+        if(args.length == 0) {
+            if(ConfigHandler.warpMenuDefault) {
+                SledgehammerServer server = SledgehammerPlayer.getPlayer(sender).getSledgehammerServer();
+                boolean openGUI = (server != null);
+
+                if(openGUI)
+                    if(!server.isInitialized()) openGUI = false;
+
+                if(openGUI) {
+                    if(PermissionHandler.getInstance().isAdmin(sender) || sender.hasPermission("sledgehammer.warp.edit")) {
+                        SledgehammerNetworkManager.getInstance().send(new P2SWarpGUIPacket(sender.getName(),
+                                SledgehammerUtil.getServerFromSender(sender).getName(), true));
+                    } else {
+                        PermissionHandler.getInstance().check(code ->
+                                SledgehammerNetworkManager.getInstance().send(new P2SWarpGUIPacket(sender.getName(),
+                                SledgehammerUtil.getServerFromSender(sender).getName(),
+                                code == PermissionRequest.PermissionCode.PERMISSION)),
+                                SledgehammerPlayer.getPlayer(sender), "sledgehammer.warp.edit");
+                    }
                     return;
                 }
             }
-            sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Usage: /"+ConfigHandler.warpCommand+" <warp>", ChatColor.RED)));
+            sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Usage: /nwarp <warp>", ChatColor.RED)));
             sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Use ", ChatColor.GRAY),
-                    new TextElement("/"+ConfigHandler.warpCommand+" list", ChatColor.BLUE),new TextElement(" to see the available warps.", ChatColor.GRAY)));
+                    new TextElement(String.format("/%s list", ConfigHandler.warpCommand), ChatColor.BLUE),
+                    new TextElement(" to see the available warps.", ChatColor.GRAY)));
             return;
         }
 
-        if(args[0].equals("set")) {
-            if(!hasPermissionAdmin(sender)) {
-                sender.sendMessage(ChatConstants.noPermission);
-                return;
-            }
+        List<Warp> warps = new ArrayList<>();
+        for(Warp w : WarpHandler.getInstance().getWarps())
+            if(w.getPinnedMode() == Warp.PinnedMode.GLOBAL || !ConfigHandler.localWarp
+            || w.getServer().equalsIgnoreCase(SledgehammerUtil.getServerFromSender(sender).getName())) warps.add(w);
 
-            if(args.length < 2) {
-                sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Use ", ChatColor.GRAY),
-                                new TextElement("/"+ConfigHandler.warpCommand+" set <warp name> [pinned:<true/false>]", ChatColor.BLUE), new TextElement(" to set a warp.", ChatColor.GRAY)));
-                return;
-            }
+        String warpName = args[0];
+        Warp warp = null;
+        for(Warp w : warps)
+            if(w.getName().equalsIgnoreCase(warpName)) warp = w;
 
-            if(args.length == 2) {
-                WarpHandler.getInstance().requestNewWarp(args[1], sender, false);
-                return;
-            }
-
-            WarpHandler.getInstance().requestNewWarp(args[1], sender, Boolean.parseBoolean(args[2]));
-        } else if(args[0].equals("delete") || args[0].equals("remove")) {
-            if (!hasPermissionAdmin(sender)) {
-                sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("You don't have permission to run this command!", ChatColor.DARK_RED)));
-                return;
-            }
-
-            if (args.length < 2) {
-                sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Use ", ChatColor.GRAY),
-                        new TextElement("/"+ConfigHandler.warpCommand+" remove <warp name>", ChatColor.BLUE), new TextElement(" to remove set a warp.", ChatColor.GRAY)));
-
-                return;
-            }
-            WarpHandler.getInstance().removeWarp(args[1], sender);
-        } else if(args[0].equals("list")) {
-            sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Warps: ", ChatColor.GRAY),
-                    new TextElement(WarpHandler.getInstance().getWarpList(), ChatColor.RED)));
-        } else if(args[0].equals("map")) {
-            MapHandler.getInstance().newMapCommand(sender);
-        } else if(args[0].equalsIgnoreCase("gui")) {
-            if(sledgehammerServer == null) {
-                execute(sender, new String[]{});
-                return;
-            }
-
-            if(!sledgehammerServer.isInitialized()) {
-                execute(sender, new String[]{});
-                return;
-            }
-
-            getNetworkManager().sendPacket(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerNameByPlayer(sender)));
-        } else {
-            Warp warp = WarpHandler.getInstance().getWarp(args[0]);
-            if(warp == null) {
-                sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Error: Warp not found", ChatColor.RED)));
-                return;
-            }
-
-            if(ProxyServer.getInstance().getPlayer(sender.getName()).getServer().getInfo() != ProxyServer.getInstance().getServerInfo(warp.server)) {
-                ProxyServer.getInstance().getPlayer(sender.getName()).connect(ProxyServer.getInstance().getServerInfo(warp.server));
-                sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Sending you to ", ChatColor.GRAY), new TextElement(warp.server, ChatColor.RED)));
-            }
-
-            sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Warping to ", ChatColor.GRAY), new TextElement(args[0], ChatColor.RED)));
-            getNetworkManager().sendPacket(new P2STeleportPacket(sender.getName(), warp.server, warp.point));
+        if(warp == null) {
+            sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("That warp does not exist!", ChatColor.RED)));
+            return;
         }
+
+        if(SledgehammerUtil.getServerFromSender(sender) != SledgehammerUtil.getServerByName(warp.getServer())) {
+            SledgehammerPlayer.getPlayer(sender).connect(SledgehammerUtil.getServerByName(warp.getServer()));
+            sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Sending you to ", ChatColor.GRAY), new TextElement(warp.getServer(), ChatColor.RED)));
+        }
+
+        sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Warping to ", ChatColor.GRAY), new TextElement(warp.getName(), ChatColor.RED)));
+        getNetworkManager().send(new P2STeleportPacket(sender.getName(), warp.getServer(), warp.getPoint()));
     }
 }

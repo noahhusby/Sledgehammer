@@ -10,6 +10,7 @@ import com.noahhusby.sledgehammer.addons.terramap.TerramapVersion;
 import com.noahhusby.sledgehammer.addons.terramap.TerramapVersion.ReleaseType;
 import com.noahhusby.sledgehammer.addons.terramap.commands.TranslationContextBuilder.TranslationContext;
 import com.noahhusby.sledgehammer.commands.data.Command;
+import com.noahhusby.sledgehammer.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.players.PlayerManager;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 
@@ -137,11 +138,11 @@ public class TerrashowCommand extends Command implements TabExecutor {
 	}
 	
 	private boolean canPlayerHideOthers(ProxiedPlayer player) {
-		return player.hasPermission(TerramapAddon.TERRASHOW_SELF_PERMISSION_NODE) || this.hasPermissionAdmin(player);
+		return player.hasPermission(TerramapAddon.TERRASHOW_SELF_PERMISSION_NODE) || PermissionHandler.getInstance().isAdmin(player);
 	}
 	
 	private boolean canPlayerHideSelf(ProxiedPlayer player) {
-		return player.hasPermission(TerramapAddon.TERRASHOW_OTHERS_PERMISSION_NODE) || this.hasPermissionAdmin(player);
+		return player.hasPermission(TerramapAddon.TERRASHOW_OTHERS_PERMISSION_NODE) || PermissionHandler.getInstance().isAdmin(player);
 	}
 
 	@Override

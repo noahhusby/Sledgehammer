@@ -42,15 +42,15 @@ public class P2SCommandPacket extends P2SPacket {
 
     @Override
     public JSONObject getMessage(JSONObject data) {
-        String a = args[0];
+        StringBuilder a = new StringBuilder(args[0]);
 
         if(args.length > 1) {
             for(int x = 1; x < args.length; x++) {
-                a += " "+args[x];
+                a.append(" ").append(args[x]);
             }
         }
 
-        data.put("args", a);
+        data.put("args", a.toString());
         return data;
     }
 

@@ -28,7 +28,7 @@ import net.md_5.bungee.api.config.ServerInfo;
 
 public class LocationConfigScene extends DialogScene {
 
-    private ServerInfo server;
+    private final ServerInfo server;
 
     public LocationConfigScene(ServerInfo server) {
         this.server = server;

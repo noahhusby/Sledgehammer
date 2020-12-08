@@ -21,6 +21,7 @@ package com.noahhusby.sledgehammer.maps;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
+import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
 import com.noahhusby.sledgehammer.network.P2S.P2STeleportPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
@@ -39,11 +40,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class MapHandler {
     private static MapHandler mInstance = null;
+
     public static MapHandler getInstance() {
         if(mInstance == null) mInstance = new MapHandler();
         return mInstance;
@@ -51,110 +52,115 @@ public class MapHandler {
 
     public WebsocketEndpoint ws;
 
-    private boolean isMapInitalized = false;
-
-    private MapHandler() { }
-
     List<MapSession> sessions = new ArrayList<>();
+    private boolean isMapInitialized = false;
     private boolean heartbeat = false;
 
-    public void init() {
-
-    }
-
-
+    /**
+     * Create a new map session
+     * @param sender The {@link CommandSender} that the session should be associated with
+     */
     public void newMapCommand(CommandSender sender) {
-        List<MapSession> temp = new ArrayList<>();
-        MapSession session = null;
-        for(MapSession m : sessions) {
-            if(m.name.toLowerCase().equals(sender.getName())) {
-                if(m.time > System.currentTimeMillis()) {
-                    temp.add(m);
-                } else {
-                    session = m;
-                }
-            }
-        }
-        for(MapSession m : temp) {
-            sessions.remove(m);
-        }
+        sessions.removeIf(ms -> (ms.name.equalsIgnoreCase(sender.getName())) && ms.timeout < System.currentTimeMillis());
 
-        if(session == null) {
+        MapSession session = null;
+        for(MapSession s : sessions)
+            if(s.name.equalsIgnoreCase(sender.getName())) session = s;
+
+        boolean sessionFound = session != null;
+        if(!sessionFound) {
             session = new MapSession();
             session.name = sender.getName();
             session.key = UUID.randomUUID();
             session.time = System.currentTimeMillis();
             session.timeout = System.currentTimeMillis() + (60000*ConfigHandler.mapTimeout);
-
         }
 
         sender.sendMessage(ChatHelper.makeTitleMapComponent(new TextElement("Click here to access the warp map!", ChatColor.BLUE),
                 ConfigHandler.mapLink+"/session?uuid="+session.name+"&key="+session.key));
-        sessions.add(session);
+        if(!sessionFound) sessions.add(session);
     }
 
-    private void handleMessage(String message) {
+    /**
+     * Called by Sledgehammer-Map to invoke actions
+     * @param message Message from Sledgehammer-Map
+     */
+    private void onIncomingMessage(String message) {
+        JSONObject packet;
         try {
-            JSONObject o = (JSONObject) new JSONParser().parse(message);
-            String action = (String) o.get("action");
-            switch(action) {
-                case "init":
-                    String state = (String) o.get("state");
-                    if(state.trim().toLowerCase().equals("success")) {
-                        Sledgehammer.logger.info("Successfully initialized map!");
-                        isMapInitalized = true;
-                    } else {
-                        Sledgehammer.logger.info("Map initalized responded with error state: "+state);
-                    }
-                    break;
-                case "warp":
-                    JSONObject data = (JSONObject) o.get("data");
-                    String uuid = (String) data.get("uuid");
-                    String key = (String) data.get("key");
-                    String w = (String) data.get("warp");
-                    for(MapSession s : sessions) {
-                        if(uuid.toLowerCase().trim().equals(s.name.toLowerCase()) && key.toLowerCase().trim().equals(s.key.toString())) {
-                            Warp warp = WarpHandler.getInstance().getWarp(w);
-                            if(warp == null) {
-                                ProxyServer.getInstance().getPlayer(s.name).sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Error: Warp not found", ChatColor.RED)));
-                                return;
-                            }
-
-                            if(ProxyServer.getInstance().getPlayer(s.name).getServer().getInfo() != ProxyServer.getInstance().getServerInfo(warp.server)) {
-                                ProxyServer.getInstance().getPlayer(s.name).connect(ProxyServer.getInstance().getServerInfo(warp.server));
-                                ProxyServer.getInstance().getPlayer(s.name).sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Sending you to ", ChatColor.GRAY), new TextElement(warp.server, ChatColor.RED)));
-                            }
-
-                            ProxyServer.getInstance().getPlayer(s.name).sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Warping to ", ChatColor.GRAY), new TextElement(w, ChatColor.RED)));
-                            SledgehammerNetworkManager.getInstance().sendPacket(new P2STeleportPacket(s.name, warp.server, warp.point));
-                        }
-                    }
-                    break;
-                case "alive":
-                    heartbeat = false;
-                    break;
-            }
+            packet = (JSONObject) new JSONParser().parse(message);
         } catch (ParseException e) {
             e.printStackTrace();
+            Sledgehammer.logger.warning("Error while parsing map packet!");
+            return;
+        }
+
+        switch((String) packet.get("action")) {
+            // INIT PACKET
+            case "init":
+                String state = (String) packet.get("state");
+                if(!state.trim().equalsIgnoreCase("success")) {
+                    Sledgehammer.logger.info("Map initialization responded with error state: "+state);
+                    return;
+                }
+
+                Sledgehammer.logger.info("Successfully initialized map!");
+                isMapInitialized = true;
+                break;
+
+            // WARP PACKET
+            case "warp":
+                JSONObject data = (JSONObject) packet.get("data");
+                String uuid = (String) data.get("uuid");
+                String key = (String) data.get("key");
+                String warpName = (String) data.get("warp");
+
+                for(MapSession session : sessions) {
+                    if(session.name.equalsIgnoreCase(uuid) && key.equalsIgnoreCase(session.key.toString())) {
+                        //Warp warp = WarpHandler.getInstance().getWarp(warpName);
+                        Warp warp = new Warp();
+                        SledgehammerPlayer player = SledgehammerPlayer.getPlayer(session.name);
+                        if(player == null) return;
+
+                        if(warp == null) {
+                            player.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Error: Warp not found", ChatColor.RED)));
+                            return;
+                        }
+
+                        if(player.getServer().getInfo() != ProxyServer.getInstance().getServerInfo(warp.getServer())) {
+                            player.connect(ProxyServer.getInstance().getServerInfo(warp.getServer()));
+                            player.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Sending you to ", ChatColor.GRAY), new TextElement(warp.getServer(), ChatColor.RED)));
+                        }
+
+                        player.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Warping to ", ChatColor.GRAY), new TextElement(warpName, ChatColor.RED)));
+                        SledgehammerNetworkManager.getInstance().send(new P2STeleportPacket(session.name, warp.getServer(), warp.getPoint()));
+
+                    }
+                }
+                break;
+
+            // HEARTBEAT PACKET
+            case "alive":
+                heartbeat = false;
+                break;
         }
     }
 
-    public void attemptInit() {
+    /**
+     * Attempts to create a connection to the map websocket
+     */
+    public void init() {
         try {
             ws = new WebsocketEndpoint(new URI("ws://"+ConfigHandler.mapHost+":"+ConfigHandler.mapPort));
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
 
-        ws.addMessageHandler(new WebsocketEndpoint.MessageHandler() {
-            public void handleMessage(String message) {
-                getInstance().handleMessage(message);
-            }
-        });
+        ws.addMessageHandler(message -> getInstance().onIncomingMessage(message));
 
         if(ws.userSession == null) return;
 
-        JSONObject o = new JSONObject();
+        JSONObject packet = new JSONObject();
         JSONObject data = new JSONObject();
 
         data.put("title", ConfigHandler.mapTitle);
@@ -164,54 +170,79 @@ public class MapHandler {
         data.put("zoomLevel", ConfigHandler.startingZoom);
         data.put("auth", ConfigHandler.authenticationCode);
 
-        o.put("data", data);
-        o.put("action", "init");
-        ws.sendMessage(o.toJSONString());
-        attemptWarpRefresh();
-    }
-    public void attemptHeartbeat() {
-        heartbeat = true;
-        JSONObject o = new JSONObject();
-        JSONObject data = new JSONObject();
-        data.put("auth", ConfigHandler.authenticationCode);
-        o.put("data", data);
-        o.put("action", "alive");
-        ws.sendMessage(o.toJSONString());
+        packet.put("data", data);
+        packet.put("action", "init");
+        ws.sendMessage(packet.toJSONString());
+
+        refreshWarps();
     }
 
-    public boolean getHeartBeatState() {
-        return heartbeat;
-    }
-
-    public void setInitState(boolean state) {
-        this.isMapInitalized = state;
-    }
-
-    public void attemptWarpRefresh() {
-        Map<String, Warp> warps = WarpHandler.getInstance().getWarps();
-        JSONObject o = new JSONObject();
+    /**
+     * Attempt to refresh the warps of the map
+     */
+    public void refreshWarps() {
+        JSONObject packet = new JSONObject();
         JSONArray waypoints = new JSONArray();
-        for(Map.Entry<String, Warp> w : warps.entrySet()) {
+
+        for(Warp w : WarpHandler.getInstance().getWarps()) {
             JSONObject waypoint = new JSONObject();
 
-            waypoint.put("name", ChatHelper.capitalize(w.getKey()));
+            waypoint.put("name", ChatHelper.capitalize(w.getName()));
             waypoint.put("info", "");
 
-            double proj[] = SledgehammerUtil.toGeo(Double.parseDouble(w.getValue().point.x), Double.parseDouble(w.getValue().point.z));
+            double[] proj = SledgehammerUtil.toGeo(Double.parseDouble(w.getPoint().x), Double.parseDouble(w.getPoint().z));
 
             waypoint.put("lon", proj[0]);
             waypoint.put("lat", proj[1]);
             waypoints.add(waypoint);
         }
-        o.put("action", "warp_refresh");
+
         JSONObject data = new JSONObject();
         data.put("waypoints", waypoints.toJSONString());
         data.put("auth", ConfigHandler.authenticationCode);
-        o.put("data", data);
-        ws.sendMessage(o.toJSONString());
+
+        packet.put("action", "warp_refresh");
+        packet.put("data", data);
+
+        ws.sendMessage(packet.toJSONString());
     }
 
-    public boolean isMapInitalized() {
-        return isMapInitalized;
+    /**
+     * Send a heartbeat to the map
+     */
+    public void heartbeat() {
+        heartbeat = true;
+
+        JSONObject packet = new JSONObject();
+        JSONObject data = new JSONObject();
+
+        data.put("auth", ConfigHandler.authenticationCode);
+        packet.put("data", data);
+        packet.put("action", "alive");
+        ws.sendMessage(packet.toJSONString());
+    }
+
+    /**
+     * Gets the current heartbeat of the map
+     * @return True if alive, false if not
+     */
+    public boolean getHeartBeatState() {
+        return heartbeat;
+    }
+
+    /**
+     * Sets whether the map is successfully initialized
+     * @param state True if initialized, false if not
+     */
+    public void setInitState(boolean state) {
+        this.isMapInitialized = state;
+    }
+
+    /**
+     * Gets whether the map is initialized
+     * @return True if initialized, false if not
+     */
+    public boolean isMapInitialized() {
+        return isMapInitialized;
     }
 }

@@ -28,12 +28,7 @@ import java.util.logging.Logger;
 import com.noahhusby.sledgehammer.addons.AddonManager;
 import com.noahhusby.sledgehammer.addons.terramap.TerramapAddon;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
-import com.noahhusby.sledgehammer.commands.CsTpllCommand;
-import com.noahhusby.sledgehammer.commands.SledgehammerAdminCommand;
-import com.noahhusby.sledgehammer.commands.SledgehammerCommand;
-import com.noahhusby.sledgehammer.commands.TpllCommand;
-import com.noahhusby.sledgehammer.commands.TplloCommand;
-import com.noahhusby.sledgehammer.commands.WarpCommand;
+import com.noahhusby.sledgehammer.commands.*;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
@@ -59,7 +54,7 @@ public class Sledgehammer extends Plugin implements Listener {
 
     public static AddonManager addonManager;
 
-    private final ScheduledThreadPoolExecutor alternativeThreads = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(2);
+    public final ScheduledThreadPoolExecutor alternativeThreads = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(2);
 
     @Override
     public void onEnable() {
@@ -79,11 +74,12 @@ public class Sledgehammer extends Plugin implements Listener {
         addonManager.onDisable();
     }
 
+    /**
+     * Called upon startup or reload. These are settings that can be changed without a restart
+     */
     public void registerFromConfig() {
         List<Runnable> remove = new ArrayList<>();
-        for(Runnable r : alternativeThreads.getQueue()) {
-            remove.add(r);
-        }
+        remove.addAll(alternativeThreads.getQueue());
 
         for(Runnable r : remove) alternativeThreads.remove(r);
 
@@ -91,6 +87,9 @@ public class Sledgehammer extends Plugin implements Listener {
 
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerCommand());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerAdminCommand());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new TestCommand());
+
+        ServerConfig.getInstance();
 
         if(!ConfigHandler.getInstance().isAuthCodeConfigured()) {
             logger.severe("------------------------------");
@@ -115,7 +114,7 @@ public class Sledgehammer extends Plugin implements Listener {
         addonManager.onEnable();
 
         if(!ConfigHandler.warpCommand.equals("")) {
-            ProxyServer.getInstance().getPluginManager().registerCommand(this, new WarpCommand());
+            ProxyServer.getInstance().getPluginManager().registerCommand(this, new WarpCommand(ConfigHandler.warpCommand));
         }
 
         if(ConfigHandler.globalTpll) {
@@ -160,19 +159,41 @@ public class Sledgehammer extends Plugin implements Listener {
         }
 
         if(ConfigHandler.borderTeleportation) {
+            ProxyServer.getInstance().getPluginManager().registerCommand(this, new BorderCommand());
             alternativeThreads.scheduleAtFixedRate(new BorderCheckerThread(), 0, 5, TimeUnit.SECONDS);
-            alternativeThreads.scheduleAtFixedRate(new FlaggedBorderCheckerThread(), 0, 10, TimeUnit.SECONDS);
+            alternativeThreads.scheduleAtFixedRate(new FlaggedBorderCheckerThread(), 0, 5, TimeUnit.SECONDS);
         }
+
+        alternativeThreads.scheduleAtFixedRate(() -> {
+            ServerConfig.getInstance().checkReadyServers();
+        }, 0, 10, TimeUnit.SECONDS);
 
         OpenStreetMaps.getInstance().init();
 
-        MapHandler.getInstance().init();
+        MapHandler.getInstance();
 
     }
 
+    /**
+     * Add a new listener to the Sledgehammer plugin
+     * @param listener The Bungeecord listener
+     */
+    public static void setupListener(Listener listener) {
+        ProxyServer.getInstance().getPluginManager().registerListener(sledgehammer, listener);
+    }
+
+    /**
+     * Print a message on the debug logger. Only outputs with debug mode enabled
+     * @param m The debug message
+     */
+    public static void debug(String m) {
+        if(ConfigHandler.debug) logger.info(m);
+    }
+
+
     @EventHandler
     public void onMessage(PluginMessageEvent e) {
-        SledgehammerNetworkManager.getInstance().onPluginMessageReceived(e);
+        SledgehammerNetworkManager.getInstance().onIncomingPacket(e);
     }
 
     @EventHandler
@@ -191,10 +212,6 @@ public class Sledgehammer extends Plugin implements Listener {
     @EventHandler
     public void onServerJoin(ServerConnectedEvent e) {
         ServerConfig.getInstance().onServerJoin(e);
-    }
-
-    public static void setupListener(Listener l) {
-        ProxyServer.getInstance().getPluginManager().registerListener(sledgehammer, l);
     }
     
     /**
