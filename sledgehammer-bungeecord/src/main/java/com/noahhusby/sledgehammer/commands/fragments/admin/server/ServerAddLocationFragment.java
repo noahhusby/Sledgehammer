@@ -21,7 +21,6 @@ package com.noahhusby.sledgehammer.commands.fragments.admin.server;
 import com.noahhusby.sledgehammer.chat.ChatConstants;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.ServerConfig;
-import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
 import com.noahhusby.sledgehammer.dialogs.scenes.location.LocationSelectionScene;
 import com.noahhusby.sledgehammer.dialogs.DialogHandler;
 import net.md_5.bungee.api.CommandSender;
@@ -42,7 +41,7 @@ public class ServerAddLocationFragment implements ICommandFragment {
             return;
         }
 
-        if(!ServerConfig.getInstance().getServer(args[0]).earthServer) {
+        if(!ServerConfig.getInstance().getServer(args[0]).isEarthServer()) {
             sender.sendMessage(ChatConstants.notEarthServer);
             return;
         }

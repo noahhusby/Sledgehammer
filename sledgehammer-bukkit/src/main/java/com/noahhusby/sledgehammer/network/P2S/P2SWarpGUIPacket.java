@@ -20,8 +20,8 @@ package com.noahhusby.sledgehammer.network.P2S;
 
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SmartObject;
-import com.noahhusby.sledgehammer.gui.GUIRegistry;
-import com.noahhusby.sledgehammer.gui.inventories.WarpInventoryController;
+import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
+import com.noahhusby.sledgehammer.gui.inventories.warp.WarpInventoryController;
 import com.noahhusby.sledgehammer.network.P2SPacket;
 import com.noahhusby.sledgehammer.network.PacketInfo;
 import org.bukkit.Bukkit;
@@ -44,6 +44,21 @@ public class P2SWarpGUIPacket extends P2SPacket {
         if(!p.isOnline()) {
             throwNoSender();
             return;
+        }
+
+        boolean local = data.getBoolean("local");
+        boolean editAccess = data.getBoolean("editAccess");
+        String requestGroup = data.getString("requestGroup");
+        String defaultPage = data.getString("defaultPage");
+
+        switch (defaultPage) {
+            default:
+            case "group":
+                break;
+            case "all":
+                break;
+            case "pinned":
+                break;
         }
 
         GUIRegistry.register(new WarpInventoryController(p, data));

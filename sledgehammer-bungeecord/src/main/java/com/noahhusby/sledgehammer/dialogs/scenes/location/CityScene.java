@@ -18,8 +18,10 @@
 
 package com.noahhusby.sledgehammer.dialogs.scenes.location;
 
+import com.noahhusby.sledgehammer.chat.ChatHelper;
+import com.noahhusby.sledgehammer.chat.TextElement;
 import com.noahhusby.sledgehammer.config.ServerConfig;
-import com.noahhusby.sledgehammer.config.types.SledgehammerServer;
+import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.dialogs.components.location.CityComponent;
 import com.noahhusby.sledgehammer.dialogs.components.location.CountryComponent;
 import com.noahhusby.sledgehammer.dialogs.components.location.StateComponent;
@@ -28,12 +30,13 @@ import com.noahhusby.sledgehammer.dialogs.toolbars.ExitSkipToolbar;
 import com.noahhusby.sledgehammer.dialogs.toolbars.IToolbar;
 import com.noahhusby.sledgehammer.datasets.Location;
 import com.noahhusby.sledgehammer.dialogs.DialogHandler;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.config.ServerInfo;
 
 public class CityScene extends DialogScene {
 
-    private ServerInfo server;
-    private DialogScene scene;
+    private final ServerInfo server;
+    private final DialogScene scene;
 
     public CityScene(ServerInfo server) {
         this(server, null);
@@ -55,13 +58,25 @@ public class CityScene extends DialogScene {
 
         if(s == null) s = new SledgehammerServer(server.getName());
 
-        s.locations.add(l);
+        s.getLocations().add(l);
         ServerConfig.getInstance().pushServer(s);
 
         if(scene != null) {
             DialogHandler.getInstance().discardDialog(this);
             DialogHandler.getInstance().startDialog(getCommandSender(), scene);
+            return;
         }
+
+        String x = "";
+        if(!l.city.equals("")) x+= ChatHelper.capitalize(l.city)+", ";
+        if(!l.county.equals("")) x+= ChatHelper.capitalize(l.county)+", ";
+        if(!l.state.equals("")) x+= ChatHelper.capitalize(l.state)+", ";
+        if(!l.country.equals("")) x+= ChatHelper.capitalize(l.country);
+        sender.sendMessage(ChatHelper.makeTextComponent(
+                new TextElement("Successfully added ", ChatColor.GRAY),
+                new TextElement("City: ", ChatColor.BLUE),
+                new TextElement(ChatHelper.capitalize(l.detailType.name())+" - ", ChatColor.RED),
+                new TextElement(x, ChatColor.GOLD)));
     }
 
     @Override

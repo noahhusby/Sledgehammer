@@ -22,6 +22,7 @@ import com.noahhusby.sledgehammer.SmartObject;
 import com.noahhusby.sledgehammer.datasets.Point;
 import com.noahhusby.sledgehammer.network.PacketInfo;
 import com.noahhusby.sledgehammer.network.S2PPacket;
+import com.noahhusby.sledgehammer.players.GameMode;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import org.json.simple.JSONObject;
 
@@ -37,6 +38,8 @@ public class S2PPlayerUpdatePacket extends S2PPacket {
         Point p = new Point(point.getString("x"), point.getString("y"),
                 point.getString("z"), point.getString("yaw"), point.getString("pitch"));
 
-        SledgehammerPlayer.getPlayer(info.getSender()).setLocation(p);
+        SledgehammerPlayer player = SledgehammerPlayer.getPlayer(info.getSender());
+        player.setLocation(p);
+        player.setGameMode(GameMode.valueOf(data.getString("gameMode")));
     }
 }

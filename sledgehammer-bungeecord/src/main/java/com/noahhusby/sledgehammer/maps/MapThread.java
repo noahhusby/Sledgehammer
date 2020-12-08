@@ -19,23 +19,18 @@
 package com.noahhusby.sledgehammer.maps;
 
 import com.noahhusby.sledgehammer.Sledgehammer;
-import com.noahhusby.sledgehammer.maps.MapHandler;
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class MapThread implements Runnable {
 
-    private MapHandler mapHandler = MapHandler.getInstance();
+    private final MapHandler mapHandler = MapHandler.getInstance();
 
     boolean alreadyCheckedHeartbeat = false;
 
     @Override
     public void run() {
         try {
-            if(!mapHandler.isMapInitalized()) {
-                mapHandler.attemptInit();
+            if(!mapHandler.isMapInitialized()) {
+                mapHandler.init();
                 return;
             }
 
@@ -52,7 +47,7 @@ public class MapThread implements Runnable {
                     Sledgehammer.logger.warning("Reconnected with the map websocket!");
                 }
             }
-            mapHandler.attemptHeartbeat();
+            mapHandler.heartbeat();
         } catch (Exception e) {
             e.printStackTrace();
         }

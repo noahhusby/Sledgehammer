@@ -18,10 +18,7 @@
 
 package com.noahhusby.sledgehammer.network;
 
-import com.noahhusby.sledgehammer.Sledgehammer;
-import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.SmartObject;
-import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.network.S2P.*;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
@@ -41,45 +38,68 @@ public class SledgehammerNetworkManager {
         return mInstance;
     }
 
-    private final List<IS2PPacket> registeredServerPackets;
+    private final List<IS2PPacket> registeredPackets;
 
     private SledgehammerNetworkManager() {
-        registeredServerPackets = new ArrayList<>();
+        registeredPackets = new ArrayList<>();
 
-        registerServerPacket(new S2PInitializationPacket());
-        registerServerPacket(new S2PSetwarpPacket());
-        registerServerPacket(new S2PTestLocationPacket());
-        registerServerPacket(new S2PWarpPacket());
-        registerServerPacket(new S2PWebMapPacket());
-        registerServerPacket(new S2PPlayerUpdatePacket());
+        register(new S2PInitializationPacket());
+        register(new S2PSetwarpPacket());
+        register(new S2PTestLocationPacket());
+        register(new S2PWarpPacket());
+        register(new S2PWebMapPacket());
+        register(new S2PPlayerUpdatePacket());
+        register(new S2PPermissionPacket());
     }
 
-    private void registerServerPacket(IS2PPacket packet) {
-        registeredServerPackets.add(packet);
+    /**
+     * Register incoming packets
+     * @param packet {@link IS2PPacket}
+     */
+    private void register(IS2PPacket packet) {
+        registeredPackets.add(packet);
     }
 
-    public void sendPacket(IP2SPacket packet) {
+    /**
+     * Send an outgoing packet
+     * @param packet {@link IP2SPacket}
+     */
+    public void send(IP2SPacket packet) {
         JSONObject response = new JSONObject();
-        response.put("uuid", ConfigHandler.authenticationCode);
         response.put("command", packet.getPacketInfo().getID());
         response.put("sender", packet.getPacketInfo().getSender());
         response.put("server", packet.getPacketInfo().getServer());
         response.put("time", System.currentTimeMillis());
         response.put("data", packet.getMessage(new JSONObject()));
 
-        sendMessage(response, packet.getPacketInfo().getServer());
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        DataOutputStream out = new DataOutputStream(stream);
+
+        try {
+            out.writeUTF(response.toJSONString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ProxyServer.getInstance().getServerInfo(packet.getPacketInfo().getServer()).sendData("sledgehammer:channel", stream.toByteArray());
     }
 
-    private void onPacketRecieved(String m) {
+    /**
+     * Checks for sledgehammer packets from incoming plugin messages
+     * @param e {@link PluginMessageEvent}
+     */
+    public void onIncomingPacket(PluginMessageEvent e) {
+        if (!e.getTag().equalsIgnoreCase("sledgehammer:channel")) return;
+        DataInputStream in = new DataInputStream(new ByteArrayInputStream(e.getData()));
+
         try {
-            SmartObject packet = SmartObject.fromJSON((JSONObject) new JSONParser().parse(m));
-            if(!SledgehammerUtil.isGenuineRequest(packet.getString("uuid"))) return;
+            SmartObject packet = SmartObject.fromJSON((JSONObject) new JSONParser().parse(getRawMessage(in)));
 
             SmartObject packetData = SmartObject.fromJSON((JSONObject) packet.get("data"));
             PacketInfo packetInfo = new PacketInfo(packet.getString("command"), packet.getString("sender"),
                     packet.getString("server"), (long) packet.get("time"));
 
-            for(IS2PPacket p : registeredServerPackets) {
+            for(IS2PPacket p : registeredPackets) {
                 if(p.getPacketID().equalsIgnoreCase(packetInfo.getID())) {
                     p.onMessage(packetInfo, packetData);
                 }
@@ -89,32 +109,17 @@ public class SledgehammerNetworkManager {
         }
     }
 
-    private void sendMessage(JSONObject o, String server) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        DataOutputStream out = new DataOutputStream(stream);
-
+    /**
+     * Converts {@link DataInputStream} to raw text
+     * @param i  {@link DataInputStream}
+     * @return Raw Message
+     */
+    private String getRawMessage(DataInputStream i) {
         try {
-            out.writeUTF(o.toJSONString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        ProxyServer.getInstance().getServerInfo(server).sendData("sledgehammer:channel", stream.toByteArray());
-    }
-
-    public void onPluginMessageReceived(PluginMessageEvent e) {
-        if (!e.getTag().equalsIgnoreCase("sledgehammer:channel")) return;
-        DataInputStream in = new DataInputStream(new ByteArrayInputStream(e.getData()));
-
-        onPacketRecieved(getStringFromMessage(in));
-    }
-
-    private String getStringFromMessage(DataInputStream i) {
-        try {
-            String x = "";
+            StringBuilder x = new StringBuilder();
             while(i.available() != 0) {
                 char c = (char) i.readByte();
-                x += c;
+                x.append(c);
             }
             return x.substring(x.indexOf("<")+1).trim();
         } catch (Exception e) {

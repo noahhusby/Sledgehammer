@@ -46,7 +46,6 @@ public class EventCommand extends Command {
             if(args[0].equals("admin")) {
                 if(!sender.hasPermission("sledgehammer.event.admin")) {
                     sender.sendMessage(ChatConstants.noPermission);
-                    return;
                 }
             }
         }

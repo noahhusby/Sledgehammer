@@ -51,6 +51,7 @@ public class S2PPlayerUpdatePacket extends S2PPacket {
                 df.format(player.getLocation().getPitch()), df.format(player.getLocation().getYaw()));
 
         data.put("point", point.getJSON());
+        data.put("gameMode", player.getGameMode().name());
         return data;
     }
 

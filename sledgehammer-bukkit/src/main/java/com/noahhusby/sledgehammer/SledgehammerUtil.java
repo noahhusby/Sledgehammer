@@ -20,13 +20,15 @@ package com.noahhusby.sledgehammer;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import com.noahhusby.sledgehammer.ConfigHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -62,8 +64,6 @@ public class SledgehammerUtil {
             }
             metaSetProfileMethod.invoke(meta, makeProfile(b64));
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ex) {
-            // if in an older API where there is no setProfile method,
-            // we set the profile field directly.
             try {
                 if (metaProfileField == null) {
                     metaProfileField = meta.getClass().getDeclaredField("profile");
@@ -87,16 +87,6 @@ public class SledgehammerUtil {
         return profile;
     }
 
-
-    public static boolean isGenuineRequest(String u) {
-        try {
-            return u.equals(ConfigHandler.authenticationCode);
-        } catch (Exception e) {
-            Sledgehammer.logger.info("Error occurred while parsing incoming authentication command!");
-            return false;
-        }
-    }
-
     public static boolean isPlayerAvailable(String p) {
         return isPlayerAvailable(getPlayerFromName(p));
     }
@@ -104,5 +94,47 @@ public class SledgehammerUtil {
     public static boolean isPlayerAvailable(Player p) {
         if(p == null) return false;
         return p.isOnline();
+    }
+
+    public static class JsonUtils {
+        public static JSONObject toObject(String s) {
+            try {
+                return (JSONObject) new JSONParser().parse(s);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        public static JSONArray toArray(Object o) {
+            return toArray((String) o);
+        }
+
+        public static JSONArray toArray(String s) {
+            try {
+                return (JSONArray) new JSONParser().parse(s);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        public static int fromBoolean(boolean b) {
+            return b ? 1 : 0;
+        }
+
+        public static boolean fromBooleanValue(long l) {
+            return new Long(l).intValue() != 0;
+        }
+
+        public static int toInt(Object val) {
+            int x = 0;
+            if(val instanceof Long) {
+                x = ((Long) val).intValue();
+            } else {
+                x = (int) val;
+            }
+            return x;
+        }
     }
 }

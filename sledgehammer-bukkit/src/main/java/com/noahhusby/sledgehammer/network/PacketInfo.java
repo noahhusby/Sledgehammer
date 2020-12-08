@@ -18,7 +18,7 @@
 
 package com.noahhusby.sledgehammer.network;
 
-import com.noahhusby.sledgehammer.ConfigHandler;
+import com.noahhusby.sledgehammer.Sledgehammer;
 import org.bukkit.entity.Player;
 
 public class PacketInfo {
@@ -51,7 +51,7 @@ public class PacketInfo {
     }
 
     public static PacketInfo build(String id, String sender) {
-        return new PacketInfo(id, sender, ConfigHandler.bungeecordName, System.currentTimeMillis());
+        return new PacketInfo(id, sender, Sledgehammer.bungeecordName, System.currentTimeMillis());
     }
 
     public static PacketInfo build(String id, Player player) {

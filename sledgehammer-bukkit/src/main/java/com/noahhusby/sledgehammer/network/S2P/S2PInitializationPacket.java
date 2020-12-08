@@ -18,7 +18,6 @@
 
 package com.noahhusby.sledgehammer.network.S2P;
 
-import com.noahhusby.sledgehammer.ConfigHandler;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.network.PacketInfo;
 import com.noahhusby.sledgehammer.network.S2PPacket;
@@ -41,7 +40,6 @@ public class S2PInitializationPacket extends S2PPacket {
     @Override
     public JSONObject getMessage(JSONObject data) {
         data.put("version", Constants.VERSION);
-        data.put("tpllmode", ConfigHandler.tpllMode);
         return data;
     }
 
