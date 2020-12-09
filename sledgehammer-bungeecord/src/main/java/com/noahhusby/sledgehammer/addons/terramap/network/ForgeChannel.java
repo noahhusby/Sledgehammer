@@ -164,17 +164,15 @@ public class ForgeChannel {
 	 * @param str - String to write
 	 * @param buf - Buffer to write to
 	 */
-	//FIXME Implement without non API Bungee
 	public static void writeStringToBuf(String str, ByteBuf buf) {
 		DefinedPacket.writeString(str, buf);
 	}
 	
 	/**
-	 * Reads a String from a bte buffer uding the [size (varint) | string (utf-8)] format
+	 * Reads a String from a bte buffer using the [size (varint) | string (utf-8)] format
 	 * @param buf
 	 * @return
 	 */
-	//FIXME Implement without non API Bungee
 	public static String readStringFromBuf(ByteBuf buf) {
 		return DefinedPacket.readString(buf);
 	}

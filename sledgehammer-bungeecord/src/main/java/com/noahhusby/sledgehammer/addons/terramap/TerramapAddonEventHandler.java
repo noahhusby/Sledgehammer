@@ -4,7 +4,6 @@ import com.noahhusby.sledgehammer.addons.terramap.network.packets.P2CMapStylePac
 import com.noahhusby.sledgehammer.addons.terramap.network.packets.P2CSledgehammerHelloPacket;
 import com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync.PlayerSyncStatus;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
-import com.noahhusby.sledgehammer.players.PlayerManager;
 
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
@@ -50,7 +49,7 @@ public class TerramapAddonEventHandler implements Listener {
 	
 	@EventHandler
 	public void onPlayerLeave(PlayerDisconnectEvent event) {
-		TerramapAddon.instance.synchronizer.unregisterPlayer(PlayerManager.getInstance().getPlayer(event.getPlayer()));
+		TerramapAddon.instance.synchronizer.unregisterPlayer(event.getPlayer());
 	}
 
 }

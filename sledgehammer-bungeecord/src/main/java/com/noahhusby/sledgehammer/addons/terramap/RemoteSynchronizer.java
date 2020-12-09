@@ -79,7 +79,7 @@ public class RemoteSynchronizer {
 	 * Unregisters a player so it stops getting position updates
 	 * @param player - The player
 	 */
-	public void unregisterPlayer(SledgehammerPlayer player) {
+	public void unregisterPlayer(ProxiedPlayer player) {
 		Sledgehammer.logger.fine("Unregistering player for map updates: " + player.getName());
 		synchronized(this.playersToUpdate) {
 			TerramapAddon.instance.synchronizer.playersToUpdate.remove(player.getUniqueId());
