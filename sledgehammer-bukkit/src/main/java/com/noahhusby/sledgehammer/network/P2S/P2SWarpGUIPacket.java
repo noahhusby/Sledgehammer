@@ -20,7 +20,11 @@ package com.noahhusby.sledgehammer.network.P2S;
 
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SmartObject;
+import com.noahhusby.sledgehammer.data.warp.WarpPayload;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
+import com.noahhusby.sledgehammer.gui.inventories.warp.GroupListWarpInventoryController;
+import com.noahhusby.sledgehammer.gui.inventories.warp.GroupWarpInventoryController;
+import com.noahhusby.sledgehammer.gui.inventories.warp.PinnedWarpInventoryController;
 import com.noahhusby.sledgehammer.gui.inventories.warp.WarpInventoryController;
 import com.noahhusby.sledgehammer.network.P2SPacket;
 import com.noahhusby.sledgehammer.network.PacketInfo;
@@ -46,21 +50,19 @@ public class P2SWarpGUIPacket extends P2SPacket {
             return;
         }
 
-        boolean local = data.getBoolean("local");
-        boolean editAccess = data.getBoolean("editAccess");
-        String requestGroup = data.getString("requestGroup");
-        String defaultPage = data.getString("defaultPage");
+        WarpPayload payload = WarpPayload.fromPayload(data);
 
-        switch (defaultPage) {
+        switch (payload.getDefaultPage()) {
             default:
             case "group":
+                GUIRegistry.register(new GroupWarpInventoryController(p, payload, payload.getRequestGroup()));
                 break;
             case "all":
+                GUIRegistry.register(new WarpInventoryController(p, payload));
                 break;
             case "pinned":
+                GUIRegistry.register(new PinnedWarpInventoryController(p, payload));
                 break;
         }
-
-        GUIRegistry.register(new WarpInventoryController(p, data));
     }
 }

@@ -140,7 +140,7 @@ public class SledgehammerServer implements Storable {
     public ServerGroup getGroup() {
         for(ServerGroup g : ServerConfig.getInstance().getGroups())
             if(g.getServers().contains(name)) return g;
-        return new ServerGroup(name, "", friendlyName, Collections.singletonList(name));
+        return new ServerGroup(name, "", friendlyName, Collections.singletonList(name), new ArrayList<>());
     }
 
     @Override

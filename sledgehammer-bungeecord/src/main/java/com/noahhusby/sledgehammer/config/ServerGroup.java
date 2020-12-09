@@ -34,16 +34,18 @@ public class ServerGroup implements Storable {
     private String headID;
     private String name;
     private List<String> servers;
+    private List<String> aliases;
 
     public ServerGroup() {
-        this("", "", "", new ArrayList<>());
+        this("", "", "", new ArrayList<>(), new ArrayList<>());
     }
 
-    public ServerGroup(String ID, String headID, String name, List<String> servers) {
+    public ServerGroup(String ID, String headID, String name, List<String> servers, List<String> aliases) {
         this.ID = ID;
         this.headID = headID;
         this.name = name;
         this.servers = servers;
+        this.aliases = aliases;
     }
 
     /**
@@ -102,11 +104,27 @@ public class ServerGroup implements Storable {
         return servers;
     }
 
+    /**
+     * Gets the list of alias tags associated with the group
+     * @return
+     */
+    public List<String> getAliases() {
+        return aliases;
+    }
+
     @Override
     public Storable load(JSONObject data) {
         SmartObject object = SmartObject.fromJSON(data);
+        List<String> s = new ArrayList<>();
+        if(!object.getString("Servers").equalsIgnoreCase(""))
+            s = new ArrayList<>(Arrays.asList(object.getString("Servers").split(",")));
+
+        List<String> a = new ArrayList<>();
+        if(!object.getString("Aliases").equalsIgnoreCase(""))
+            a = new ArrayList<>(Arrays.asList(object.getString("Aliases").split(",")));
+
         return new ServerGroup(object.getString("Id"), object.getString("HeadId"),
-                object.getString("Name"), new ArrayList<>(Arrays.asList(object.getString("Servers").split(","))));
+                object.getString("Name"), s, a);
     }
 
     @Override
@@ -115,6 +133,7 @@ public class ServerGroup implements Storable {
         data.put("Name", name);
         data.put("HeadId", headID);
         data.put("Servers", String.join(",", servers));
+        data.put("Aliases", String.join(",", aliases));
         return data;
     }
 }

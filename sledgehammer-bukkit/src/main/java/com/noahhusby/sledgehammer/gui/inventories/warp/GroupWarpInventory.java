@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2020 Noah Husby
- * sledgehammer - WarpInventory.java
+ * sledgehammer - ServerWarpInventory.java
  *
  * Sledgehammer is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,43 +18,38 @@
 
 package com.noahhusby.sledgehammer.gui.inventories.warp;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
-import com.destroystokyo.paper.profile.ProfileProperty;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.data.warp.Warp;
+import com.noahhusby.sledgehammer.data.warp.WarpGroup;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIChild;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIHelper;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
 import com.noahhusby.sledgehammer.gui.inventories.warp.config.WarpConfigController;
 import com.noahhusby.sledgehammer.network.S2P.S2PWarpPacket;
-import com.noahhusby.sledgehammer.network.S2P.S2PWebMapPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
-import dev.dbassett.skullcreator.SkullCreator;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.material.Skull;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class WarpInventory extends GUIChild {
+public class GroupWarpInventory extends GUIChild {
     private final int page;
     private final List<Warp> warps;
+    private final WarpGroup group;
 
     private Inventory inventory;
 
-    public WarpInventory(int page, List<Warp> warps) {
+    public GroupWarpInventory(int page, List<Warp> warps, WarpGroup group) {
         this.page = page;
         this.warps = warps;
+        this.group = group;
     }
 
     @Override
@@ -73,9 +68,10 @@ public class WarpInventory extends GUIChild {
             inventory.setItem(x, glass);
         }
 
-        inventory.setItem(4, SledgehammerUtil.getSkull(Constants.globeHead, ChatColor.GREEN + "" + ChatColor.BOLD + "All Warps"));
-        //inventory.setItem(4, SledgehammerUtil.getSkull(Constants.monitorHead, ChatColor.GRAY + "" + ChatColor.BOLD + "All Warps"));
-        //inventory.setItem(48, SledgehammerUtil.getSkull(Constants.lampHead, ChatColor.GOLD + "" + ChatColor.BOLD + "Pinned Warps"));
+        {
+            String headId = (group.getHeadId().equals("")) ? Constants.globeHead : group.getHeadId();
+            inventory.setItem(4, SledgehammerUtil.getSkull(headId, ChatColor.RED + "" + ChatColor.BOLD + group.getName()));
+        }
         inventory.setItem(40, GUIHelper.generateCompass());
         inventory.setItem(49, GUIHelper.generateExit());
 
@@ -86,9 +82,9 @@ public class WarpInventory extends GUIChild {
         inventory.setItem(45, sort);
 
         inventory.setItem(46, SledgehammerUtil.getSkull(Constants.lampHead, ChatColor.GOLD + "" + ChatColor.BOLD
-            + "Show pinned warps"));
+                + "Show pinned warps"));
 
-        if(((WarpInventoryController) getController()).getPayload().isEditAccess()) {
+        if(((GroupWarpInventoryController) getController()).getPayload().isEditAccess()) {
             ItemStack anvil = new ItemStack(Material.ANVIL, 1);
             ItemMeta meta = anvil.getItemMeta();
             meta.setDisplayName(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Configure Warps");
@@ -128,7 +124,7 @@ public class WarpInventory extends GUIChild {
             String headId = warp.getHeadID();
             if(headId.equals("")) headId = Constants.cyanWoolHead;
             ItemStack item = SledgehammerUtil.getSkull(headId, ((warp.getPinnedMode() == Warp.PinnedMode.GLOBAL
-            || warp.getPinnedMode() == Warp.PinnedMode.LOCAL) ? ChatColor.GOLD : ChatColor.BLUE)
+                    || warp.getPinnedMode() == Warp.PinnedMode.LOCAL) ? ChatColor.GOLD : ChatColor.BLUE)
                     + "" + ChatColor.BOLD + warp.getName());
 
             ItemMeta meta = item.getItemMeta();
@@ -154,7 +150,7 @@ public class WarpInventory extends GUIChild {
         if(e.getCurrentItem().getItemMeta() == null) return;
         if(e.getCurrentItem().getItemMeta().getDisplayName() == null) return;
 
-        WarpInventoryController controller = (WarpInventoryController) getController();
+        GroupWarpInventoryController controller = (GroupWarpInventoryController) getController();
 
         if(e.getCurrentItem().getItemMeta().getDisplayName() == null) return;
 
@@ -205,28 +201,9 @@ public class WarpInventory extends GUIChild {
             }
 
             SledgehammerNetworkManager.getInstance().sendPacket(new S2PWarpPacket(player, id));
-
             controller.close();
             return;
         }
-
-        /**
-        if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Open Web Map")) {
-            SledgehammerNetworkManager.getInstance().sendPacket(new S2PWebMapPacket(player));
-            controller.close();
-            return;
-        }
-
-        if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Pinned Warps")) {
-            controller.switchToPinned();
-            return;
-        }
-
-        if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Server Warps")) {
-            controller.switchToServerList();
-            return;
-        }
-         */
     }
 
     public int getPage() {

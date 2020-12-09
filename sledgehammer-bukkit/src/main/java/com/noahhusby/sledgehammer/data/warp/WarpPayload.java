@@ -42,12 +42,17 @@ public class WarpPayload {
         return groups;
     }
 
+    public void setDefaultPage(String defaultPage) {
+        this.defaultPage = defaultPage;
+    }
+
     public static WarpPayload fromPayload(SmartObject object) {
         JSONArray groups = (JSONArray) object.get("groups");
         List<WarpGroup> warpGroups = new ArrayList<>();
         for(Object o : groups)
             warpGroups.add(WarpGroup.fromJson((JSONObject) o));
 
-        return new WarpPayload(object.getString(), )
+        return new WarpPayload(object.getString("defaultPage"), object.getString("requestGroup"),
+                object.getBoolean("editAccess"), object.getBoolean("local"), warpGroups);
     }
 }

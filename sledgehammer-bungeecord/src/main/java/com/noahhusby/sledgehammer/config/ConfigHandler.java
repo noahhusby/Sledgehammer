@@ -126,8 +126,6 @@ public class ConfigHandler {
         config = new net.minecraftforge.common.config.Configuration(new File(dataFolder, "sledgehammer.cfg"));
 
         loadData();
-
-        config.save();
     }
 
     /**
@@ -234,7 +232,7 @@ public class ConfigHandler {
         terramapGlobalMap = config.getBoolean(prop("Global Settings"), category, true,
         		"Set this to true is you want client's settings to be saved for the entire network instead of per-world.");
         order();
-        config.save();
+        if(config.hasChanged()) config.save();
 
         File f = new File(localStorage, "offline.bin");
         doesOfflineExist = f.exists();
@@ -280,8 +278,8 @@ public class ConfigHandler {
             {
                 SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(
                         new Credentials(sqlHost, sqlPort, sqlUser, sqlPassword, sqlDb)), "ServerGroups",
-                        "Id,HeadId,Name,Servers",
-                        "TEXT(255),TEXT(255),TEXT(255),MEDIUMTEXT");
+                        "Id,HeadId,Name,Servers,Aliases",
+                        "TEXT(255),TEXT(255),TEXT(255),MEDIUMTEXT,MEDIUMTEXT");
                 sqlStorageHandler.setPriority(100);
                 serverGroups.registerHandler(sqlStorageHandler);
             }

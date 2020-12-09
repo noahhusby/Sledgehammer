@@ -18,45 +18,42 @@
 
 package com.noahhusby.sledgehammer.gui.inventories.warp;
 
-import com.noahhusby.sledgehammer.SmartObject;
+import com.noahhusby.sledgehammer.data.warp.Warp;
+import com.noahhusby.sledgehammer.data.warp.WarpGroup;
+import com.noahhusby.sledgehammer.data.warp.WarpPayload;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIController;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
 import com.noahhusby.sledgehammer.gui.inventories.general.IGUIChild;
 import org.bukkit.entity.Player;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class WarpInventoryController extends GUIController {
     private final List<WarpInventory> warpInventories = new ArrayList<>();
-    private final JSONObject warpData;
+    private final WarpPayload payload;
 
-    public WarpInventoryController(Player p, SmartObject warpData) {
-        this(p, warpData.toJSON());
-    }
-
-    public WarpInventoryController(Player p, JSONObject warpData) {
+    public WarpInventoryController(Player p, WarpPayload payload) {
         super(54, "Warps", p);
-        this.warpData = warpData;
+        this.payload = payload;
         init();
     }
 
-    public WarpInventoryController(GUIController controller, JSONObject warpData) {
+    public WarpInventoryController(GUIController controller, WarpPayload payload) {
         super(controller);
-        this.warpData = warpData;
+        this.payload = payload;
         init();
     }
 
     @Override
     public void init() {
-        JSONArray warps = (JSONArray) warpData.get("waypoints");
-        boolean web = (boolean) warpData.get("web");
+        List<Warp> warps = new ArrayList<>();
+        for(WarpGroup wg : payload.getGroups())
+            warps.addAll(wg.getWarps());
 
         int total_pages = (int) Math.ceil(warps.size() / 27.0);
         for(int x = 0; x < total_pages; x++) {
-            WarpInventory w = new WarpInventory(x, warps, web);
+            WarpInventory w = new WarpInventory(x, warps);
             w.initFromController(this, getPlayer(), getInventory());
             warpInventories.add(w);
         }
@@ -72,11 +69,11 @@ public class WarpInventoryController extends GUIController {
         return null;
     }
 
-    public void switchToPinned() {
-        GUIRegistry.register(new PinnedWarpInventoryController(this, warpData));
+    public WarpPayload getPayload() {
+        return payload;
     }
 
-    public void switchToServerList() {
-        GUIRegistry.register(new ServerWarpInventoryController(this, warpData));
+    public void switchToPinned() {
+        GUIRegistry.register(new PinnedWarpInventoryController(this, null));
     }
 }
