@@ -10,8 +10,11 @@ import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync.P2CPlayerSyncPacket;
 import com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync.P2CRegistrationExpiresPacket;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
+import com.noahhusby.sledgehammer.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.players.PlayerManager;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
+
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 /**
  * Handles sending player position updates to registered players
@@ -90,6 +93,10 @@ public class RemoteSynchronizer {
 		synchronized(this.playersToUpdate) {
 			this.playersToUpdate.clear();
 		}
+	}
+	
+	public static boolean hasSyncPermission(ProxiedPlayer player) {
+		return player.hasPermission(TerramapAddon.PLAYER_SYNC_PERMISSION_NODE) || PermissionHandler.getInstance().isAdmin(player);
 	}
 
 	private static class RegisteredForUpdatePlayer {

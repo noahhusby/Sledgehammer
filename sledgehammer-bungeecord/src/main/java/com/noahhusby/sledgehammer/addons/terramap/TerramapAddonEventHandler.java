@@ -30,7 +30,7 @@ public class TerramapAddonEventHandler implements Listener {
 		if(!event.getPlayer().isForgeUser()) return;
 		
 		String version = ProxyServer.getInstance().getPluginManager().getPlugin("Sledgehammer").getDescription().getVersion();
-		boolean playerSync = ConfigHandler.terramapSyncPlayers && event.getPlayer().hasPermission(TerramapAddon.PLAYER_SYNC_PERMISSION_NODE);
+		boolean playerSync = ConfigHandler.terramapSyncPlayers && RemoteSynchronizer.hasSyncPermission(event.getPlayer());
 		PlayerSyncStatus syncStatus = PlayerSyncStatus.getFromBoolean(playerSync);
     	TerramapAddon.instance.sledgehammerChannel.send(new P2CSledgehammerHelloPacket(
     			version,
