@@ -113,6 +113,7 @@ public class ForgeChannel {
 			}
 		} catch(Exception e) {
 			Sledgehammer.logger.warning("Failed to send a Forge packet to " + (to.length - sent) + " players in channel " + this.channelName + " : " + e);
+			e.printStackTrace();
 		}
 	}
 	
@@ -169,7 +170,7 @@ public class ForgeChannel {
 	}
 	
 	/**
-	 * Reads a String from a bte buffer using the [size (varint) | string (utf-8)] format
+	 * Reads a String from a bte buffer uing the [size (varint) | string (utf-8)] format
 	 * @param buf
 	 * @return
 	 */

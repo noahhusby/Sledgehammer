@@ -2,7 +2,6 @@ package com.noahhusby.sledgehammer.addons.terramap.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import com.noahhusby.sledgehammer.addons.terramap.PlayerDisplayPreferences;
 import com.noahhusby.sledgehammer.addons.terramap.TerramapAddon;
@@ -99,10 +98,10 @@ public class TerrashowCommand extends Command implements TabExecutor {
 			return;
 		}
 
-		UUID uuid = player.getUniqueId();
+		SledgehammerPlayer shPlayer = PlayerManager.getInstance().getPlayer(player);
 		switch(args[0]) {
 		case "status":
-			String key = PlayerDisplayPreferences.shouldDisplayPlayer(uuid) ? "terramap.commands.terrashow.getvisible": "terramap.commands.terrashow.gethidden";
+			String key = PlayerDisplayPreferences.shouldDisplayPlayer(shPlayer) ? "terramap.commands.terrashow.getvisible": "terramap.commands.terrashow.gethidden";
 			if(context.doesSupportFormatting()) {
 				BaseComponent message = ChatHelper.makeTitleTextComponent(new TextElement("", ChatColor.WHITE));
 				message.addExtra(context.getBaseTextComponent(key, player.getDisplayName()));
@@ -112,7 +111,7 @@ public class TerrashowCommand extends Command implements TabExecutor {
 			}
 			break;
 		case "show":
-			PlayerDisplayPreferences.setShouldDisplayPlayer(uuid, true);
+			PlayerDisplayPreferences.setShouldDisplayPlayer(shPlayer, true);
 			key = "terramap.commands.terrashow.setvisible";
 			if(context.doesSupportFormatting()) {
 				BaseComponent message = ChatHelper.makeTitleTextComponent(new TextElement("", ChatColor.WHITE));
@@ -123,7 +122,7 @@ public class TerrashowCommand extends Command implements TabExecutor {
 			}
 			break;
 		case "hide":
-			PlayerDisplayPreferences.setShouldDisplayPlayer(uuid, false);
+			PlayerDisplayPreferences.setShouldDisplayPlayer(shPlayer, false);
 			key = "terramap.commands.terrashow.sethidden";
 			if(context.doesSupportFormatting()) {
 				BaseComponent message = ChatHelper.makeTitleTextComponent(new TextElement("", ChatColor.WHITE));

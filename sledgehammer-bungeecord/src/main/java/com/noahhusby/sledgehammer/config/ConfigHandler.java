@@ -34,7 +34,6 @@ import com.noahhusby.lib.data.storage.handlers.LocalStorageHandler;
 import com.noahhusby.lib.data.storage.handlers.SQLStorageHandler;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.addons.terramap.MapStyleRegistry;
-import com.noahhusby.sledgehammer.addons.terramap.PlayerDisplayPreferences;
 import com.noahhusby.sledgehammer.players.PlayerManager;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
 
@@ -241,11 +240,7 @@ public class ConfigHandler {
         File f = new File(localStorage, "offline.bin");
         doesOfflineExist = f.exists();
         
-        if(terramapEnabled) {
-        	File serverPrefs = new File(dataFolder + "/" + PlayerDisplayPreferences.FILENAME);
-        	PlayerDisplayPreferences.setFile(serverPrefs);
-        	PlayerDisplayPreferences.load();
-        	
+        if(terramapEnabled) {        	
         	File customMaps = new File(dataFolder + "/" + MapStyleRegistry.FILENAME);
         	MapStyleRegistry.setConfigMapFile(customMaps);
         	MapStyleRegistry.loadFromConfigFile();
