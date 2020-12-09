@@ -33,14 +33,24 @@ public class P2CPlayerSyncPacket implements IForgePacket {
 	public void encode(ByteBuf buf) {
 		buf.writeInt(this.players.length);
 		for(SledgehammerPlayer player: this.players) {
-			double[] coordinates = SledgehammerUtil.toGeo(Double.parseDouble(player.getLocation().x), Double.parseDouble(player.getLocation().z));
+			double playerX = Double.parseDouble(player.getLocation().x);
+			double playerZ = Double.parseDouble(player.getLocation().z);
+			double[] coordinates = SledgehammerUtil.toGeo(playerX, playerZ);
+
+			// This only works because the BTE projection is conformal
+			double[] northVec = SledgehammerUtil.getBTEProjection().vector(playerX, playerZ, 0.0001, 0);
+			float north = (float) Math.toDegrees(Math.atan2(northVec[0], northVec[1]));
+			float yaw = Float.parseFloat(player.getLocation().yaw);
+			float azimuth = north + yaw;
+			if(azimuth < 0) azimuth += 360;		
+			
 			buf.writeLong(player.getUniqueId().getLeastSignificantBits());
 			buf.writeLong(player.getUniqueId().getMostSignificantBits());
 			String playerDisplayName = ComponentSerializer.toString(TextComponent.fromLegacyText(player.getDisplayName()));
 			ForgeChannel.writeStringToBuf(playerDisplayName, buf);
 			buf.writeDouble(coordinates[0]);
 			buf.writeDouble(coordinates[1]);
-			buf.writeFloat(0); //TODO Terramap azimuth
+			buf.writeFloat(azimuth);
 			ForgeChannel.writeStringToBuf(player.getGameMode().toString(), buf);
 		}
 
