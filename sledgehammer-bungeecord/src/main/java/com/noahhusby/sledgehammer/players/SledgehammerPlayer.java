@@ -339,8 +339,10 @@ public class SledgehammerPlayer implements ProxiedPlayer {
     
     /**
      * @author SmylerMC
+     * Do not block features depending on the result of this method, just test if the user has Forge instead.
+     * This will only work if the user has logged onto a Forge server at least once, and will return false otherwise.
      * 
-     * @return whether or not this player has compatible version of Terramap installed
+     * @return whether or not this player has a compatible version of Terramap installed
      */
     public boolean hasCompatibleTerramap() {
     	return TerramapAddon.MINIMUM_COMPATIBLE_VERSION.isOlderOrSame(TerramapVersion.getClientVersion(this));

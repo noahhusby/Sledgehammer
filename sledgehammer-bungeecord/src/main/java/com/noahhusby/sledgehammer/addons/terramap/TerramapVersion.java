@@ -310,8 +310,12 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
 		return this.compareTo(other) < 0;
 	}
 	
-	/*
-	 * Get's the given player's Terramap version
+	/**
+	 * Get's the given player's Terramap version.
+	 * The player needs to have logged onto a Forge server at least once for this to work.
+	 * If it's not the case then this will return null, even though that may be wrong.
+	 * 
+	 * @return the player Terramap version, or null if they don't have it
 	 */
 	public static TerramapVersion getClientVersion(ProxiedPlayer player) {
 		Map<String, String> modList = player.getModList();

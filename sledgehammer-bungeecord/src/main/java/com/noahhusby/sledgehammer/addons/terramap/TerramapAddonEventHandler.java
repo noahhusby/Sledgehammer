@@ -5,7 +5,6 @@ import com.noahhusby.sledgehammer.addons.terramap.network.packets.P2CSledgehamme
 import com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync.PlayerSyncStatus;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.players.PlayerManager;
-import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
@@ -23,9 +22,12 @@ public class TerramapAddonEventHandler implements Listener {
 	
 	@EventHandler
     public void onPostLogin(PostLoginEvent event) {
-		
-		// Avoid spamming people's logs with unknown channel reports
-		if(!SledgehammerPlayer.getPlayer(event.getPlayer()).hasCompatibleTerramap()) return;
+		/*
+		 *  Avoid spamming people's logs with unknown channel reports.
+		 *  We can't tell if the player has Terramap at this point as the mod list hasn't been sent yet,
+		 *  so we can only check for Forge. 
+		 */
+		if(!event.getPlayer().isForgeUser()) return;
 		
 		String version = ProxyServer.getInstance().getPluginManager().getPlugin("Sledgehammer").getDescription().getVersion();
 		boolean playerSync = ConfigHandler.terramapSyncPlayers && event.getPlayer().hasPermission(TerramapAddon.PLAYER_SYNC_PERMISSION_NODE);
