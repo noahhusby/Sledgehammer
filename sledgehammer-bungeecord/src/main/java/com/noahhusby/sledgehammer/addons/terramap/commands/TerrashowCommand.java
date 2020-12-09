@@ -9,11 +9,14 @@ import com.noahhusby.sledgehammer.addons.terramap.TerramapAddon;
 import com.noahhusby.sledgehammer.addons.terramap.TerramapVersion;
 import com.noahhusby.sledgehammer.addons.terramap.TerramapVersion.ReleaseType;
 import com.noahhusby.sledgehammer.addons.terramap.commands.TranslationContextBuilder.TranslationContext;
+import com.noahhusby.sledgehammer.chat.ChatHelper;
+import com.noahhusby.sledgehammer.chat.TextElement;
 import com.noahhusby.sledgehammer.commands.data.Command;
 import com.noahhusby.sledgehammer.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.players.PlayerManager;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -101,8 +104,8 @@ public class TerrashowCommand extends Command implements TabExecutor {
 		case "status":
 			String key = PlayerDisplayPreferences.shouldDisplayPlayer(uuid) ? "terramap.commands.terrashow.getvisible": "terramap.commands.terrashow.gethidden";
 			if(context.doesSupportFormatting()) {
-				BaseComponent message = context.getBaseTextComponent(key, player.getDisplayName());
-				//TODO Fancy Sledgehammer like formatting
+				BaseComponent message = ChatHelper.makeTitleTextComponent(new TextElement("", ChatColor.WHITE));
+				message.addExtra(context.getBaseTextComponent(key, player.getDisplayName()));
 				senderPlayer.sendMessage(message);
 			} else {
 				context.sendRawMessage(key, player.getDisplayName());
@@ -112,8 +115,8 @@ public class TerrashowCommand extends Command implements TabExecutor {
 			PlayerDisplayPreferences.setShouldDisplayPlayer(uuid, true);
 			key = "terramap.commands.terrashow.setvisible";
 			if(context.doesSupportFormatting()) {
-				BaseComponent message = context.getBaseTextComponent(key, player.getDisplayName());
-				//TODO Fancy Sledgehammer like formatting
+				BaseComponent message = ChatHelper.makeTitleTextComponent(new TextElement("", ChatColor.WHITE));
+				message.addExtra(context.getBaseTextComponent(key, player.getDisplayName()));
 				senderPlayer.sendMessage(message);
 			} else {
 				context.sendRawMessage(key, player.getDisplayName());
@@ -123,8 +126,8 @@ public class TerrashowCommand extends Command implements TabExecutor {
 			PlayerDisplayPreferences.setShouldDisplayPlayer(uuid, false);
 			key = "terramap.commands.terrashow.sethidden";
 			if(context.doesSupportFormatting()) {
-				BaseComponent message = context.getBaseTextComponent(key, player.getDisplayName());
-				//TODO Fancy Sledgehammer like formatting
+				BaseComponent message = ChatHelper.makeTitleTextComponent(new TextElement("", ChatColor.WHITE));
+				message.addExtra(context.getBaseTextComponent(key, player.getDisplayName()));
 				senderPlayer.sendMessage(message);
 			} else {
 				context.sendRawMessage(key, player.getDisplayName());
