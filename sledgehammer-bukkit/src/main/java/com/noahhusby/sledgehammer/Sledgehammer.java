@@ -19,14 +19,10 @@
 package com.noahhusby.sledgehammer;
 
 import com.noahhusby.sledgehammer.eventhandler.ServerEventHandler;
-import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
-import com.noahhusby.sledgehammer.gui.inventories.warp.config.WarpConfigController;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import com.noahhusby.sledgehammer.players.PlayerManager;
 import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 

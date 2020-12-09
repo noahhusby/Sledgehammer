@@ -25,7 +25,7 @@ import com.noahhusby.sledgehammer.data.warp.WarpGroup;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIChild;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIHelper;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
-import com.noahhusby.sledgehammer.gui.inventories.warp.config.WarpConfigController;
+import com.noahhusby.sledgehammer.network.S2P.S2PWarpConfigPacket;
 import com.noahhusby.sledgehammer.network.S2P.S2PWarpPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import org.bukkit.ChatColor;
@@ -34,7 +34,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -167,7 +166,8 @@ public class GroupWarpInventory extends GUIChild {
 
         if(e.getSlot() == 47 && controller.getPayload().isEditAccess()) {
             controller.close();
-            GUIRegistry.register(new WarpConfigController(getPlayer()));
+            SledgehammerNetworkManager.getInstance().sendPacket(new S2PWarpConfigPacket(S2PWarpConfigPacket.ProxyConfigAction.OPEN_CONFIG,
+                    getPlayer(), controller.getPayload().getSalt()));
             return;
         }
 
@@ -200,7 +200,7 @@ public class GroupWarpInventory extends GUIChild {
                     id = new Long(ChatColor.stripColor(s).replaceAll("[^\\d.]", "")).intValue();
             }
 
-            SledgehammerNetworkManager.getInstance().sendPacket(new S2PWarpPacket(player, id));
+            SledgehammerNetworkManager.getInstance().sendPacket(new S2PWarpPacket(player, controller.getPayload(), id));
             controller.close();
             return;
         }

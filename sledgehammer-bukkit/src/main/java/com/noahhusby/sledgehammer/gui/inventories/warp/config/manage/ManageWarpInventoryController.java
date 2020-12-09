@@ -16,28 +16,31 @@
  * along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
-package com.noahhusby.sledgehammer.gui.inventories.warp.config;
+package com.noahhusby.sledgehammer.gui.inventories.warp.config.manage;
 
+import com.noahhusby.sledgehammer.data.warp.WarpConfigPayload;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIController;
 import org.bukkit.entity.Player;
 
-public class WarpConfigController extends GUIController {
+public class ManageWarpInventoryController extends GUIController {
 
-    public WarpConfigController(Player p) {
+    private WarpConfigPayload payload;
+
+    public ManageWarpInventoryController(Player p, WarpConfigPayload payload) {
         super(27, "Warp Config", p);
-        init();
-    }
-
-    public WarpConfigController(GUIController controller) {
-        super(controller);
+        this.payload = payload;
         init();
     }
 
     @Override
     public void init() {
-        WarpConfig warpConfig = new WarpConfig();
+        ManageWarpInventory warpConfig = new ManageWarpInventory();
         warpConfig.initFromController(this, getPlayer(), getInventory());
         openChild(warpConfig);
+    }
+
+    public WarpConfigPayload getPayload() {
+        return payload;
     }
 
 }

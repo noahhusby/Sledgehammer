@@ -16,7 +16,7 @@
  * along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
-package com.noahhusby.sledgehammer.gui.inventories.warp;
+package com.noahhusby.sledgehammer.gui.inventories.warp.config;
 
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
@@ -24,6 +24,10 @@ import com.noahhusby.sledgehammer.data.warp.WarpGroup;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIChild;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIHelper;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
+import com.noahhusby.sledgehammer.gui.inventories.warp.GroupWarpInventoryController;
+import com.noahhusby.sledgehammer.gui.inventories.warp.PinnedWarpInventoryController;
+import com.noahhusby.sledgehammer.gui.inventories.warp.WarpInventoryController;
+import com.noahhusby.sledgehammer.gui.inventories.warp.WarpSortInventoryController;
 import com.noahhusby.sledgehammer.network.S2P.S2PWarpConfigPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import org.bukkit.ChatColor;
@@ -36,13 +40,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GroupListWarpInventory extends GUIChild {
+public class ManageGroupInventory extends GUIChild {
     private final int page;
     private final List<WarpGroup> groups;
 
     private Inventory inventory;
 
-    public GroupListWarpInventory(int page, List<WarpGroup> groups) {
+    public ManageGroupInventory(int page, List<WarpGroup> groups) {
         this.page = page;
         this.groups = groups;
     }
@@ -52,7 +56,7 @@ public class GroupListWarpInventory extends GUIChild {
         this.inventory = getInventory();
         int total_pages = (int) Math.ceil(groups.size() / 27.0);
 
-        for(int x = 0; x < 54; x++) {
+        for(int x = 0; x < 45; x++) {
             ItemStack glass = new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) 15);
 
             ItemMeta meta = glass.getItemMeta();
@@ -64,41 +68,22 @@ public class GroupListWarpInventory extends GUIChild {
         }
 
         inventory.setItem(4, SledgehammerUtil.getSkull(Constants.monitorHead, ChatColor.GREEN + "" + ChatColor.BOLD + "Groups"));
-        inventory.setItem(40, generateCompass());
-        inventory.setItem(49, GUIHelper.generateExit());
-
-        ItemStack sort = new ItemStack(Material.HOPPER, 1);
-        ItemMeta sortMeta = sort.getItemMeta();
-        sortMeta.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "Sort");
-        sort.setItemMeta(sortMeta);
-        inventory.setItem(45, sort);
-
-        inventory.setItem(46, SledgehammerUtil.getSkull(Constants.lampHead, ChatColor.GOLD + "" + ChatColor.BOLD
-                + "Show pinned warps"));
-
-        if(((GroupListWarpInventoryController) getController()).getPayload().isEditAccess()) {
-            ItemStack anvil = new ItemStack(Material.ANVIL, 1);
-            ItemMeta meta = anvil.getItemMeta();
-            meta.setDisplayName(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Configure Warps");
-            anvil.setItemMeta(meta);
-            inventory.setItem(47, anvil);
-        }
 
         boolean paged = false;
         if(page != 0) {
             ItemStack head = SledgehammerUtil.getSkull(Constants.arrowLeftHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Previous Page");
-            inventory.setItem(51, head);
+            inventory.setItem(42, head);
             paged = true;
         }
 
         if(groups.size() > (page + 1) * Constants.warpsPerPage) {
             ItemStack head = SledgehammerUtil.getSkull(Constants.arrowRightHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Next Page");
-            inventory.setItem(53, head);
+            inventory.setItem(44, head);
             paged = true;
         }
 
         if(paged) {
-            inventory.setItem(52, SledgehammerUtil.NumberHeads.getHead((page + 1), ChatColor.GREEN +
+            inventory.setItem(43, SledgehammerUtil.NumberHeads.getHead((page + 1), ChatColor.GREEN +
                     "" + ChatColor.BOLD + "Page " + (page + 1)));
         }
 
@@ -140,32 +125,9 @@ public class GroupListWarpInventory extends GUIChild {
         if(e.getCurrentItem().getItemMeta() == null) return;
         if(e.getCurrentItem().getItemMeta().getDisplayName() == null) return;
 
-        GroupListWarpInventoryController controller = (GroupListWarpInventoryController) getController();
+        ManageGroupInventoryController controller = (ManageGroupInventoryController) getController();
 
         if(e.getCurrentItem().getItemMeta().getDisplayName() == null) return;
-
-        if(e.getSlot() == 45) {
-            controller.close();
-            GUIRegistry.register(new WarpSortInventoryController(getPlayer(), controller.getPayload()));
-            return;
-        }
-
-        if(e.getSlot() == 40) {
-            GUIRegistry.register(new WarpInventoryController(getController(), controller.getPayload()));
-            return;
-        }
-
-        if(e.getSlot() == 46) {
-            GUIRegistry.register(new PinnedWarpInventoryController(getPlayer(), controller.getPayload()));
-            return;
-        }
-
-        if(e.getSlot() == 47 && controller.getPayload().isEditAccess()) {
-            controller.close();
-            SledgehammerNetworkManager.getInstance().sendPacket(new S2PWarpConfigPacket(S2PWarpConfigPacket.ProxyConfigAction.OPEN_CONFIG,
-                    getPlayer(), controller.getPayload().getSalt()));
-            return;
-        }
 
         if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Previous Page")) {
             controller.openChild(controller.getChildByPage(page-1));
@@ -174,11 +136,6 @@ public class GroupListWarpInventory extends GUIChild {
 
         if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Next Page")) {
             controller.openChild(controller.getChildByPage(page+1));
-            return;
-        }
-
-        if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Close")) {
-            controller.close();
             return;
         }
 
@@ -191,23 +148,9 @@ public class GroupListWarpInventory extends GUIChild {
                     id = ChatColor.stripColor(s).trim().replace("ID: ", "");
             }
 
-            GUIRegistry.register(new GroupWarpInventoryController(getController(), controller.getPayload(), id));
+            GUIRegistry.register(new ManageGroupWarpInventoryController(getController(), controller.getPayload(), id));
             return;
         }
-    }
-
-    private ItemStack generateCompass() {
-        ItemStack compass = new ItemStack(Material.COMPASS);
-        ItemMeta m = compass.getItemMeta();
-
-        m.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "All Warps");
-        List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.GRAY + "All Warps");
-        m.setLore(lore);
-
-        compass.setItemMeta(m);
-
-        return compass;
     }
 
     public int getPage() {

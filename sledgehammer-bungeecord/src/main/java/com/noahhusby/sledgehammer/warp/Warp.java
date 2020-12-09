@@ -33,6 +33,8 @@ public class Warp implements Storable {
     private String name;
     private int id;
 
+    private WarpResponse response;
+
     public Warp() {
         this(-1, "", new Point(), "", PinnedMode.NONE, "");
     }
@@ -140,6 +142,22 @@ public class Warp implements Storable {
      */
     public String getHeadID() {
         return headID;
+    }
+
+    /**
+     * Sets the local warp response. Only used for GUI creation
+     * @param response {@link WarpResponse}
+     */
+    public void setResponse(WarpResponse response) {
+        this.response = response;
+    }
+
+    /**
+     * Gets the local warp response. Only used for GUI creation
+     * @return {@link WarpResponse}
+     */
+    public WarpResponse getResponse() {
+        return response;
     }
 
     @Override

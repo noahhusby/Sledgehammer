@@ -1,20 +1,18 @@
 package com.noahhusby.sledgehammer.gui.inventories.warp.config;
 
 import com.noahhusby.sledgehammer.Constants;
-import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIChild;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
-import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class WarpConfig extends GUIChild {
-    public WarpConfig() {}
+public class ConfigMenu extends GUIChild {
+
+    public ConfigMenu() {}
 
     @Override
     public void init() {
@@ -40,8 +38,12 @@ public class WarpConfig extends GUIChild {
         if(e.getCurrentItem() == null) return;
         if(e.getCurrentItem().getItemMeta() == null) return;
         if(e.getCurrentItem().getItemMeta().getDisplayName() == null) return;
-        if (ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Create new warp")) {
-            GUIRegistry.register(new WarpNameEntryController(getPlayer()));
+        if (e.getSlot() == 13) {
+            GUIRegistry.register(new WarpNameEntryController(getPlayer(), ((ConfigMenuController) controller).getPayload()));
+            return;
+        }
+        if(e.getSlot() == 15) {
+            GUIRegistry.register(new ManageGroupInventoryController(getPlayer(), ((ConfigMenuController) controller).getPayload()));
             return;
         }
     }

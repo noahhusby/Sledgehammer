@@ -54,7 +54,12 @@ public class PermissionHandler {
 
     public void check(PermissionResponse response, SledgehammerPlayer player, String permission) {
         if(player == null || !player.onSledgehammer()) {
-            response.onResponse(PermissionRequest.PermissionCode.NO_PERMISSION);
+            response.onResponse(PermissionRequest.PermissionCode.NO_PERMISSION, false);
+            return;
+        }
+
+        if(isAdmin(player) || player.hasPermission(permission)) {
+            response.onResponse(PermissionRequest.PermissionCode.PERMISSION, true);
             return;
         }
 
@@ -75,7 +80,7 @@ public class PermissionHandler {
             if(r.salt.equals(salt)) request =  r;
         if(request == null) return;
 
-        request.response.onResponse(permission ? PermissionRequest.PermissionCode.PERMISSION : PermissionRequest.PermissionCode.NO_PERMISSION);
+        request.response.onResponse(permission ? PermissionRequest.PermissionCode.PERMISSION : PermissionRequest.PermissionCode.NO_PERMISSION, false);
         requests.remove(request);
     }
 
@@ -85,7 +90,7 @@ public class PermissionHandler {
     private void checkPermissionRequests() {
         requests.removeIf(request -> {
             if(request.time + request.timeout < System.currentTimeMillis()) {
-                request.response.onResponse(PermissionRequest.PermissionCode.TIMED_OUT);
+                request.response.onResponse(PermissionRequest.PermissionCode.TIMED_OUT, false);
                 return true;
             }
             return false;

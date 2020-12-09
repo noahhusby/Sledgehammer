@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2020 Noah Husby
- * Sledgehammer [Bungeecord] - PermissionResponse.java
+ * Sledgehammer [Bungeecord] - WarpResponse.java
  *
  * Sledgehammer is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
  *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
-package com.noahhusby.sledgehammer.permissions;
+package com.noahhusby.sledgehammer.warp;
 
-public interface PermissionResponse {
-    void onResponse(PermissionRequest.PermissionCode code, boolean global);
+public interface WarpResponse {
+    void onResponse(boolean success, Warp warp);
 }

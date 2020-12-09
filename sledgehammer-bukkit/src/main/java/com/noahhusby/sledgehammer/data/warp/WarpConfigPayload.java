@@ -7,33 +7,29 @@ import org.json.simple.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WarpPayload {
+public class WarpConfigPayload {
     private List<WarpGroup> groups;
-    private String defaultPage;
     private String requestGroup;
     private String salt;
-    private boolean editAccess;
+    private boolean admin;
     private boolean local;
+    private JSONObject data;
 
-    public WarpPayload(String defaultPage, String requestGroup, String salt, boolean editAccess, boolean local, List<WarpGroup> groups) {
+    public WarpConfigPayload(String requestGroup, String salt, boolean local, boolean admin, List<WarpGroup> groups, JSONObject data) {
         this.groups = groups;
-        this.defaultPage = defaultPage;
         this.requestGroup = requestGroup;
         this.salt = salt;
-        this.editAccess = editAccess;
+        this.admin = admin;
         this.local = local;
-    }
-
-    public String getDefaultPage() {
-        return defaultPage;
+        this.data = data;
     }
 
     public String getRequestGroup() {
         return requestGroup;
     }
 
-    public boolean isEditAccess() {
-        return editAccess;
+    public boolean isAdmin() {
+        return admin;
     }
 
     public boolean isLocal() {
@@ -44,22 +40,22 @@ public class WarpPayload {
         return groups;
     }
 
-    public void setDefaultPage(String defaultPage) {
-        this.defaultPage = defaultPage;
-    }
-
     public String getSalt() {
         return salt;
     }
 
-    public static WarpPayload fromPayload(SmartObject object) {
+    public JSONObject getData() {
+        return data;
+    }
+
+    public static WarpConfigPayload fromPayload(SmartObject object) {
         JSONArray groups = (JSONArray) object.get("groups");
         List<WarpGroup> warpGroups = new ArrayList<>();
         for(Object o : groups)
             warpGroups.add(WarpGroup.fromJson((JSONObject) o));
 
-        return new WarpPayload(object.getString("defaultPage"), object.getString("requestGroup"),
-                object.getString("salt"),object.getBoolean("editAccess"),
-                object.getBoolean("local"), warpGroups);
+        return new WarpConfigPayload(object.getString("requestGroup"),
+                object.getString("salt"), object.getBoolean("local"),
+                object.getBoolean("admin"), warpGroups, (JSONObject) object.get("data"));
     }
 }

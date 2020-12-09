@@ -18,30 +18,21 @@
 
 package com.noahhusby.sledgehammer.gui.inventories.warp;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
-import com.destroystokyo.paper.profile.ProfileProperty;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.data.warp.Warp;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIChild;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIHelper;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
-import com.noahhusby.sledgehammer.gui.inventories.warp.config.WarpConfigController;
+import com.noahhusby.sledgehammer.network.S2P.S2PWarpConfigPacket;
 import com.noahhusby.sledgehammer.network.S2P.S2PWarpPacket;
-import com.noahhusby.sledgehammer.network.S2P.S2PWebMapPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
-import dev.dbassett.skullcreator.SkullCreator;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.material.Skull;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -171,7 +162,8 @@ public class WarpInventory extends GUIChild {
 
         if(e.getSlot() == 47 && controller.getPayload().isEditAccess()) {
             controller.close();
-            GUIRegistry.register(new WarpConfigController(getPlayer()));
+            SledgehammerNetworkManager.getInstance().sendPacket(new S2PWarpConfigPacket(S2PWarpConfigPacket.ProxyConfigAction.OPEN_CONFIG,
+                    getPlayer(), controller.getPayload().getSalt()));
             return;
         }
 
@@ -204,29 +196,11 @@ public class WarpInventory extends GUIChild {
                     id = new Long(ChatColor.stripColor(s).replaceAll("[^\\d.]", "")).intValue();
             }
 
-            SledgehammerNetworkManager.getInstance().sendPacket(new S2PWarpPacket(player, id));
+            SledgehammerNetworkManager.getInstance().sendPacket(new S2PWarpPacket(player, controller.getPayload(), id));
 
             controller.close();
             return;
         }
-
-        /**
-        if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Open Web Map")) {
-            SledgehammerNetworkManager.getInstance().sendPacket(new S2PWebMapPacket(player));
-            controller.close();
-            return;
-        }
-
-        if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Pinned Warps")) {
-            controller.switchToPinned();
-            return;
-        }
-
-        if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Server Warps")) {
-            controller.switchToServerList();
-            return;
-        }
-         */
     }
 
     public int getPage() {

@@ -62,7 +62,7 @@ public class WarpCommand extends WarpFragmentManager {
         boolean local = ConfigHandler.localWarp;
         boolean hasPerms = PermissionHandler.getInstance().isAdmin(sender) || hasPerms(sender);
         if(local && !hasPerms) {
-            PermissionHandler.getInstance().check(code -> {
+            PermissionHandler.getInstance().check((code, global) -> {
                 if(code == PermissionRequest.PermissionCode.PERMISSION) {
                     run(sender, args);
                     return;
@@ -91,7 +91,7 @@ public class WarpCommand extends WarpFragmentManager {
                         SledgehammerNetworkManager.getInstance().send(new P2SWarpGUIPacket(sender.getName(),
                                 SledgehammerUtil.getServerFromSender(sender).getName(), true));
                     } else {
-                        PermissionHandler.getInstance().check(code ->
+                        PermissionHandler.getInstance().check((code, global) ->
                                 SledgehammerNetworkManager.getInstance().send(new P2SWarpGUIPacket(sender.getName(),
                                 SledgehammerUtil.getServerFromSender(sender).getName(),
                                 code == PermissionRequest.PermissionCode.PERMISSION)),

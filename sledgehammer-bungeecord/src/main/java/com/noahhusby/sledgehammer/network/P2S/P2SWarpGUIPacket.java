@@ -19,6 +19,7 @@
 package com.noahhusby.sledgehammer.network.P2S;
 
 import com.noahhusby.sledgehammer.Constants;
+import com.noahhusby.sledgehammer.gui.GUIHandler;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
 import com.noahhusby.sledgehammer.network.P2SPacket;
@@ -44,7 +45,9 @@ public class P2SWarpGUIPacket extends P2SPacket {
 
     @Override
     public JSONObject getMessage(JSONObject data) {
-        return WarpHandler.getInstance().generateGUIPayload(SledgehammerPlayer.getPlayer(sender), editAccess);
+        JSONObject payload = WarpHandler.getInstance().generateGUIPayload(SledgehammerPlayer.getPlayer(sender), editAccess);
+        payload.put("salt", GUIHandler.getInstance().track(SledgehammerPlayer.getPlayer(sender)));
+        return payload;
     }
 
     @Override

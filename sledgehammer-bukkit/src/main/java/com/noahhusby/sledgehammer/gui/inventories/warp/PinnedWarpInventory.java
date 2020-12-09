@@ -24,7 +24,7 @@ import com.noahhusby.sledgehammer.data.warp.Warp;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIChild;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIHelper;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
-import com.noahhusby.sledgehammer.gui.inventories.warp.config.WarpConfigController;
+import com.noahhusby.sledgehammer.network.S2P.S2PWarpConfigPacket;
 import com.noahhusby.sledgehammer.network.S2P.S2PWarpPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import org.bukkit.ChatColor;
@@ -152,7 +152,8 @@ public class PinnedWarpInventory extends GUIChild {
 
         if(e.getSlot() == 46 && controller.getPayload().isEditAccess()) {
             controller.close();
-            GUIRegistry.register(new WarpConfigController(getPlayer()));
+            SledgehammerNetworkManager.getInstance().sendPacket(new S2PWarpConfigPacket(S2PWarpConfigPacket.ProxyConfigAction.OPEN_CONFIG,
+                    getPlayer(), controller.getPayload().getSalt()));
             return;
         }
 
@@ -185,7 +186,7 @@ public class PinnedWarpInventory extends GUIChild {
                     id = new Long(ChatColor.stripColor(s).replaceAll("[^\\d.]", "")).intValue();
             }
 
-            SledgehammerNetworkManager.getInstance().sendPacket(new S2PWarpPacket(player, id));
+            SledgehammerNetworkManager.getInstance().sendPacket(new S2PWarpPacket(player, controller.getPayload(), id));
 
             controller.close();
             return;
