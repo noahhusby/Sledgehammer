@@ -21,55 +21,30 @@ package com.noahhusby.sledgehammer.gui.inventories.warp;
 import com.noahhusby.sledgehammer.data.warp.Warp;
 import com.noahhusby.sledgehammer.data.warp.WarpGroup;
 import com.noahhusby.sledgehammer.data.warp.WarpPayload;
+import com.noahhusby.sledgehammer.gui.inventories.general.GUIChild;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIController;
+import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
 import com.noahhusby.sledgehammer.gui.inventories.general.IGUIChild;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PinnedWarpInventoryController extends GUIController {
-    private final List<PinnedWarpInventory> warpInventories = new ArrayList<>();
+public class WarpSortInventoryController extends GUIController {
+    private final List<WarpInventory> warpInventories = new ArrayList<>();
     private final WarpPayload payload;
 
-    public PinnedWarpInventoryController(Player p, WarpPayload payload) {
-        super(54, "Warps", p);
-        this.payload = payload;
-        init();
-    }
-
-    public PinnedWarpInventoryController(GUIController controller, WarpPayload payload) {
-        super(controller);
+    public WarpSortInventoryController(Player p, WarpPayload payload) {
+        super(27, "Warp Sort", p);
         this.payload = payload;
         init();
     }
 
     @Override
     public void init() {
-        List<Warp> warps = new ArrayList<>();
-        for(WarpGroup wg : payload.getGroups())
-            for(Warp w : wg.getWarps())
-                if((payload.isLocal() && w.getPinnedMode() == Warp.PinnedMode.GLOBAL) ||
-                        (!payload.isLocal() && (w.getPinnedMode() == Warp.PinnedMode.GLOBAL || w.getPinnedMode() == Warp.PinnedMode.LOCAL)))
-                    warps.add(w);
-
-        int total_pages = (int) Math.ceil(warps.size() / 27.0);
-        if(total_pages == 0) total_pages = 1;
-        for(int x = 0; x < total_pages; x++) {
-            PinnedWarpInventory w = new PinnedWarpInventory(x, warps);
-            w.initFromController(this, getPlayer(), getInventory());
-            warpInventories.add(w);
-        }
-
-        openChild(getChildByPage(0));
-    }
-
-    public IGUIChild getChildByPage(int page) {
-        for(PinnedWarpInventory w : warpInventories) {
-            if(w.getPage() == page) return w;
-        }
-
-        return null;
+        GUIChild inventory = new WarpSortInventory(payload);
+        inventory.initFromController(this, getPlayer(), getInventory());
+        openChild(inventory);
     }
 
     public WarpPayload getPayload() {

@@ -18,51 +18,40 @@
 
 package com.noahhusby.sledgehammer.gui.inventories.warp;
 
+import com.noahhusby.sledgehammer.data.warp.WarpGroup;
+import com.noahhusby.sledgehammer.data.warp.WarpPayload;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIController;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
 import com.noahhusby.sledgehammer.gui.inventories.general.IGUIChild;
 import org.bukkit.entity.Player;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SetServerWarpInventoryController extends GUIController {
-    private final List<SetServerWarpInventory> warpInventories = new ArrayList<>();
-    private final JSONObject warpData;
-    private final String server;
+public class GroupListWarpInventoryController extends GUIController {
+    private final List<GroupListWarpInventory> warpInventories = new ArrayList<>();
+    private final WarpPayload payload;
 
-    public SetServerWarpInventoryController(Player p, JSONObject warpData, String server) {
-        super(54, "Warps - " + server, p);
-        this.warpData = warpData;
-        this.server = server;
+    public GroupListWarpInventoryController(Player p, WarpPayload payload) {
+        super(54, "Groups", p);
+        this.payload = payload;
         init();
     }
 
-    public SetServerWarpInventoryController(GUIController controller, JSONObject warpData, String server){
+    public GroupListWarpInventoryController(GUIController controller, WarpPayload payload){
         super(controller);
-        this.warpData = warpData;
-        this.server = server;
+        this.payload = payload;
         init();
     }
 
     @Override
     public void init() {
-        JSONArray rawWarps = (JSONArray) warpData.get("waypoints");
-        JSONArray warps = new JSONArray();
-        for(Object o : rawWarps) {
-            JSONObject ob = (JSONObject) o;
-            String sname = (String) ob.get("server");
-            if(sname.equalsIgnoreCase(server)) warps.add(o);
-        }
+        List<WarpGroup> groups = payload.getGroups();
 
-        boolean web = (boolean) warpData.get("web");
-
-        int total_pages = (int) Math.ceil(warps.size() / 27.0);
+        int total_pages = (int) Math.ceil(groups.size() / 27.0);
         if(total_pages == 0) total_pages = 1;
         for(int x = 0; x < total_pages; x++) {
-            SetServerWarpInventory w = new SetServerWarpInventory(x, warps, web, server);
+            GroupListWarpInventory w = new GroupListWarpInventory(x, groups);
             w.initFromController(this, getPlayer(), getInventory());
             warpInventories.add(w);
         }
@@ -71,18 +60,14 @@ public class SetServerWarpInventoryController extends GUIController {
     }
 
     public IGUIChild getChildByPage(int page) {
-        for(SetServerWarpInventory w : warpInventories) {
+        for(GroupListWarpInventory w : warpInventories) {
             if(w.getPage() == page) return w;
         }
 
         return null;
     }
 
-    public void switchToAll() {
-        GUIRegistry.register(new WarpInventoryController(this, warpData));
-    }
-
-    public void switchToServerList() {
-        GUIRegistry.register(new ServerWarpInventoryController(this, warpData));
+    public WarpPayload getPayload() {
+        return payload;
     }
 }

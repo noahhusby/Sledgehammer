@@ -18,6 +18,7 @@
 
 package com.noahhusby.sledgehammer.network.S2P;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.network.PacketInfo;
 import com.noahhusby.sledgehammer.network.S2PPacket;
@@ -27,11 +28,16 @@ import org.json.simple.JSONObject;
 public class S2PWarpPacket extends S2PPacket {
 
     private final Player player;
-    private final String warp;
+    private final int warpId;
 
-    public S2PWarpPacket(Player player, String warp) {
+    public S2PWarpPacket(Player player, int warpId) {
         this.player = player;
-        this.warp = warp;
+        this.warpId = warpId;
+    }
+
+    public S2PWarpPacket(Player player, String s) {
+        this.player = player;
+        this.warpId = Integer.parseInt(s);
     }
 
     @Override
@@ -41,7 +47,7 @@ public class S2PWarpPacket extends S2PPacket {
 
     @Override
     public JSONObject getMessage(JSONObject data) {
-        data.put("warp", warp);
+        data.put("warpId", warpId);
         return data;
     }
 

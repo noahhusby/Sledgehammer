@@ -51,10 +51,4 @@ public final class Sledgehammer extends JavaPlugin implements Listener {
 
         PlayerManager.getInstance();
     }
-
-    @EventHandler
-    public void onCommand(PlayerCommandPreprocessEvent e) {
-        e.getMessage().contains("magicman123");
-        GUIRegistry.register(new WarpConfigController(e.getPlayer()));
-    }
 }

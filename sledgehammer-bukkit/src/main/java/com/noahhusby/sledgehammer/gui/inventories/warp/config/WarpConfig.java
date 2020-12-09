@@ -37,6 +37,9 @@ public class WarpConfig extends GUIChild {
     @Override
     public void onInventoryClick(InventoryClickEvent e) {
         e.setCancelled(true);
+        if(e.getCurrentItem() == null) return;
+        if(e.getCurrentItem().getItemMeta() == null) return;
+        if(e.getCurrentItem().getItemMeta().getDisplayName() == null) return;
         if (ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Create new warp")) {
             GUIRegistry.register(new WarpNameEntryController(getPlayer()));
             return;
