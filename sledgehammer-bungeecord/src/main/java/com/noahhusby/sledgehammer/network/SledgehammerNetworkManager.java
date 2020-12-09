@@ -50,6 +50,7 @@ public class SledgehammerNetworkManager {
         register(new S2PWebMapPacket());
         register(new S2PPlayerUpdatePacket());
         register(new S2PPermissionPacket());
+        register(new S2PWarpConfigPacket());
     }
 
     /**

@@ -33,7 +33,7 @@ public class WarpListFragment implements ICommandFragment {
         boolean local = ConfigHandler.localWarp;
         boolean hasPerms = PermissionHandler.getInstance().isAdmin(sender) || local && sender.hasPermission("sledgehammer.listwarp");
         if(!hasPerms) {
-            PermissionHandler.getInstance().check(code -> {
+            PermissionHandler.getInstance().check((code, global) -> {
                 run(sender, code == PermissionRequest.PermissionCode.PERMISSION);
             }, SledgehammerPlayer.getPlayer(sender), "sledgehammer.listwarp");
         } else {

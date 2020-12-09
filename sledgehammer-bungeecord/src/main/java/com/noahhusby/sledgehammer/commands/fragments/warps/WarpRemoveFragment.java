@@ -40,7 +40,7 @@ public class WarpRemoveFragment implements ICommandFragment {
         boolean local = ConfigHandler.localWarp;
         boolean hasPerms = PermissionHandler.getInstance().isAdmin(sender) || (!local && sender.hasPermission("sledgehammer.removewarp"));
         if(local && !hasPerms) {
-            PermissionHandler.getInstance().check(code -> {
+            PermissionHandler.getInstance().check((code, global) -> {
                 run(sender, args, false, code == PermissionRequest.PermissionCode.PERMISSION);
             }, SledgehammerPlayer.getPlayer(sender), "sledgehammer.removewarp");
         } else {

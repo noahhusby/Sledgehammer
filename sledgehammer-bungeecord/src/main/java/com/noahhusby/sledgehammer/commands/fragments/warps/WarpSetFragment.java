@@ -36,7 +36,7 @@ public class WarpSetFragment implements ICommandFragment {
         boolean local = ConfigHandler.localWarp;
         boolean hasPerms = PermissionHandler.getInstance().isAdmin(sender) || (!local && sender.hasPermission("sledgehammer.setwarp"));
         if(local && !hasPerms) {
-            PermissionHandler.getInstance().check(code -> {
+            PermissionHandler.getInstance().check((code, global) -> {
                 run(sender, args, code == PermissionRequest.PermissionCode.PERMISSION, true);
             }, SledgehammerPlayer.getPlayer(sender), "sledgehammer.setwarp");
         } else {

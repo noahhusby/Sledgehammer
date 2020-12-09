@@ -88,10 +88,22 @@ public class WarpHandler {
      * @param sender The command sender
      */
     public void requestNewWarp(String warpName, CommandSender sender) {
+        requestNewWarp(warpName, sender, null);
+    }
+
+    /**
+     * Requests a new warp that should be created
+     * @param warpName The name of the warp
+     * @param sender The command sender
+     * @param response The warp response
+     */
+    public void requestNewWarp(String warpName, CommandSender sender, WarpResponse response) {
         Warp warp = new Warp();
         warp.setName(warpName);
+        warp.setResponse(response);
         requestedWarps.put(sender, warp);
         SledgehammerNetworkManager.getInstance().send(new P2SSetwarpPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName()));
+
     }
 
     public void removeWarp(int warpID, CommandSender sender) {
@@ -107,30 +119,6 @@ public class WarpHandler {
 
         warps.remove(warp);
         warps.save(true);
-    }
-
-    /**
-     * Deletes a warp by name
-     * @param w Warp name
-     * @param sender Command sender
-     */
-    public void removeWarp(String w, CommandSender sender) {
-        Warp remove = null;
-        for(Warp wp : warps) {
-            if(wp.getName().equalsIgnoreCase(w)) {
-                remove = wp;
-                sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Successfully removed ", ChatColor.GRAY),
-                        new TextElement(ChatHelper.capitalize(w), ChatColor.RED)));
-                warps.save();
-            }
-        }
-
-        if(remove != null)  {
-            warps.remove(remove);
-            return;
-        }
-
-        sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Warp could not be removed", ChatColor.RED)));
     }
 
     /**
@@ -168,8 +156,12 @@ public class WarpHandler {
             warps.add(warp);
             warps.save(true);
 
-            player.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Created warp ", ChatColor.GRAY),
-                    new TextElement(warp.getName(), ChatColor.RED), new TextElement(" on ", ChatColor.GRAY), new TextElement(warp.getServer(), ChatColor.BLUE)));
+            if(warp.getResponse() != null) {
+                warp.getResponse().onResponse(true, warp);
+            } else {
+                player.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Created warp ", ChatColor.GRAY),
+                        new TextElement(warp.getName(), ChatColor.RED), new TextElement(" on ", ChatColor.GRAY), new TextElement(warp.getServer(), ChatColor.BLUE)));
+            }
 
             List<CommandSender> removeSenders = Lists.newArrayList();
             for(Map.Entry<CommandSender, Warp> r : requestedWarps.entrySet())
@@ -249,6 +241,44 @@ public class WarpHandler {
         for(Warp w : warps) {
             SledgehammerServer server = ServerConfig.getInstance().getServer(w.getServer());
             if(server == null) continue;
+
+            WarpGroup wg = null;
+            for(WarpGroup g : groupsList)
+                if(g.ID.equals(server.getGroup().getID())) wg = g;
+
+            if(wg == null) {
+                ServerGroup sg = server.getGroup();
+                wg = new WarpGroup(sg.getID(), sg.getName(), sg.getHeadID());
+                wg.warps.add(w);
+                groupsList.add(wg);
+            } else {
+                wg.warps.add(w);
+            }
+        }
+
+        JSONArray groups = new JSONArray();
+        for(WarpGroup wg : groupsList)
+            groups.add(wg.toJson());
+
+        data.put("groups", groups);
+        return data;
+    }
+
+    public JSONObject generateConfigPayload(SledgehammerPlayer player, boolean admin) {
+        SledgehammerServer s = player.getSledgehammerServer();
+        if(s == null) return new JSONObject();
+
+        JSONObject data = new JSONObject();
+        data.put("requestGroup", s.getGroup().getID());
+        data.put("admin", admin);
+        data.put("local", ConfigHandler.localWarp);
+
+        List<WarpGroup> groupsList = new ArrayList<>();
+
+        for(Warp w : warps) {
+            SledgehammerServer server = ServerConfig.getInstance().getServer(w.getServer());
+            if(server == null) continue;
+            if(!server.getGroup().getID().equals(s.getGroup().getID()) && !admin) continue;
 
             WarpGroup wg = null;
             for(WarpGroup g : groupsList)

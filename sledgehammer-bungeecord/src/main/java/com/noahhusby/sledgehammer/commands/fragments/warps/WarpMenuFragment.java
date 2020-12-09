@@ -49,7 +49,7 @@ public class WarpMenuFragment implements ICommandFragment {
         if(editAccess) {
             run(sender, true);
         } else {
-            PermissionHandler.getInstance().check(code -> {
+            PermissionHandler.getInstance().check((code, global) -> {
                 run(sender, code == PermissionRequest.PermissionCode.PERMISSION);
             }, SledgehammerPlayer.getPlayer(sender), "sledgehammer.warp.edit");
         }

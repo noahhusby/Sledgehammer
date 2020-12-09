@@ -23,6 +23,7 @@ import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.SmartObject;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.chat.TextElement;
+import com.noahhusby.sledgehammer.gui.GUIHandler;
 import com.noahhusby.sledgehammer.network.P2S.P2STeleportPacket;
 import com.noahhusby.sledgehammer.network.PacketInfo;
 import com.noahhusby.sledgehammer.network.S2PPacket;
@@ -31,6 +32,7 @@ import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.warp.Warp;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
 import net.md_5.bungee.api.ChatColor;
+import org.json.simple.JSONObject;
 
 public class S2PWarpPacket extends S2PPacket {
     @Override
@@ -40,6 +42,10 @@ public class S2PWarpPacket extends S2PPacket {
 
     @Override
     public void onMessage(PacketInfo info, SmartObject data) {
+
+        if(!GUIHandler.getInstance().validateRequest(
+                SledgehammerPlayer.getPlayer(info.getSender()), data.getString("salt"))) return;
+
         SledgehammerPlayer player = SledgehammerPlayer.getPlayer(info.getSender());
         if(player == null) return;
         int warpId = SledgehammerUtil.JsonUtils.toInt(data.get("warpId"));
@@ -60,5 +66,6 @@ public class S2PWarpPacket extends S2PPacket {
 
         player.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Warping to ", ChatColor.GRAY), new TextElement(warp.getName(), ChatColor.RED)));
         SledgehammerNetworkManager.getInstance().send(new P2STeleportPacket(player.getName(), warp.getServer(), warp.getPoint()));
+
     }
 }

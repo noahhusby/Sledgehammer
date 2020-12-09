@@ -3,8 +3,6 @@ package com.noahhusby.sledgehammer.gui.inventories.warp;
 import com.noahhusby.sledgehammer.data.warp.WarpPayload;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIChild;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
-import com.noahhusby.sledgehammer.network.S2P.S2PWarpPacket;
-import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
