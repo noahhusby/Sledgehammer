@@ -86,7 +86,7 @@ public class TerramapAddon extends Addon {
     		Sledgehammer.logger.warning("Failed to parse Terramap proxy uuid. Will be using 0.");
     	}
     	this.listener = new TerramapAddonEventHandler();
-    	Sledgehammer.setupListener(this.listener);
+    	Sledgehammer.addListener(this.listener);
     	if(ConfigHandler.terramapSyncPlayers) {
     		this.syncTask = Sledgehammer.sledgehammer.getProxy().getScheduler().schedule(Sledgehammer.sledgehammer, this.synchronizer::syncPlayers, 0, ConfigHandler.terramapSyncInterval, TimeUnit.MILLISECONDS);
     	}
