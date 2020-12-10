@@ -1,6 +1,8 @@
 # Sledgehammer
 A set of tools for multi-server Build the Earth networks
 
+### Documentation has been moved to the [wiki](https://github.com/noahhusby/Sledgehammer/wiki)
+
 [![sledgehammer-bungeecord Actions Status](https://github.com/noahhusby/sledgehammer/workflows/sledgehammer-bungeecord/badge.svg)](https://github.com/noahhusby/sledgehammer/actions)
 [![sledgehammer-bukkit Actions Status](https://github.com/noahhusby/sledgehammer/workflows/sledgehammer-bukkit/badge.svg)](https://github.com/noahhusby/sledgehammer/actions)
 
