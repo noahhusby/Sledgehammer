@@ -51,6 +51,7 @@ public class AddonManager implements Listener {
 
     public void onDisable() {
         addons.forEach(IAddon::onDisable);
+        addons.clear(); // If the plugin is reloading, new instances of the add-ons will be registered again
     }
 
     @EventHandler

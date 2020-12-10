@@ -63,6 +63,15 @@ public class SledgehammerUtil {
     public static double[] fromGeo(double lon, double lat) {
         return scaleProj.fromGeo(lon, lat);
     }
+    
+    /**
+     * Gets the geographic projection used to convert coordinates
+     * @author SmylerMC
+     * @return a BTE compatible projection
+     */
+    public static GeographicProjection getBTEProjection() {
+    	return scaleProj;
+    }
 
     /**
      * Gets Bungeecord server by it's name

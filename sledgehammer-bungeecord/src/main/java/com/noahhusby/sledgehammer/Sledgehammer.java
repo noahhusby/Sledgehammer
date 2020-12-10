@@ -28,7 +28,14 @@ import java.util.logging.Logger;
 import com.noahhusby.sledgehammer.addons.AddonManager;
 import com.noahhusby.sledgehammer.addons.terramap.TerramapAddon;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
-import com.noahhusby.sledgehammer.commands.*;
+import com.noahhusby.sledgehammer.commands.BorderCommand;
+import com.noahhusby.sledgehammer.commands.CsTpllCommand;
+import com.noahhusby.sledgehammer.commands.SledgehammerAdminCommand;
+import com.noahhusby.sledgehammer.commands.SledgehammerCommand;
+import com.noahhusby.sledgehammer.commands.TestCommand;
+import com.noahhusby.sledgehammer.commands.TpllCommand;
+import com.noahhusby.sledgehammer.commands.TplloCommand;
+import com.noahhusby.sledgehammer.commands.WarpCommand;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
@@ -98,6 +105,8 @@ public class Sledgehammer extends Plugin implements Listener {
         }
 
         addonManager = AddonManager.getInstance();
+        addonManager.onDisable();
+        
         if(ConfigHandler.terramapEnabled) addonManager.registerAddon(new TerramapAddon());
 
         addonManager.onEnable();
@@ -178,4 +187,12 @@ public class Sledgehammer extends Plugin implements Listener {
             ChatHelper.sendAuthCodeWarning(e.getPlayer());
         }
     }
+    /**
+     * @author SmylerMC
+     * @param l
+     */
+    public static void terminateListener(Listener l) {
+        ProxyServer.getInstance().getPluginManager().unregisterListener(l);
+    }
+    
 }

@@ -51,6 +51,7 @@ public class TpllCommand extends Command {
             return;
         }
 
+
         PermissionHandler.getInstance().check(SledgehammerPlayer.getPlayer(sender), "sledgehammer.tpll", (code, global) -> {
             if(code == PermissionRequest.PermissionCode.PERMISSION) {
                 if(args.length==0) {
@@ -137,6 +138,7 @@ public class TpllCommand extends Command {
                             new TextElement(lat+", "+lon, ChatColor.RED)));
                 }
                 getNetworkManager().send(new P2SLocationPacket(recipient.getName(), server.getName(), String.valueOf(lat), String.valueOf(lon)));
+
                 return;
             }
             sender.sendMessage(ChatConstants.noPermission);
