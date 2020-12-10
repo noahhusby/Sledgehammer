@@ -230,23 +230,23 @@ public class ConfigHandler {
         order();
         
         cat("Terramap", "Terramap Addon Configuration.");
-        terramapEnabled = config.getBoolean(prop("Enabled"), category, false, "Enables the Terramap integration");
+        terramapEnabled = config.getBoolean(prop("Enabled"), category, true, "Enables Terramap integration");
         terramapSyncPlayers = config.getBoolean(prop("Sync Players"), category, true,
         		"Wether or not to synchronize players from server to client so everyone appears on the map, no matter the distance");
         terramapSyncInterval = config.getInt(prop("Sync Interval"), category, 500, 1, Integer.MAX_VALUE,
-        		"The time interval at which to synchronize players with clients");
-        terramapSyncTimeout = config.getInt(prop("Sync Timeout"), category, 1500, 120000, Integer.MAX_VALUE,
-                "The default time interval, in milliseconds, before a clients needs to register again to continue getting player updates.");
+        		"The time interval, in milliseconds at which to synchronize players with clients");
+        terramapSyncTimeout = config.getInt(prop("Sync Timeout"), category, 120000, 20000, Integer.MAX_VALUE,
+                "The default time interval, in milliseconds, before a clients needs to register again to continue getting player position updates.");
         terramapPlayersDisplayDefault = config.getBoolean(prop("Player Display Default"), category, true,
-        		"If player sync is enabled, sould players be displayed by default (true) or should they opt-in (false)");
+        		"If player sync is enabled, sould players be displayed by default (true) or should they explicitly opt-in with /terrashow (false)");
         terramapSendCustomMapsToClient = config.getBoolean(prop("Send Custom Maps to Clients"), category, true,
         		"Set to false if you do not want to send custom maps to clients. This is only for testing, as if you don't want to send map styles to client, the first thing to do is to not configure any.");
         terramapGlobalMap = config.getBoolean(prop("Global Map"), category, true,
         		"Set this to false to only allow players to use the map when they are on an Earth world.");
-        terramapGlobalSettings = config.getBoolean(prop("Global Settings"), category, true,
+        terramapGlobalSettings = config.getBoolean(prop("Global Settings"), category, false,
         		"Set this to true is you want client's settings to be saved for the entire network instead of per-world.");
         terramapProxyUUID = config.getString(prop("Proxy UUID"), "terramap", UUID.randomUUID().toString(), 
-        		"A UUID v4 that will be used by Terramap clients to identify this network. DO NOT PUT YOUR NETWORK AUTHENTIFICATION CODE IN HERE, THIS IS SHARED WITH CLIENTS! You want this to be the same on all your network's proxies. The default value is randomly generated.");
+        		"A UUID v4 that will be used by Terramap clients to identify this network when saving settings. DO NOT PUT YOUR NETWORK AUTHENTIFICATION CODE IN HERE, THIS IS SHARED WITH CLIENTS! You want this to be the same on all your network's proxies. The default value is randomly generated.");
 
         order();
         if(config.hasChanged()) config.save();

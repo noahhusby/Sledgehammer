@@ -38,7 +38,7 @@ public class RemoteSynchronizer {
 				SledgehammerPlayer player = players.get(i);
 				if(!player.onEarthServer()) continue;
 				if(!PlayerDisplayPreferences.shouldDisplayPlayer(player)) continue;
-				if(player.getLocation() == null) continue; // TODO New players have this set to null
+				if(player.getLocation() == null) continue; // New players can have this set to null
 				playersToSend.add(player);
 			}
 			SledgehammerPlayer[] players2send2 = new SledgehammerPlayer[this.playersToUpdate.size()];
