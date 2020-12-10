@@ -112,7 +112,7 @@ public class WarpSortInventory extends GUIChild {
             data.put("sort", "group");
         }
 
-        SledgehammerNetworkManager.getInstance().sendPacket(new S2PWarpConfigPacket(S2PWarpConfigPacket.ProxyConfigAction.UPDATE_PLAYER_DEFAULT,
+        SledgehammerNetworkManager.getInstance().send(new S2PWarpConfigPacket(S2PWarpConfigPacket.ProxyConfigAction.UPDATE_PLAYER_DEFAULT,
                 player, controller.getPayload().getSalt(), data));
 
         controller.close();

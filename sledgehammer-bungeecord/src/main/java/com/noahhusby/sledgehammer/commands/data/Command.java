@@ -22,9 +22,6 @@ import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import com.noahhusby.sledgehammer.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-
-import java.util.UUID;
 
 public abstract class Command extends net.md_5.bungee.api.plugin.Command {
     private final String permissionNode;

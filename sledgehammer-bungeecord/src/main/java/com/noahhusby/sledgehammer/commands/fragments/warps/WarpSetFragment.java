@@ -22,10 +22,8 @@ import com.noahhusby.sledgehammer.chat.ChatConstants;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.chat.TextElement;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.permissions.PermissionRequest;
-import com.noahhusby.sledgehammer.permissions.PermissionResponse;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
 import net.md_5.bungee.api.ChatColor;
@@ -41,13 +39,13 @@ public class WarpSetFragment implements ICommandFragment {
 
                 switch (warpStatus) {
                     case EXISTS:
-                        sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("A warp with that name already exists! Use ", ChatColor.GRAY),
-                                new TextElement("/" + ConfigHandler.warpCommand + " move ", ChatColor.YELLOW), new TextElement("to change it's location.", ChatColor.GRAY)));
+                        sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("A warp with that name already exists!", ChatColor.RED)));
+                        sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Use the warp GUI to move it's location.", ChatColor.GRAY)));
                         break;
                     case RESERVED:
                         if(global) {
-                            sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("A warp with that name already exists! Use ", ChatColor.GRAY),
-                                    new TextElement("/" + ConfigHandler.warpCommand + " move ", ChatColor.YELLOW), new TextElement("to change it's location.", ChatColor.GRAY)));
+                            sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("A warp with that name already exists!", ChatColor.RED)));
+                            sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Use the warp GUI to move it's location.", ChatColor.GRAY)));
                             return;
                         }
                         sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("This warp name is reserved and cannot be used.", ChatColor.RED)));

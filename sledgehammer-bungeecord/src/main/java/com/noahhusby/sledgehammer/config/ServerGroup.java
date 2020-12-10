@@ -18,10 +18,8 @@
 
 package com.noahhusby.sledgehammer.config;
 
-import com.google.gson.Gson;
 import com.noahhusby.lib.data.storage.Storable;
 import com.noahhusby.sledgehammer.SmartObject;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;

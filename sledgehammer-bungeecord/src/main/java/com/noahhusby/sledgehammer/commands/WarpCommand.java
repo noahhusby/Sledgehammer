@@ -24,6 +24,7 @@ import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.chat.TextElement;
 import com.noahhusby.sledgehammer.commands.fragments.warps.*;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
+import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.ServerGroup;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.network.P2S.P2STeleportPacket;
@@ -31,7 +32,6 @@ import com.noahhusby.sledgehammer.network.P2S.P2SWarpGUIPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import com.noahhusby.sledgehammer.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.permissions.PermissionRequest;
-import com.noahhusby.sledgehammer.permissions.PermissionResponse;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.warp.Warp;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
@@ -104,6 +104,25 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
             return;
         }
 
+        List<String> aliases = new ArrayList<>();
+        for(ServerGroup group : ServerConfig.getInstance().getGroups())
+            aliases.addAll(group.getAliases());
+
+        if(aliases.contains(args[0])) {
+            String id = null;
+            for(ServerGroup g : ServerConfig.getInstance().getGroups()) {
+                if(g.getAliases().contains(args[0])) {
+                    PermissionHandler.getInstance().check(SledgehammerPlayer.getPlayer(sender), "sledgehammer.warp.edit", (code, global) -> {
+                        SledgehammerNetworkManager.getInstance().send(new P2SWarpGUIPacket(sender.getName(),
+                                SledgehammerUtil.getServerFromSender(sender).getName(),
+                                code == PermissionRequest.PermissionCode.PERMISSION, g.getID()));
+
+                    });
+                    return;
+                }
+            }
+        }
+
         List<Warp> warps = new ArrayList<>();
         for(Warp w : WarpHandler.getInstance().getWarps())
             if(w.getPinnedMode() == Warp.PinnedMode.GLOBAL || !ConfigHandler.localWarp
@@ -139,6 +158,9 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
             List<String> tabbedWarps = new ArrayList<>();
             for(Warp w : WarpHandler.getInstance().getWarps())
                 if(group.getServers().contains(w.getServer())) tabbedWarps.add(w.getName());
+
+            for(ServerGroup g : ServerConfig.getInstance().getGroups())
+                tabbedWarps.addAll(g.getAliases());
 
             List<String> completion = new ArrayList<>();
             SledgehammerUtil.copyPartialMatches(args[0], tabbedWarps, completion);

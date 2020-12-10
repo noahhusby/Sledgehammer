@@ -18,13 +18,9 @@
 
 package com.noahhusby.sledgehammer.gui.inventories.warp;
 
-import com.noahhusby.sledgehammer.data.warp.Warp;
-import com.noahhusby.sledgehammer.data.warp.WarpGroup;
 import com.noahhusby.sledgehammer.data.warp.WarpPayload;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIChild;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIController;
-import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
-import com.noahhusby.sledgehammer.gui.inventories.general.IGUIChild;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;

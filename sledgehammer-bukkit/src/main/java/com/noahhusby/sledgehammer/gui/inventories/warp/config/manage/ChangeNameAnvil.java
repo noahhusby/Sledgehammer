@@ -5,14 +5,9 @@ import com.noahhusby.sledgehammer.data.warp.Warp;
 import com.noahhusby.sledgehammer.data.warp.WarpConfigPayload;
 import com.noahhusby.sledgehammer.gui.inventories.anvil.AnvilChild;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
-import com.noahhusby.sledgehammer.gui.inventories.warp.config.ConfigMenuController;
-import com.noahhusby.sledgehammer.gui.inventories.warp.config.ManageGroupInventoryController;
-import com.noahhusby.sledgehammer.network.S2P.S2PWarpConfigPacket;
-import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.json.simple.JSONObject;
 
 public class ChangeNameAnvil extends AnvilChild {
 

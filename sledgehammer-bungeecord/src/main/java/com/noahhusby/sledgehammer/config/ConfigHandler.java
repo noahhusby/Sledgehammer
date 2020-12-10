@@ -19,7 +19,6 @@
 package com.noahhusby.sledgehammer.config;
 
 import com.noahhusby.lib.data.sql.Credentials;
-import com.noahhusby.lib.data.sql.ISQLDatabase;
 import com.noahhusby.lib.data.sql.MySQL;
 import com.noahhusby.lib.data.storage.Storage;
 import com.noahhusby.lib.data.storage.handlers.LocalStorageHandler;
@@ -205,6 +204,7 @@ public class ConfigHandler {
                 "Set to false to disable automatic border teleportation, or true to enable it. (Note: OSM Offline Mode must be set to true for this to be enabled.");
         order();
 
+        /*
         cat("Map", "Options for sledgehammer's map");
         mapEnabled = config.getBoolean(prop("Enable"), "Map", false,
                 "Set this to true to enable sledgehammer's map");
@@ -226,8 +226,10 @@ public class ConfigHandler {
         mapLink = config.getString(prop("Map Link"), "Map", "http://map.bte-network.net",
                 "The direct http link for the map. This is the link that players will interact with.\n" +
                         "NOTE: You must put either http:// or https:// at the beginning");
-        order();
-        
+                          order();
+
+         */
+
         cat("Terramap", "Terramap Addon Configuration.");
         terramapEnabled = config.getBoolean(prop("Enabled"), category, false, "Enables the Terramap integration");
         terramapSyncPlayers = config.getBoolean(prop("Sync Players"), category, true,

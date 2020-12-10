@@ -32,7 +32,6 @@ import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.warp.Warp;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
 import net.md_5.bungee.api.ChatColor;
-import org.json.simple.JSONObject;
 
 public class S2PWarpPacket extends S2PPacket {
     @Override

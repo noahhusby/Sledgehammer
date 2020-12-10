@@ -22,26 +22,20 @@ import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.SmartObject;
 import com.noahhusby.sledgehammer.chat.ChatConstants;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
-import com.noahhusby.sledgehammer.chat.TextElement;
-import com.noahhusby.sledgehammer.config.ConfigHandler;
+import com.noahhusby.sledgehammer.datasets.Point;
 import com.noahhusby.sledgehammer.gui.GUIHandler;
 import com.noahhusby.sledgehammer.network.IS2PPacket;
 import com.noahhusby.sledgehammer.network.P2S.P2SWarpConfigPacket;
-import com.noahhusby.sledgehammer.network.P2S.P2SWarpGUIPacket;
 import com.noahhusby.sledgehammer.network.PacketInfo;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import com.noahhusby.sledgehammer.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.permissions.PermissionRequest;
-import com.noahhusby.sledgehammer.permissions.PermissionResponse;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.warp.Warp;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
-import com.noahhusby.sledgehammer.warp.WarpResponse;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import org.glassfish.grizzly.compression.lzma.impl.Base;
 import org.json.simple.JSONObject;
+
+import java.text.DecimalFormat;
 
 public class S2PWarpConfigPacket implements IS2PPacket {
     @Override
@@ -116,12 +110,38 @@ public class S2PWarpConfigPacket implements IS2PPacket {
                 } else if(sort.equalsIgnoreCase("pinned")) {
                     player.getAttributes().add("WARP_SORT_PINNED");
                 }
+                break;
+            case WARP_UPDATE_LOCATION:
+                SmartObject point = SmartObject.fromJSON((JSONObject) data.get("point"));
+                DecimalFormat format = new DecimalFormat("###.###");
 
+                String x = format.format(Double.parseDouble(point.getString("x")));
+                String y = format.format(Double.parseDouble(point.getString("y")));
+                String z = format.format(Double.parseDouble(point.getString("z")));
+                String yaw = format.format(Double.parseDouble(point.getString("yaw")));
+                String pitch = format.format(Double.parseDouble(point.getString("pitch")));
+
+                Warp w = WarpHandler.getInstance().getWarp(SledgehammerUtil.JsonUtils.toInt(data.get("warpId")));
+                w.setPoint(new Point(x, y, z, yaw, pitch));
+                w.setServer(info.getServer());
+                WarpHandler.getInstance().getWarps().save(true);
+
+                response.put("warpId", w.getId());
+                SledgehammerNetworkManager.getInstance().send(new P2SWarpConfigPacket(player,
+                        P2SWarpConfigPacket.ServerConfigAction.LOCATION_UPDATE,
+                        g, response));
+                break;
+            case REMOVE_WARP:
+                WarpHandler.getInstance().getWarps().remove(WarpHandler.getInstance().getWarp(
+                        SledgehammerUtil.JsonUtils.toInt(data.get("warpId"))));
+                WarpHandler.getInstance().getWarps().save(true);
+                SledgehammerNetworkManager.getInstance().send(new P2SWarpConfigPacket(player,
+                        P2SWarpConfigPacket.ServerConfigAction.REMOVE_SUCCESSFUL, g));
                 break;
         }
     }
 
     public enum ProxyConfigAction {
-        OPEN_CONFIG, CREATE_WARP, UPDATE_WARP, UPDATE_PLAYER_DEFAULT
+        OPEN_CONFIG, CREATE_WARP, UPDATE_WARP, UPDATE_PLAYER_DEFAULT, WARP_UPDATE_LOCATION, REMOVE_WARP
     }
 }

@@ -68,7 +68,7 @@ public class SledgehammerNetworkManager implements PluginMessageListener, Listen
         registeredProxyPackets.add(packet);
     }
 
-    public void sendPacket(IS2PPacket packet) {
+    public void send(IS2PPacket packet) {
         JSONObject response = new JSONObject();
         response.put("command", packet.getPacketInfo().getID());
         response.put("sender", packet.getPacketInfo().getSender());

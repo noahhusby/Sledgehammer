@@ -25,8 +25,6 @@ import com.noahhusby.sledgehammer.gui.inventories.general.GUIController;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
 import com.noahhusby.sledgehammer.gui.inventories.general.IGUIChild;
 import org.bukkit.entity.Player;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;

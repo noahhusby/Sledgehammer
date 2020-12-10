@@ -20,7 +20,6 @@ package com.noahhusby.sledgehammer.warp;
 
 import com.noahhusby.lib.data.storage.Storable;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
-import com.noahhusby.sledgehammer.datasets.Location;
 import com.noahhusby.sledgehammer.datasets.Point;
 import org.json.simple.JSONObject;
 

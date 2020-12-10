@@ -42,6 +42,6 @@ public class S2PWarpConfigPacket implements IS2PPacket {
     }
 
     public enum ProxyConfigAction {
-        OPEN_CONFIG, CREATE_WARP, UPDATE_WARP, UPDATE_PLAYER_DEFAULT
+        OPEN_CONFIG, CREATE_WARP, UPDATE_WARP, UPDATE_PLAYER_DEFAULT, WARP_UPDATE_LOCATION, REMOVE_WARP
     }
 }

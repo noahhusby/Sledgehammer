@@ -25,7 +25,6 @@ import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.ServerGroup;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
-import org.json.simple.JSONObject;
 
 public class GroupCreateFragment implements ICommandFragment {
     @Override

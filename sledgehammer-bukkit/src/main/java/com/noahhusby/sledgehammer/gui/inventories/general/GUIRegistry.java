@@ -34,11 +34,13 @@ public class GUIRegistry {
     }
 
     public static void onInventoryClick(InventoryClickEvent e) {
-
         for(IController i : registeredControllers) {
             if(i instanceof AnvilController) continue;
             GUIController gui = (GUIController) i;
-            if(gui.getInventory().getName().equals(e.getInventory().getName())) gui.onInventoryClick(e);
+            if(gui.getInventory().equals(e.getInventory())){
+                gui.onInventoryClick(e);
+                return;
+            }
         }
     }
 
