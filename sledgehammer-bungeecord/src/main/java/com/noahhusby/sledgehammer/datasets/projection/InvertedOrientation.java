@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2020 Noah Husby
- * Sledgehammer [Bungeecord] - ProjectionTransform.java
+ * Sledgehammer [Bungeecord] - InvertedOrientation.java
  *
  * Sledgehammer is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,24 +16,28 @@
  *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
-package com.noahhusby.sledgehammer.projection;
+package com.noahhusby.sledgehammer.datasets.projection;
 
-public abstract class ProjectionTransform extends GeographicProjection {
-    protected GeographicProjection input;
+public class InvertedOrientation extends ProjectionTransform {
 
-    public ProjectionTransform(GeographicProjection input) {
-        this.input = input;
+    public InvertedOrientation(GeographicProjection input) {
+        super(input);
     }
 
-    public boolean upright() {
-        return input.upright();
+    public double[] toGeo(double x, double y) {
+        return input.toGeo(y,x);
+    }
+
+    public double[] fromGeo(double lon, double lat) {
+        double[] p = input.fromGeo(lon, lat);
+        double t = p[0];
+        p[0] = p[1];
+        p[1] = t;
+        return p;
     }
 
     public double[] bounds() {
-        return input.bounds();
-    }
-
-    public double metersPerUnit() {
-        return input.metersPerUnit();
+        double[] b = input.bounds();
+        return new double[] {b[1],b[0],b[3],b[2]};
     }
 }

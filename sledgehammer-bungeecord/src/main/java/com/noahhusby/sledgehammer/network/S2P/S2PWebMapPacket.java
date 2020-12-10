@@ -22,8 +22,6 @@ import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SmartObject;
 import com.noahhusby.sledgehammer.network.PacketInfo;
 import com.noahhusby.sledgehammer.network.S2PPacket;
-import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
-import net.md_5.bungee.api.ProxyServer;
 
 public class S2PWebMapPacket extends S2PPacket {
     @Override

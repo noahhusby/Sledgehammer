@@ -31,18 +31,13 @@ import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.datasets.Point;
 import com.noahhusby.sledgehammer.chat.TextElement;
-import com.noahhusby.sledgehammer.permissions.PermissionHandler;
-import com.noahhusby.sledgehammer.permissions.PermissionRequest;
-import com.noahhusby.sledgehammer.permissions.PermissionResponse;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.minecraftforge.common.config.Config;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -186,7 +181,8 @@ public class WarpHandler {
 
     public WarpStatus getWarpStatus(String warpName, String server) {
         for(Warp w : warps)
-            if(w.getName().equalsIgnoreCase(warpName) && (!ConfigHandler.localWarp || w.getServer().equalsIgnoreCase(server)))
+            if(w.getName().equalsIgnoreCase(warpName) && (!ConfigHandler.localWarp ||
+                ServerConfig.getInstance().getServer(server).getGroup().getServers().contains(w.getServer())))
                 return getWarpStatus(w.getId(), server);
 
         return WarpStatus.AVAILABLE;
@@ -198,7 +194,8 @@ public class WarpHandler {
             if(w.getId() == warpId && !local && w.getPinnedMode() == Warp.PinnedMode.GLOBAL) return WarpStatus.RESERVED;
 
         for(Warp w: warps)
-            if(w.getId() == warpId && (!local || w.getServer().equalsIgnoreCase(server))) return WarpStatus.EXISTS;
+            if(w.getId() == warpId && (!local || ServerConfig.getInstance().getServer(server).getGroup().getServers().contains(w.getServer())))
+                return WarpStatus.EXISTS;
 
         return WarpStatus.AVAILABLE;
     }
@@ -238,6 +235,12 @@ public class WarpHandler {
         return list;
     }
 
+    /**
+     * Generates the payload for the warp GUI
+     * @param player {@link SledgehammerPlayer}
+     * @param editAccess True if player has permission to edit warps, false if not
+     * @return GUI Payload
+     */
     public JSONObject generateGUIPayload(SledgehammerPlayer player, boolean editAccess) {
         SledgehammerServer s = player.getSledgehammerServer();
         if(s == null) return new JSONObject();
@@ -298,6 +301,12 @@ public class WarpHandler {
         return data;
     }
 
+    /**
+     * Generates paylood for the warp configuration GUI
+     * @param player {@link SledgehammerPlayer}
+     * @param admin True if they are able to edit all groups
+     * @return Config Payload
+     */
     public JSONObject generateConfigPayload(SledgehammerPlayer player, boolean admin) {
         SledgehammerServer s = player.getSledgehammerServer();
         if(s == null) return new JSONObject();

@@ -3,13 +3,12 @@ package com.noahhusby.sledgehammer.gui.inventories.warp.config.manage;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.chat.ChatHandler;
-import com.noahhusby.sledgehammer.chat.ChatResponse;
+import com.noahhusby.sledgehammer.data.location.Point;
 import com.noahhusby.sledgehammer.data.warp.Warp;
 import com.noahhusby.sledgehammer.data.warp.WarpConfigPayload;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIChild;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
 import com.noahhusby.sledgehammer.gui.inventories.warp.config.ManageGroupInventoryController;
-import com.noahhusby.sledgehammer.gui.inventories.warp.config.WarpNameEntryController;
 import com.noahhusby.sledgehammer.gui.inventories.warp.config.confirmation.ConfirmationController;
 import com.noahhusby.sledgehammer.network.S2P.S2PWarpConfigPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
@@ -18,6 +17,7 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +73,7 @@ public class ManageWarpInventory extends GUIChild {
             ItemMeta meta = item.getItemMeta();
             meta.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "Change Name");
             item.setItemMeta(meta);
-            inventory.setItem(10, item);
+            inventory.setItem(11, item);
         }
 
         inventory.setItem(12, SledgehammerUtil.getSkull(Constants.pocketPortalHead, ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Move Location"));
@@ -114,10 +114,11 @@ public class ManageWarpInventory extends GUIChild {
             meta.setLore(lore);
 
             item.setItemMeta(meta);
-            inventory.setItem(14, item);
+            inventory.setItem(13, item);
         }
 
-        inventory.setItem(16, SledgehammerUtil.getSkull(Constants.steveHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Change Head"));
+        inventory.setItem(14, SledgehammerUtil.getSkull(Constants.steveHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Change Head"));
+        inventory.setItem(15, SledgehammerUtil.getSkull(Constants.redTrashCanHead, ChatColor.RED + "" + ChatColor.BOLD + "Delete Warp"));
     }
 
     @Override
@@ -131,12 +132,27 @@ public class ManageWarpInventory extends GUIChild {
             return;
         }
 
-        if(e.getSlot() == 10) {
+        if(e.getSlot() == 11) {
             GUIRegistry.register(new ChangeNameController(getPlayer(), payload, cur));
             return;
         }
 
-        if(e.getSlot() == 14) {
+        if(e.getSlot() == 12) {
+            JSONObject data = new JSONObject();
+            data.put("warpId", cur.getId());
+            Point point = new Point(String.valueOf(player.getLocation().getX()),
+                    String.valueOf(player.getLocation().getY()),
+                    String.valueOf(player.getLocation().getZ()),
+                    String.valueOf(player.getLocation().getPitch()),
+                    String.valueOf(player.getLocation().getYaw()));
+            data.put("point", point.getJSON());
+
+            SledgehammerNetworkManager.getInstance().send(new S2PWarpConfigPacket(
+                    S2PWarpConfigPacket.ProxyConfigAction.WARP_UPDATE_LOCATION,
+                    getPlayer(), payload.getSalt(), data));
+        }
+
+        if(e.getSlot() == 13) {
             if(e.getCurrentItem().getDurability() == 7) {
                 cur.setPinnedMode(Warp.PinnedMode.LOCAL);
                 GUIRegistry.register(new ManageWarpInventoryController(getController(), payload, cur));
@@ -156,7 +172,7 @@ public class ManageWarpInventory extends GUIChild {
             }
         }
 
-        if(e.getSlot() == 16) {
+        if(e.getSlot() == 14) {
             getController().close();
             ChatHandler.getInstance().startEntry(getPlayer(), ChatColor.BLUE + "Enter the Base64 head code from " +
                     ChatColor.GOLD + "minecraft-heads.com", (success, text) -> {
@@ -168,8 +184,17 @@ public class ManageWarpInventory extends GUIChild {
             });
         }
 
+        if(e.getSlot() == 15) {
+            JSONObject data = new JSONObject();
+            data.put("warpId", cur.getId());
+
+            SledgehammerNetworkManager.getInstance().send(new S2PWarpConfigPacket(
+                    S2PWarpConfigPacket.ProxyConfigAction.REMOVE_WARP,
+                    getPlayer(), payload.getSalt(), data));
+        }
+
         if(e.getSlot() == 26) {
-            SledgehammerNetworkManager.getInstance().sendPacket(
+            SledgehammerNetworkManager.getInstance().send(
                     new S2PWarpConfigPacket(S2PWarpConfigPacket.ProxyConfigAction.UPDATE_WARP, getPlayer(),
                             ((ManageWarpInventoryController) controller).getPayload().getSalt(), cur.toJson()));
             GUIRegistry.register(new ConfirmationController(getPlayer(), payload, ConfirmationController.Type.HEAD_UPDATE));

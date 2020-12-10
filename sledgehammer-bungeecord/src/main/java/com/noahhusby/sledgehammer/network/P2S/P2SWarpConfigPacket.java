@@ -64,6 +64,6 @@ public class P2SWarpConfigPacket implements IP2SPacket {
     }
 
     public enum ServerConfigAction {
-        OPEN_CONFIG, REMOVE_SUCCESSFUL, REMOVE_FAILURE, ADD_SUCCESSFUL, ADD_FAILURE
+        OPEN_CONFIG, REMOVE_SUCCESSFUL, REMOVE_FAILURE, ADD_SUCCESSFUL, ADD_FAILURE, LOCATION_UPDATE
     }
 }

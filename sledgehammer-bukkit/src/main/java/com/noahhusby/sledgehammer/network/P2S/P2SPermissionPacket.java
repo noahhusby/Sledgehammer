@@ -27,6 +27,6 @@ public class P2SPermissionPacket extends P2SPacket {
             permissionResponse = p.hasPermission(permission);
         }
 
-        getManager().sendPacket(new S2PPermissionPacket(salt, permissionResponse));
+        getManager().send(new S2PPermissionPacket(salt, permissionResponse));
     }
 }

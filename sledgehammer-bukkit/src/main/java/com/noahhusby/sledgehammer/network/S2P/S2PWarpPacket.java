@@ -18,7 +18,6 @@
 
 package com.noahhusby.sledgehammer.network.S2P;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.data.warp.WarpPayload;
 import com.noahhusby.sledgehammer.network.PacketInfo;

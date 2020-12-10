@@ -56,7 +56,7 @@ public class WarpNameEntryAnvil extends AnvilChild {
                 } else {
                     JSONObject data = new JSONObject();
                     data.put("warpName", getText());
-                    SledgehammerNetworkManager.getInstance().sendPacket(new S2PWarpConfigPacket(
+                    SledgehammerNetworkManager.getInstance().send(new S2PWarpConfigPacket(
                             S2PWarpConfigPacket.ProxyConfigAction.CREATE_WARP, getController().getPlayer(), payload.getSalt(),
                             data));
                 }

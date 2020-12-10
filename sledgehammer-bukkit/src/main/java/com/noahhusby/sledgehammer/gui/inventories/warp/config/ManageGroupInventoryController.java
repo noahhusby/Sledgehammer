@@ -20,7 +20,6 @@ package com.noahhusby.sledgehammer.gui.inventories.warp.config;
 
 import com.noahhusby.sledgehammer.data.warp.WarpConfigPayload;
 import com.noahhusby.sledgehammer.data.warp.WarpGroup;
-import com.noahhusby.sledgehammer.data.warp.WarpPayload;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIController;
 import com.noahhusby.sledgehammer.gui.inventories.general.IGUIChild;
 import org.bukkit.entity.Player;
@@ -33,7 +32,7 @@ public class ManageGroupInventoryController extends GUIController {
     private final WarpConfigPayload payload;
 
     public ManageGroupInventoryController(Player p, WarpConfigPayload payload) {
-        super(45, "Select a warp to manage", p);
+        super(45, "Select a group to manage", p);
         this.payload = payload;
         init();
     }

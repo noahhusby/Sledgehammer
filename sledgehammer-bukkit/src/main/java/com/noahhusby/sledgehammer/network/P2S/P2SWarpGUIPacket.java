@@ -22,7 +22,6 @@ import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SmartObject;
 import com.noahhusby.sledgehammer.data.warp.WarpPayload;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
-import com.noahhusby.sledgehammer.gui.inventories.warp.GroupListWarpInventoryController;
 import com.noahhusby.sledgehammer.gui.inventories.warp.GroupWarpInventoryController;
 import com.noahhusby.sledgehammer.gui.inventories.warp.PinnedWarpInventoryController;
 import com.noahhusby.sledgehammer.gui.inventories.warp.WarpInventoryController;

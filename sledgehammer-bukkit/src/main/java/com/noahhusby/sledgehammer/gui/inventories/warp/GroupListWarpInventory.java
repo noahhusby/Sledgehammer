@@ -162,7 +162,7 @@ public class GroupListWarpInventory extends GUIChild {
 
         if(e.getSlot() == 47 && controller.getPayload().isEditAccess()) {
             controller.close();
-            SledgehammerNetworkManager.getInstance().sendPacket(new S2PWarpConfigPacket(S2PWarpConfigPacket.ProxyConfigAction.OPEN_CONFIG,
+            SledgehammerNetworkManager.getInstance().send(new S2PWarpConfigPacket(S2PWarpConfigPacket.ProxyConfigAction.OPEN_CONFIG,
                     getPlayer(), controller.getPayload().getSalt()));
             return;
         }

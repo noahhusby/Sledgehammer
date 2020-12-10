@@ -1,7 +1,5 @@
 package com.noahhusby.sledgehammer.gui.inventories.anvil;
 
-import net.wesjd.anvilgui.AnvilGUI;
-
 public abstract class AnvilChild implements IAnvilChild {
     private CloseMode closeMode = CloseMode.EXIT;
     private AnvilController controller;

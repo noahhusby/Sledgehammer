@@ -19,12 +19,8 @@
 package com.noahhusby.sledgehammer.gui.inventories.anvil;
 
 import com.noahhusby.sledgehammer.gui.inventories.general.IController;
-import com.noahhusby.sledgehammer.gui.inventories.general.IGUIChild;
 import net.wesjd.anvilgui.AnvilGUI;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
 
 public class AnvilController implements IController {
     private AnvilChild currentChild = null;

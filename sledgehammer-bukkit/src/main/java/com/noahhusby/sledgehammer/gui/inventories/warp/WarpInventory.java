@@ -162,7 +162,7 @@ public class WarpInventory extends GUIChild {
 
         if(e.getSlot() == 47 && controller.getPayload().isEditAccess()) {
             controller.close();
-            SledgehammerNetworkManager.getInstance().sendPacket(new S2PWarpConfigPacket(S2PWarpConfigPacket.ProxyConfigAction.OPEN_CONFIG,
+            SledgehammerNetworkManager.getInstance().send(new S2PWarpConfigPacket(S2PWarpConfigPacket.ProxyConfigAction.OPEN_CONFIG,
                     getPlayer(), controller.getPayload().getSalt()));
             return;
         }
@@ -196,7 +196,7 @@ public class WarpInventory extends GUIChild {
                     id = new Long(ChatColor.stripColor(s).replaceAll("[^\\d.]", "")).intValue();
             }
 
-            SledgehammerNetworkManager.getInstance().sendPacket(new S2PWarpPacket(player, controller.getPayload(), id));
+            SledgehammerNetworkManager.getInstance().send(new S2PWarpPacket(player, controller.getPayload(), id));
 
             controller.close();
             return;

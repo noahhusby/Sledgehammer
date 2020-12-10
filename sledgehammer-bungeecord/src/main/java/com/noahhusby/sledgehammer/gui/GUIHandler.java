@@ -23,7 +23,6 @@ import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class GUIHandler {
     private static GUIHandler instance = null;
