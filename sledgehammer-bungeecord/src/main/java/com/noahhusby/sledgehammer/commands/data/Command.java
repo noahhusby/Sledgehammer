@@ -20,6 +20,7 @@ package com.noahhusby.sledgehammer.commands.data;
 
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import com.noahhusby.sledgehammer.permissions.PermissionHandler;
+import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -37,6 +38,10 @@ public abstract class Command extends net.md_5.bungee.api.plugin.Command {
         this.permissionNode = node;
     }
 
+    protected boolean isAllowed(CommandSender sender) {
+        if(!sender.hasPermission("sledgehammer.requiresh")) return true;
+        return SledgehammerPlayer.getPlayer(sender).onSledgehammer();
+    }
 
     protected boolean hasPerms(CommandSender sender) {
         return hasPerms(sender, false);

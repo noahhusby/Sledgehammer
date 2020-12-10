@@ -18,6 +18,8 @@
 
 package com.noahhusby.sledgehammer.projection;
 
+import com.google.common.collect.Maps;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,9 +31,8 @@ public class GeographicProjection {
     public static Map<String, GeographicProjection> projections;
 
     static {
-        projections = new HashMap<String, GeographicProjection>();
+        projections = Maps.newHashMap();
         projections.put("equirectangular", new GeographicProjection());
-        projections.put("airocean", new Airocean());
         projections.put("airocean", new Airocean());
         projections.put("conformal", new ConformalEstimate());
         projections.put("bteairocean", new ModifiedAirocean());

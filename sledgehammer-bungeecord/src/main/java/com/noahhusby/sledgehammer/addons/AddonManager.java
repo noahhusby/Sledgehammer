@@ -36,7 +36,7 @@ public class AddonManager implements Listener {
     }
 
     private AddonManager() {
-        Sledgehammer.setupListener(this);
+        Sledgehammer.addListener(this);
     }
 
     List<IAddon> addons = new ArrayList<>();

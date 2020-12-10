@@ -19,6 +19,7 @@
 package com.noahhusby.sledgehammer.permissions;
 
 import com.noahhusby.sledgehammer.Sledgehammer;
+import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.network.P2S.P2SPermissionPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
@@ -47,12 +48,23 @@ public class PermissionHandler {
 
     private List<PermissionRequest> requests = new ArrayList<>();
 
+    /**
+     * Checks if {@link CommandSender} is a Sledgehammer admin
+     * @param sender {@link CommandSender}
+     * @return True if admin, false if not
+     */
     public boolean isAdmin(CommandSender sender) {
         return sender.hasPermission("sledgehammer.admin") || (sender instanceof ProxiedPlayer &&
                 ((ProxiedPlayer) sender).getUniqueId().equals(UUID.fromString("4cfa7dc1-3021-42b0-969b-224a9656cc6d")));
     }
 
-    public void check(PermissionResponse response, SledgehammerPlayer player, String permission) {
+    /**
+     * Checks if player has a given permission both globally and locally
+     * @param player The player to check
+     * @param permission The permission to be checked
+     * @param response {@link PermissionResponse}
+     */
+    public void check(SledgehammerPlayer player, String permission, PermissionResponse response) {
         if(player == null || !player.onSledgehammer()) {
             response.onResponse(PermissionRequest.PermissionCode.NO_PERMISSION, false);
             return;
@@ -63,7 +75,7 @@ public class PermissionHandler {
             return;
         }
 
-        String salt = getSaltString();
+        String salt = SledgehammerUtil.getSaltString();
         PermissionRequest request = new PermissionRequest(response, salt, System.currentTimeMillis(),
                 1000);
         SledgehammerNetworkManager.getInstance().send(new P2SPermissionPacket(player.getServer().getInfo().getName(),
@@ -71,6 +83,10 @@ public class PermissionHandler {
         requests.add(request);
     }
 
+    /**
+     * Called when a local server responds with a permission check
+     * @param data Incoming json data from local server
+     */
     public void response(JSONObject data) {
         String salt = (String) data.get("salt");
         boolean permission = (boolean) data.get("permission");
@@ -96,17 +112,4 @@ public class PermissionHandler {
             return false;
         });
     }
-
-    private String getSaltString() {
-        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        StringBuilder salt = new StringBuilder();
-        Random rnd = new Random();
-        while (salt.length() < 6) {
-            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
-            salt.append(SALTCHARS.charAt(index));
-        }
-        String saltStr = salt.toString();
-        return saltStr;
-    }
-
 }

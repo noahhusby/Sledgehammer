@@ -28,6 +28,7 @@ import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
 import com.noahhusby.sledgehammer.gui.inventories.warp.GroupListWarpInventoryController;
 import com.noahhusby.sledgehammer.gui.inventories.warp.PinnedWarpInventoryController;
 import com.noahhusby.sledgehammer.gui.inventories.warp.WarpSortInventoryController;
+import com.noahhusby.sledgehammer.gui.inventories.warp.config.manage.ManageWarpInventoryController;
 import com.noahhusby.sledgehammer.network.S2P.S2PWarpConfigPacket;
 import com.noahhusby.sledgehammer.network.S2P.S2PWarpPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
@@ -161,8 +162,8 @@ public class ManageGroupWarpInventory extends GUIChild {
                     id = new Long(ChatColor.stripColor(s).replaceAll("[^\\d.]", "")).intValue();
             }
 
-
             controller.close();
+            GUIRegistry.register(new ManageWarpInventoryController(getPlayer(), controller.getPayload(), id));
             return;
         }
     }

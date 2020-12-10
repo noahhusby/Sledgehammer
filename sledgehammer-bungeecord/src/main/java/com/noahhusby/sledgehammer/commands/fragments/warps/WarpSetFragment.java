@@ -25,6 +25,7 @@ import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.permissions.PermissionRequest;
+import com.noahhusby.sledgehammer.permissions.PermissionResponse;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
 import net.md_5.bungee.api.ChatColor;
@@ -33,43 +34,32 @@ import net.md_5.bungee.api.CommandSender;
 public class WarpSetFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
-        boolean local = ConfigHandler.localWarp;
-        boolean hasPerms = PermissionHandler.getInstance().isAdmin(sender) || (!local && sender.hasPermission("sledgehammer.setwarp"));
-        if(local && !hasPerms) {
-            PermissionHandler.getInstance().check((code, global) -> {
-                run(sender, args, code == PermissionRequest.PermissionCode.PERMISSION, true);
-            }, SledgehammerPlayer.getPlayer(sender), "sledgehammer.setwarp");
-        } else {
-            run(sender, args, hasPerms, local);
-        }
-    }
+        SledgehammerPlayer player = SledgehammerPlayer.getPlayer(sender);
+        PermissionHandler.getInstance().check(player, "sledgehammer.warp.set", (code, global) -> {
+            if(code == PermissionRequest.PermissionCode.PERMISSION) {
+                WarpHandler.WarpStatus warpStatus = WarpHandler.getInstance().getWarpStatus(args[0], player.getServer().getInfo().getName());
 
-    private void run(CommandSender sender, String[] args, boolean permission, boolean local) {
-        if(!permission) {
-            sender.sendMessage(ChatConstants.noPermission);
-            return;
-        }
-
-        WarpHandler.WarpStatus warpStatus =
-                WarpHandler.getInstance().getWarpStatus(args[0], SledgehammerPlayer.getPlayer(sender).getServer().getInfo().getName());
-
-        switch (warpStatus) {
-            case EXISTS:
-                sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("A warp with that name already exists! Use ", ChatColor.GRAY),
-                        new TextElement("/" + ConfigHandler.warpCommand + " move ", ChatColor.YELLOW), new TextElement("to change it's location.", ChatColor.GRAY)));
-                break;
-            case RESERVED:
-                if(PermissionHandler.getInstance().isAdmin(sender) || sender.hasPermission("sledgehammer.setwarp")) {
-                    sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("A warp with that name already exists! Use ", ChatColor.GRAY),
-                            new TextElement("/" + ConfigHandler.warpCommand + " move ", ChatColor.YELLOW), new TextElement("to change it's location.", ChatColor.GRAY)));
-                    return;
+                switch (warpStatus) {
+                    case EXISTS:
+                        sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("A warp with that name already exists! Use ", ChatColor.GRAY),
+                                new TextElement("/" + ConfigHandler.warpCommand + " move ", ChatColor.YELLOW), new TextElement("to change it's location.", ChatColor.GRAY)));
+                        break;
+                    case RESERVED:
+                        if(global) {
+                            sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("A warp with that name already exists! Use ", ChatColor.GRAY),
+                                    new TextElement("/" + ConfigHandler.warpCommand + " move ", ChatColor.YELLOW), new TextElement("to change it's location.", ChatColor.GRAY)));
+                            return;
+                        }
+                        sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("This warp name is reserved and cannot be used.", ChatColor.RED)));
+                        break;
+                    case AVAILABLE:
+                        WarpHandler.getInstance().requestNewWarp(args[0], sender);
+                        break;
                 }
-                sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("This warp name is reserved and cannot be used.", ChatColor.RED)));
-                break;
-            case AVAILABLE:
-                WarpHandler.getInstance().requestNewWarp(args[0], sender);
-                break;
-        }
+                return;
+            }
+            sender.sendMessage(ChatConstants.noPermission);
+        });
     }
 
     @Override

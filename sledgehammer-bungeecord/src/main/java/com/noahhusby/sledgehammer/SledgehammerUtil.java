@@ -29,10 +29,14 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import org.apache.commons.lang3.Validate;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import java.util.Collection;
+import java.util.Random;
 
 public class SledgehammerUtil {
 
@@ -171,6 +175,45 @@ public class SledgehammerUtil {
             arguments.append(" ").append(args[x]);
 
         return arguments.toString();
+    }
+
+    /**
+     * Generates a random 6-character string
+     * @return Random string
+     */
+    public static String getSaltString() {
+        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder salt = new StringBuilder();
+        Random rnd = new Random();
+        while (salt.length() < 6) {
+            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+            salt.append(SALTCHARS.charAt(index));
+        }
+        String saltStr = salt.toString();
+        return saltStr;
+    }
+
+
+    public static <T extends Collection<? super String>> T copyPartialMatches(final String token, final Iterable<String> originals, final T collection) throws UnsupportedOperationException, IllegalArgumentException {
+        Validate.notNull(token, "Search token cannot be null");
+        Validate.notNull(collection, "Collection cannot be null");
+        Validate.notNull(originals, "Originals cannot be null");
+
+        for (String string : originals) {
+            if (startsWithIgnoreCase(string, token)) {
+                collection.add(string);
+            }
+        }
+
+        return collection;
+    }
+
+    public static boolean startsWithIgnoreCase(final String string, final String prefix) throws IllegalArgumentException, NullPointerException {
+        Validate.notNull(string, "Cannot check a null string for a match");
+        if (string.length() < prefix.length()) {
+            return false;
+        }
+        return string.regionMatches(true, 0, prefix, 0, prefix.length());
     }
 
     public static class JsonUtils {

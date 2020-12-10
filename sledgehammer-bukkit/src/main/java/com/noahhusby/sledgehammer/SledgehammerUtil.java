@@ -36,6 +36,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.UUID;
+import java.util.zip.DataFormatException;
 
 public class SledgehammerUtil {
     public static Player getPlayerFromName(String name) {
@@ -48,11 +49,15 @@ public class SledgehammerUtil {
     }
 
     public static ItemStack getSkull(String h, String n) {
-        ItemStack head = SkullCreator.itemFromBase64(h);
-        ItemMeta meta = head.getItemMeta();
-        meta.setDisplayName(n);
-        head.setItemMeta(meta);
-        return head;
+        try {
+            ItemStack head = SkullCreator.itemFromBase64(h);
+            ItemMeta meta = head.getItemMeta();
+            meta.setDisplayName(n);
+            head.setItemMeta(meta);
+            return head;
+        } catch (StringIndexOutOfBoundsException | NullPointerException e){
+            return getSkull(Constants.steveHead, n);
+        }
     }
 
     public static boolean isPlayerAvailable(String p) {

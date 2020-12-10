@@ -38,6 +38,9 @@ public class ConfirmationController extends GUIController {
             case REMOVE_SUCCESSFUL:
                 child = new RemoveSuccessInventory(payload);
                 break;
+            case HEAD_UPDATE:
+                child = new HeadUpdateSuccessInventory(payload);
+                break;
         }
 
         child.initFromController(this, getPlayer(), getInventory());
@@ -45,6 +48,6 @@ public class ConfirmationController extends GUIController {
     }
 
     public enum Type {
-        REMOVE_SUCCESSFUL, REMOVE_FAILURE, ADD_SUCCESSFUL, ADD_FAILURE
+        REMOVE_SUCCESSFUL, REMOVE_FAILURE, ADD_SUCCESSFUL, ADD_FAILURE, HEAD_UPDATE
     }
 }

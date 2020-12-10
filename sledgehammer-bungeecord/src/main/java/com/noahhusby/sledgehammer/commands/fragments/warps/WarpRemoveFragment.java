@@ -19,6 +19,7 @@
 package com.noahhusby.sledgehammer.commands.fragments.warps;
 
 import com.google.common.collect.Lists;
+import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.chat.ChatConstants;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.chat.TextElement;
@@ -26,6 +27,7 @@ import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.permissions.PermissionRequest;
+import com.noahhusby.sledgehammer.permissions.PermissionResponse;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.warp.Warp;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
@@ -37,23 +39,16 @@ import java.util.List;
 public class WarpRemoveFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
-        boolean local = ConfigHandler.localWarp;
-        boolean hasPerms = PermissionHandler.getInstance().isAdmin(sender) || (!local && sender.hasPermission("sledgehammer.removewarp"));
-        if(local && !hasPerms) {
-            PermissionHandler.getInstance().check((code, global) -> {
-                run(sender, args, false, code == PermissionRequest.PermissionCode.PERMISSION);
-            }, SledgehammerPlayer.getPlayer(sender), "sledgehammer.removewarp");
-        } else {
-            run(sender, args, hasPerms, hasPerms);
-        }
+        PermissionHandler.getInstance().check(SledgehammerPlayer.getPlayer(sender), "sledgehammer.warp.remove", (code, global) -> {
+            if(code == PermissionRequest.PermissionCode.PERMISSION) {
+                run(sender, args, global);
+                return;
+            }
+            sender.sendMessage(ChatConstants.noPermission);
+        });
     }
 
-    private void run(CommandSender sender, String[] args, boolean globalPerms, boolean localPerms) {
-        if(!(globalPerms || localPerms)) {
-            sender.sendMessage(ChatConstants.noPermission);
-            return;
-        }
-
+    private void run(CommandSender sender, String[] args, boolean global) {
         if(args.length < 1) {
             sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Usage: /" + ConfigHandler.warpCommand +
                     " remove <name>", ChatColor.RED)));
@@ -64,12 +59,12 @@ public class WarpRemoveFragment implements ICommandFragment {
         List<Warp> warps = Lists.newArrayList();
 
         for(Warp w : rawWarps) {
-            if(globalPerms) {
+            if(global) {
                 warps.add(w);
                 continue;
             }
 
-            if(localPerms && w.getServer().equalsIgnoreCase(SledgehammerPlayer.getPlayer(sender).getServer().getInfo().getName()))
+            if(SledgehammerPlayer.getPlayer(sender).getSledgehammerServer().getGroup().getServers().contains(w.getServer()))
                 warps.add(w);
         }
 
@@ -110,7 +105,6 @@ public class WarpRemoveFragment implements ICommandFragment {
 
         int val = Integer.parseInt(args[1]);
         WarpHandler.getInstance().removeWarp(warps.get(val).getId(), sender);
-
     }
 
     @Override

@@ -28,22 +28,23 @@ import java.util.logging.Logger;
 import com.noahhusby.sledgehammer.addons.AddonManager;
 import com.noahhusby.sledgehammer.addons.terramap.TerramapAddon;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
-import com.noahhusby.sledgehammer.commands.*;
+import com.noahhusby.sledgehammer.commands.BorderCommand;
+import com.noahhusby.sledgehammer.commands.CsTpllCommand;
+import com.noahhusby.sledgehammer.commands.SledgehammerAdminCommand;
+import com.noahhusby.sledgehammer.commands.SledgehammerCommand;
+import com.noahhusby.sledgehammer.commands.TestCommand;
+import com.noahhusby.sledgehammer.commands.TpllCommand;
+import com.noahhusby.sledgehammer.commands.TplloCommand;
+import com.noahhusby.sledgehammer.commands.WarpCommand;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
-import com.noahhusby.sledgehammer.maps.MapHandler;
 import com.noahhusby.sledgehammer.maps.MapThread;
-import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import com.noahhusby.sledgehammer.players.BorderCheckerThread;
 import com.noahhusby.sledgehammer.players.FlaggedBorderCheckerThread;
-import com.noahhusby.sledgehammer.players.PlayerManager;
 
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.event.PlayerDisconnectEvent;
-import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
-import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
@@ -51,7 +52,6 @@ import net.md_5.bungee.event.EventHandler;
 public class Sledgehammer extends Plugin implements Listener {
     public static Logger logger;
     public static Sledgehammer sledgehammer;
-
     public static AddonManager addonManager;
 
     public final ScheduledThreadPoolExecutor alternativeThreads = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(2);
@@ -60,12 +60,10 @@ public class Sledgehammer extends Plugin implements Listener {
     public void onEnable() {
         sledgehammer = this;
         logger = getLogger();
-
         alternativeThreads.setRemoveOnCancelPolicy(true);
 
         ProxyServer.getInstance().getPluginManager().registerListener(this, this);
         ConfigHandler.getInstance().init(getDataFolder());
-
         registerFromConfig();
     }
 
@@ -164,21 +162,14 @@ public class Sledgehammer extends Plugin implements Listener {
             alternativeThreads.scheduleAtFixedRate(new FlaggedBorderCheckerThread(), 0, 5, TimeUnit.SECONDS);
         }
 
-        alternativeThreads.scheduleAtFixedRate(() -> {
-            ServerConfig.getInstance().checkReadyServers();
-        }, 0, 10, TimeUnit.SECONDS);
-
         OpenStreetMaps.getInstance().init();
-
-        MapHandler.getInstance();
-
     }
 
     /**
      * Add a new listener to the Sledgehammer plugin
      * @param listener The Bungeecord listener
      */
-    public static void setupListener(Listener listener) {
+    public static void addListener(Listener listener) {
         ProxyServer.getInstance().getPluginManager().registerListener(sledgehammer, listener);
     }
 
@@ -190,30 +181,12 @@ public class Sledgehammer extends Plugin implements Listener {
         if(ConfigHandler.debug) logger.info(m);
     }
 
-
-    @EventHandler
-    public void onMessage(PluginMessageEvent e) {
-        SledgehammerNetworkManager.getInstance().onIncomingPacket(e);
-    }
-
     @EventHandler
     public void onPlayerJoin(PostLoginEvent e) {
-        PlayerManager.getInstance().onPlayerJoin(e.getPlayer());
         if(e.getPlayer().hasPermission("sledgehammer.admin") && !ConfigHandler.getInstance().isAuthCodeConfigured()) {
             ChatHelper.sendAuthCodeWarning(e.getPlayer());
         }
     }
-
-    @EventHandler
-    public void onPlayerDisconnect(PlayerDisconnectEvent e) {
-        PlayerManager.getInstance().onPlayerDisconnect(e.getPlayer());
-    }
-
-    @EventHandler
-    public void onServerJoin(ServerConnectedEvent e) {
-        ServerConfig.getInstance().onServerJoin(e);
-    }
-    
     /**
      * @author SmylerMC
      * @param l
@@ -221,4 +194,5 @@ public class Sledgehammer extends Plugin implements Listener {
     public static void terminateListener(Listener l) {
         ProxyServer.getInstance().getPluginManager().unregisterListener(l);
     }
+    
 }

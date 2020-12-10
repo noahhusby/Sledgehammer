@@ -19,6 +19,7 @@
 package com.noahhusby.sledgehammer.network.S2P;
 
 import com.noahhusby.sledgehammer.Constants;
+import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.SmartObject;
 import com.noahhusby.sledgehammer.chat.ChatConstants;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
@@ -38,6 +39,8 @@ import com.noahhusby.sledgehammer.warp.Warp;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
 import com.noahhusby.sledgehammer.warp.WarpResponse;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.BaseComponent;
+import org.glassfish.grizzly.compression.lzma.impl.Base;
 import org.json.simple.JSONObject;
 
 public class S2PWarpConfigPacket implements IS2PPacket {
@@ -57,15 +60,14 @@ public class S2PWarpConfigPacket implements IS2PPacket {
 
         switch (ProxyConfigAction.valueOf(packet.getString("action"))) {
             case OPEN_CONFIG:
-
-                PermissionHandler.getInstance().check((code, global) -> {
+                PermissionHandler.getInstance().check(player, "sledgehammer.warp.edit", (code, global) -> {
                     if(code == PermissionRequest.PermissionCode.PERMISSION) {
                         SledgehammerNetworkManager.getInstance().send(new P2SWarpConfigPacket(player,
                                 P2SWarpConfigPacket.ServerConfigAction.OPEN_CONFIG, global));
                         return;
                     }
                     player.sendMessage(ChatConstants.noPermission);
-                }, player, "sledgehammer.warp.edit");
+                });
 
                 break;
             case CREATE_WARP:
@@ -89,10 +91,37 @@ public class S2PWarpConfigPacket implements IS2PPacket {
                         break;
                 }
                 break;
+            case UPDATE_WARP:
+                int warpId = SledgehammerUtil.JsonUtils.toInt(data.get("id"));
+                String name = data.getString("name");
+                String headId = data.getString("headId");
+                Warp.PinnedMode pin = Warp.PinnedMode.valueOf(data.getString("pinned"));
+
+                Warp warp = WarpHandler.getInstance().getWarp(warpId);
+                if(warp == null) return;
+                warp.setHeadID(headId);
+                warp.setName(name);
+                warp.setPinnedMode(pin);
+
+                WarpHandler.getInstance().getWarps().save(true);
+                break;
+            case UPDATE_PLAYER_DEFAULT:
+                player.getAttributes().removeIf(s -> s.equals("WARP_SORT_ALL") || s.equals("WARP_SORT_GROUP") || s.equals("WARP_SORT_PINNED"));
+
+                String sort = data.getString("sort");
+                if(sort.equalsIgnoreCase("all")) {
+                    player.getAttributes().add("WARP_SORT_ALL");
+                } else if(sort.equalsIgnoreCase("group")) {
+                    player.getAttributes().add("WARP_SORT_GROUP");
+                } else if(sort.equalsIgnoreCase("pinned")) {
+                    player.getAttributes().add("WARP_SORT_PINNED");
+                }
+
+                break;
         }
     }
 
     public enum ProxyConfigAction {
-        OPEN_CONFIG, CREATE_WARP
+        OPEN_CONFIG, CREATE_WARP, UPDATE_WARP, UPDATE_PLAYER_DEFAULT
     }
 }

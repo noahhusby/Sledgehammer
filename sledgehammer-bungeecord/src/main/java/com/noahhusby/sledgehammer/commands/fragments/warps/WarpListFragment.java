@@ -23,6 +23,7 @@ import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.permissions.PermissionRequest;
+import com.noahhusby.sledgehammer.permissions.PermissionResponse;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
 import net.md_5.bungee.api.CommandSender;
@@ -30,25 +31,14 @@ import net.md_5.bungee.api.CommandSender;
 public class WarpListFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
-        boolean local = ConfigHandler.localWarp;
-        boolean hasPerms = PermissionHandler.getInstance().isAdmin(sender) || local && sender.hasPermission("sledgehammer.listwarp");
-        if(!hasPerms) {
-            PermissionHandler.getInstance().check((code, global) -> {
-                run(sender, code == PermissionRequest.PermissionCode.PERMISSION);
-            }, SledgehammerPlayer.getPlayer(sender), "sledgehammer.listwarp");
-        } else {
-            run(sender, true);
-        }
-    }
-
-    public void run(CommandSender sender, boolean permission) {
-        if(!permission) {
+        PermissionHandler.getInstance().check(SledgehammerPlayer.getPlayer(sender), "sledgehammer.warp.list", (code, global) -> {
+            if(code == PermissionRequest.PermissionCode.PERMISSION) {
+                SledgehammerPlayer player = SledgehammerPlayer.getPlayer(sender);
+                sender.sendMessage(WarpHandler.getInstance().getWarpList(player.getServer().getInfo().getName()));
+                return;
+            }
             sender.sendMessage(ChatConstants.noPermission);
-            return;
-        }
-
-        SledgehammerPlayer player = SledgehammerPlayer.getPlayer(sender);
-        sender.sendMessage(WarpHandler.getInstance().getWarpList(player.getServer().getInfo().getName()));
+        });
     }
 
     @Override

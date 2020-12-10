@@ -43,7 +43,7 @@ public class DialogHandler implements Listener {
     }
 
     private DialogHandler() {
-        Sledgehammer.setupListener(this);
+        Sledgehammer.addListener(this);
     }
 
     private final Map<CommandSender, IDialogScene> activeScenes = Maps.newHashMap();

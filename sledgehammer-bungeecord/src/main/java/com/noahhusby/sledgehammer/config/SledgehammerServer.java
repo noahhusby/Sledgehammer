@@ -20,6 +20,7 @@ package com.noahhusby.sledgehammer.config;
 
 import com.noahhusby.lib.data.storage.Storable;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
+import com.noahhusby.sledgehammer.SmartObject;
 import com.noahhusby.sledgehammer.datasets.Location;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -144,19 +145,20 @@ public class SledgehammerServer implements Storable {
     }
 
     @Override
-    public Storable load(JSONObject data) {
-        SledgehammerServer server = new SledgehammerServer((String) data.get("Name"));
+    public Storable load(JSONObject packet) {
+        SmartObject data = SmartObject.fromJSON(packet);
+        SledgehammerServer server = new SledgehammerServer(data.getString("Name"));
         JSONArray storedLocs = SledgehammerUtil.JsonUtils.toArray(data.get("Locations"));
         for(Object o : storedLocs) {
             JSONObject location = (JSONObject) o;
             server.locations.add((Location) new Location().load(location));
         }
 
-        String version = ServerConfig.getInstance().initializedServers.get(data.get("Name"));
+        String version = ServerConfig.getInstance().getInitializedMap().get(data.getString("Name"));
         if(version != null) server.shVersion = version;
 
-        server.earthServer = Boolean.parseBoolean((String) data.get("EarthServer"));
-        if(data.get("Nick") != null) server.friendlyName = (String) data.get("Nick");
+        server.earthServer = Boolean.parseBoolean(data.getString("EarthServer"));
+        if(data.get("Nick") != null) server.friendlyName = data.getString("Nick");
 
         return server;
     }

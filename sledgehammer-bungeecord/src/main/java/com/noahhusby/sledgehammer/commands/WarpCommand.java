@@ -24,6 +24,7 @@ import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.chat.TextElement;
 import com.noahhusby.sledgehammer.commands.fragments.warps.*;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
+import com.noahhusby.sledgehammer.config.ServerGroup;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.network.P2S.P2STeleportPacket;
 import com.noahhusby.sledgehammer.network.P2S.P2SWarpGUIPacket;
@@ -37,17 +38,21 @@ import com.noahhusby.sledgehammer.warp.WarpHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.plugin.TabExecutor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class WarpCommand extends WarpFragmentManager {
+public class WarpCommand extends WarpFragmentManager implements TabExecutor {
+
     public WarpCommand(String name) {
         super(name, "sledgehammer.warp");
         registerCommandFragment(new WarpSetFragment());
         registerCommandFragment(new WarpRemoveFragment());
         registerCommandFragment(new WarpListFragment());
         registerCommandFragment(new WarpMenuFragment());
+        if(ConfigHandler.mapEnabled)
+            registerCommandFragment(new WarpMapFragment());
     }
 
     @Override
@@ -57,27 +62,23 @@ public class WarpCommand extends WarpFragmentManager {
             return;
         }
 
+        if(!isAllowed(sender)) {
+            sender.sendMessage(ChatConstants.getNotAvailable());
+            return;
+        }
+
         if(executeFragment(sender, args)) return;
 
-        boolean local = ConfigHandler.localWarp;
-        boolean hasPerms = PermissionHandler.getInstance().isAdmin(sender) || hasPerms(sender);
-        if(local && !hasPerms) {
-            PermissionHandler.getInstance().check((code, global) -> {
-                if(code == PermissionRequest.PermissionCode.PERMISSION) {
-                    run(sender, args);
-                    return;
-                }
-                sender.sendMessage(ChatConstants.noPermission);
-            }, SledgehammerPlayer.getPlayer(sender), "sledgehammer.warp");
-        } else {
-            run(sender, args);
-        }
+        PermissionHandler.getInstance().check(SledgehammerPlayer.getPlayer(sender), "sledgehammer.warp",(code, global) -> {
+            if(code == PermissionRequest.PermissionCode.PERMISSION) {
+                run(sender, args);
+                return;
+            }
+            sender.sendMessage(ChatConstants.noPermission);
+        });
     }
 
     private void run(CommandSender sender, String[] args) {
-
-
-
         if(args.length == 0) {
             if(ConfigHandler.warpMenuDefault) {
                 SledgehammerServer server = SledgehammerPlayer.getPlayer(sender).getSledgehammerServer();
@@ -87,19 +88,15 @@ public class WarpCommand extends WarpFragmentManager {
                     if(!server.isInitialized()) openGUI = false;
 
                 if(openGUI) {
-                    if(PermissionHandler.getInstance().isAdmin(sender) || sender.hasPermission("sledgehammer.warp.edit")) {
+                    PermissionHandler.getInstance().check(SledgehammerPlayer.getPlayer(sender), "sledgehammer.warp.edit", (code, global) -> {
                         SledgehammerNetworkManager.getInstance().send(new P2SWarpGUIPacket(sender.getName(),
-                                SledgehammerUtil.getServerFromSender(sender).getName(), true));
-                    } else {
-                        PermissionHandler.getInstance().check((code, global) ->
-                                SledgehammerNetworkManager.getInstance().send(new P2SWarpGUIPacket(sender.getName(),
                                 SledgehammerUtil.getServerFromSender(sender).getName(),
-                                code == PermissionRequest.PermissionCode.PERMISSION)),
-                                SledgehammerPlayer.getPlayer(sender), "sledgehammer.warp.edit");
-                    }
+                                code == PermissionRequest.PermissionCode.PERMISSION));
+                    });
                     return;
                 }
             }
+
             sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Usage: /nwarp <warp>", ChatColor.RED)));
             sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Use ", ChatColor.GRAY),
                     new TextElement(String.format("/%s list", ConfigHandler.warpCommand), ChatColor.BLUE),
@@ -129,5 +126,25 @@ public class WarpCommand extends WarpFragmentManager {
 
         sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Warping to ", ChatColor.GRAY), new TextElement(warp.getName(), ChatColor.RED)));
         getNetworkManager().send(new P2STeleportPacket(sender.getName(), warp.getServer(), warp.getPoint()));
+    }
+
+    @Override
+    public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
+        boolean tab = PermissionHandler.getInstance().isAdmin(sender) || sender.hasPermission("sledgehammer.warp");
+        if(tab) {
+            SledgehammerServer s = SledgehammerPlayer.getPlayer(sender).getSledgehammerServer();
+            if(s == null) return new ArrayList<>();
+            ServerGroup group = s.getGroup();
+
+            List<String> tabbedWarps = new ArrayList<>();
+            for(Warp w : WarpHandler.getInstance().getWarps())
+                if(group.getServers().contains(w.getServer())) tabbedWarps.add(w.getName());
+
+            List<String> completion = new ArrayList<>();
+            SledgehammerUtil.copyPartialMatches(args[0], tabbedWarps, completion);
+            return completion;
+        }
+
+        return new ArrayList<>();
     }
 }

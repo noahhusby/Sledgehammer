@@ -61,12 +61,14 @@ public class ConfigHandler {
     public static String authenticationCode = "";
     public static String messagePrefix = "";
     public static boolean globalTpll = false;
+    public static boolean replaceNotAvailable = false;
     public static boolean debug = false;
 
     public static String warpCommand = "";
     public static boolean localWarp = false;
     public static boolean warpMenuDefault = false;
     public static String warpMenuPage = "";
+    public static boolean showPinnedOnBlank = false;
 
     public static boolean useSql;
     public static String sqlHost;
@@ -122,7 +124,8 @@ public class ConfigHandler {
         attributeFile = new File(localStorage, "attributes.json");
         groupsFile = new File(localStorage, "groups.json");
 
-        createConfig();
+        if (!dataFolder.exists())
+            dataFolder.mkdir();
 
         config = new net.minecraftforge.common.config.Configuration(new File(dataFolder, "sledgehammer.cfg"));
 
@@ -147,15 +150,19 @@ public class ConfigHandler {
 
         config.load();
         cat("General", "General options for sledgehammer");
-        authenticationCode = config.getString(prop("Network Authentication Code"), "General", ""
-                , "Generate a new key using https://uuidgenerator.net/version4\nAll corresponding sledgehammer clients must have the same code\nDon't share this key with anyone you don't trust as it will allow anybody to run any command on connected servers.");
+        authenticationCode = config.getString(prop("Network Authentication Code"), "General", "",
+                "Generate a new key using https://uuidgenerator.net/version4\n" +
+                        "All corresponding sledgehammer clients must have the same code\n" +
+                        "Don't share this key with anyone you don't trust as it will allow anybody to run any command on connected servers.");
 
         Pattern p = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
         authCodeConfigured = p.matcher(authenticationCode).matches();
 
         messagePrefix = config.getString(prop("Message Prefix"), "General", "&9&lBTE &8&l> "
-                , "The prefix of messages broadcasted to players from the proxy");
-        globalTpll = config.getBoolean(prop("Global Tpll"), "General", true, "Set this to false to disable global tpll [/tpll & /cs tpll]");
+                , "The prefix of messages broadcasted to players from the proxy.");
+        globalTpll = config.getBoolean(prop("Global Tpll"), "General", true, "Set this to false to disable global tpll. [/tpll & /cs tpll]");
+        replaceNotAvailable = config.getBoolean(prop("Replace Not Available Message"), category, false,
+                "When enabled, the default 'This command is not available!' is replaced with 'Unknown Command.'");
         debug = config.getBoolean(prop("Debug"), category, false, "Enable to see advanced logging information.");
         order();
 
@@ -171,17 +178,21 @@ public class ConfigHandler {
 
         cat("Warps", "Options for warps");
         warpCommand = config.getString(prop("Warp Command"), category, "nwarp",
-                "The command for network-wide warping. Leave blank to disable\nPermissions: sledgehammer.warp for teleporting, and sledgehammer.warp.admin for setting warps.");
-        localWarp = config.getBoolean(prop("Local Mode"), category, false, "Local warp allows for each individual server to set their own warps.\n" +
+                "The command for network-wide warping. Leave blank to disable.");
+        localWarp = config.getBoolean(prop("Local Mode"), category, false,
+                "Local warp allows for each individual server to set their own warps.\n" +
                 "Standard warp [false] is a shared pool of warps for the entire network.\n" +
                 "All warps are accessible regardless of warp mode.");
-        warpMenuDefault = config.getBoolean(prop("Default Warp Menu"), category, true, "This will open the interactive GUI by default when the warp command is called.\n" +
+        warpMenuDefault = config.getBoolean(prop("Default Warp Menu"), category, true,
+                "This will open the interactive GUI by default when the warp command is called.\n" +
             "Otherwise `/[warp command] menu` is required to open the menu.");
         warpMenuPage = config.getString(prop("Default Menu Page"), category, "group",
                 "This is the main page that will be shown upon the warp menu opening.\n" +
                         "Use `group` to show the warps on the current server (or groups of servers)\n" +
                         "Use `all` to show all the warps by default\n" +
                         "or Use `pinned` to show the pinned warps.");
+        showPinnedOnBlank = config.getBoolean(prop("Pinned on Blank"), category, false,
+                "If enabled, the warp GUI will show the pinned page if that server has no warps.");
         order();
 
 
@@ -189,7 +200,8 @@ public class ConfigHandler {
         zoom = config.getInt(prop("Zoom level"), "Geography", 12, 1, 19,
                 "Zoom detail level for OSM requests.");
         useOfflineMode = config.getBoolean(prop("OSM Offline Mode"), "Geography", false,
-                "Set false for fetching the latest data from OSM (more up to date), or true for using a downloaded database.\nPlease follow the guide on https://github.com/noahhusby/sledgehammer about downloading and configuring the offline database.");
+                "Set false for fetching the latest data from OSM (more up to date), or true for using a downloaded database.\n" +
+                        "Please follow the guide on https://github.com/noahhusby/sledgehammer about downloading and configuring the offline database.");
         borderTeleportation = config.getBoolean(prop("Auto Border Teleportation"), "Geography", false,
                 "Set to false to disable automatic border teleportation, or true to enable it. (Note: OSM Offline Mode must be set to true for this to be enabled.");
         order();
@@ -197,6 +209,7 @@ public class ConfigHandler {
         cat("Map", "Options for sledgehammer's map");
         mapEnabled = config.getBoolean(prop("Enable"), "Map", false,
                 "Set this to true to enable sledgehammer's map");
+        mapEnabled = false;
         mapHost = config.getString(prop("Host"), "Map", "127.0.0.1",
                 "The websocket url/ip where sledgehammer map is running");
         mapPort = config.getString(prop("Port"), "Map", "7000",
@@ -234,6 +247,7 @@ public class ConfigHandler {
         		"Set this to true is you want client's settings to be saved for the entire network instead of per-world.");
         terramapProxyUUID = config.getString(prop("Proxy UUID"), "terramap", UUID.randomUUID().toString(), 
         		"A UUID v4 that will be used by Terramap clients to identify this network. DO NOT PUT YOUR NETWORK AUTHENTIFICATION CODE IN HERE, THIS IS SHARED WITH CLIENTS! You want this to be the same on all your network's proxies. The default value is randomly generated.");
+
         order();
         if(config.hasChanged()) config.save();
 
@@ -350,9 +364,5 @@ public class ConfigHandler {
 
     private void order() {
         config.setCategoryPropertyOrder(category, categories.get(category));
-    }
-
-    private void createConfig() {
-        if (!dataFolder.exists()) dataFolder.mkdir();
     }
 }

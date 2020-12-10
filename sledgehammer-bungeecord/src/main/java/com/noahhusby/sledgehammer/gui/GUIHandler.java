@@ -18,6 +18,7 @@
 
 package com.noahhusby.sledgehammer.gui;
 
+import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class GUIHandler {
      */
     public String track(SledgehammerPlayer player) {
         trackers.removeIf(t -> t.getPlayer().getUniqueId().equals(player.getUniqueId()));
-        String salt = getSaltString();
+        String salt = SledgehammerUtil.getSaltString();
 
         trackers.add(new GUIActionTracker(player, salt));
         return salt;
@@ -63,17 +64,5 @@ public class GUIHandler {
      */
     public void invalidate(SledgehammerPlayer player) {
         trackers.removeIf(t -> t.getPlayer().getUniqueId().equals(player.getUniqueId()));
-    }
-
-    private String getSaltString() {
-        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        StringBuilder salt = new StringBuilder();
-        Random rnd = new Random();
-        while (salt.length() < 6) {
-            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
-            salt.append(SALTCHARS.charAt(index));
-        }
-        String saltStr = salt.toString();
-        return saltStr;
     }
 }
