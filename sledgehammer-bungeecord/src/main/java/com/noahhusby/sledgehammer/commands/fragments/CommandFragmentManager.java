@@ -23,6 +23,7 @@ import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.chat.TextElement;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,14 +31,36 @@ import java.util.List;
 public abstract class CommandFragmentManager extends Command {
 
     public CommandFragmentManager(String name, String node) {
-        super(name, node);
+        this(name, node, new String[]{});
     }
 
     public CommandFragmentManager(String name, String node, String[] alias) {
         super(name, node, alias);
+        registerCommandFragment(new ICommandFragment() {
+            @Override
+            public void execute(CommandSender sender, String[] args) {
+                displayCommands(sender, args);
+            }
+
+            @Override
+            public String getName() {
+                return "help";
+            }
+
+            @Override
+            public String getPurpose() {
+                return "List all commands";
+            }
+
+            @Override
+            public String[] getArguments() {
+                return new String[]{"[page]"};
+            }
+        });
+
     }
 
-    private List<ICommandFragment> commandFragments = new ArrayList<>();
+    private final List<ICommandFragment> commandFragments = new ArrayList<>();
     private String title = "";
     private String commandBase = "";
 
@@ -70,26 +93,41 @@ public abstract class CommandFragmentManager extends Command {
     }
 
     private void displayCommands(CommandSender sender, String[] args) {
-        sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement(title+":", ChatColor.GRAY)));
-        for(ICommandFragment f : commandFragments) {
+        int page = 1;
+        if(args != null) {
+            try {
+                page = Integer.parseInt(args[0]);
+            } catch (Exception e) { }
+            if(page > Math.ceil(commandFragments.size() / 7.0)) page = 1;
+        }
 
-            List<TextElement> message = new ArrayList<>();
-            message.add(new TextElement(commandBase, ChatColor.YELLOW));
-            message.add(new TextElement(f.getName()+" ", ChatColor.GREEN));
+        sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement(title + ":", ChatColor.GRAY)));
+        for(int xf = (page - 1) * 7; xf < Math.min(((page - 1) * 7) + 7, commandFragments.size()); xf++) {
+            ICommandFragment f = commandFragments.get(xf);
+
+            TextComponent message = ChatHelper.makeTextComponent(new TextElement(commandBase, ChatColor.YELLOW));
+            message.addExtra(ChatHelper.makeTextComponent(new TextElement(f.getName() + " ", ChatColor.GREEN)));
             if(f.getArguments() != null) {
                 for(int x = 0; x < f.getArguments().length; x++) {
                     String argument = f.getArguments()[x];
                     if(argument.startsWith("<")) {
-                        message.add(new TextElement(argument+" ", ChatColor.RED));
+                        message.addExtra(ChatHelper.makeTextComponent(new TextElement(argument + " ", ChatColor.RED)));
                     } else {
-                        message.add(new TextElement(argument+" ", ChatColor.GRAY));
+                        message.addExtra(ChatHelper.makeTextComponent(new TextElement(argument + " ", ChatColor.GRAY)));
                     }
                 }
             }
-            message.add(new TextElement("- ", ChatColor.GRAY));
-            message.add(new TextElement(f.getPurpose(), ChatColor.BLUE));
+            message.addExtra(ChatHelper.makeTextComponent(new TextElement("- ", ChatColor.GRAY),
+                    new TextElement(f.getPurpose(), ChatColor.BLUE)));
 
-            sender.sendMessage(ChatHelper.makeTextComponent(message.toArray(new TextElement[message.size()])));
+            sender.sendMessage(message);
         }
+
+        if(Math.ceil(commandFragments.size() / 7.0) < 2) return;
+
+        String end = page >= Math.ceil(commandFragments.size() / 7.0) ? "Use '" + commandBase + "help " + (page - 1) + "' to see the previous page."
+                : "Use '" + commandBase + "help " + (page + 1) + "' to see the next page.";
+        sender.sendMessage(ChatHelper.makeTextComponent(new TextElement(end, ChatColor.GOLD)));
     }
+
 }

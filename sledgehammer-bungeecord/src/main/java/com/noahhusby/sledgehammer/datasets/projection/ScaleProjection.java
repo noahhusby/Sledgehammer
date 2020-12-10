@@ -18,9 +18,6 @@
 
 package com.noahhusby.sledgehammer.datasets.projection;
 
-import com.noahhusby.sledgehammer.projection.GeographicProjection;
-import com.noahhusby.sledgehammer.projection.ProjectionTransform;
-
 public class ScaleProjection extends ProjectionTransform {
 
     double scaleX, scaleY;

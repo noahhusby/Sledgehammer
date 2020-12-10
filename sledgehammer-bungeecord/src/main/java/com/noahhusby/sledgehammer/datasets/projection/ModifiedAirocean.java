@@ -18,8 +18,6 @@
 
 package com.noahhusby.sledgehammer.datasets.projection;
 
-import com.noahhusby.sledgehammer.projection.ConformalEstimate;
-
 public class ModifiedAirocean extends ConformalEstimate {
 
     protected static double THETA = -150*TO_RADIANS;

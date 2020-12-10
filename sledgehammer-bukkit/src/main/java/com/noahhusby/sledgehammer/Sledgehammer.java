@@ -18,6 +18,7 @@
 
 package com.noahhusby.sledgehammer;
 
+import com.noahhusby.sledgehammer.chat.ChatHandler;
 import com.noahhusby.sledgehammer.eventhandler.ServerEventHandler;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import com.noahhusby.sledgehammer.players.PlayerManager;
@@ -32,12 +33,14 @@ public final class Sledgehammer extends JavaPlugin implements Listener {
 
     public static Logger logger;
     public static Plugin sledgehammer;
+    public static String bungeecordName = "";
 
     @Override
     public void onEnable() {
         logger = getLogger();
         sledgehammer = this;
-        ConfigHandler.registerConfig();
+
+        Bukkit.getServer().getPluginManager().registerEvents(ChatHandler.getInstance(), this);
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
         Bukkit.getServer().getPluginManager().registerEvents(new ServerEventHandler(), this);
         Bukkit.getServer().getPluginManager().registerEvents(SledgehammerNetworkManager.getInstance(), this);

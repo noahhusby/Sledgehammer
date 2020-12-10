@@ -18,7 +18,6 @@
 
 package com.noahhusby.sledgehammer.network.P2S;
 
-import com.noahhusby.sledgehammer.ConfigHandler;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.SmartObject;
@@ -48,14 +47,6 @@ public class P2SLocationPacket extends P2SPacket {
         String lat = data.getString("lat");
         String lon = data.getString("lon");
 
-        if(ConfigHandler.tpllMode.toLowerCase().equals("cs")) {
-            Bukkit.getServer().dispatchCommand(player,"cs tpll "+lat+" "+lon);
-            return;
-        } else if(ConfigHandler.tpllMode.toLowerCase().equals("tpll")) {
-            Bukkit.getServer().dispatchCommand(player,"tpll "+lat+" "+lon);
-            return;
-        }
-
         GeographicProjection projection = new ModifiedAirocean();
         GeographicProjection uprightProj = GeographicProjection.orientProjection(projection, GeographicProjection.Orientation.upright);
         ScaleProjection scaleProj = new ScaleProjection(uprightProj, Constants.SCALE, Constants.SCALE);
@@ -64,7 +55,6 @@ public class P2SLocationPacket extends P2SPacket {
 
         int x = (int) Math.floor(proj[0]);
         int z = (int) Math.floor(proj[1]);
-
 
         int y = Constants.scanHeight;
 

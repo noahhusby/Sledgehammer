@@ -18,13 +18,8 @@
 
 package com.noahhusby.sledgehammer.datasets.projection;
 
-import com.noahhusby.sledgehammer.projection.Airocean;
-import com.noahhusby.sledgehammer.projection.ConformalEstimate;
-import com.noahhusby.sledgehammer.projection.InvertedOrientation;
-import com.noahhusby.sledgehammer.projection.ModifiedAirocean;
-import com.noahhusby.sledgehammer.projection.UprightOrientation;
+import com.google.common.collect.Maps;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class GeographicProjection {
@@ -32,36 +27,35 @@ public class GeographicProjection {
     public static double EARTH_CIRCUMFERENCE = 40075017;
     public static double EARTH_POLAR_CIRCUMFERENCE = 40008000;
 
-    public static Map<String, com.noahhusby.sledgehammer.projection.GeographicProjection> projections;
+    public static Map<String, GeographicProjection> projections;
 
     static {
-        projections = new HashMap<String, com.noahhusby.sledgehammer.projection.GeographicProjection>();
-        projections.put("equirectangular", new com.noahhusby.sledgehammer.projection.GeographicProjection());
-        projections.put("airocean", new Airocean());
+        projections = Maps.newHashMap();
+        projections.put("equirectangular", new GeographicProjection());
         projections.put("airocean", new Airocean());
         projections.put("conformal", new ConformalEstimate());
         projections.put("bteairocean", new ModifiedAirocean());
     }
 
-    public static com.noahhusby.sledgehammer.projection.GeographicProjection orientProjection(com.noahhusby.sledgehammer.projection.GeographicProjection base, Orientation o) {
+    public static GeographicProjection orientProjection(GeographicProjection base, Orientation o) {
         if(base.upright()) {
-            if(o== Orientation.upright)
+            if(o==Orientation.upright)
                 return base;
             base = new UprightOrientation(base);
         }
 
-        if(o== Orientation.swapped) {
+        if(o==Orientation.swapped) {
             return new InvertedOrientation(base);
-        } else if(o== Orientation.upright) {
+        } else if(o==Orientation.upright) {
             base = new UprightOrientation(base);
         }
 
         return base;
     }
 
-    public static enum Orientation {
+    public enum Orientation {
         none, upright, swapped
-    };
+    }
 
     public double[] toGeo(double x, double y) {
         return new double[] {x,y};
@@ -105,10 +99,10 @@ public class GeographicProjection {
     }
 
     public double[] vector(double x, double y, double north, double east) {
-        double geo[] = toGeo(x,y);
+        double[] geo = toGeo(x,y);
 
         //TODO: east may be slightly off because earth not a sphere
-        double off[] = fromGeo(geo[0] + east*360.0/(Math.cos(geo[1]*Math.PI/180.0)*EARTH_CIRCUMFERENCE),
+        double[] off = fromGeo(geo[0] + east*360.0/(Math.cos(geo[1]*Math.PI/180.0)*EARTH_CIRCUMFERENCE),
                 geo[1] + north*360.0/EARTH_POLAR_CIRCUMFERENCE);
 
         return new double[] {off[0]-x,off[1]-y};

@@ -18,8 +18,6 @@
 
 package com.noahhusby.sledgehammer.datasets.projection;
 
-import com.noahhusby.sledgehammer.projection.GeographicProjection;
-
 public class Airocean extends GeographicProjection {
 
     protected static double ARC = 2*Math.asin(Math.sqrt(5-Math.sqrt(5))/Math.sqrt(10));
@@ -27,7 +25,7 @@ public class Airocean extends GeographicProjection {
     protected static final double TO_RADIANS = Math.PI/180.0;
     protected static final double ROOT3 = Math.sqrt(3);
 
-    private int newton = 5;
+    private final int newton = 5;
 
     protected static double[] VERT = new double[] {
             10.536199, 64.700000,
@@ -140,7 +138,7 @@ public class Airocean extends GeographicProjection {
             double clon = Math.atan2(ysum,xsum);
             double clat = Math.atan2(Math.sqrt(xsum*xsum + ysum*ysum),zsum);
 
-            double v[] = new double[] {VERT[2*ISO[i*3]],VERT[2*ISO[i*3]+1]};
+            double[] v = new double[] {VERT[2*ISO[i*3]],VERT[2*ISO[i*3]+1]};
             v = yRot(v[0] - clon, v[1], -clat);
 
             produceZYZRotationMatrix(ROTATION_MATRIX, i*9, -clon, -clat, (Math.PI/2) - v[0]);
@@ -410,7 +408,7 @@ public class Airocean extends GeographicProjection {
     }
 
     static double[] yRot(double lambda, double phi, double rot) {
-        double c[] = cart(lambda, phi);
+        double[] c = cart(lambda, phi);
 
         double x = c[0];
         c[0] = c[2]*Math.sin(rot) + x*Math.cos(rot);

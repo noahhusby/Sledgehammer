@@ -18,9 +18,6 @@
 
 package com.noahhusby.sledgehammer.datasets.projection;
 
-import com.noahhusby.sledgehammer.projection.Airocean;
-import com.noahhusby.sledgehammer.projection.InvertableVectorField;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
@@ -96,12 +93,17 @@ public class ConformalEstimate extends Airocean {
         c[0] *= ARC;
         c[1] *= ARC;
 
+        /*x = c[0];
+        y = c[1];
+        double dis = Math.sqrt(c[0]*c[0] + c[1]*c[1]);
+        double theta = dis<(ARC*ROOT3/6)?90*(ARC*ROOT3/6 - dis)/(ARC*ROOT3/6):0;
+        c[0] = Math.cos(theta * TO_RADIANS) * c[0] + Math.sin(theta * TO_RADIANS) * c[1];
+        c[1] = Math.cos(theta * TO_RADIANS) * c[1] - Math.sin(theta * TO_RADIANS) * x;*/
 
         return c;
     }
 
     protected double[] inverseTriangleTransform(double x, double y) {
-
 
         x /= ARC;
         y /= ARC;
@@ -110,6 +112,12 @@ public class ConformalEstimate extends Airocean {
         y += ROOT3/6;
 
         double[] c = inverse.getInterpolatedVector(x, y);
+
+        /*double[] c = new double[] {x,y};
+        double dis = Math.sqrt(c[0]*c[0] + c[1]*c[1]);
+        double theta = dis<(ARC*ROOT3/6)?90*(ARC*ROOT3/6 - dis)/(ARC*ROOT3/6):0;
+        c[0] = Math.cos(-theta * TO_RADIANS) * c[0] + Math.sin(-theta * TO_RADIANS) * c[1];
+        c[1] = Math.cos(-theta * TO_RADIANS) * c[1] - Math.sin(-theta * TO_RADIANS) * x;*/
 
         return  super.inverseTriangleTransform(c[0],c[1]);
     }

@@ -18,8 +18,6 @@
 
 package com.noahhusby.sledgehammer.datasets.projection;
 
-import com.noahhusby.sledgehammer.projection.GeographicProjection;
-
 public abstract class ProjectionTransform extends GeographicProjection {
     protected GeographicProjection input;
 

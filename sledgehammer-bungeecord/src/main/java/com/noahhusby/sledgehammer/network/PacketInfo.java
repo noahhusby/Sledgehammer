@@ -33,30 +33,65 @@ public class PacketInfo {
         this.time = time;
     }
 
+    /**
+     * Gets the packet creation time
+     * @return The packet creation time
+     */
     public double getTime() {
         return time;
     }
 
+    /**
+     * Gets the packet ID
+     * @return The packet ID
+     */
     public String getID() {
         return id;
     }
 
+    /**
+     * Gets the name sender
+     * @return Name of the sender
+     */
     public String getSender() {
         return sender;
     }
 
+    /**
+     * Gets the name of the server
+     * @return Name of the server
+     */
     public String getServer() {
         return server;
     }
 
+    /**
+     * Creates new {@link PacketInfo}
+     * @param id ID of the packet
+     * @param sender Name of sender
+     * @param server Name of server
+     * @return {@link PacketInfo}
+     */
     public static PacketInfo build(String id, String sender, String server) {
         return new PacketInfo(id, sender, server, System.currentTimeMillis());
     }
 
-    public static PacketInfo build(String id, CommandSender player, String server) {
-        return build(id, player.getName(), server);
+    /**
+     * Creates new {@link PacketInfo}
+     * @param id ID of the packet
+     * @param sender {@link CommandSender}
+     * @param server Name of server
+     * @return {@link PacketInfo}
+     */
+    public static PacketInfo build(String id, CommandSender sender, String server)  {
+        return build(id, sender.getName(), server);
     }
 
+    /**
+     * Renews packet info to current time
+     * @param info Current {@link PacketInfo}
+     * @return New {@link PacketInfo}
+     */
     public static PacketInfo renew(PacketInfo info) {
         return new PacketInfo(info.id, info.sender, info.server, System.currentTimeMillis());
     }

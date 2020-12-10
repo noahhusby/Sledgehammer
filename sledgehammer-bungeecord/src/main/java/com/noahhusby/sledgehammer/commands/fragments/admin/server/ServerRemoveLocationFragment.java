@@ -36,7 +36,7 @@ public class ServerRemoveLocationFragment implements ICommandFragment {
             return;
         }
 
-        if(!ServerConfig.getInstance().getServer(args[0]).earthServer) {
+        if(!ServerConfig.getInstance().getServer(args[0]).isEarthServer()) {
             sender.sendMessage(ChatConstants.notEarthServer);
             return;
         }

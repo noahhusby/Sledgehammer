@@ -71,12 +71,12 @@ public class Configuration
     private static final Pattern CONFIG_START = Pattern.compile("START: \"([^\\\"]+)\"");
     private static final Pattern CONFIG_END = Pattern.compile("END: \"([^\\\"]+)\"");
     public static final CharMatcher allowedProperties = CharMatcher.javaLetterOrDigit().or(CharMatcher.anyOf(ALLOWED_CHARS));
-    private static Configuration PARENT = null;
+    private static final Configuration PARENT = null;
 
     File file;
 
     private Map<String, ConfigCategory> categories = new TreeMap<String, ConfigCategory>();
-    private Map<String, Configuration> children = new TreeMap<String, Configuration>();
+    private final Map<String, Configuration> children = new TreeMap<String, Configuration>();
 
     private boolean caseSensitiveCustomCategories;
     public String defaultEncoding = DEFAULT_ENCODING;
@@ -165,12 +165,6 @@ public class Configuration
     {
         return this.loadedConfigVersion;
     }
-
-    /******************************************************************************************************************
-     *
-     * BOOLEAN gets
-     *
-     *****************************************************************************************************************/
 
     /**
      * Gets a boolean Property object without a comment using the default settings.
@@ -1744,7 +1738,7 @@ public class Configuration
         prop.setComment(comment + " [range: " + minValue + " ~ " + maxValue + ", default: " + defaultValue + "]");
         prop.setMinValue(minValue);
         prop.setMaxValue(maxValue);
-        return prop.getInt(defaultValue) < minValue ? minValue : (prop.getInt(defaultValue) > maxValue ? maxValue : prop.getInt(defaultValue));
+        return prop.getInt(defaultValue) < minValue ? minValue : (Math.min(prop.getInt(defaultValue), maxValue));
     }
 
     /**

@@ -38,7 +38,7 @@ public class S2PInitializationPacket extends S2PPacket {
     public void onMessage(PacketInfo info, SmartObject data) {
         ServerInfo server = ProxyServer.getInstance().getServerInfo(info.getServer());
 
-        Sledgehammer.logger.info(ChatConstants.logInitPacket + server.getName());
-        ServerConfig.getInstance().initializeServer(server, data.toJSON());
+        Sledgehammer.debug(ChatConstants.logInitPacket + server.getName());
+        ServerConfig.getInstance().initialize(server, data.toJSON());
     }
 }

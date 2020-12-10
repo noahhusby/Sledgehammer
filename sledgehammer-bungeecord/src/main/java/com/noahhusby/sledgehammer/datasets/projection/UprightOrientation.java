@@ -18,9 +18,6 @@
 
 package com.noahhusby.sledgehammer.datasets.projection;
 
-import com.noahhusby.sledgehammer.projection.GeographicProjection;
-import com.noahhusby.sledgehammer.projection.ProjectionTransform;
-
 public class UprightOrientation extends ProjectionTransform {
 
     public UprightOrientation (GeographicProjection input) {
