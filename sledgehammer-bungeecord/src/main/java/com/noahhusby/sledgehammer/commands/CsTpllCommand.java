@@ -43,7 +43,6 @@ public class CsTpllCommand extends Command {
             getNetworkManager().send(new P2SCommandPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName(), "cs"));
             return;
         } else if (!args[0].equals("tpll")) {
-
             getNetworkManager().send(new P2SCommandPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName(), "cs",
                     SledgehammerUtil.getRawArguments(args)));
             return;

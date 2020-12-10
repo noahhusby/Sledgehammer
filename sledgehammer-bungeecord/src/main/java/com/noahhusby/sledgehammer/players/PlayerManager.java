@@ -21,12 +21,18 @@ package com.noahhusby.sledgehammer.players;
 import com.google.common.collect.Sets;
 import com.noahhusby.lib.data.storage.StorageHashMap;
 import com.noahhusby.lib.data.storage.StorageList;
+import com.noahhusby.sledgehammer.Sledgehammer;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.PlayerDisconnectEvent;
+import net.md_5.bungee.api.event.PostLoginEvent;
+import net.md_5.bungee.api.event.ServerDisconnectEvent;
+import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.event.EventHandler;
 
 import java.util.*;
 
-public class PlayerManager {
+public class PlayerManager implements Listener {
     private static PlayerManager mInstance = null;
 
     public static PlayerManager getInstance() {
@@ -36,16 +42,19 @@ public class PlayerManager {
 
     List<SledgehammerPlayer> players = new ArrayList<>();
     StorageList<Attribute> attributes = new StorageList<>(Attribute.class);
-    //StorageHashMap<String, StorableStringArray> attributes = new StorageHashMap<>(StorableStringArray.class);
 
-    private PlayerManager() {}
+    private PlayerManager() {
+        Sledgehammer.addListener(this);
+    }
 
     /**
      * Creates a new SledgehammerPlayer and sets attributes from storage upon player joining
-     * @param player ProxiedPlayer joining the proxy
+     * @param e {@link PostLoginEvent}
      */
-    public void onPlayerJoin(ProxiedPlayer player) {
-        onPlayerDisconnect(player);
+    @EventHandler
+    public void onPlayerJoin(PostLoginEvent e) {
+        ProxiedPlayer player = e.getPlayer();
+        onPlayerDisconnect(new PlayerDisconnectEvent(player));
         SledgehammerPlayer newPlayer = new SledgehammerPlayer(player);
 
         Attribute attribute = null;
@@ -61,9 +70,11 @@ public class PlayerManager {
 
     /**
      * Removes the SledgehammerPlayer and saves the attributes to storage upon player leaving
-     * @param player ProxiedPlayer leaving the proxy
+     * @param e {@link PlayerDisconnectEvent}
      */
-    public void onPlayerDisconnect(ProxiedPlayer player) {
+    @EventHandler
+    public void onPlayerDisconnect(PlayerDisconnectEvent e) {
+        ProxiedPlayer player = e.getPlayer();
         List<SledgehammerPlayer> remove = new ArrayList<>();
         for(SledgehammerPlayer p : players) {
             if(p.getName().equalsIgnoreCase(player.getName())) {
@@ -73,7 +84,6 @@ public class PlayerManager {
 
         if(!remove.isEmpty()) {
             SledgehammerPlayer p = remove.get(0);
-            List<String> playerAttributes = p.getAttributes();
 
             Attribute attribute = null;
             for(Attribute a : attributes)

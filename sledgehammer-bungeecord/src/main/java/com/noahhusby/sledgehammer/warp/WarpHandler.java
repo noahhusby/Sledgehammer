@@ -83,6 +83,18 @@ public class WarpHandler {
     }
 
     /**
+     * Gets a warp by it's ID
+     * @param id Warp ID
+     * @return {@link Warp} if exists, null if not.
+     */
+    public Warp getWarp(int id) {
+        for(Warp w : warps)
+            if(w.getId() == id) return w;
+
+        return null;
+    }
+
+    /**
      * Requests that a new warp should be created
      * @param warpName The name of the warp
      * @param sender The command sender
@@ -126,7 +138,7 @@ public class WarpHandler {
      * @param warp {@link Warp}
      */
     public void push(Warp warp) {
-        warps.removeIf(w -> w.getName().equalsIgnoreCase(warp.getName()));
+        warps.removeIf(w -> w.getId() == warp.getId());
         warps.add(warp);
         warps.save(true);
     }
@@ -234,7 +246,7 @@ public class WarpHandler {
         data.put("local", ConfigHandler.localWarp);
         data.put("editAccess", editAccess);
         data.put("requestGroup", s.getGroup().getID());
-        data.put("defaultPage", ConfigHandler.warpMenuPage);
+
 
         List<WarpGroup> groupsList = new ArrayList<>();
 
@@ -255,6 +267,28 @@ public class WarpHandler {
                 wg.warps.add(w);
             }
         }
+
+        String defaultPage = ConfigHandler.warpMenuPage;
+        List<String> attributes = player.getAttributes();
+
+        if(ConfigHandler.showPinnedOnBlank) {
+            boolean found = false;
+            for(WarpGroup wg: groupsList)
+                if(s.getGroup().getID().equals(wg.ID)) found = true;
+
+            if(!found)
+                defaultPage = "pinned";
+        }
+
+        if(attributes.contains("WARP_SORT_ALL")) {
+            defaultPage = "all";
+        } else if(attributes.contains("WARP_SORT_GROUP")) {
+            defaultPage = "group";
+        } else if(attributes.contains("WARP_SORT_PINNED")) {
+            defaultPage = "pinned";
+        }
+
+        data.put("defaultPage", defaultPage);
 
         JSONArray groups = new JSONArray();
         for(WarpGroup wg : groupsList)

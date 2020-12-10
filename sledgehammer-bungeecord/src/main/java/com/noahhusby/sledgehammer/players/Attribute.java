@@ -34,10 +34,6 @@ public class Attribute implements Storable {
         this(UUID.randomUUID(), new ArrayList<>());
     }
 
-    public Attribute(String uuid, List<String> attributes) {
-        this(UUID.fromString(uuid), attributes);
-    }
-
     public Attribute(UUID uuid, List<String> attributes) {
         this.uuid = uuid;
         this.attributes = attributes;
@@ -54,9 +50,10 @@ public class Attribute implements Storable {
     @Override
     public Storable load(JSONObject data) {
         String att = (String) data.get("Attributes");
-        List<String> atts = new ArrayList<>(Arrays.asList(att.split(",")));
+        List<String> atts = new ArrayList<>();
+        if(!att.equalsIgnoreCase(""))
+            atts = new ArrayList<>(Arrays.asList(att.split(",")));
         return new Attribute(UUID.fromString((String) data.get("UUID")), atts);
-
     }
 
     @Override

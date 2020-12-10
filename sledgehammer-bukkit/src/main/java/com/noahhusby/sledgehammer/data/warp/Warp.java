@@ -129,6 +129,15 @@ public class Warp {
                 waypoint.getString("HeadId"));
     }
 
+    public JSONObject toJson() {
+        JSONObject data = new JSONObject();
+        data.put("id", id);
+        data.put("name", name);
+        data.put("headId", headID);
+        data.put("pinned", pinned.name());
+        return data;
+    }
+
     public enum PinnedMode {
         NONE, LOCAL, GLOBAL
     }

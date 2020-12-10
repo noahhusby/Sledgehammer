@@ -18,10 +18,13 @@
 
 package com.noahhusby.sledgehammer.network;
 
+import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.SmartObject;
 import com.noahhusby.sledgehammer.network.S2P.*;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
+import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.event.EventHandler;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -30,7 +33,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SledgehammerNetworkManager {
+public class SledgehammerNetworkManager implements Listener {
     private static SledgehammerNetworkManager mInstance = null;
 
     public static SledgehammerNetworkManager getInstance() {
@@ -41,6 +44,7 @@ public class SledgehammerNetworkManager {
     private final List<IS2PPacket> registeredPackets;
 
     private SledgehammerNetworkManager() {
+        Sledgehammer.addListener(this);
         registeredPackets = new ArrayList<>();
 
         register(new S2PInitializationPacket());
@@ -89,6 +93,7 @@ public class SledgehammerNetworkManager {
      * Checks for sledgehammer packets from incoming plugin messages
      * @param e {@link PluginMessageEvent}
      */
+    @EventHandler
     public void onIncomingPacket(PluginMessageEvent e) {
         if (!e.getTag().equalsIgnoreCase("sledgehammer:channel")) return;
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(e.getData()));

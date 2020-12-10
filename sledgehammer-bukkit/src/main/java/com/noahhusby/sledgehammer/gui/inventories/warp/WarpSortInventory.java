@@ -3,11 +3,14 @@ package com.noahhusby.sledgehammer.gui.inventories.warp;
 import com.noahhusby.sledgehammer.data.warp.WarpPayload;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIChild;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
+import com.noahhusby.sledgehammer.network.S2P.S2PWarpConfigPacket;
+import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,17 +95,25 @@ public class WarpSortInventory extends GUIChild {
         if(e.getCurrentItem().getItemMeta() == null) return;
         if(e.getCurrentItem().getItemMeta().getDisplayName() == null) return;
 
+        JSONObject data = new JSONObject();
+
         if(e.getSlot() == 11) {
             payload.setDefaultPage("pinned");
+            data.put("sort", "pinned");
         }
 
         if(e.getSlot() == 13) {
             payload.setDefaultPage("all");
+            data.put("sort", "all");
         }
 
         if(e.getSlot() == 15) {
             payload.setDefaultPage("group");
+            data.put("sort", "group");
         }
+
+        SledgehammerNetworkManager.getInstance().sendPacket(new S2PWarpConfigPacket(S2PWarpConfigPacket.ProxyConfigAction.UPDATE_PLAYER_DEFAULT,
+                player, controller.getPayload().getSalt(), data));
 
         controller.close();
         GUIRegistry.register(new WarpInventoryController(getPlayer(), payload));

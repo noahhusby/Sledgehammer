@@ -51,7 +51,6 @@ import net.md_5.bungee.event.EventHandler;
 public class Sledgehammer extends Plugin implements Listener {
     public static Logger logger;
     public static Sledgehammer sledgehammer;
-
     public static AddonManager addonManager;
 
     public final ScheduledThreadPoolExecutor alternativeThreads = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(2);
@@ -60,12 +59,10 @@ public class Sledgehammer extends Plugin implements Listener {
     public void onEnable() {
         sledgehammer = this;
         logger = getLogger();
-
         alternativeThreads.setRemoveOnCancelPolicy(true);
 
         ProxyServer.getInstance().getPluginManager().registerListener(this, this);
         ConfigHandler.getInstance().init(getDataFolder());
-
         registerFromConfig();
     }
 
@@ -162,21 +159,14 @@ public class Sledgehammer extends Plugin implements Listener {
             alternativeThreads.scheduleAtFixedRate(new FlaggedBorderCheckerThread(), 0, 5, TimeUnit.SECONDS);
         }
 
-        alternativeThreads.scheduleAtFixedRate(() -> {
-            ServerConfig.getInstance().checkReadyServers();
-        }, 0, 10, TimeUnit.SECONDS);
-
         OpenStreetMaps.getInstance().init();
-
-        MapHandler.getInstance();
-
     }
 
     /**
      * Add a new listener to the Sledgehammer plugin
      * @param listener The Bungeecord listener
      */
-    public static void setupListener(Listener listener) {
+    public static void addListener(Listener listener) {
         ProxyServer.getInstance().getPluginManager().registerListener(sledgehammer, listener);
     }
 
@@ -188,28 +178,10 @@ public class Sledgehammer extends Plugin implements Listener {
         if(ConfigHandler.debug) logger.info(m);
     }
 
-
-    @EventHandler
-    public void onMessage(PluginMessageEvent e) {
-        SledgehammerNetworkManager.getInstance().onIncomingPacket(e);
-    }
-
     @EventHandler
     public void onPlayerJoin(PostLoginEvent e) {
-        PlayerManager.getInstance().onPlayerJoin(e.getPlayer());
         if(e.getPlayer().hasPermission("sledgehammer.admin") && !ConfigHandler.getInstance().isAuthCodeConfigured()) {
             ChatHelper.sendAuthCodeWarning(e.getPlayer());
         }
     }
-
-    @EventHandler
-    public void onPlayerDisconnect(PlayerDisconnectEvent e) {
-        PlayerManager.getInstance().onPlayerDisconnect(e.getPlayer());
-    }
-
-    @EventHandler
-    public void onServerJoin(ServerConnectedEvent e) {
-        ServerConfig.getInstance().onServerJoin(e);
-    }
-
 }

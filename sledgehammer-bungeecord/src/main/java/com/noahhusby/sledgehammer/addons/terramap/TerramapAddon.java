@@ -52,7 +52,7 @@ public class TerramapAddon extends Addon {
     	this.mapSyncChannel.registerPacket(0, C2PRegisterForUpdatePacket.class);
     	this.mapSyncChannel.registerPacket(1, P2CPlayerSyncPacket.class);
     	this.sledgehammerChannel.registerPacket(0, P2CSledgehammerHelloPacket.class);
-    	Sledgehammer.setupListener(new TerramapAddonEventHandler());
+    	Sledgehammer.addListener(new TerramapAddonEventHandler());
     	if(ConfigHandler.terramapSyncPlayers) {
     		Sledgehammer.sledgehammer.getProxy().getScheduler().schedule(Sledgehammer.sledgehammer, this.synchronizer::syncPlayers, 0, ConfigHandler.terramapSyncInterval, TimeUnit.MILLISECONDS);
     	}
