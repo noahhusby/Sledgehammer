@@ -176,7 +176,6 @@ public class ManageWarpInventory extends GUIChild {
             getController().close();
             ChatHandler.getInstance().startEntry(getPlayer(), ChatColor.BLUE + "Enter the Base64 head code from " +
                     ChatColor.GOLD + "minecraft-heads.com", (success, text) -> {
-                System.out.println(success + text);
                         if(success) {
                             cur.setHeadID(text);
                         }

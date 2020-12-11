@@ -51,7 +51,7 @@ public class PlayerManager {
         public void run() {
             for(Player p : Bukkit.getOnlinePlayers()) {
                 Location last = lastLocation.get(p.getUniqueId());
-                if(last == null || last != p.getLocation())
+                if(last == null || !last.equals(p.getLocation()))
                     SledgehammerNetworkManager.getInstance().send(new S2PPlayerUpdatePacket(p));
 
                 lastLocation.put(p.getUniqueId(), p.getLocation());

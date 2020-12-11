@@ -76,7 +76,7 @@ public class SledgehammerNetworkManager implements PluginMessageListener, Listen
         response.put("time", System.currentTimeMillis());
         response.put("data", packet.getMessage(new JSONObject()));
 
-        sendMessage(Constants.responsePrefix + response.toJSONString());
+        sendMessage(Constants.responsePrefix + response.toJSONString(), packet.getPacketInfo().getSender());
     }
 
     private void onPacketRecieved(String m) {
@@ -102,7 +102,7 @@ public class SledgehammerNetworkManager implements PluginMessageListener, Listen
         }
     }
 
-    private void sendMessage(String message) {
+    private void sendMessage(String message, String sender) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(stream);
         try {
@@ -111,8 +111,7 @@ public class SledgehammerNetworkManager implements PluginMessageListener, Listen
             e.printStackTrace();
         }
 
-        Player[] players = Bukkit.getOnlinePlayers().toArray(new Player[0]);
-        players[0].sendPluginMessage(Sledgehammer.sledgehammer, "sledgehammer:channel", stream.toByteArray());
+        Bukkit.getPlayer(sender).sendPluginMessage(Sledgehammer.sledgehammer, "sledgehammer:channel", stream.toByteArray());
     }
 
     @EventHandler

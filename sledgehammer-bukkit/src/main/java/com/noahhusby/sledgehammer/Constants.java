@@ -21,7 +21,7 @@ package com.noahhusby.sledgehammer;
 public class Constants
 {
     public static final String MODID   = "sledgehammer";
-    public static final String VERSION = "0.4.0";
+    public static final String VERSION = "0.4.1";
     public static final double SCALE = 7318261.522857145;
     public static final int scanHeight = 1024;
 
