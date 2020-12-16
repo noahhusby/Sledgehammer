@@ -29,17 +29,17 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WarpInventoryController extends GUIController {
-    private final List<WarpInventory> warpInventories = new ArrayList<>();
+public class AllWarpInventoryController extends GUIController {
+    private final List<AllWarpInventory> warpInventories = new ArrayList<>();
     private final WarpPayload payload;
 
-    public WarpInventoryController(Player p, WarpPayload payload) {
+    public AllWarpInventoryController(Player p, WarpPayload payload) {
         super(54, "Warps", p);
         this.payload = payload;
         init();
     }
 
-    public WarpInventoryController(GUIController controller, WarpPayload payload) {
+    public AllWarpInventoryController(GUIController controller, WarpPayload payload) {
         super(controller);
         this.payload = payload;
         init();
@@ -53,7 +53,7 @@ public class WarpInventoryController extends GUIController {
 
         int total_pages = (int) Math.ceil(warps.size() / 27.0);
         for(int x = 0; x < total_pages; x++) {
-            WarpInventory w = new WarpInventory(x, warps);
+            AllWarpInventory w = new AllWarpInventory(x, warps);
             w.initFromController(this, getPlayer(), getInventory());
             warpInventories.add(w);
         }
@@ -62,7 +62,7 @@ public class WarpInventoryController extends GUIController {
     }
 
     public IGUIChild getChildByPage(int page) {
-        for(WarpInventory w : warpInventories) {
+        for(AllWarpInventory w : warpInventories) {
             if(w.getPage() == page) return w;
         }
 

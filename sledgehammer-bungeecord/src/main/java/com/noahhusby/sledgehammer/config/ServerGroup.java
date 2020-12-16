@@ -18,7 +18,8 @@
 
 package com.noahhusby.sledgehammer.config;
 
-import com.noahhusby.lib.data.storage.Storable;
+import com.google.gson2.annotations.Expose;
+import com.google.gson2.annotations.SerializedName;
 import com.noahhusby.sledgehammer.SmartObject;
 import org.json.simple.JSONObject;
 
@@ -26,12 +27,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ServerGroup implements Storable {
+public class ServerGroup {
 
+    @Expose
+    @SerializedName("Id")
     private String ID;
+    @Expose
+    @SerializedName("HeadId")
     private String headID;
+    @Expose
+    @SerializedName("Name")
     private String name;
+    @Expose
+    @SerializedName("Servers")
     private List<String> servers;
+    @Expose
+    @SerializedName("Aliases")
     private List<String> aliases;
 
     public ServerGroup() {
@@ -108,30 +119,5 @@ public class ServerGroup implements Storable {
      */
     public List<String> getAliases() {
         return aliases;
-    }
-
-    @Override
-    public Storable load(JSONObject data) {
-        SmartObject object = SmartObject.fromJSON(data);
-        List<String> s = new ArrayList<>();
-        if(!object.getString("Servers").equalsIgnoreCase(""))
-            s = new ArrayList<>(Arrays.asList(object.getString("Servers").split(",")));
-
-        List<String> a = new ArrayList<>();
-        if(!object.getString("Aliases").equalsIgnoreCase(""))
-            a = new ArrayList<>(Arrays.asList(object.getString("Aliases").split(",")));
-
-        return new ServerGroup(object.getString("Id"), object.getString("HeadId"),
-                object.getString("Name"), s, a);
-    }
-
-    @Override
-    public JSONObject save(JSONObject data) {
-        data.put("Id", ID);
-        data.put("Name", name);
-        data.put("HeadId", headID);
-        data.put("Servers", String.join(",", servers));
-        data.put("Aliases", String.join(",", aliases));
-        return data;
     }
 }

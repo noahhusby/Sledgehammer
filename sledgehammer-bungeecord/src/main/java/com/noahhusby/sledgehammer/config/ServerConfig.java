@@ -29,6 +29,7 @@ import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+import net.md_5.bungee.event.EventPriority;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
@@ -161,7 +162,7 @@ public class ServerConfig implements Listener {
      * Sends initialization packet on join
      * @param e {@link net.md_5.bungee.api.event.ServerConnectedEvent}
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onServerJoin(ServerConnectedEvent e) {
         SledgehammerNetworkManager.getInstance().send(new P2SInitializationPacket(e.getPlayer().getName(), e.getServer().getInfo().getName()));
     }

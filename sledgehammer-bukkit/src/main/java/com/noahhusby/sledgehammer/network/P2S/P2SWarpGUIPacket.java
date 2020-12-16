@@ -24,7 +24,7 @@ import com.noahhusby.sledgehammer.data.warp.WarpPayload;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
 import com.noahhusby.sledgehammer.gui.inventories.warp.GroupWarpInventoryController;
 import com.noahhusby.sledgehammer.gui.inventories.warp.PinnedWarpInventoryController;
-import com.noahhusby.sledgehammer.gui.inventories.warp.WarpInventoryController;
+import com.noahhusby.sledgehammer.gui.inventories.warp.AllWarpInventoryController;
 import com.noahhusby.sledgehammer.network.P2SPacket;
 import com.noahhusby.sledgehammer.network.PacketInfo;
 import org.bukkit.Bukkit;
@@ -57,7 +57,7 @@ public class P2SWarpGUIPacket extends P2SPacket {
                 GUIRegistry.register(new GroupWarpInventoryController(p, payload, payload.getRequestGroup()));
                 break;
             case "all":
-                GUIRegistry.register(new WarpInventoryController(p, payload));
+                GUIRegistry.register(new AllWarpInventoryController(p, payload));
                 break;
             case "pinned":
                 GUIRegistry.register(new PinnedWarpInventoryController(p, payload));

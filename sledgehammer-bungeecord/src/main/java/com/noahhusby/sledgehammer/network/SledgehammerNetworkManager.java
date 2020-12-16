@@ -25,6 +25,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+import net.md_5.bungee.event.EventPriority;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -93,7 +94,7 @@ public class SledgehammerNetworkManager implements Listener {
      * Checks for sledgehammer packets from incoming plugin messages
      * @param e {@link PluginMessageEvent}
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onIncomingPacket(PluginMessageEvent e) {
         if (!e.getTag().equalsIgnoreCase("sledgehammer:channel")) return;
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(e.getData()));

@@ -18,7 +18,8 @@
 
 package com.noahhusby.sledgehammer.players;
 
-import com.noahhusby.lib.data.storage.Storable;
+import com.google.gson2.annotations.Expose;
+import com.google.gson2.annotations.SerializedName;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
@@ -26,8 +27,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-public class Attribute implements Storable {
+public class Attribute {
+    @Expose
+    @SerializedName("UUID")
     private UUID uuid;
+    @Expose
+    @SerializedName("Attributes")
     private List<String> attributes;
 
     public Attribute() {
@@ -45,21 +50,5 @@ public class Attribute implements Storable {
 
     public UUID getUuid() {
         return uuid;
-    }
-
-    @Override
-    public Storable load(JSONObject data) {
-        String att = (String) data.get("Attributes");
-        List<String> atts = new ArrayList<>();
-        if(!att.equalsIgnoreCase(""))
-            atts = new ArrayList<>(Arrays.asList(att.split(",")));
-        return new Attribute(UUID.fromString((String) data.get("UUID")), atts);
-    }
-
-    @Override
-    public JSONObject save(JSONObject data) {
-        data.put("UUID", uuid.toString());
-        data.put("Attributes", String.join(",", attributes));
-        return data;
     }
 }

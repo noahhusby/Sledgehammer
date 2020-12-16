@@ -116,6 +116,6 @@ public class WarpSortInventory extends GUIChild {
                 player, controller.getPayload().getSalt(), data));
 
         controller.close();
-        GUIRegistry.register(new WarpInventoryController(getPlayer(), payload));
+        GUIRegistry.register(new AllWarpInventoryController(getPlayer(), payload));
     }
 }

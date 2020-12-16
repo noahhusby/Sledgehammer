@@ -193,6 +193,10 @@ public class SledgehammerUtil {
         return saltStr;
     }
 
+    public String getLastArgument(String[] a) {
+        return a.length == 0 ? null : a[a.length - 1];
+    }
+
 
     public static <T extends Collection<? super String>> T copyPartialMatches(final String token, final Iterable<String> originals, final T collection) throws UnsupportedOperationException, IllegalArgumentException {
         Validate.notNull(token, "Search token cannot be null");

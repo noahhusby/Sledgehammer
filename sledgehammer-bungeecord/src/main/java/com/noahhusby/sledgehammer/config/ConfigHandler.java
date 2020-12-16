@@ -31,6 +31,8 @@ import com.google.common.collect.Maps;
 import com.noahhusby.lib.data.sql.Credentials;
 import com.noahhusby.lib.data.sql.MySQL;
 import com.noahhusby.lib.data.storage.Storage;
+import com.noahhusby.lib.data.storage.compare.CutComparator;
+import com.noahhusby.lib.data.storage.compare.ValueComparator;
 import com.noahhusby.lib.data.storage.handlers.LocalStorageHandler;
 import com.noahhusby.lib.data.storage.handlers.SQLStorageHandler;
 import com.noahhusby.sledgehammer.Sledgehammer;
@@ -60,6 +62,8 @@ public class ConfigHandler {
     private boolean authCodeConfigured;
 
     public static String authenticationCode = "";
+    public static int proxyId = 0;
+    public static int proxyTotal = -1;
     public static String messagePrefix = "";
     public static boolean globalTpll = false;
     public static boolean replaceNotAvailable = false;
@@ -139,15 +143,23 @@ public class ConfigHandler {
     public void loadData() {
         Storage serverData = ServerConfig.getInstance().getServers();
         if(serverData != null) serverData.clearHandlers();
+        if(serverData != null && serverData.getComparator() instanceof CutComparator)
+            serverData.setComparator(new ValueComparator("Name"));
 
         Storage warpData = WarpHandler.getInstance().getWarps();
         if(warpData != null) warpData.clearHandlers();
+        if(warpData != null && warpData.getComparator() instanceof CutComparator)
+            warpData.setComparator(new ValueComparator("Id"));
 
         Storage attributeData = PlayerManager.getInstance().getAttributes();
         if(attributeData != null) attributeData.clearHandlers();
+        if(attributeData != null && attributeData.getComparator() instanceof CutComparator)
+            attributeData.setComparator(new ValueComparator("UUID"));
 
         Storage serverGroups = ServerConfig.getInstance().getGroups();
         if(serverGroups != null) serverGroups.clearHandlers();
+        if(serverGroups != null && serverGroups.getComparator() instanceof CutComparator)
+            serverGroups.setComparator(new ValueComparator("Id"));
 
         config.load();
         cat("General", "General options for sledgehammer");
@@ -159,6 +171,11 @@ public class ConfigHandler {
         Pattern p = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
         authCodeConfigured = p.matcher(authenticationCode).matches();
 
+        proxyId = config.getInt(prop("Proxy ID"), category, 0, 0, 100,
+                "The Id of the proxy. The first proxy starts at zero. Leave at zero if this is a single-proxy configuration");
+        proxyTotal = config.getInt(prop("Proxy Total"), category, -1, -1, 100,
+                "The total amount of proxies, if a multi-server setup. Zero includes first proxy.\n" +
+                        "Set this to -1 if this is a single-proxy configuaraion");
         messagePrefix = config.getString(prop("Message Prefix"), "General", "&9&lBTE &8&l> "
                 , "The prefix of messages broadcasted to players from the proxy.");
         globalTpll = config.getBoolean(prop("Global Tpll"), "General", true, "Set this to false to disable global tpll. [/tpll & /cs tpll]");

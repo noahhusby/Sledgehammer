@@ -119,7 +119,7 @@ public class TpllCommand extends Command {
                 }
 
                 if (SledgehammerUtil.getServerFromSender(recipient) != server) {
-                    if(!recipient.equals(sender)) {
+                    if(!sender.getName().equals(recipient.getName())) {
                         recipient.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("You were summoned to ", ChatColor.GRAY),
                                         new TextElement(server.getName(), ChatColor.RED), new TextElement(" by ", ChatColor.GRAY),
                                         new TextElement(sender.getName(), ChatColor.DARK_RED)));

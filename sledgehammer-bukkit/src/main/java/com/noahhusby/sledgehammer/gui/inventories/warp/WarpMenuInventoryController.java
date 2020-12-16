@@ -27,17 +27,17 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GroupListWarpInventoryController extends GUIController {
-    private final List<GroupListWarpInventory> warpInventories = new ArrayList<>();
+public class WarpMenuInventoryController extends GUIController {
+    private final List<WarpMenuInventory> warpInventories = new ArrayList<>();
     private final WarpPayload payload;
 
-    public GroupListWarpInventoryController(Player p, WarpPayload payload) {
-        super(54, "Groups", p);
+    public WarpMenuInventoryController(Player p, WarpPayload payload) {
+        super(54, "Warps", p);
         this.payload = payload;
         init();
     }
 
-    public GroupListWarpInventoryController(GUIController controller, WarpPayload payload){
+    public WarpMenuInventoryController(GUIController controller, WarpPayload payload){
         super(controller);
         this.payload = payload;
         init();
@@ -50,7 +50,7 @@ public class GroupListWarpInventoryController extends GUIController {
         int total_pages = (int) Math.ceil(groups.size() / 27.0);
         if(total_pages == 0) total_pages = 1;
         for(int x = 0; x < total_pages; x++) {
-            GroupListWarpInventory w = new GroupListWarpInventory(x, groups);
+            WarpMenuInventory w = new WarpMenuInventory(x, groups);
             w.initFromController(this, getPlayer(), getInventory());
             warpInventories.add(w);
         }
@@ -59,7 +59,7 @@ public class GroupListWarpInventoryController extends GUIController {
     }
 
     public IGUIChild getChildByPage(int page) {
-        for(GroupListWarpInventory w : warpInventories) {
+        for(WarpMenuInventory w : warpInventories) {
             if(w.getPage() == page) return w;
         }
 

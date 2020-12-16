@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WarpSortInventoryController extends GUIController {
-    private final List<WarpInventory> warpInventories = new ArrayList<>();
+    private final List<AllWarpInventory> warpInventories = new ArrayList<>();
     private final WarpPayload payload;
 
     public WarpSortInventoryController(Player p, WarpPayload payload) {

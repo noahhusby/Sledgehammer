@@ -66,7 +66,7 @@ public class P2SLocationPacket extends P2SPacket {
             y -= 1;
         }
 
-        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),String.format("tp %s %s %s %s", player.getName(), x, y+1, z));
+        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),String.format("minecraft:tp %s %s %s %s", player.getName(), x, y+1, z));
 
     }
 }

@@ -35,7 +35,7 @@ public class GroupWarpInventoryController extends GUIController {
     private final String groupId;
 
     public GroupWarpInventoryController(Player p, WarpPayload payload, String groupId) {
-        super(54, "Warps - Server Selector", p);
+        super(54, "Warps", p);
         this.payload = payload;
         this.groupId = groupId;
         init();
@@ -55,7 +55,7 @@ public class GroupWarpInventoryController extends GUIController {
             if(g.getId().equals(groupId)) group = g;
 
         if(group == null) {
-            GUIRegistry.register(new WarpInventoryController(getPlayer(), payload));
+            GUIRegistry.register(new AllWarpInventoryController(getPlayer(), payload));
             return;
         }
 

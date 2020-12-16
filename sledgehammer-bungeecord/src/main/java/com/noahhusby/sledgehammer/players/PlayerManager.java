@@ -18,6 +18,7 @@
 
 package com.noahhusby.sledgehammer.players;
 
+import com.google.gson2.Gson;
 import com.noahhusby.lib.data.storage.StorageList;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import net.md_5.bungee.api.CommandSender;
@@ -26,6 +27,7 @@ import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+import net.md_5.bungee.event.EventPriority;
 
 import java.util.*;
 
@@ -48,7 +50,7 @@ public class PlayerManager implements Listener {
      * Creates a new SledgehammerPlayer and sets attributes from storage upon player joining
      * @param e {@link PostLoginEvent}
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(PostLoginEvent e) {
         ProxiedPlayer player = e.getPlayer();
         onPlayerDisconnect(new PlayerDisconnectEvent(player));
@@ -69,7 +71,7 @@ public class PlayerManager implements Listener {
      * Removes the SledgehammerPlayer and saves the attributes to storage upon player leaving
      * @param e {@link PlayerDisconnectEvent}
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerDisconnect(PlayerDisconnectEvent e) {
         ProxiedPlayer player = e.getPlayer();
         List<SledgehammerPlayer> remove = new ArrayList<>();
@@ -86,10 +88,7 @@ public class PlayerManager implements Listener {
             for(Attribute a : attributes)
                 if(a.getUuid().toString().equals(player.getUniqueId().toString())) attribute = a;
 
-            if(attribute != null) {
-                attribute.getAttributes().clear();
-                attribute.getAttributes().addAll(p.getAttributes());
-            } else {
+            if(attribute == null) {
                 Attribute a = new Attribute(player.getUniqueId(), p.getAttributes());
                 attributes.add(a);
             }

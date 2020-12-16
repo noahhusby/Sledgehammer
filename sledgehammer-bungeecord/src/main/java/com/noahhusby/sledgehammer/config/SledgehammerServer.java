@@ -18,24 +18,29 @@
 
 package com.noahhusby.sledgehammer.config;
 
-import com.noahhusby.lib.data.storage.Storable;
-import com.noahhusby.sledgehammer.SledgehammerUtil;
-import com.noahhusby.sledgehammer.SmartObject;
+import com.google.gson2.annotations.Expose;
+import com.google.gson2.annotations.SerializedName;
 import com.noahhusby.sledgehammer.datasets.Location;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SledgehammerServer implements Storable {
+public class SledgehammerServer {
+    @Expose
+    @SerializedName("Name")
     private String name;
+    @Expose
+    @SerializedName("Nick")
     private String friendlyName;
+    @Expose
+    @SerializedName("EarthServer")
     private boolean earthServer;
 
+    @Expose
+    @SerializedName("Locations")
     private List<Location> locations = new ArrayList<>();
     private String shVersion = null;
 
@@ -142,39 +147,5 @@ public class SledgehammerServer implements Storable {
         for(ServerGroup g : ServerConfig.getInstance().getGroups())
             if(g.getServers().contains(name)) return g;
         return new ServerGroup(name, "", friendlyName, Collections.singletonList(name), new ArrayList<>());
-    }
-
-    @Override
-    public Storable load(JSONObject packet) {
-        SmartObject data = SmartObject.fromJSON(packet);
-        SledgehammerServer server = new SledgehammerServer(data.getString("Name"));
-        JSONArray storedLocs = SledgehammerUtil.JsonUtils.toArray(data.get("Locations"));
-        for(Object o : storedLocs) {
-            JSONObject location = (JSONObject) o;
-            server.locations.add((Location) new Location().load(location));
-        }
-
-        String version = ServerConfig.getInstance().getInitializedMap().get(data.getString("Name"));
-        if(version != null) server.shVersion = version;
-
-        server.earthServer = Boolean.parseBoolean(data.getString("EarthServer"));
-        if(data.get("Nick") != null) server.friendlyName = data.getString("Nick");
-
-        return server;
-    }
-
-    @Override
-    public JSONObject save(JSONObject data) {
-        data.put("Name", name);
-        data.put("EarthServer", String.valueOf(earthServer));
-        data.put("Nick", friendlyName);
-
-        JSONArray locs = new JSONArray();
-        for(Location l : locations)
-            locs.add(l.save(new JSONObject()));
-
-        data.put("Locations", locs.toJSONString());
-
-        return data;
     }
 }

@@ -10,6 +10,7 @@ import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+import net.md_5.bungee.event.EventPriority;
 
 /**
  * Handles all event's needed for Terramap integration
@@ -18,8 +19,8 @@ import net.md_5.bungee.event.EventHandler;
  *
  */
 public class TerramapAddonEventHandler implements Listener {
-	
-	@EventHandler
+
+	@EventHandler(priority = EventPriority.LOWEST)
     public void onPostLogin(PostLoginEvent event) {
 		/*
 		 *  Avoid spamming people's logs with unknown channel reports.
@@ -46,8 +47,8 @@ public class TerramapAddonEventHandler implements Listener {
     		}
     	}
     }
-	
-	@EventHandler
+
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerLeave(PlayerDisconnectEvent event) {
 		TerramapAddon.instance.synchronizer.unregisterPlayer(event.getPlayer());
 	}

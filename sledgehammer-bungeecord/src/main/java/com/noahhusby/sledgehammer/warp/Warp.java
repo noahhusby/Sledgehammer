@@ -18,18 +18,31 @@
 
 package com.noahhusby.sledgehammer.warp;
 
-import com.noahhusby.lib.data.storage.Storable;
+import com.google.gson2.annotations.Expose;
+import com.google.gson2.annotations.SerializedName;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.datasets.Point;
 import org.json.simple.JSONObject;
 
-public class Warp implements Storable {
+public class Warp {
 
+    @Expose
+    @SerializedName("Pinned")
     private PinnedMode pinned;
+    @Expose
+    @SerializedName("Server")
     private String server;
+    @Expose
+    @SerializedName("HeadId")
     private String headID;
+    @Expose
+    @SerializedName("Point")
     private Point point;
+    @Expose
+    @SerializedName("Name")
     private String name;
+    @Expose
+    @SerializedName("Id")
     private int id;
 
     private WarpResponse response;
@@ -159,14 +172,6 @@ public class Warp implements Storable {
         return response;
     }
 
-    @Override
-    public Storable load(JSONObject data) {
-        Point p = (Point) new Point().load(SledgehammerUtil.JsonUtils.toObject((String) data.get("Point")));
-        return new Warp(SledgehammerUtil.JsonUtils.toInt(data.get("Id")), (String) data.get("Name"), p, (String) data.get("Server"),
-                PinnedMode.valueOf((String) data.get("Pinned")), (String) data.get("HeadId"));
-    }
-
-    @Override
     public JSONObject save(JSONObject data) {
         data.put("Id", id);
         data.put("Name", name);

@@ -48,6 +48,7 @@ import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
+import net.md_5.bungee.event.EventPriority;
 
 public class Sledgehammer extends Plugin implements Listener {
     public static Logger logger;
@@ -181,12 +182,13 @@ public class Sledgehammer extends Plugin implements Listener {
         if(ConfigHandler.debug) logger.info(m);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(PostLoginEvent e) {
         if(e.getPlayer().hasPermission("sledgehammer.admin") && !ConfigHandler.getInstance().isAuthCodeConfigured()) {
             ChatHelper.sendAuthCodeWarning(e.getPlayer());
         }
     }
+
     /**
      * @author SmylerMC
      * @param l

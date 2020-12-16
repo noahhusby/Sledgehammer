@@ -63,13 +63,18 @@ public class PermissionHandler {
      * @param response {@link PermissionResponse}
      */
     public void check(SledgehammerPlayer player, String permission, PermissionResponse response) {
-        if(player == null || !player.onSledgehammer()) {
+        if(player == null) {
             response.onResponse(PermissionRequest.PermissionCode.NO_PERMISSION, false);
             return;
         }
 
         if(isAdmin(player) || player.hasPermission(permission)) {
             response.onResponse(PermissionRequest.PermissionCode.PERMISSION, true);
+            return;
+        }
+
+        if(!player.onSledgehammer()) {
+            response.onResponse(PermissionRequest.PermissionCode.NO_PERMISSION, false);
             return;
         }
 

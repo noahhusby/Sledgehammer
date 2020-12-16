@@ -21,6 +21,7 @@ package com.noahhusby.sledgehammer.warp;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.noahhusby.lib.data.storage.StorageList;
+import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
@@ -350,11 +351,31 @@ public class WarpHandler {
      * @return New ID
      */
     private int generateWarpID() {
+        if(ConfigHandler.proxyTotal != -1) return generateMultiWarpID();
         int x = -1;
         for(Warp w : warps)
             if(w.getId() > x) x = w.getId();
 
         return x < 0 ? 0 : x + 1;
+    }
+
+    /**
+     * Generates a warp ID for multi-server networks
+     * @return New ID
+     */
+    private int generateMultiWarpID() {
+        int i = ConfigHandler.proxyId;
+        int min = i * Constants.warpIdBuffer;
+        int max = (min + Constants.warpIdBuffer) - 1;
+        while (true) {
+            for(int x = min; x < max; x++) {
+                if(getWarp(x) == null) return x;
+            }
+
+            i += (ConfigHandler.proxyTotal + 1);
+            min = i * Constants.warpIdBuffer;
+            max = (min + Constants.warpIdBuffer) - 1;
+        }
     }
 
     private class WarpGroup {

@@ -72,24 +72,11 @@ public class GroupWarpInventory extends GUIChild {
             inventory.setItem(4, SledgehammerUtil.getSkull(headId, ChatColor.RED + "" + ChatColor.BOLD + group.getName()));
         }
         inventory.setItem(40, GUIHelper.generateCompass());
+        inventory.setItem(45, GUIHelper.generateWarpSort());
         inventory.setItem(49, GUIHelper.generateExit());
 
-        ItemStack sort = new ItemStack(Material.HOPPER, 1);
-        ItemMeta sortMeta = sort.getItemMeta();
-        sortMeta.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "Sort");
-        sort.setItemMeta(sortMeta);
-        inventory.setItem(45, sort);
-
-        inventory.setItem(46, SledgehammerUtil.getSkull(Constants.lampHead, ChatColor.GOLD + "" + ChatColor.BOLD
-                + "Show pinned warps"));
-
-        if(((GroupWarpInventoryController) getController()).getPayload().isEditAccess()) {
-            ItemStack anvil = new ItemStack(Material.ANVIL, 1);
-            ItemMeta meta = anvil.getItemMeta();
-            meta.setDisplayName(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Configure Warps");
-            anvil.setItemMeta(meta);
-            inventory.setItem(47, anvil);
-        }
+        if(((GroupWarpInventoryController) getController()).getPayload().isEditAccess())
+            inventory.setItem(46, GUIHelper.generateWarpAnvil());
 
         boolean paged = false;
         if(page != 0) {
@@ -153,18 +140,18 @@ public class GroupWarpInventory extends GUIChild {
 
         if(e.getCurrentItem().getItemMeta().getDisplayName() == null) return;
 
+        if(e.getSlot() == 40) {
+            GUIRegistry.register(new WarpMenuInventoryController(getController(), controller.getPayload()));
+            return;
+        }
+
         if(e.getSlot() == 45) {
             controller.close();
             GUIRegistry.register(new WarpSortInventoryController(getPlayer(), controller.getPayload()));
             return;
         }
 
-        if(e.getSlot() == 46) {
-            GUIRegistry.register(new PinnedWarpInventoryController(getPlayer(), controller.getPayload()));
-            return;
-        }
-
-        if(e.getSlot() == 47 && controller.getPayload().isEditAccess()) {
+        if(e.getSlot() == 46 && controller.getPayload().isEditAccess()) {
             controller.close();
             SledgehammerNetworkManager.getInstance().send(new S2PWarpConfigPacket(S2PWarpConfigPacket.ProxyConfigAction.OPEN_CONFIG,
                     getPlayer(), controller.getPayload().getSalt()));
@@ -183,11 +170,6 @@ public class GroupWarpInventory extends GUIChild {
 
         if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Close")) {
             controller.close();
-            return;
-        }
-
-        if(e.getSlot() == 40) {
-            GUIRegistry.register(new GroupListWarpInventoryController(getController(), controller.getPayload()));
             return;
         }
 

@@ -22,6 +22,7 @@ import com.noahhusby.sledgehammer.chat.ChatConstants;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.chat.TextElement;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
+import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.permissions.PermissionRequest;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
@@ -35,6 +36,11 @@ public class WarpSetFragment implements ICommandFragment {
         SledgehammerPlayer player = SledgehammerPlayer.getPlayer(sender);
         PermissionHandler.getInstance().check(player, "sledgehammer.warp.set", (code, global) -> {
             if(code == PermissionRequest.PermissionCode.PERMISSION) {
+                if(args.length == 0) {
+                    sender.sendMessage(ChatHelper.makeTextComponent(
+                            new TextElement(String.format("Usage: /%s set <name>", ConfigHandler.warpCommand), ChatColor.RED)));
+                    return;
+                }
                 WarpHandler.WarpStatus warpStatus = WarpHandler.getInstance().getWarpStatus(args[0], player.getServer().getInfo().getName());
 
                 switch (warpStatus) {

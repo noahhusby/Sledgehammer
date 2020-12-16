@@ -66,21 +66,11 @@ public class PinnedWarpInventory extends GUIChild {
 
         inventory.setItem(4, SledgehammerUtil.getSkull(Constants.lampHead, ChatColor.YELLOW + "" + ChatColor.BOLD + "Pinned Warps"));
         inventory.setItem(40, GUIHelper.generateCompass());
+        inventory.setItem(45, GUIHelper.generateWarpSort());
         inventory.setItem(49, GUIHelper.generateExit());
 
-        ItemStack sort = new ItemStack(Material.HOPPER, 1);
-        ItemMeta sortMeta = sort.getItemMeta();
-        sortMeta.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "Sort");
-        sort.setItemMeta(sortMeta);
-        inventory.setItem(45, sort);
-
-        if(((PinnedWarpInventoryController) getController()).getPayload().isEditAccess()) {
-            ItemStack anvil = new ItemStack(Material.ANVIL, 1);
-            ItemMeta meta = anvil.getItemMeta();
-            meta.setDisplayName(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Configure Warps");
-            anvil.setItemMeta(meta);
-            inventory.setItem(46, anvil);
-        }
+        if(((PinnedWarpInventoryController) getController()).getPayload().isEditAccess())
+            inventory.setItem(46, GUIHelper.generateWarpAnvil());
 
         boolean paged = false;
         if(page != 0) {
@@ -144,6 +134,11 @@ public class PinnedWarpInventory extends GUIChild {
 
         if(e.getCurrentItem().getItemMeta().getDisplayName() == null) return;
 
+        if(e.getSlot() == 40) {
+            GUIRegistry.register(new WarpMenuInventoryController(getController(), controller.getPayload()));
+            return;
+        }
+
         if(e.getSlot() == 45) {
             controller.close();
             GUIRegistry.register(new WarpSortInventoryController(getPlayer(), controller.getPayload()));
@@ -172,10 +167,6 @@ public class PinnedWarpInventory extends GUIChild {
             return;
         }
 
-        if(e.getSlot() == 40) {
-            GUIRegistry.register(new GroupListWarpInventoryController(getController(), controller.getPayload()));
-            return;
-        }
 
         if(e.getSlot() > 8 && e.getSlot() < 36) {
             ItemMeta meta = e.getCurrentItem().getItemMeta();
