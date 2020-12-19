@@ -28,6 +28,10 @@ public class P2CPlayerSyncPacket implements IForgePacket {
 	public P2CPlayerSyncPacket(SledgehammerPlayer[] players) {
 		this.players = players;
 	}
+	
+	public P2CPlayerSyncPacket() {
+		this.players = new SledgehammerPlayer[0];
+	}
 
 	@Override
 	public void encode(ByteBuf buf) {
