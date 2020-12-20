@@ -22,6 +22,7 @@ import com.google.gson2.Gson;
 import com.noahhusby.lib.data.storage.StorageList;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
@@ -52,19 +53,28 @@ public class PlayerManager implements Listener {
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(PostLoginEvent e) {
-        ProxiedPlayer player = e.getPlayer();
-        onPlayerDisconnect(new PlayerDisconnectEvent(player));
-        SledgehammerPlayer newPlayer = new SledgehammerPlayer(player);
+        onPlayerJoin(e.getPlayer());
+    }
+
+    /**
+     * Creates a new SledgehammerPlayer and sets attributes from storage upon player joining
+     * @param p {@link ProxiedPlayer}
+     */
+    private SledgehammerPlayer onPlayerJoin(ProxiedPlayer p) {
+        onPlayerDisconnect(new PlayerDisconnectEvent(p));
+        SledgehammerPlayer newPlayer = new SledgehammerPlayer(p);
 
         Attribute attribute = null;
         for(Attribute a : attributes)
-            if(a.getUuid().toString().equals(player.getUniqueId().toString())) attribute = a;
+            if(a.getUuid().toString().equals(p.getUniqueId().toString())) attribute = a;
 
         if(attribute != null) {
             newPlayer.setAttributes(attribute.getAttributes());
         }
 
         players.add(newPlayer);
+
+        return newPlayer;
     }
 
     /**
@@ -73,7 +83,14 @@ public class PlayerManager implements Listener {
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerDisconnect(PlayerDisconnectEvent e) {
-        ProxiedPlayer player = e.getPlayer();
+        onPlayerDisconnect(e.getPlayer());
+    }
+
+    /**
+     * Removes the SledgehammerPlayer and saves the attributes to storage upon player leaving
+     * @param player {@link ProxiedPlayer}
+     */
+    private void onPlayerDisconnect(ProxiedPlayer player) {
         List<SledgehammerPlayer> remove = new ArrayList<>();
         for(SledgehammerPlayer p : players) {
             if(p.getName().equalsIgnoreCase(player.getName())) {
@@ -123,6 +140,10 @@ public class PlayerManager implements Listener {
             }
         }
 
+        for(ProxiedPlayer p : ProxyServer.getInstance().getPlayers())
+            if(p.getName().equalsIgnoreCase(s))
+                return onPlayerJoin(p);
+
         return null;
     }
 
@@ -132,14 +153,7 @@ public class PlayerManager implements Listener {
      * @return {@link SledgehammerPlayer}
      */
     public SledgehammerPlayer getPlayer(CommandSender s) {
-        for(SledgehammerPlayer p : players) {
-            if(p.getName().equalsIgnoreCase(s.getName())) {
-                p.update();
-                return p;
-            }
-        }
-
-        return null;
+        return getPlayer(s.getName());
     }
 
     /**

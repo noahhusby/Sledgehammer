@@ -87,7 +87,7 @@ public class SledgehammerNetworkManager implements Listener {
             e.printStackTrace();
         }
 
-        ProxyServer.getInstance().getServerInfo(packet.getPacketInfo().getServer()).sendData("sledgehammer:channel", stream.toByteArray());
+        ProxyServer.getInstance().getServerInfo(packet.getPacketInfo().getServer()).sendData("sledgehammer:channel", stream.toByteArray(), true);
     }
 
     /**
@@ -113,7 +113,7 @@ public class SledgehammerNetworkManager implements Listener {
             }
         } catch (ParseException ex) {
             ex.printStackTrace();
-        }
+        } catch (Exception ignored) { }
     }
 
     /**

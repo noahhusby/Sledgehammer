@@ -19,6 +19,7 @@
 package com.noahhusby.sledgehammer.datasets;
 
 import com.google.common.collect.Maps;
+import com.google.gson2.Gson;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
@@ -75,10 +76,12 @@ public class OpenStreetMaps {
      */
     public ServerInfo getServerFromLocation(double lon, double lat, boolean offline) {
         Location location = offline ? getOfflineLocation(lon, lat) : getLocation(lon, lat);
+        if(location == null) return null;
         Map<Location.detail, ServerInfo> serverInfoMap = Maps.newHashMap();
 
         for (SledgehammerServer s : ServerConfig.getInstance().getServers()) {
             if (!s.isEarthServer()) continue;
+            if(s.getLocations() == null || s.getLocations().isEmpty()) continue;
             for (Location l : s.getLocations()) {
                 switch (l.detailType) {
                     case city:

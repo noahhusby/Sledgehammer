@@ -65,6 +65,5 @@ public class S2PWarpPacket extends S2PPacket {
 
         player.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Warping to ", ChatColor.GRAY), new TextElement(warp.getName(), ChatColor.RED)));
         SledgehammerNetworkManager.getInstance().send(new P2STeleportPacket(player.getName(), warp.getServer(), warp.getPoint()));
-
     }
 }

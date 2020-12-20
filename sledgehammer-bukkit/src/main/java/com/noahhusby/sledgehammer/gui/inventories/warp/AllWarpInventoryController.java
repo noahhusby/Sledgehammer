@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2020 Noah Husby
- * sledgehammer - WarpInventoryController.java
+ * sledgehammer - AllWarpInventoryController.java
  *
  * Sledgehammer is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@ import com.noahhusby.sledgehammer.data.warp.Warp;
 import com.noahhusby.sledgehammer.data.warp.WarpGroup;
 import com.noahhusby.sledgehammer.data.warp.WarpPayload;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIController;
-import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
 import com.noahhusby.sledgehammer.gui.inventories.general.IGUIChild;
 import org.bukkit.entity.Player;
 
@@ -49,9 +48,11 @@ public class AllWarpInventoryController extends GUIController {
     public void init() {
         List<Warp> warps = new ArrayList<>();
         for(WarpGroup wg : payload.getGroups())
-            warps.addAll(wg.getWarps());
+            for(Warp w : wg.getWarps())
+                warps.add(w);
 
         int total_pages = (int) Math.ceil(warps.size() / 27.0);
+        if(total_pages == 0) total_pages = 1;
         for(int x = 0; x < total_pages; x++) {
             AllWarpInventory w = new AllWarpInventory(x, warps);
             w.initFromController(this, getPlayer(), getInventory());
@@ -71,9 +72,5 @@ public class AllWarpInventoryController extends GUIController {
 
     public WarpPayload getPayload() {
         return payload;
-    }
-
-    public void switchToPinned() {
-        GUIRegistry.register(new PinnedWarpInventoryController(this, null));
     }
 }

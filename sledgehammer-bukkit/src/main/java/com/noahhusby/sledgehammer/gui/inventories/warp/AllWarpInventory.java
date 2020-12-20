@@ -102,9 +102,9 @@ public class AllWarpInventory extends GUIChild {
             Warp warp = warps.get(x);
 
             String headId = warp.getHeadID();
-            if(headId.equals("")) headId = Constants.cyanWoolHead;
+            if(headId.equals("")) headId = Constants.yellowWoolHead;
             ItemStack item = SledgehammerUtil.getSkull(headId, ((warp.getPinnedMode() == Warp.PinnedMode.GLOBAL
-            || warp.getPinnedMode() == Warp.PinnedMode.LOCAL) ? ChatColor.GOLD : ChatColor.BLUE)
+                    || warp.getPinnedMode() == Warp.PinnedMode.LOCAL) ? ChatColor.GOLD : ChatColor.BLUE)
                     + "" + ChatColor.BOLD + warp.getName());
 
             ItemMeta meta = item.getItemMeta();
@@ -166,6 +166,7 @@ public class AllWarpInventory extends GUIChild {
             controller.close();
             return;
         }
+
 
         if(e.getSlot() > 8 && e.getSlot() < 36) {
             ItemMeta meta = e.getCurrentItem().getItemMeta();

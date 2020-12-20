@@ -50,6 +50,7 @@ public class P2SWarpGUIPacket extends P2SPacket {
         }
 
         WarpPayload payload = WarpPayload.fromPayload(data);
+        if(payload.getGroups().isEmpty()) payload.setDefaultPage("pinned");
 
         switch (payload.getDefaultPage()) {
             default:
