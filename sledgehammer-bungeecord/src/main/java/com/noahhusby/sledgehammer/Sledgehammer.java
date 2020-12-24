@@ -86,7 +86,6 @@ public class Sledgehammer extends Plugin implements Listener {
 
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerCommand());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerAdminCommand());
-        ProxyServer.getInstance().getPluginManager().registerCommand(this, new TestCommand());
 
         ServerConfig.getInstance();
 

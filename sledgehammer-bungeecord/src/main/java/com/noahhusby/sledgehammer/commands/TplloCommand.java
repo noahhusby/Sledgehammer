@@ -87,7 +87,9 @@ public class TplloCommand extends Command {
                 sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("(Override) Teleporting to ", ChatColor.GRAY),
                         new TextElement(lat+", "+lon, ChatColor.RED)));
 
-                getNetworkManager().send(new P2SLocationPacket(sender.getName(), server.getName(), String.valueOf(lat), String.valueOf(lon)));
+                double[] geo = {lat, lon};
+
+                getNetworkManager().send(new P2SLocationPacket(sender.getName(), server.getName(), geo));
                 return;
             }
             sender.sendMessage(ChatConstants.noPermission);

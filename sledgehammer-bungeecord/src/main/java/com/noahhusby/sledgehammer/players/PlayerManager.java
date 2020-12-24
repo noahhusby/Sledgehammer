@@ -52,7 +52,7 @@ public class PlayerManager implements Listener {
      * @param e {@link PostLoginEvent}
      */
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerJoin(PostLoginEvent e) {
+    public void onPlayerJoinEvent(PostLoginEvent e) {
         onPlayerJoin(e.getPlayer());
     }
 
@@ -61,7 +61,7 @@ public class PlayerManager implements Listener {
      * @param p {@link ProxiedPlayer}
      */
     private SledgehammerPlayer onPlayerJoin(ProxiedPlayer p) {
-        onPlayerDisconnect(new PlayerDisconnectEvent(p));
+        onPlayerDisconnect(p);
         SledgehammerPlayer newPlayer = new SledgehammerPlayer(p);
 
         Attribute attribute = null;
@@ -82,7 +82,7 @@ public class PlayerManager implements Listener {
      * @param e {@link PlayerDisconnectEvent}
      */
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerDisconnect(PlayerDisconnectEvent e) {
+    public void onPlayerDisconnectEvent(PlayerDisconnectEvent e) {
         onPlayerDisconnect(e.getPlayer());
     }
 

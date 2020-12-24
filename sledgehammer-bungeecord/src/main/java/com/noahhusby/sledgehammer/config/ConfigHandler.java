@@ -295,8 +295,8 @@ public class ConfigHandler {
             {
                 SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(
                         new Credentials(sqlHost, sqlPort, sqlUser, sqlPassword, sqlDb)), "Servers",
-                        "Name,EarthServer,Nick,Locations",
-                        "TEXT(255),TEXT(255),TEXT(255),LONGTEXT");
+                        "Name,EarthServer,Nick,Locations,XOffset,ZOffset",
+                        "TEXT(255),TEXT(255),TEXT(255),LONGTEXT,INT,INT");
                 sqlStorageHandler.setPriority(100);
                 serverData.registerHandler(sqlStorageHandler);
             }

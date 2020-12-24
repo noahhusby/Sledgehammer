@@ -38,10 +38,15 @@ public class SledgehammerServer {
     @Expose
     @SerializedName("EarthServer")
     private boolean earthServer;
-
     @Expose
     @SerializedName("Locations")
     private List<Location> locations = new ArrayList<>();
+    @Expose
+    @SerializedName("XOffset")
+    private int xOffset;
+    @Expose
+    @SerializedName("ZOffset")
+    private int zOffset;
     private String shVersion = null;
 
     public SledgehammerServer() {}
@@ -105,6 +110,38 @@ public class SledgehammerServer {
      */
     public void setLocations(List<Location> locations) {
         this.locations = locations;
+    }
+
+    /**
+     * Sets the x offset for tpll requests
+     * @param xOffset
+     */
+    public void setxOffset(int xOffset) {
+        this.xOffset = xOffset;
+    }
+
+    /**
+     * Gets the x offset for tpll requests
+     * @return X Offset
+     */
+    public int getxOffset() {
+        return xOffset;
+    }
+
+    /**
+     * Sets the z offset for tpll requests
+     * @param zOffset
+     */
+    public void setzOffset(int zOffset) {
+        this.zOffset = zOffset;
+    }
+
+    /**
+     * Gets the z offset for tpll requests
+     * @return Z Offset
+     */
+    public int getzOffset() {
+        return zOffset;
     }
 
     /**

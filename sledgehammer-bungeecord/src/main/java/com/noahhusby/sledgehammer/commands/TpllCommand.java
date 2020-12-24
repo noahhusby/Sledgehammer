@@ -137,8 +137,8 @@ public class TpllCommand extends Command {
                     sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Teleporting to ", ChatColor.GRAY),
                             new TextElement(lat+", "+lon, ChatColor.RED)));
                 }
-                getNetworkManager().send(new P2SLocationPacket(recipient.getName(), server.getName(), String.valueOf(lat), String.valueOf(lon)));
-
+                double[] geo = {lat, lon};
+                getNetworkManager().send(new P2SLocationPacket(recipient.getName(), server.getName(), geo));
                 return;
             }
             sender.sendMessage(ChatConstants.noPermission);

@@ -61,8 +61,10 @@ public abstract class Command extends net.md_5.bungee.api.plugin.Command {
         if(permissionNode == null) return false;
 
         for(String s : sender.getPermissions()) {
+            if(s == null) continue;
             if(s.equals(permissionNode+"."+specificNode)) return true;
         }
+
         return false;
     }
 
