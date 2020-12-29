@@ -76,7 +76,8 @@ public class S2PTestLocationPacket extends S2PPacket {
                         new TextElement("Offline: ", ChatColor.RED), new TextElement("Disabled", ChatColor.DARK_RED)));
             } else {
                 Location offline = OpenStreetMaps.getInstance().getOfflineLocation(proj[0], proj[1]);
-                player.sendMessage(ChatHelper.makeTextComponent(new TextElement("Offline: ", ChatColor.RED)));
+                player.sendMessage(ChatHelper.makeTextComponent(new TextElement("Offline ", ChatColor.RED), new TextElement("(", ChatColor.GRAY),
+                        new TextElement("Active", ChatColor.GREEN), new TextElement("):", ChatColor.GRAY)));
                 if (!offline.city.equals("")) {
                     player.sendMessage(ChatHelper.makeTextComponent(new TextElement("City - ", ChatColor.GRAY), new TextElement(offline.city, ChatColor.BLUE)));
                 }

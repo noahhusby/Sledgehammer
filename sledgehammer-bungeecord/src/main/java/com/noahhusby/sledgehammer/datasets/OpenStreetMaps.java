@@ -19,7 +19,6 @@
 package com.noahhusby.sledgehammer.datasets;
 
 import com.google.common.collect.Maps;
-import com.google.gson2.Gson;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
@@ -64,7 +63,7 @@ public class OpenStreetMaps {
      * @return Returns {@link ServerInfo} if a valid region is found, or null if not
      */
     public ServerInfo getServerFromLocation(double lon, double lat) {
-        return getServerFromLocation(lon, lat, false);
+        return getServerFromLocation(lon, lat, ConfigHandler.useOfflineMode);
     }
 
     /**

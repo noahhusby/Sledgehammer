@@ -121,7 +121,7 @@ public class Sledgehammer extends Plugin implements Listener {
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new CsTpllCommand());
         }
 
-        if(ConfigHandler.borderTeleportation && !ConfigHandler.useOfflineMode) {
+        if(ConfigHandler.borderTeleportation && !ConfigHandler.doesOfflineExist) {
             logger.warning("------------------------------");
             for(int x = 0; x < 2; x++) {
                 logger.warning("");
@@ -141,7 +141,7 @@ public class Sledgehammer extends Plugin implements Listener {
                 logger.warning("");
             }
             logger.warning("The offline OSM database was enabled without a proper database configured.");
-            logger.warning("Please follow the guide on https://github.com/noahhusby/sledgehammer to configure an offline database.");
+            logger.warning("Please follow the guide on https://github.com/noahhusby/Sledgehammer/wiki/Border-Offline-Database to configure an offline database.");
             logger.warning("This feature will now be disabled.");
             for(int x = 0; x < 2; x++) {
                 logger.warning("");
