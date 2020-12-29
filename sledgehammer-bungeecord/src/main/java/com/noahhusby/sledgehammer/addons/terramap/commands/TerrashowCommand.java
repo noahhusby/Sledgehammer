@@ -140,11 +140,11 @@ public class TerrashowCommand extends Command implements TabExecutor {
 	}
 	
 	private boolean canPlayerHideOthers(ProxiedPlayer player) {
-		return player.hasPermission(TerramapAddon.TERRASHOW_SELF_PERMISSION_NODE) || PermissionHandler.getInstance().isAdmin(player);
+		return player.hasPermission(TerramapAddon.TERRASHOW_OTHERS_PERMISSION_NODE) || PermissionHandler.getInstance().isAdmin(player);
 	}
 	
 	private boolean canPlayerHideSelf(ProxiedPlayer player) {
-		return player.hasPermission(TerramapAddon.TERRASHOW_OTHERS_PERMISSION_NODE) || PermissionHandler.getInstance().isAdmin(player);
+		return player.hasPermission(TerramapAddon.TERRASHOW_SELF_PERMISSION_NODE) || PermissionHandler.getInstance().isAdmin(player);
 	}
 
 	@Override

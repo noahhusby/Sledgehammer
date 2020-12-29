@@ -221,7 +221,7 @@ public class ConfigHandler {
                 "Set false for fetching the latest data from OSM (more up to date), or true for using a downloaded database.\n" +
                         "Please follow the guide on https://github.com/noahhusby/sledgehammer about downloading and configuring the offline database.");
         borderTeleportation = config.getBoolean(prop("Auto Border Teleportation"), "Geography", false,
-                "Set to false to disable automatic border teleportation, or true to enable it. (Note: OSM Offline Mode must be set to true for this to be enabled.");
+                "Set to false to disable automatic border teleportation, or true to enable it. Border teleportation requires the offline database to be configured.");
         order();
 
         /*

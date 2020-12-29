@@ -118,8 +118,10 @@ public class SledgehammerUtil {
      * @return True if the Bungeecord server is a Sledgehammer server, False if not
      */
     public static boolean isSledgehammerServer(ServerInfo server) {
-        for(SledgehammerServer s : ServerConfig.getInstance().getServers())
+        for(SledgehammerServer s : ServerConfig.getInstance().getServers()) {
+            if(s.getServerInfo() == null) continue;
             if(s.getServerInfo().equals(server)) return true;
+        }
         return false;
     }
 
