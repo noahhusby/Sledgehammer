@@ -273,7 +273,6 @@ public class WarpHandler {
         }
 
         String defaultPage = ConfigHandler.warpMenuPage;
-        List<String> attributes = player.getAttributes();
 
         if(ConfigHandler.showPinnedOnBlank) {
             boolean found = false;
@@ -284,11 +283,11 @@ public class WarpHandler {
                 defaultPage = "pinned";
         }
 
-        if(attributes.contains("WARP_SORT_ALL")) {
+        if(player.checkAttribute("WARP_SORT", "WARP_SORT_ALL")) {
             defaultPage = "all";
-        } else if(attributes.contains("WARP_SORT_GROUP")) {
+        } else if(player.checkAttribute("WARP_SORT", "WARP_SORT_GROUP")) {
             defaultPage = "group";
-        } else if(attributes.contains("WARP_SORT_PINNED")) {
+        } else if(player.checkAttribute("WARP_SORT", "WARP_SORT_PINNED")) {
             defaultPage = "pinned";
         }
 

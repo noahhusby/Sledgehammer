@@ -23,12 +23,7 @@ public final class PlayerDisplayPreferences {
 	 * @return a boolean
 	 */
 	public static boolean shouldDisplayPlayer(SledgehammerPlayer player) {
-		List<String> playerAttribs = player.getAttributes();
-		synchronized(playerAttribs) {
-			if(playerAttribs.contains(SHOW_ATTRIBUTE)) return true;
-			if(playerAttribs.contains(HIDE_ATTRIBUTE)) return false;
-		}
-		return ConfigHandler.terramapPlayersDisplayDefault;
+		return !player.checkAttribute("TERRA_HIDE", false);
 	}
 
 	/**
@@ -38,12 +33,7 @@ public final class PlayerDisplayPreferences {
 	 * @param yesNo
 	 */
 	public static void setShouldDisplayPlayer(SledgehammerPlayer player, boolean yesNo) {
-		List<String> playerAttribs = player.getAttributes();
-		synchronized(playerAttribs) {
-			playerAttribs.remove(SHOW_ATTRIBUTE);
-			playerAttribs.remove(HIDE_ATTRIBUTE);
-			playerAttribs.add(yesNo? SHOW_ATTRIBUTE: HIDE_ATTRIBUTE);
-		}
+		player.getAttributes().put("TERRA_HIDE", !yesNo);
 	}
 
 }

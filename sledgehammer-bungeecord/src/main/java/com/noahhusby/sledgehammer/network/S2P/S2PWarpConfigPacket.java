@@ -100,15 +100,13 @@ public class S2PWarpConfigPacket implements IS2PPacket {
                 WarpHandler.getInstance().getWarps().save(true);
                 break;
             case UPDATE_PLAYER_DEFAULT:
-                player.getAttributes().removeIf(s -> s.equals("WARP_SORT_ALL") || s.equals("WARP_SORT_GROUP") || s.equals("WARP_SORT_PINNED"));
-
                 String sort = data.getString("sort");
                 if(sort.equalsIgnoreCase("all")) {
-                    player.getAttributes().add("WARP_SORT_ALL");
+                    player.getAttributes().put("WARP_SORT", "WARP_SORT_ALL");
                 } else if(sort.equalsIgnoreCase("group")) {
-                    player.getAttributes().add("WARP_SORT_GROUP");
+                    player.getAttributes().put("WARP_SORT", "WARP_SORT_GROUP");
                 } else if(sort.equalsIgnoreCase("pinned")) {
-                    player.getAttributes().add("WARP_SORT_PINNED");
+                    player.getAttributes().put("WARP_SORT", "WARP_SORT_PINNED");
                 }
                 break;
             case WARP_UPDATE_LOCATION:

@@ -142,23 +142,23 @@ public class ConfigHandler {
      */
     public void loadData() {
         Storage serverData = ServerConfig.getInstance().getServers();
-        if(serverData != null) serverData.clearHandlers();
-        if(serverData != null && serverData.getComparator() instanceof CutComparator)
+        serverData.clearHandlers();
+        if(serverData.getComparator() instanceof CutComparator)
             serverData.setComparator(new ValueComparator("Name"));
 
         Storage warpData = WarpHandler.getInstance().getWarps();
-        if(warpData != null) warpData.clearHandlers();
-        if(warpData != null && warpData.getComparator() instanceof CutComparator)
+        warpData.clearHandlers();
+        if(warpData.getComparator() instanceof CutComparator)
             warpData.setComparator(new ValueComparator("Id"));
 
         Storage attributeData = PlayerManager.getInstance().getAttributes();
-        if(attributeData != null) attributeData.clearHandlers();
-        if(attributeData != null && attributeData.getComparator() instanceof CutComparator)
+        attributeData.clearHandlers();
+        if(attributeData.getComparator() instanceof CutComparator)
             attributeData.setComparator(new ValueComparator("UUID"));
 
         Storage serverGroups = ServerConfig.getInstance().getGroups();
-        if(serverGroups != null) serverGroups.clearHandlers();
-        if(serverGroups != null && serverGroups.getComparator() instanceof CutComparator)
+        serverGroups.clearHandlers();
+        if(serverGroups.getComparator() instanceof CutComparator)
             serverGroups.setComparator(new ValueComparator("Id"));
 
         config.load();
@@ -286,17 +286,12 @@ public class ConfigHandler {
         attributeData.registerHandler(new LocalStorageHandler(ConfigHandler.attributeFile));
         serverGroups.registerHandler(new LocalStorageHandler(ConfigHandler.groupsFile));
 
-        serverData.load(true);
-        warpData.load(true);
-        attributeData.load(true);
-        serverGroups.load(true);
-
         if(useSql) {
             {
                 SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(
                         new Credentials(sqlHost, sqlPort, sqlUser, sqlPassword, sqlDb)), "Servers",
-                        "Name,EarthServer,Nick,Locations,XOffset,ZOffset",
-                        "TEXT(255),TEXT(255),TEXT(255),LONGTEXT,INT,INT");
+                        "Name,EarthServer,Nick,Locations,XOffset,ZOffset,StealthMode",
+                        "TEXT(255),TEXT(255),TEXT(255),LONGTEXT,INT,INT,TEXT(255)");
                 sqlStorageHandler.setPriority(100);
                 serverData.registerHandler(sqlStorageHandler);
             }
@@ -331,8 +326,15 @@ public class ConfigHandler {
 
         serverData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
         warpData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
-        attributeData.setAutoLoad(5, TimeUnit.SECONDS);
+        attributeData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
         serverGroups.setAutoLoad(autoLoad, TimeUnit.SECONDS);
+
+        Sledgehammer.sledgehammer.alternativeThreads.schedule(() -> {
+            serverData.load(true);
+            warpData.load(true);
+            attributeData.load(true);
+            serverGroups.load(true);
+        }, 5, TimeUnit.SECONDS);
     }
 
     /**

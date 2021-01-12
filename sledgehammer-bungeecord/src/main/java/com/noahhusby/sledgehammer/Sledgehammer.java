@@ -32,7 +32,6 @@ import com.noahhusby.sledgehammer.commands.BorderCommand;
 import com.noahhusby.sledgehammer.commands.CsTpllCommand;
 import com.noahhusby.sledgehammer.commands.SledgehammerAdminCommand;
 import com.noahhusby.sledgehammer.commands.SledgehammerCommand;
-import com.noahhusby.sledgehammer.commands.TestCommand;
 import com.noahhusby.sledgehammer.commands.TpllCommand;
 import com.noahhusby.sledgehammer.commands.TplloCommand;
 import com.noahhusby.sledgehammer.commands.WarpCommand;

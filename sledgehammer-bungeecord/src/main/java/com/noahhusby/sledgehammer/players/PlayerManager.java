@@ -18,7 +18,7 @@
 
 package com.noahhusby.sledgehammer.players;
 
-import com.google.gson2.Gson;
+import com.google.gson.Gson;
 import com.noahhusby.lib.data.storage.StorageList;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import net.md_5.bungee.api.CommandSender;
@@ -61,19 +61,18 @@ public class PlayerManager implements Listener {
      * @param p {@link ProxiedPlayer}
      */
     private SledgehammerPlayer onPlayerJoin(ProxiedPlayer p) {
-        onPlayerDisconnect(p);
+        players.removeIf(player -> player.getUniqueId().equals(p.getUniqueId()));
         SledgehammerPlayer newPlayer = new SledgehammerPlayer(p);
 
         Attribute attribute = null;
         for(Attribute a : attributes)
-            if(a.getUuid().toString().equals(p.getUniqueId().toString())) attribute = a;
+            if(a.getUuid().equals(p.getUniqueId())) attribute = a;
 
         if(attribute != null) {
             newPlayer.setAttributes(attribute.getAttributes());
         }
 
         players.add(newPlayer);
-
         return newPlayer;
     }
 
@@ -91,31 +90,29 @@ public class PlayerManager implements Listener {
      * @param player {@link ProxiedPlayer}
      */
     private void onPlayerDisconnect(ProxiedPlayer player) {
-        List<SledgehammerPlayer> remove = new ArrayList<>();
-        for(SledgehammerPlayer p : players) {
-            if(p.getName().equalsIgnoreCase(player.getName())) {
-                remove.add(p);
+        SledgehammerPlayer p = null;
+        for(SledgehammerPlayer pl : players)
+            if(player.getUniqueId().equals(pl.getUniqueId())) p = pl;
+
+        if(p == null) return;
+
+        Attribute attribute = null;
+        for(Attribute a : attributes)
+            if(a.getUuid().equals(player.getUniqueId())) attribute = a;
+
+        if(attribute == null) {
+            if(!p.getAttributes().isEmpty()) {
+                attributes.add(new Attribute(p.getUniqueId(), p.getAttributes()));
+            }
+        } else {
+            if(p.getAttributes().isEmpty()) {
+                attributes.remove(attribute);
             }
         }
 
-        if(!remove.isEmpty()) {
-            SledgehammerPlayer p = remove.get(0);
+        attributes.save(true);
 
-            Attribute attribute = null;
-            for(Attribute a : attributes)
-                if(a.getUuid().toString().equals(player.getUniqueId().toString())) attribute = a;
-
-            if(attribute == null) {
-                Attribute a = new Attribute(player.getUniqueId(), p.getAttributes());
-                attributes.add(a);
-            }
-
-            attributes.save(true);
-        }
-
-        for(SledgehammerPlayer pl : remove) {
-            players.remove(pl);
-        }
+        players.removeIf(player1 -> player1.getUniqueId().equals(player.getUniqueId()));
     }
 
     /**

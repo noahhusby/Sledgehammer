@@ -6,7 +6,7 @@
 
     <groupId>com.noahhusby</groupId>
     <artifactId>sledgehammer</artifactId>
-    <version>0.4.2-bungeecord</version>
+    <version>0.4.3-bungeecord</version>
     <repositories>
         <repository>
             <id>bungeecord-repo</id>

@@ -51,7 +51,7 @@ public class BorderCommand extends Command {
             if(code == PermissionRequest.PermissionCode.PERMISSION) {
                 SledgehammerPlayer p = PlayerManager.getInstance().getPlayer(sender);
                 if(args.length == 0) {
-                    if(p.getAttributes().contains("NO_BORDER")) {
+                    if(p.checkAttribute("BORDER_MODE", false)) {
                         sender.sendMessage(ChatHelper.makeTitleTextComponent(
                                 new TextElement("Border teleportation is currently set to ", ChatColor.GRAY), new TextElement("off!", ChatColor.RED)));
                         sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Use ", ChatColor.GRAY),
@@ -71,7 +71,7 @@ public class BorderCommand extends Command {
                 if(command.equalsIgnoreCase("on")) {
                     sender.sendMessage(ChatHelper.makeTitleTextComponent(
                             new TextElement("Border teleportation has been set to ", ChatColor.GRAY), new TextElement("on!", ChatColor.GREEN)));
-                    p.getAttributes().remove("NO_BORDER");
+                    p.getAttributes().put("BORDER_MODE", true);
 
                     return;
                 }
@@ -79,7 +79,7 @@ public class BorderCommand extends Command {
                 if(command.equalsIgnoreCase("off")) {
                     sender.sendMessage(ChatHelper.makeTitleTextComponent(
                             new TextElement("Border teleportation has been set to ", ChatColor.GRAY), new TextElement("off!", ChatColor.RED)));
-                    if(!p.getAttributes().contains("NO_BORDER")) p.getAttributes().add("NO_BORDER");
+                    p.getAttributes().put("BORDER_MODE", false);
                     return;
                 }
 

@@ -18,6 +18,7 @@
 
 package com.noahhusby.sledgehammer;
 
+import com.google.gson.Gson;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
@@ -35,7 +36,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Random;
 
 public class SledgehammerUtil {
@@ -163,6 +166,20 @@ public class SledgehammerUtil {
     }
 
     /**
+     * Gets all objects in a string array above a given index
+     * @param args Initial array
+     * @param index Starting index
+     * @return Selected array
+     */
+    public static String[] selectArray(String[] args, int index) {
+        List<String> array = new ArrayList<>();
+        for(int i = index; i < args.length; i++)
+            array.add(args[i]);
+
+        return array.toArray(array.toArray(new String[array.size()]));
+    }
+
+    /**
      * Gets a space seperated string from an array
      * @param args A string array
      * @return The space seperated String
@@ -223,6 +240,7 @@ public class SledgehammerUtil {
     }
 
     public static class JsonUtils {
+        public static Gson gson = new Gson();
         public static JSONObject toObject(String s) {
             try {
                 return (JSONObject) new JSONParser().parse(s);
@@ -257,6 +275,8 @@ public class SledgehammerUtil {
             int x = 0;
             if(val instanceof Long) {
                 x = ((Long) val).intValue();
+            } else if(val instanceof Double) {
+                x = ((Double) val).intValue();
             } else {
                 x = (int) val;
             }

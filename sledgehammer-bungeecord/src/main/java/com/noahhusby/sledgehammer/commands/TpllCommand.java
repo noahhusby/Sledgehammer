@@ -21,6 +21,7 @@ package com.noahhusby.sledgehammer.commands;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.chat.ChatConstants;
 import com.noahhusby.sledgehammer.commands.data.Command;
+import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.network.P2S.P2SLocationPacket;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
@@ -30,8 +31,14 @@ import com.noahhusby.sledgehammer.permissions.PermissionRequest;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+
+import javax.print.Doc;
 
 public class TpllCommand extends Command {
 
@@ -63,6 +70,20 @@ public class TpllCommand extends Command {
                 }
 
                 SledgehammerPlayer recipient = SledgehammerPlayer.getPlayer(sender);
+                if(args[0].equalsIgnoreCase("help")) {
+                    TextComponent text = ChatHelper.makeTitleTextComponent();
+
+                    TextComponent interaction = new TextComponent(ChatColor.YELLOW + "Click here");
+                    interaction.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://giant.gfycat.com/JitteryTerrificChimpanzee.webm"));
+                    interaction.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("View the tpll guide").create()));
+
+                    text.addExtra(interaction);
+                    text.addExtra(new TextComponent(ChatColor.GRAY + " to see how to use " + ChatColor.BLUE + "/tpll"
+                            + ChatColor.GRAY + "!"));
+
+                    sender.sendMessage(text);
+                    return;
+                }
                 String[] parseArgs = args;
 
                 if(args.length == 3 && hasPerms(sender, "admin")) {
@@ -139,6 +160,7 @@ public class TpllCommand extends Command {
                 }
                 double[] geo = {lat, lon};
                 getNetworkManager().send(new P2SLocationPacket(recipient.getName(), server.getName(), geo));
+                SledgehammerPlayer.getPlayer(sender).getAttributes().put("TPLL_FAILS", 0);
                 return;
             }
             sender.sendMessage(ChatConstants.noPermission);
@@ -147,9 +169,39 @@ public class TpllCommand extends Command {
 
     private void adminUsage(CommandSender sender) {
         sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Usage: /tpll [target player] <lat> <lon>", ChatColor.RED)));
+        tpllHelp(sender);
     }
 
     private void regularUsage(CommandSender sender) {
         sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Usage: /tpll <lat> <lon>", ChatColor.RED)));
+        tpllHelp(sender);
+    }
+
+    private void tpllHelp(CommandSender sender) {
+        SledgehammerPlayer player = SledgehammerPlayer.getPlayer(sender);
+        if(player != null) {
+            if(player.getAttributes().containsKey("TPLL_FAILS")) {
+                int x = SledgehammerUtil.JsonUtils.toInt(player.getAttributes().get("TPLL_FAILS"));
+                if(x == 3) {
+                    player.getAttributes().put("TPLL_FAILS", 0);
+
+                    TextComponent text = new TextComponent(ChatColor.GRAY + "Having trouble? ");
+
+                    TextComponent interaction = new TextComponent(ChatColor.YELLOW + "Click here");
+                    interaction.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://giant.gfycat.com/JitteryTerrificChimpanzee.webm"));
+                    interaction.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("View the tpll guide").create()));
+
+                    text.addExtra(interaction);
+                    text.addExtra(new TextComponent(ChatColor.GRAY + " to see how to use " + ChatColor.BLUE + "/tpll"
+                    + ChatColor.GRAY + "!"));
+
+                    sender.sendMessage(text);
+                } else {
+                    player.getAttributes().put("TPLL_FAILS", x + 1);
+                }
+            } else {
+                player.getAttributes().put("TPLL_FAILS", 1);
+            }
+        }
     }
 }

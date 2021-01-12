@@ -18,8 +18,8 @@
 
 package com.noahhusby.sledgehammer.warp;
 
-import com.google.gson2.annotations.Expose;
-import com.google.gson2.annotations.SerializedName;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.datasets.Point;
 import org.json.simple.JSONObject;

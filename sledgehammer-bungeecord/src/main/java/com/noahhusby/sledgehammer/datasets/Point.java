@@ -18,7 +18,7 @@
 
 package com.noahhusby.sledgehammer.datasets;
 
-import com.google.gson2.annotations.Expose;
+import com.google.gson.annotations.Expose;
 import org.json.simple.JSONObject;
 
 public class Point {

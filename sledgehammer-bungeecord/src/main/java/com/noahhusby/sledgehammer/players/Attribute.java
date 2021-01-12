@@ -18,14 +18,11 @@
 
 package com.noahhusby.sledgehammer.players;
 
-import com.google.gson2.annotations.Expose;
-import com.google.gson2.annotations.SerializedName;
-import org.json.simple.JSONObject;
+import com.google.common.collect.Maps;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class Attribute {
     @Expose
@@ -33,18 +30,18 @@ public class Attribute {
     private UUID uuid;
     @Expose
     @SerializedName("Attributes")
-    private List<String> attributes;
+    private Map<String, Object> attributes;
 
     public Attribute() {
-        this(UUID.randomUUID(), new ArrayList<>());
+        this(UUID.randomUUID(), Maps.newHashMap());
     }
 
-    public Attribute(UUID uuid, List<String> attributes) {
+    public Attribute(UUID uuid, Map<String, Object> attributes) {
         this.uuid = uuid;
         this.attributes = attributes;
     }
 
-    public List<String> getAttributes() {
+    public Map<String, Object> getAttributes() {
         return attributes;
     }
 

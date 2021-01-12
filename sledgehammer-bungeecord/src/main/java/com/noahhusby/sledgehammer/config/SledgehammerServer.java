@@ -18,8 +18,8 @@
 
 package com.noahhusby.sledgehammer.config;
 
-import com.google.gson2.annotations.Expose;
-import com.google.gson2.annotations.SerializedName;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.noahhusby.sledgehammer.datasets.Location;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -47,6 +47,9 @@ public class SledgehammerServer {
     @Expose
     @SerializedName("ZOffset")
     private int zOffset;
+    @Expose
+    @SerializedName("StealthMode")
+    private boolean stealthMode;
     private String shVersion = null;
 
     public SledgehammerServer() {}
@@ -184,5 +187,21 @@ public class SledgehammerServer {
         for(ServerGroup g : ServerConfig.getInstance().getGroups())
             if(g.getServers().contains(name)) return g;
         return new ServerGroup(name, "", friendlyName, Collections.singletonList(name), new ArrayList<>());
+    }
+
+    /**
+     * Gets whether stealth mode is enabled
+     * @return True if enabled, false if disabled
+     */
+    public boolean isStealthMode() {
+        return stealthMode;
+    }
+
+    /**
+     * Sets whether stealth mode should be enabled
+     * @param stealthMode True if players should be hidden, false if not
+     */
+    public void setStealthMode(boolean stealthMode) {
+        this.stealthMode = stealthMode;
     }
 }
