@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 
 import com.noahhusby.sledgehammer.addons.AddonManager;
 import com.noahhusby.sledgehammer.addons.terramap.TerramapAddon;
+import com.noahhusby.sledgehammer.btenet.BTENet;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.commands.BorderCommand;
 import com.noahhusby.sledgehammer.commands.CsTpllCommand;
