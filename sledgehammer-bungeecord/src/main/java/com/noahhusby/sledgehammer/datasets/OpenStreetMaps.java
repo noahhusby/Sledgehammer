@@ -47,7 +47,7 @@ public class OpenStreetMaps {
 
     public void init() {
         try {
-            if(ConfigHandler.borderTeleportation && ConfigHandler.getInstance().getOfflineBin().exists())
+            if(ConfigHandler.useOfflineMode && ConfigHandler.getInstance().getOfflineBin().exists())
                 offlineGeocoder = new ReverseGeocoder(ConfigHandler.getInstance().getOfflineBin());
         } catch (IOException e) {
             e.printStackTrace();

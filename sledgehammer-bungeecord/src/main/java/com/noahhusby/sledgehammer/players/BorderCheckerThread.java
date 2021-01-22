@@ -18,6 +18,7 @@
 
 package com.noahhusby.sledgehammer.players;
 
+import com.google.common.collect.ImmutableMap;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
@@ -33,25 +34,11 @@ import java.util.List;
 public class BorderCheckerThread implements Runnable {
     @Override
     public void run() {
-        List<SledgehammerPlayer> players = PlayerManager.getInstance().getPlayers();
-
-        for(SledgehammerPlayer p : players) {
-            if(!p.onEarthServer()) {
+        ImmutableMap.copyOf(PlayerManager.getInstance().getPlayers()).forEach((u, p) -> {
+            if(!p.onEarthServer() || !SledgehammerUtil.inEarthRegion(p) || p.checkAttribute("BORDER_MODE", false)) {
                 p.setTrackingPoint(null);
                 p.setFlagged(false);
-                continue;
-            }
-
-            if(!SledgehammerUtil.inEarthRegion(p)) {
-                p.setTrackingPoint(null);
-                p.setFlagged(false);
-                continue;
-            }
-
-            if(p.checkAttribute("BORDER_MODE", false)) {
-                p.setTrackingPoint(null);
-                p.setFlagged(false);
-                continue;
+                return;
             }
 
             boolean checkLocation = false;
@@ -89,7 +76,7 @@ public class BorderCheckerThread implements Runnable {
 
                 if(info != null && !info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
                     p.setFlagged(true);
-                    continue;
+                    return;
                 }
 
                 proj = SledgehammerUtil.toGeo(Double.parseDouble(track.x) + Constants.borderZone, Double.parseDouble(track.z) + Constants.borderZone);
@@ -97,7 +84,7 @@ public class BorderCheckerThread implements Runnable {
 
                 if(info != null && !info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
                     p.setFlagged(true);
-                    continue;
+                    return;
                 }
 
                 proj = SledgehammerUtil.toGeo(Double.parseDouble(track.x) + Constants.borderZone, Double.parseDouble(track.z) - Constants.borderZone);
@@ -105,7 +92,7 @@ public class BorderCheckerThread implements Runnable {
 
                 if(info != null && !info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
                     p.setFlagged(true);
-                    continue;
+                    return;
                 }
 
                 proj = SledgehammerUtil.toGeo(Double.parseDouble(track.x) - Constants.borderZone, Double.parseDouble(track.z) + Constants.borderZone);
@@ -113,7 +100,7 @@ public class BorderCheckerThread implements Runnable {
 
                 if(info != null && !info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
                     p.setFlagged(true);
-                    continue;
+                    return;
                 }
 
                 proj = SledgehammerUtil.toGeo(Double.parseDouble(track.x) - Constants.borderZone, Double.parseDouble(track.z) - Constants.borderZone);
@@ -123,6 +110,6 @@ public class BorderCheckerThread implements Runnable {
                     p.setFlagged(true);
                 }
             }
-        }
+        });
     }
 }

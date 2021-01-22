@@ -158,7 +158,7 @@ public class TerrashowCommand extends Command implements TabExecutor {
 			return l;
 		} else if(args.length == 2){
 			List<String> l = new ArrayList<>();
-			for(SledgehammerPlayer p: PlayerManager.getInstance().getPlayers()) l.add(p.getName());
+			PlayerManager.getInstance().getPlayers().forEach((u, p) -> l.add(p.getName()));
 			this.filterListWithMatching(l, args[1]);
 			return l;
 		}

@@ -18,8 +18,10 @@
 
 package com.noahhusby.sledgehammer.network;
 
+import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.SmartObject;
+import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.network.S2P.*;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
@@ -94,7 +96,8 @@ public class SledgehammerNetworkManager implements Listener {
      * Checks for sledgehammer packets from incoming plugin messages
      * @param e {@link PluginMessageEvent}
      */
-    @EventHandler(priority = EventPriority.LOWEST)
+    //@EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler
     public void onIncomingPacket(PluginMessageEvent e) {
         if (!e.getTag().equalsIgnoreCase("sledgehammer:channel")) return;
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(e.getData()));

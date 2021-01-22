@@ -18,6 +18,8 @@
 
 package com.noahhusby.sledgehammer.players;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
@@ -33,55 +35,56 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.Title;
 import net.md_5.bungee.api.config.ServerInfo;
 
+import java.util.Collections;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Checks flagged players and teleports them if within region
  */
-public class FlaggedBorderCheckerThread implements Runnable{
+public class FlaggedBorderCheckerThread implements Runnable {
     @Override
     public void run() {
-        for(SledgehammerPlayer p : PlayerManager.getInstance().getPlayers()) {
-            if(p.isFlagged()) {
-                if(p.checkAttribute("BORDER_MODE", false)) {
-                    p.setFlagged(false);
-                    p.setTrackingPoint(null);
-                    return;
-                }
-
-                Point location = p.getLocation();
-
-                double[] proj = SledgehammerUtil.toGeo(Double.parseDouble(location.x), Double.parseDouble(location.z));
-                ServerInfo info = OpenStreetMaps.getInstance().getServerFromLocation(proj[0], proj[1], true);
-                if(info == null) continue;
-                SledgehammerServer server = ServerConfig.getInstance().getServer(info.getName());
-                if(server == null) continue;
-                if(server.isStealthMode()) continue;
-
-                if(!info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
-                    p.connect(info);
-                    SledgehammerNetworkManager.getInstance().send(new P2STeleportPacket(p.getName(), info.getName(), location));
-                    Title title = ProxyServer.getInstance().createTitle();
-                    title.subTitle(ChatHelper.makeTextComponent(new TextElement("You've crossed the border!", ChatColor.RED)));
-                    title.title(ChatHelper.makeTextComponent(new TextElement("Teleporting to ", ChatColor.GRAY), new TextElement(info.getName(), ChatColor.BLUE)));
-                    title.fadeIn(20);
-                    title.stay(100);
-                    title.fadeOut(20);
-
-                    p.setFlagged(false);
-
-                    Executors.newSingleThreadScheduledExecutor().schedule(() -> {
-                        p.sendTitle(title);
-                        if(!p.checkAttribute("PASSED_BORDER", true)) {
-                            p.sendMessage(ChatHelper.makeTextComponent(new TextElement("Reminder: ", ChatColor.RED, true),
-                                    new TextElement("You can use ", ChatColor.GRAY), new TextElement("/border", ChatColor.YELLOW),
-                                    new TextElement(" to toggle border teleportation!", ChatColor.GRAY)));
-                            p.getAttributes().put("PASSED_BORDER", true);
-                        }
-                    }, 2, TimeUnit.SECONDS);
-                }
+        ImmutableMap.copyOf(PlayerManager.getInstance().getPlayers()).forEach((u, p) -> {
+            if(!p.isFlagged()) return;
+            if(p.checkAttribute("BORDER_MODE", false)) {
+                p.setFlagged(false);
+                p.setTrackingPoint(null);
+                return;
             }
-        }
+
+            Point location = p.getLocation();
+
+            double[] proj = SledgehammerUtil.toGeo(Double.parseDouble(location.x), Double.parseDouble(location.z));
+            ServerInfo info = OpenStreetMaps.getInstance().getServerFromLocation(proj[0], proj[1], true);
+            if(info == null) return;
+            SledgehammerServer server = ServerConfig.getInstance().getServer(info.getName());
+            if(server == null) return;
+            if(server.isStealthMode()) return;
+
+            if(!info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
+                p.connect(info);
+                SledgehammerNetworkManager.getInstance().send(new P2STeleportPacket(p.getName(), info.getName(), location));
+                Title title = ProxyServer.getInstance().createTitle();
+                title.subTitle(ChatHelper.makeTextComponent(new TextElement("You've crossed the border!", ChatColor.RED)));
+                title.title(ChatHelper.makeTextComponent(new TextElement("Teleporting to ", ChatColor.GRAY), new TextElement(info.getName(), ChatColor.BLUE)));
+                title.fadeIn(20);
+                title.stay(100);
+                title.fadeOut(20);
+
+                p.setFlagged(false);
+
+                Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+                    p.sendTitle(title);
+                    if(!p.checkAttribute("PASSED_BORDER", true)) {
+                        p.sendMessage(ChatHelper.makeTextComponent(new TextElement("Reminder: ", ChatColor.RED, true),
+                                new TextElement("You can use ", ChatColor.GRAY), new TextElement("/border", ChatColor.YELLOW),
+                                new TextElement(" to toggle border teleportation!", ChatColor.GRAY)));
+                        p.getAttributes().put("PASSED_BORDER", true);
+                    }
+                }, 2, TimeUnit.SECONDS);
+            }
+
+        });
     }
 }

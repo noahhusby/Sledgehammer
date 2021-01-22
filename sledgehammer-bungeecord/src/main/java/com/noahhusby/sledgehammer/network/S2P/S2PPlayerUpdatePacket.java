@@ -34,12 +34,11 @@ public class S2PPlayerUpdatePacket extends S2PPacket {
 
     @Override
     public void onMessage(PacketInfo info, SmartObject data) {
+        SledgehammerPlayer player = SledgehammerPlayer.getPlayer(info.getSender());
+        if(player == null) return;
         SmartObject point = SmartObject.fromJSON((JSONObject) data.get("point"));
         Point p = new Point(point.getString("x"), point.getString("y"),
                 point.getString("z"), point.getString("yaw"), point.getString("pitch"));
-
-        SledgehammerPlayer player = SledgehammerPlayer.getPlayer(info.getSender());
-        if(player == null) return;
         player.setLocation(p);
         player.setGameMode(GameMode.valueOf(data.getString("gameMode")));
     }

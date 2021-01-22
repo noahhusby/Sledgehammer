@@ -58,13 +58,6 @@ public class SledgehammerPlayer implements ProxiedPlayer {
         this.player = player;
     }
 
-    /**
-     * Updates the ProxiedPlayer object from the proxy
-     */
-    public void update() {
-        this.player = ProxyServer.getInstance().getPlayer(player.getName());
-    }
-
     @Override
     public String getDisplayName() {
         return player.getDisplayName();

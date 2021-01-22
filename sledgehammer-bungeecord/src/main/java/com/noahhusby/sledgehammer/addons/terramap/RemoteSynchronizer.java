@@ -1,10 +1,6 @@
 package com.noahhusby.sledgehammer.addons.terramap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.addons.terramap.network.packets.mapsync.P2CPlayerSyncPacket;
@@ -33,7 +29,7 @@ public class RemoteSynchronizer {
 			if(this.playersToUpdate.size() <= 0) return;
 			long ctime = System.currentTimeMillis();
 			List<SledgehammerPlayer> playersToSend = new ArrayList<SledgehammerPlayer>();
-			List<SledgehammerPlayer> players = PlayerManager.getInstance().getPlayers();
+			List<SledgehammerPlayer> players = new ArrayList<>(PlayerManager.getInstance().getPlayers().values());
 			for(int i=0; i< players.size(); i++) {
 				SledgehammerPlayer player = players.get(i);
 				if(!player.onEarthServer()) continue;

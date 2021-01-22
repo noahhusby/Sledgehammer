@@ -18,6 +18,7 @@
 
 package com.noahhusby.sledgehammer.players;
 
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.noahhusby.lib.data.storage.StorageList;
 import com.noahhusby.sledgehammer.Sledgehammer;
@@ -40,7 +41,7 @@ public class PlayerManager implements Listener {
         return mInstance;
     }
 
-    List<SledgehammerPlayer> players = new ArrayList<>();
+    private Map<UUID, SledgehammerPlayer> players = Maps.newHashMap();
     StorageList<Attribute> attributes = new StorageList<>(Attribute.class);
 
     private PlayerManager() {
@@ -61,7 +62,7 @@ public class PlayerManager implements Listener {
      * @param p {@link ProxiedPlayer}
      */
     private SledgehammerPlayer onPlayerJoin(ProxiedPlayer p) {
-        players.removeIf(player -> player.getUniqueId().equals(p.getUniqueId()));
+        players.remove(p.getUniqueId());
         SledgehammerPlayer newPlayer = new SledgehammerPlayer(p);
 
         Attribute attribute = null;
@@ -72,7 +73,7 @@ public class PlayerManager implements Listener {
             newPlayer.setAttributes(attribute.getAttributes());
         }
 
-        players.add(newPlayer);
+        players.put(newPlayer.getUniqueId(), newPlayer);
         return newPlayer;
     }
 
@@ -90,9 +91,7 @@ public class PlayerManager implements Listener {
      * @param player {@link ProxiedPlayer}
      */
     private void onPlayerDisconnect(ProxiedPlayer player) {
-        SledgehammerPlayer p = null;
-        for(SledgehammerPlayer pl : players)
-            if(player.getUniqueId().equals(pl.getUniqueId())) p = pl;
+        SledgehammerPlayer p = players.get(player.getUniqueId());
 
         if(p == null) return;
 
@@ -112,15 +111,14 @@ public class PlayerManager implements Listener {
 
         attributes.save(true);
 
-        players.removeIf(player1 -> player1.getUniqueId().equals(player.getUniqueId()));
+        players.remove(player.getUniqueId());
     }
 
     /**
      * Gets the list of Sledgehammer players
      * @return List of Sledgehammer players
      */
-    public List<SledgehammerPlayer> getPlayers() {
-        for(SledgehammerPlayer p : players) p.update();
+    public Map<UUID, SledgehammerPlayer> getPlayers() {
         return players;
     }
 
@@ -130,18 +128,10 @@ public class PlayerManager implements Listener {
      * @return {@link SledgehammerPlayer}
      */
     public SledgehammerPlayer getPlayer(String s) {
-        for(SledgehammerPlayer p : players) {
-            if(p.getName().equalsIgnoreCase(s)) {
-                p.update();
-                return p;
-            }
-        }
-
-        for(ProxiedPlayer p : ProxyServer.getInstance().getPlayers())
-            if(p.getName().equalsIgnoreCase(s))
-                return onPlayerJoin(p);
-
-        return null;
+        ProxiedPlayer proxiedPlayer = ProxyServer.getInstance().getPlayer(s);
+        if(proxiedPlayer == null) return null;
+        SledgehammerPlayer player = players.get(proxiedPlayer.getUniqueId());
+        return player == null ? onPlayerJoin(proxiedPlayer) : player;
     }
 
     /**
@@ -150,7 +140,11 @@ public class PlayerManager implements Listener {
      * @return {@link SledgehammerPlayer}
      */
     public SledgehammerPlayer getPlayer(CommandSender s) {
-        return getPlayer(s.getName());
+        if(s == null) return null;
+        if(!(s instanceof ProxiedPlayer)) return null;
+        ProxiedPlayer proxiedPlayer = (ProxiedPlayer) s;
+        SledgehammerPlayer player = players.get(proxiedPlayer.getUniqueId());
+        return player == null ? onPlayerJoin(proxiedPlayer) : player;
     }
 
     /**

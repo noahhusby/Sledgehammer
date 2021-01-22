@@ -222,6 +222,7 @@ public class ConfigHandler {
                         "Please follow the guide on https://github.com/noahhusby/Sledgehammer/wiki/Border-Offline-Database about downloading and configuring the offline database.");
         borderTeleportation = config.getBoolean(prop("Auto Border Teleportation"), "Geography", false,
                 "Set to false to disable automatic border teleportation, or true to enable it. Border teleportation requires the offline database to be configured.");
+
         order();
 
         /*
