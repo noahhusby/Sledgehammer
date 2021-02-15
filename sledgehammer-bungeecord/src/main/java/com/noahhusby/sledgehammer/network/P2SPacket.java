@@ -18,7 +18,12 @@
 
 package com.noahhusby.sledgehammer.network;
 
-public abstract class P2SPacket implements IP2SPacket {
+import org.json.simple.JSONObject;
+
+public abstract class P2SPacket {
+    public abstract String getPacketID();
+    public abstract JSONObject getMessage(JSONObject data);
+    public abstract PacketInfo getPacketInfo();
     public SledgehammerNetworkManager getManager() {
         return SledgehammerNetworkManager.getInstance();
     }

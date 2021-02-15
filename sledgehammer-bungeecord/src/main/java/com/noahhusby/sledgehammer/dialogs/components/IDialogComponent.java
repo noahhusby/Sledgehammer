@@ -18,8 +18,6 @@
 
 package com.noahhusby.sledgehammer.dialogs.components;
 
-import com.noahhusby.sledgehammer.chat.TextElement;
-
 public interface IDialogComponent {
     String getKey();
 

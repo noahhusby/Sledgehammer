@@ -19,7 +19,6 @@
 package com.noahhusby.sledgehammer.dialogs.components.location;
 
 import com.noahhusby.sledgehammer.dialogs.components.DialogComponent;
-import com.noahhusby.sledgehammer.chat.TextElement;
 import net.md_5.bungee.api.ChatColor;
 
 public class LocationSelectionComponent extends DialogComponent {

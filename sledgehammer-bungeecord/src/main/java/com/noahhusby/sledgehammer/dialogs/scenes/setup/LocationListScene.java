@@ -21,7 +21,6 @@ package com.noahhusby.sledgehammer.dialogs.scenes.setup;
 import com.noahhusby.sledgehammer.dialogs.components.location.LocationListComponent;
 import com.noahhusby.sledgehammer.dialogs.scenes.DialogScene;
 import com.noahhusby.sledgehammer.dialogs.DialogHandler;
-import com.noahhusby.sledgehammer.chat.TextElement;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.config.ServerInfo;
 

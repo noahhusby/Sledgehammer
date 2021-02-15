@@ -20,7 +20,6 @@ package com.noahhusby.sledgehammer.dialogs.scenes;
 
 import com.noahhusby.sledgehammer.dialogs.components.IDialogComponent;
 import com.noahhusby.sledgehammer.dialogs.toolbars.IToolbar;
-import com.noahhusby.sledgehammer.chat.TextElement;
 import net.md_5.bungee.api.CommandSender;
 
 public interface IDialogScene {

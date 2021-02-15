@@ -18,15 +18,16 @@
 
 package com.noahhusby.sledgehammer.network.S2P;
 
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.SmartObject;
 import com.noahhusby.sledgehammer.chat.ChatConstants;
 import com.noahhusby.sledgehammer.datasets.Point;
 import com.noahhusby.sledgehammer.gui.GUIHandler;
-import com.noahhusby.sledgehammer.network.IS2PPacket;
 import com.noahhusby.sledgehammer.network.P2S.P2SWarpConfigPacket;
 import com.noahhusby.sledgehammer.network.PacketInfo;
+import com.noahhusby.sledgehammer.network.S2PPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import com.noahhusby.sledgehammer.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.permissions.PermissionRequest;
@@ -37,7 +38,7 @@ import org.json.simple.JSONObject;
 
 import java.text.DecimalFormat;
 
-public class S2PWarpConfigPacket implements IS2PPacket {
+public class S2PWarpConfigPacket extends S2PPacket {
     @Override
     public String getPacketID() {
         return Constants.warpConfigID;
@@ -60,7 +61,7 @@ public class S2PWarpConfigPacket implements IS2PPacket {
                                 P2SWarpConfigPacket.ServerConfigAction.OPEN_CONFIG, global));
                         return;
                     }
-                    player.sendMessage(ChatConstants.noPermission);
+                    player.sendMessage(ChatUtil.getNoPermission());
                 });
 
                 break;
@@ -95,7 +96,7 @@ public class S2PWarpConfigPacket implements IS2PPacket {
                 if(warp == null) return;
                 warp.setHeadID(headId);
                 warp.setName(name);
-                warp.setPinnedMode(pin);
+                warp.setPinned(pin);
 
                 WarpHandler.getInstance().getWarps().save(true);
                 break;

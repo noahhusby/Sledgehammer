@@ -19,11 +19,9 @@
 package com.noahhusby.sledgehammer.players;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-import com.noahhusby.sledgehammer.Sledgehammer;
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
-import com.noahhusby.sledgehammer.chat.TextElement;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
@@ -35,7 +33,6 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.Title;
 import net.md_5.bungee.api.config.ServerInfo;
 
-import java.util.Collections;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -66,8 +63,8 @@ public class FlaggedBorderCheckerThread implements Runnable {
                 p.connect(info);
                 SledgehammerNetworkManager.getInstance().send(new P2STeleportPacket(p.getName(), info.getName(), location));
                 Title title = ProxyServer.getInstance().createTitle();
-                title.subTitle(ChatHelper.makeTextComponent(new TextElement("You've crossed the border!", ChatColor.RED)));
-                title.title(ChatHelper.makeTextComponent(new TextElement("Teleporting to ", ChatColor.GRAY), new TextElement(info.getName(), ChatColor.BLUE)));
+                title.subTitle(ChatUtil.combine(ChatColor.RED, "You've crossed the border!"));
+                title.title(ChatUtil.combine(ChatColor.GRAY, "Teleporting to ", ChatColor.BLUE, info.getName()));
                 title.fadeIn(20);
                 title.stay(100);
                 title.fadeOut(20);
@@ -77,9 +74,9 @@ public class FlaggedBorderCheckerThread implements Runnable {
                 Executors.newSingleThreadScheduledExecutor().schedule(() -> {
                     p.sendTitle(title);
                     if(!p.checkAttribute("PASSED_BORDER", true)) {
-                        p.sendMessage(ChatHelper.makeTextComponent(new TextElement("Reminder: ", ChatColor.RED, true),
-                                new TextElement("You can use ", ChatColor.GRAY), new TextElement("/border", ChatColor.YELLOW),
-                                new TextElement(" to toggle border teleportation!", ChatColor.GRAY)));
+                        p.sendMessage(ChatUtil.combine(ChatColor.RED + "" + ChatColor.BOLD, "Reminder: ",
+                                ChatColor.GRAY, "You can use ", ChatColor.YELLOW, "/border", ChatColor.GRAY,
+                                " to toggle border teleportation!"));
                         p.getAttributes().put("PASSED_BORDER", true);
                     }
                 }, 2, TimeUnit.SECONDS);

@@ -30,6 +30,8 @@ import java.util.regex.Pattern;
 import com.google.common.collect.Maps;
 import com.noahhusby.lib.data.sql.Credentials;
 import com.noahhusby.lib.data.sql.MySQL;
+import com.noahhusby.lib.data.sql.structure.Structure;
+import com.noahhusby.lib.data.sql.structure.Type;
 import com.noahhusby.lib.data.storage.Storage;
 import com.noahhusby.lib.data.storage.compare.CutComparator;
 import com.noahhusby.lib.data.storage.compare.ValueComparator;
@@ -37,6 +39,7 @@ import com.noahhusby.lib.data.storage.handlers.LocalStorageHandler;
 import com.noahhusby.lib.data.storage.handlers.SQLStorageHandler;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.addons.terramap.MapStyleRegistry;
+import com.noahhusby.sledgehammer.addons.terramap.TerramapAddon;
 import com.noahhusby.sledgehammer.players.PlayerManager;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
 
@@ -88,19 +91,6 @@ public class ConfigHandler {
     public static int zoom = 0;
 
     public static boolean doesOfflineExist = false;
-
-    public static boolean mapEnabled = false;
-    public static String mapHost = "";
-    public static String mapPort = "";
-
-    public static String mapTitle = "";
-    public static String mapSubtitle = "";
-
-    public static double startingLon = 0.0;
-    public static double startingLat = 0.0;
-    public static int startingZoom = 0;
-    public static int mapTimeout = 15;
-    public static String mapLink = "";
 
     public static boolean terramapEnabled;
     public static boolean terramapSyncPlayers;
@@ -291,8 +281,16 @@ public class ConfigHandler {
             {
                 SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(
                         new Credentials(sqlHost, sqlPort, sqlUser, sqlPassword, sqlDb)), "Servers",
-                        "Name,EarthServer,Nick,Locations,XOffset,ZOffset,StealthMode",
-                        "TEXT(255),TEXT(255),TEXT(255),LONGTEXT,INT,INT,TEXT(255)");
+                        Structure.builder()
+                                .add("Name", Type.TEXT)
+                                .add("EarthServer", Type.TEXT)
+                                .add("Nick", Type.TEXT)
+                                .add("Locations", Type.TEXT)
+                                .add("XOffset", Type.INT)
+                                .add("ZOffset", Type.INT)
+                                .add("StealthMode", Type.TEXT)
+                                .repair(true)
+                                .build());
                 sqlStorageHandler.setPriority(100);
                 serverData.registerHandler(sqlStorageHandler);
             }
@@ -300,8 +298,15 @@ public class ConfigHandler {
             {
                 SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(
                         new Credentials(sqlHost, sqlPort, sqlUser, sqlPassword, sqlDb)), "Warps",
-                        "Id,Name,Server,Pinned,Point,HeadId",
-                        "INT,TEXT(255),TEXT(255),TEXT(255),MEDIUMTEXT,TEXT(255)");
+                        Structure.builder()
+                                .add("Id", Type.INT)
+                                .add("Name", Type.TEXT)
+                                .add("Server", Type.TEXT)
+                                .add("Pinned", Type.TEXT)
+                                .add("Point", Type.TEXT)
+                                .add("HeadId", Type.TEXT)
+                                .repair(true)
+                                .build());
                 sqlStorageHandler.setPriority(100);
                 warpData.registerHandler(sqlStorageHandler);
             }
@@ -309,8 +314,11 @@ public class ConfigHandler {
             {
                 SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(
                         new Credentials(sqlHost, sqlPort, sqlUser, sqlPassword, sqlDb)), "Attributes",
-                        "UUID,Attributes",
-                        "TEXT(255),MEDIUMTEXT");
+                        Structure.builder()
+                                .add("UUID", Type.TEXT)
+                                .add("Attributes", Type.TEXT)
+                                .repair(true)
+                                .build());
                 sqlStorageHandler.setPriority(100);
                 attributeData.registerHandler(sqlStorageHandler);
             }
@@ -318,8 +326,14 @@ public class ConfigHandler {
             {
                 SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(
                         new Credentials(sqlHost, sqlPort, sqlUser, sqlPassword, sqlDb)), "ServerGroups",
-                        "Id,HeadId,Name,Servers,Aliases",
-                        "TEXT(255),TEXT(255),TEXT(255),MEDIUMTEXT,MEDIUMTEXT");
+                        Structure.builder()
+                                .add("Id", Type.TEXT)
+                                .add("HeadId", Type.TEXT)
+                                .add("Name", Type.TEXT)
+                                .add("Servers", Type.TEXT)
+                                .add("Aliases", Type.TEXT)
+                                .repair(true)
+                                .build());
                 sqlStorageHandler.setPriority(100);
                 serverGroups.registerHandler(sqlStorageHandler);
             }

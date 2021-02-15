@@ -28,7 +28,6 @@ import com.noahhusby.sledgehammer.dialogs.toolbars.ExitSkipToolbar;
 import com.noahhusby.sledgehammer.dialogs.toolbars.IToolbar;
 import com.noahhusby.sledgehammer.dialogs.DialogHandler;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
-import com.noahhusby.sledgehammer.chat.TextElement;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.config.ServerInfo;
 

@@ -79,6 +79,16 @@ public class SledgehammerPlayer implements ProxiedPlayer {
     }
 
     @Override
+    public void sendMessage(UUID sender, BaseComponent... message) {
+        player.sendMessage(sender, message);
+    }
+
+    @Override
+    public void sendMessage(UUID sender, BaseComponent message) {
+        player.sendMessage(sender, message);
+    }
+
+    @Override
     public void connect(ServerInfo serverInfo) {
         player.connect(serverInfo);
     }

@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 
 import com.noahhusby.sledgehammer.addons.AddonManager;
 import com.noahhusby.sledgehammer.addons.terramap.TerramapAddon;
-import com.noahhusby.sledgehammer.btenet.BTENet;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.commands.BorderCommand;
 import com.noahhusby.sledgehammer.commands.CsTpllCommand;
@@ -39,7 +38,6 @@ import com.noahhusby.sledgehammer.commands.WarpCommand;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
-import com.noahhusby.sledgehammer.maps.MapThread;
 import com.noahhusby.sledgehammer.players.FlaggedBorderCheckerThread;
 import com.noahhusby.sledgehammer.players.BorderCheckerThread;
 
@@ -151,10 +149,6 @@ public class Sledgehammer extends Plugin implements Listener {
 
         ProxyServer.getInstance().registerChannel("sledgehammer:channel");
 
-        if(ConfigHandler.mapEnabled) {
-            alternativeThreads.scheduleAtFixedRate(new MapThread(), 0, 30, TimeUnit.SECONDS);
-        }
-
         if(ConfigHandler.borderTeleportation) {
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new BorderCommand());
             alternativeThreads.scheduleAtFixedRate(new BorderCheckerThread(), 0, 10, TimeUnit.SECONDS);
@@ -183,7 +177,7 @@ public class Sledgehammer extends Plugin implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(PostLoginEvent e) {
         if(e.getPlayer().hasPermission("sledgehammer.admin") && !ConfigHandler.getInstance().isAuthCodeConfigured()) {
-            ChatHelper.sendAuthCodeWarning(e.getPlayer());
+            ChatUtil.sendAuthCodeWarning(e.getPlayer());
         }
     }
 
@@ -194,5 +188,4 @@ public class Sledgehammer extends Plugin implements Listener {
     public static void terminateListener(Listener l) {
         ProxyServer.getInstance().getPluginManager().unregisterListener(l);
     }
-    
 }

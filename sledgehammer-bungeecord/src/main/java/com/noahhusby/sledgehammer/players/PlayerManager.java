@@ -22,6 +22,8 @@ import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.noahhusby.lib.data.storage.StorageList;
 import com.noahhusby.sledgehammer.Sledgehammer;
+import lombok.Getter;
+import lombok.Setter;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -41,8 +43,8 @@ public class PlayerManager implements Listener {
         return mInstance;
     }
 
-    private Map<UUID, SledgehammerPlayer> players = Maps.newHashMap();
-    StorageList<Attribute> attributes = new StorageList<>(Attribute.class);
+    @Getter private final Map<UUID, SledgehammerPlayer> players = Maps.newHashMap();
+    @Getter private final StorageList<Attribute> attributes = new StorageList<>(Attribute.class);
 
     private PlayerManager() {
         Sledgehammer.addListener(this);
@@ -115,14 +117,6 @@ public class PlayerManager implements Listener {
     }
 
     /**
-     * Gets the list of Sledgehammer players
-     * @return List of Sledgehammer players
-     */
-    public Map<UUID, SledgehammerPlayer> getPlayers() {
-        return players;
-    }
-
-    /**
      * Gets SledgehammerPlayer by player name
      * @param s Player name
      * @return {@link SledgehammerPlayer}
@@ -145,14 +139,5 @@ public class PlayerManager implements Listener {
         ProxiedPlayer proxiedPlayer = (ProxiedPlayer) s;
         SledgehammerPlayer player = players.get(proxiedPlayer.getUniqueId());
         return player == null ? onPlayerJoin(proxiedPlayer) : player;
-    }
-
-    /**
-     * Gets the hash map of player attributes
-     * Use {@link SledgehammerPlayer#getAttributes()} to get attributes
-     * @return Hash map of attributes
-     */
-    public StorageList<Attribute> getAttributes() {
-        return attributes;
     }
 }

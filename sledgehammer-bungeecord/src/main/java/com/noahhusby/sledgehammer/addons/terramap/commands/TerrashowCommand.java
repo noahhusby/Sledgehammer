@@ -9,7 +9,6 @@ import com.noahhusby.sledgehammer.addons.terramap.TerramapVersion;
 import com.noahhusby.sledgehammer.addons.terramap.TerramapVersion.ReleaseType;
 import com.noahhusby.sledgehammer.addons.terramap.commands.TranslationContextBuilder.TranslationContext;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
-import com.noahhusby.sledgehammer.chat.TextElement;
 import com.noahhusby.sledgehammer.commands.data.Command;
 import com.noahhusby.sledgehammer.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.players.PlayerManager;

@@ -20,21 +20,16 @@ package com.noahhusby.sledgehammer.addons;
 
 import net.md_5.bungee.api.event.PluginMessageEvent;
 
-public abstract class Addon implements IAddon {
+public abstract class Addon {
 
-    @Override
-    public void onDisable() {
+    public abstract void onEnable();
 
-    }
+    public void onDisable() { }
 
-    @Override
-    public void onPluginMessage(PluginMessageEvent e) {
+    public void onPluginMessage(PluginMessageEvent e) { }
 
-    }
-
-    @Override
     public String[] getMessageChannels() {
-        return null;
+        return new String[]{};
     }
 }
 

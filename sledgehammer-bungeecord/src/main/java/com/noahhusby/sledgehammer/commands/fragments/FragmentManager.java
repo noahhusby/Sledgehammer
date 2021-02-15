@@ -19,7 +19,6 @@
 package com.noahhusby.sledgehammer.commands.fragments;
 
 import com.noahhusby.sledgehammer.chat.ChatHelper;
-import com.noahhusby.sledgehammer.chat.TextElement;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 

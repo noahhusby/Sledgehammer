@@ -18,6 +18,7 @@
 
 package com.noahhusby.sledgehammer.network;
 
+import com.google.common.collect.Lists;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.SmartObject;
@@ -37,18 +38,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SledgehammerNetworkManager implements Listener {
-    private static SledgehammerNetworkManager mInstance = null;
+    private static SledgehammerNetworkManager instance = null;
 
     public static SledgehammerNetworkManager getInstance() {
-        if(mInstance == null) mInstance = new SledgehammerNetworkManager();
-        return mInstance;
+        return instance == null ? instance = new SledgehammerNetworkManager() : instance;
     }
-
-    private final List<IS2PPacket> registeredPackets;
 
     private SledgehammerNetworkManager() {
         Sledgehammer.addListener(this);
-        registeredPackets = new ArrayList<>();
 
         register(new S2PInitializationPacket());
         register(new S2PSetwarpPacket());
@@ -60,19 +57,21 @@ public class SledgehammerNetworkManager implements Listener {
         register(new S2PWarpConfigPacket());
     }
 
+    private final List<S2PPacket> registeredPackets = Lists.newArrayList();
+
     /**
      * Register incoming packets
-     * @param packet {@link IS2PPacket}
+     * @param packet {@link S2PPacket}
      */
-    private void register(IS2PPacket packet) {
+    private void register(S2PPacket packet) {
         registeredPackets.add(packet);
     }
 
     /**
      * Send an outgoing packet
-     * @param packet {@link IP2SPacket}
+     * @param packet {@link P2SPacket}
      */
-    public void send(IP2SPacket packet) {
+    public void send(P2SPacket packet) {
         JSONObject response = new JSONObject();
         response.put("command", packet.getPacketInfo().getID());
         response.put("sender", packet.getPacketInfo().getSender());
@@ -109,7 +108,7 @@ public class SledgehammerNetworkManager implements Listener {
             PacketInfo packetInfo = new PacketInfo(packet.getString("command"), packet.getString("sender"),
                     packet.getString("server"), (long) packet.get("time"));
 
-            for(IS2PPacket p : registeredPackets) {
+            for(S2PPacket p : registeredPackets) {
                 if(p.getPacketID().equalsIgnoreCase(packetInfo.getID())) {
                     p.onMessage(packetInfo, packetData);
                 }

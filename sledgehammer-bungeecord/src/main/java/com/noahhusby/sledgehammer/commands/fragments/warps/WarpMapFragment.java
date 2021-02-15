@@ -20,7 +20,6 @@ package com.noahhusby.sledgehammer.commands.fragments.warps;
 
 import com.noahhusby.sledgehammer.chat.ChatConstants;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.maps.MapHandler;
 import com.noahhusby.sledgehammer.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.permissions.PermissionRequest;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
@@ -32,7 +31,7 @@ public class WarpMapFragment implements ICommandFragment {
         SledgehammerPlayer player = SledgehammerPlayer.getPlayer(sender);
         PermissionHandler.getInstance().check(player, "sledgehammer.warp.map", (code, global) -> {
             if(code == PermissionRequest.PermissionCode.PERMISSION) {
-                MapHandler.getInstance().newMapCommand(sender);
+                //MapHandler.getInstance().newMapCommand(sender);
                 return;
             }
             sender.sendMessage(ChatConstants.noPermission);

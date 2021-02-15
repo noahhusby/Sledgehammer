@@ -18,6 +18,7 @@
 
 package com.noahhusby.sledgehammer.network.S2P;
 
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.SmartObject;
@@ -27,7 +28,6 @@ import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.network.PacketInfo;
 import com.noahhusby.sledgehammer.network.S2PPacket;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
-import com.noahhusby.sledgehammer.chat.TextElement;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -54,15 +54,13 @@ public class S2PTestLocationPacket extends S2PPacket {
             CommandSender player = ProxyServer.getInstance().getPlayer(info.getSender());
 
             if (online == null) {
-                player.sendMessage(ChatHelper.makeAdminTextComponent(
-                        new TextElement("This is not a valid location in the projection!", ChatColor.RED)));
+                player.sendMessage(ChatUtil.getNotProjection());
                 return;
             }
 
-            player.sendMessage(ChatHelper.makeAdminTextComponent(
-                    new TextElement("Testing location at ", ChatColor.GRAY), new TextElement(proj[0] + ", " + proj[1], ChatColor.BLUE),
-                    new TextElement(" (Zoom: " + zoom + ")", ChatColor.GRAY)));
-            player.sendMessage(ChatHelper.makeTextComponent(new TextElement("Online: ", ChatColor.RED)));
+            player.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Testing location at ",
+                    ChatColor.BLUE, String.format("%s, %s", proj[1], proj[0]), ChatColor.GRAY, String.format(" (Zoom: %d)", zoom)));
+            player.sendMessage(ChatUtil.combine(ChatColor.RED, "Online: "));
             if (!online.city.equals("")) {
                 TextComponent add = new TextComponent(ChatColor.GREEN + " [+]");
                 add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Add location").create()));
@@ -71,7 +69,7 @@ public class S2PTestLocationPacket extends S2PPacket {
                         SledgehammerUtil.JsonUtils.gson.toJson(new Location(Location.detail.city,
                                 online.city, online.county, online.state, online.country))));
 
-                TextComponent text = ChatHelper.makeTextComponent(new TextElement("City - ", ChatColor.GRAY), new TextElement(online.city, ChatColor.BLUE));
+                TextComponent text = ChatUtil.combine(ChatColor.GRAY, "City - ", ChatColor.BLUE, online.city);
                 text.addExtra(add);
 
                 player.sendMessage(text);
@@ -84,7 +82,7 @@ public class S2PTestLocationPacket extends S2PPacket {
                         SledgehammerUtil.JsonUtils.gson.toJson(new Location(Location.detail.county,
                                 online.city, online.county, online.state, online.country))));
 
-                TextComponent text = ChatHelper.makeTextComponent(new TextElement("County - ", ChatColor.GRAY), new TextElement(online.county, ChatColor.BLUE));
+                TextComponent text = ChatUtil.combine(ChatColor.GRAY, "County - ", ChatColor.BLUE, online.county);
                 text.addExtra(add);
 
                 player.sendMessage(text);
@@ -97,7 +95,7 @@ public class S2PTestLocationPacket extends S2PPacket {
                         SledgehammerUtil.JsonUtils.gson.toJson(new Location(Location.detail.state,
                                 online.city, online.county, online.state, online.country))));
 
-                TextComponent text = ChatHelper.makeTextComponent(new TextElement("State - ", ChatColor.GRAY), new TextElement(online.state, ChatColor.BLUE));
+                TextComponent text = ChatUtil.combine(ChatColor.GRAY, "State - ", ChatColor.BLUE, online.state);
                 text.addExtra(add);
 
                 player.sendMessage(text);
@@ -110,7 +108,7 @@ public class S2PTestLocationPacket extends S2PPacket {
                         SledgehammerUtil.JsonUtils.gson.toJson(new Location(Location.detail.country,
                                 online.city, online.county, online.state, online.country))));
 
-                TextComponent text = ChatHelper.makeTextComponent(new TextElement("Country - ", ChatColor.GRAY), new TextElement(online.country, ChatColor.BLUE));
+                TextComponent text = ChatUtil.combine(ChatColor.GRAY, "Country - ", ChatColor.BLUE, online.country);
                 text.addExtra(add);
 
                 player.sendMessage(text);

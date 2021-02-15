@@ -20,7 +20,6 @@ package com.noahhusby.sledgehammer.network.P2S;
 
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.gui.GUIHandler;
-import com.noahhusby.sledgehammer.network.IP2SPacket;
 import com.noahhusby.sledgehammer.network.PacketInfo;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.warp.WarpHandler;

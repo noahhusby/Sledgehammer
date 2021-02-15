@@ -18,6 +18,7 @@
 
 package com.noahhusby.sledgehammer.addons;
 
+import com.google.common.collect.Lists;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -40,29 +41,29 @@ public class AddonManager implements Listener {
         Sledgehammer.addListener(this);
     }
 
-    List<IAddon> addons = new ArrayList<>();
+    List<Addon> addons = Lists.newArrayList();
 
-    public void registerAddon(IAddon addon) {
+    public void registerAddon(Addon addon) {
         addons.add(addon);
     }
 
     public void onEnable() {
-        addons.forEach(IAddon::onEnable);
+        addons.forEach(Addon::onEnable);
     }
 
     public void onDisable() {
-        addons.forEach(IAddon::onDisable);
+        addons.forEach(Addon::onDisable);
         addons.clear(); // If the plugin is reloading, new instances of the add-ons will be registered again
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPluginMessage(PluginMessageEvent e) {
-        IAddon addon = getServerByChannel(e.getTag());
+        Addon addon = getServerByChannel(e.getTag());
         if(addon != null) addon.onPluginMessage(e);
     }
 
-    private IAddon getServerByChannel(String channel) {
-        for(IAddon a : addons) {
+    private Addon getServerByChannel(String channel) {
+        for(Addon a : addons) {
             if(a.getMessageChannels() != null) {
                 if(Arrays.asList(a.getMessageChannels()).contains(channel)) return a;
             }

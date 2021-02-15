@@ -19,7 +19,6 @@
 package com.noahhusby.sledgehammer.dialogs.components.location;
 
 import com.noahhusby.sledgehammer.dialogs.components.DialogComponent;
-import com.noahhusby.sledgehammer.chat.TextElement;
 
 public class CountryComponent extends DialogComponent {
     @Override

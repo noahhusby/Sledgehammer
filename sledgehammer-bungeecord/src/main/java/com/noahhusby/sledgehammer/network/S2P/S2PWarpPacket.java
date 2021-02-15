@@ -18,11 +18,11 @@
 
 package com.noahhusby.sledgehammer.network.S2P;
 
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.SmartObject;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
-import com.noahhusby.sledgehammer.chat.TextElement;
 import com.noahhusby.sledgehammer.gui.GUIHandler;
 import com.noahhusby.sledgehammer.network.P2S.P2STeleportPacket;
 import com.noahhusby.sledgehammer.network.PacketInfo;
@@ -54,16 +54,16 @@ public class S2PWarpPacket extends S2PPacket {
             if(w.getId() == warpId) warp = w;
 
         if(warp == null) {
-            player.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("That warp does not exist!", ChatColor.RED)));
+            player.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "That warp does not exist!"));
             return;
         }
 
         if(SledgehammerUtil.getServerFromSender(player) != SledgehammerUtil.getServerByName(warp.getServer())) {
             player.connect(SledgehammerUtil.getServerByName(warp.getServer()));
-            player.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Sending you to ", ChatColor.GRAY), new TextElement(warp.getServer(), ChatColor.RED)));
+            player.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Sending you to ", ChatColor.RED, warp.getServer()));
         }
 
-        player.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Warping to ", ChatColor.GRAY), new TextElement(warp.getName(), ChatColor.RED)));
+        player.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Warping to ", ChatColor.RED, warp.getName()));
         SledgehammerNetworkManager.getInstance().send(new P2STeleportPacket(player.getName(), warp.getServer(), warp.getPoint()));
     }
 }

@@ -22,7 +22,6 @@ import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.dialogs.components.DialogComponent;
 import com.noahhusby.sledgehammer.datasets.Location;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
-import com.noahhusby.sledgehammer.chat.TextElement;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.config.ServerInfo;
 

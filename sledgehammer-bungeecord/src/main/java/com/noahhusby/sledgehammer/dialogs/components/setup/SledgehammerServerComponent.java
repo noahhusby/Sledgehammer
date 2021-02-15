@@ -18,7 +18,6 @@
 
 package com.noahhusby.sledgehammer.dialogs.components.setup;
 
-import com.noahhusby.sledgehammer.chat.TextElement;
 import com.noahhusby.sledgehammer.dialogs.components.DialogComponent;
 import net.md_5.bungee.api.ChatColor;
 

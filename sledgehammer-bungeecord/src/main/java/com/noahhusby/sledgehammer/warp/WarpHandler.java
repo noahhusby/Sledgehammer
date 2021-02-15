@@ -21,6 +21,7 @@ package com.noahhusby.sledgehammer.warp;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.noahhusby.lib.data.storage.StorageList;
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
@@ -31,7 +32,6 @@ import com.noahhusby.sledgehammer.network.P2S.P2SSetwarpPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.datasets.Point;
-import com.noahhusby.sledgehammer.chat.TextElement;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -120,10 +120,8 @@ public class WarpHandler {
             if(w.getId() == warpID) warp = w;
 
         if(warp == null) return;
-
-        sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Successfully removed ", ChatColor.GRAY),
-                new TextElement(warp.getName(), ChatColor.RED), new TextElement(" from ", ChatColor.GRAY),
-                new TextElement(warp.getServer(), ChatColor.BLUE)));
+        sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Succesfully removed ",
+                ChatColor.RED, warp.getName(), ChatColor.GRAY, " from ", ChatColor.BLUE, warp.getServer()));
 
         warps.remove(warp);
         warps.save(true);
@@ -167,8 +165,8 @@ public class WarpHandler {
             if(warp.getResponse() != null) {
                 warp.getResponse().onResponse(true, warp);
             } else {
-                player.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Created warp ", ChatColor.GRAY),
-                        new TextElement(warp.getName(), ChatColor.RED), new TextElement(" on ", ChatColor.GRAY), new TextElement(warp.getServer(), ChatColor.BLUE)));
+                player.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Created warp ", ChatColor.RED, warp.getName(), " on ",
+                        ChatColor.RED, warp.getServer()));
             }
 
             List<CommandSender> removeSenders = Lists.newArrayList();
@@ -192,7 +190,7 @@ public class WarpHandler {
     public WarpStatus getWarpStatus(int warpId, String server) {
         boolean local = ConfigHandler.localWarp;
         for(Warp w : warps)
-            if(w.getId() == warpId && !local && w.getPinnedMode() == Warp.PinnedMode.GLOBAL) return WarpStatus.RESERVED;
+            if(w.getId() == warpId && !local && w.getPinned() == Warp.PinnedMode.GLOBAL) return WarpStatus.RESERVED;
 
         for(Warp w: warps)
             if(w.getId() == warpId && (!local || ServerConfig.getInstance().getServer(server).getGroup().getServers().contains(w.getServer())))
@@ -207,10 +205,10 @@ public class WarpHandler {
      * @return List of warps as String
      */
     public TextComponent getWarpList(String server) {
-        TextComponent list = ChatHelper.makeTitleTextComponent(new TextElement("Warps: ", ChatColor.RED));
+        TextComponent list = ChatUtil.titleAndCombine(ChatColor.RED, "Warps: ");
         boolean first = true;
         for(Warp w : warps) {
-            if(!(w.getServer().equalsIgnoreCase(server) || w.getPinnedMode() == Warp.PinnedMode.GLOBAL ||
+            if(!(w.getServer().equalsIgnoreCase(server) || w.getPinned() == Warp.PinnedMode.GLOBAL ||
                     !ConfigHandler.localWarp)) continue;
             if(first) {
                 TextComponent t = new TextComponent(w.getName());
@@ -222,7 +220,7 @@ public class WarpHandler {
                 list.addExtra(t);
                 first = false;
             } else {
-                list.addExtra(ChatHelper.makeTextComponent(new TextElement(", ", ChatColor.GRAY)));
+                list.addExtra(ChatUtil.combine(ChatColor.GRAY, ", "));
                 TextComponent t = new TextComponent(w.getName());
                 t.setColor(ChatColor.BLUE);
                 t.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/%s %s",
