@@ -18,6 +18,7 @@
 
 package com.noahhusby.sledgehammer.dialogs.scenes.setup;
 
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.dialogs.components.setup.EarthServerComponent;
@@ -27,8 +28,8 @@ import com.noahhusby.sledgehammer.dialogs.scenes.DialogScene;
 import com.noahhusby.sledgehammer.dialogs.toolbars.ExitSkipToolbar;
 import com.noahhusby.sledgehammer.dialogs.toolbars.IToolbar;
 import com.noahhusby.sledgehammer.dialogs.DialogHandler;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 
 import java.util.LinkedList;
@@ -63,7 +64,7 @@ public class ConfigScene extends DialogScene {
             DialogHandler.getInstance().discardDialog(this);
 
             if(indexOf(server) + 2 > servers.size()) {
-                getCommandSender().sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Finished the setup dialog!", ChatColor.RED)));
+                getCommandSender().sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Finished the setup dialog!"));
                 return;
             }
 
@@ -92,7 +93,7 @@ public class ConfigScene extends DialogScene {
     @Override
     public void onToolbarAction(String m) {
         if(m.equals("exit")) {
-            getCommandSender().sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Finished the setup dialog!", ChatColor.RED)));
+            getCommandSender().sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Finished the setup dialog!"));
             DialogHandler.getInstance().discardDialog(this);
         } else if(m.equals("@")) {
             progressDialog("");
@@ -105,14 +106,13 @@ public class ConfigScene extends DialogScene {
     }
 
     @Override
-    public TextElement[] getTitle() {
+    public TextComponent getTitle() {
         List<ServerInfo> servers = ServerConfig.getInstance().getBungeeServers();
         ServerInfo currentServer = this.server;
 
-        return new TextElement[]{new TextElement("Server ", ChatColor.GRAY), new TextElement(String.valueOf(
-                indexOf(currentServer)+1), ChatColor.GREEN),
-        new TextElement(" of ", ChatColor.GRAY), new TextElement(String.valueOf(servers.size()), ChatColor.GREEN), new TextElement(" - ", ChatColor.GRAY),
-        new TextElement(currentServer.getName(), ChatColor.RED)};
+        return ChatUtil.combine(ChatColor.GRAY, "Server ", ChatColor.GREEN, String.valueOf(indexOf(currentServer) + 1),
+                ChatColor.GRAY, " of ", ChatColor.GREEN, String.valueOf(servers.size()), ChatColor.GRAY, " - ",
+                ChatColor.RED, currentServer.getName());
     }
 
     @Override
@@ -128,7 +128,7 @@ public class ConfigScene extends DialogScene {
                 ServerInfo currentServer = this.server;
 
                 if (indexOf(currentServer) + 2 > servers.size()) {
-                    getCommandSender().sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Finished the setup dialog!", ChatColor.RED)));
+                    getCommandSender().sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Finished the setup dialog!"));
                     DialogHandler.getInstance().discardDialog(this);
                     return;
                 }

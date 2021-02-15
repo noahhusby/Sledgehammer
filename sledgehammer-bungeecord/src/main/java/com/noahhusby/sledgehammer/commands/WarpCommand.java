@@ -18,9 +18,8 @@
 
 package com.noahhusby.sledgehammer.commands;
 
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
-import com.noahhusby.sledgehammer.chat.ChatConstants;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.commands.fragments.warps.*;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerConfig;
@@ -50,19 +49,17 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
         registerCommandFragment(new WarpRemoveFragment());
         registerCommandFragment(new WarpListFragment());
         registerCommandFragment(new WarpMenuFragment());
-        if(ConfigHandler.mapEnabled)
-            registerCommandFragment(new WarpMapFragment());
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(!(sender instanceof ProxiedPlayer)) {
-            sender.sendMessage(ChatConstants.issueByPlayer);
+            sender.sendMessage(ChatUtil.getPlayerOnly());
             return;
         }
 
         if(!isAllowed(sender)) {
-            sender.sendMessage(ChatConstants.getNotAvailable());
+            sender.sendMessage(ChatUtil.getNotAvailable());
             return;
         }
 
@@ -73,7 +70,7 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
                 run(sender, args);
                 return;
             }
-            sender.sendMessage(ChatConstants.noPermission);
+            sender.sendMessage(ChatUtil.getNoPermission());
         });
     }
 
@@ -96,10 +93,9 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
                 }
             }
 
-            sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Usage: /nwarp <warp>", ChatColor.RED)));
-            sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Use ", ChatColor.GRAY),
-                    new TextElement(String.format("/%s list", ConfigHandler.warpCommand), ChatColor.BLUE),
-                    new TextElement(" to see the available warps.", ChatColor.GRAY)));
+            sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, String.format("Usage: /%s <warp>", ConfigHandler.warpCommand)));
+            sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Use ", ChatColor.BLUE,
+                    String.format("/%s list", ConfigHandler.warpCommand), ChatColor.GRAY, " to see the available warps."));
             return;
         }
 
@@ -123,7 +119,7 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
 
         List<Warp> warps = new ArrayList<>();
         for(Warp w : WarpHandler.getInstance().getWarps())
-            if(w.getPinnedMode() == Warp.PinnedMode.GLOBAL || !ConfigHandler.localWarp
+            if(w.getPinned() == Warp.PinnedMode.GLOBAL || !ConfigHandler.localWarp
             || w.getServer().equalsIgnoreCase(SledgehammerUtil.getServerFromSender(sender).getName())) warps.add(w);
 
         String warpName = SledgehammerUtil.getRawArguments(args);
@@ -132,16 +128,16 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
             if(w.getName().equalsIgnoreCase(warpName)) warp = w;
 
         if(warp == null) {
-            sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("That warp does not exist!", ChatColor.RED)));
+            sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "That warp does not exist!"));
             return;
         }
 
         if(SledgehammerUtil.getServerFromSender(sender) != SledgehammerUtil.getServerByName(warp.getServer())) {
             SledgehammerPlayer.getPlayer(sender).connect(SledgehammerUtil.getServerByName(warp.getServer()));
-            sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Sending you to ", ChatColor.GRAY), new TextElement(warp.getServer(), ChatColor.RED)));
+            sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Sending you to ", ChatColor.RED, warp.getServer()));
         }
 
-        sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Warping to ", ChatColor.GRAY), new TextElement(warp.getName(), ChatColor.RED)));
+        sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Warping to ", ChatColor.RED, warp.getName()));
         getNetworkManager().send(new P2STeleportPacket(sender.getName(), warp.getServer(), warp.getPoint()));
     }
 

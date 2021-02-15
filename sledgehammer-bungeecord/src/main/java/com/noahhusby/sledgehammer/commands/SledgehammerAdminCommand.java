@@ -18,7 +18,7 @@
 
 package com.noahhusby.sledgehammer.commands;
 
-import com.noahhusby.sledgehammer.chat.ChatConstants;
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.CommandFragmentManager;
 import com.noahhusby.sledgehammer.commands.fragments.admin.*;
 import net.md_5.bungee.api.CommandSender;
@@ -27,22 +27,19 @@ public class SledgehammerAdminCommand extends CommandFragmentManager {
     public SledgehammerAdminCommand() {
         super("sha", "sledgehammer.admin");
 
-        setCommandBase("sha");
-        setTitle("Sledgehammer Admin Commands");
-
-        registerCommandFragment(new ReloadFragment());
-        registerCommandFragment(new SetupFragment());
-        registerCommandFragment(new ServerFragment());
-        registerCommandFragment(new GroupFragment());
-        registerCommandFragment(new PermissionCheckFragment());
-        registerCommandFragment(new TestLocationFragment());
-        registerCommandFragment(new MigrateFragment());
+        register(new ReloadFragment());
+        register(new SetupFragment());
+        register(new ServerFragment());
+        register(new GroupFragment());
+        register(new PermissionCheckFragment());
+        register(new TestLocationFragment());
+        register(new MigrateFragment());
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(!hasPerms(sender)) {
-            sender.sendMessage(ChatConstants.noPermission);
+            sender.sendMessage(ChatUtil.getNotAvailable());
             return;
         }
         executeFragment(sender, args);

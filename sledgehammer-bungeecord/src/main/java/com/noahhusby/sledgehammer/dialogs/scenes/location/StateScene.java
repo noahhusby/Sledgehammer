@@ -18,7 +18,7 @@
 
 package com.noahhusby.sledgehammer.dialogs.scenes.location;
 
-import com.noahhusby.sledgehammer.chat.ChatHelper;
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.dialogs.components.location.CountryComponent;
@@ -65,15 +65,12 @@ public class StateScene extends DialogScene {
         }
 
         String x = "";
-        if(!l.city.equals("")) x+= ChatHelper.capitalize(l.city)+", ";
-        if(!l.county.equals("")) x+= ChatHelper.capitalize(l.county)+", ";
-        if(!l.state.equals("")) x+= ChatHelper.capitalize(l.state)+", ";
-        if(!l.country.equals("")) x+= ChatHelper.capitalize(l.country);
-        sender.sendMessage(ChatHelper.makeTextComponent(
-                new TextElement("Successfully added ", ChatColor.GRAY),
-                new TextElement("State: ", ChatColor.BLUE),
-                new TextElement(ChatHelper.capitalize(l.detailType.name())+" - ", ChatColor.RED),
-                new TextElement(x, ChatColor.GOLD)));
+        if(!l.city.equals("")) x+= ChatUtil.capitalize(l.city)+", ";
+        if(!l.county.equals("")) x+= ChatUtil.capitalize(l.county)+", ";
+        if(!l.state.equals("")) x+= ChatUtil.capitalize(l.state)+", ";
+        if(!l.country.equals("")) x+= ChatUtil.capitalize(l.country);
+        sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Successfully added ",
+                ChatColor.RED, ChatUtil.capitalize(l.detailType.name()) + " - ", ChatColor.GOLD, x));
     }
 
     @Override

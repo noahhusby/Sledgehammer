@@ -30,7 +30,6 @@ import com.noahhusby.sledgehammer.config.ServerGroup;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.network.P2S.P2SSetwarpPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.datasets.Point;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import net.md_5.bungee.api.ChatColor;

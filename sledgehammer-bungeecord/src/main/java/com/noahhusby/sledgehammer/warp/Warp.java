@@ -20,7 +20,6 @@ package com.noahhusby.sledgehammer.warp;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.datasets.Point;
 import lombok.Getter;
 import lombok.Setter;

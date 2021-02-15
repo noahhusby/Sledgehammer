@@ -19,13 +19,14 @@
 package com.noahhusby.sledgehammer.dialogs.scenes;
 
 import com.google.common.collect.Maps;
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.dialogs.components.IDialogComponent;
 import com.noahhusby.sledgehammer.dialogs.toolbars.DefaultToolbar;
 import com.noahhusby.sledgehammer.dialogs.toolbars.IToolbar;
 import com.noahhusby.sledgehammer.dialogs.DialogHandler;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.Map;
 
@@ -81,7 +82,7 @@ public abstract class DialogScene implements IDialogScene {
         if(m.equals("exit")) {
             dialogHandler.discardDialog(this);
             getCommandSender().sendMessage();
-            getCommandSender().sendMessage(ChatHelper.makeTextComponent(new TextElement("Exited the dialog!", ChatColor.RED)));
+            getCommandSender().sendMessage(ChatUtil.combine(ChatColor.RED, "Exited the dialog!"));
         }
     }
 
@@ -91,7 +92,7 @@ public abstract class DialogScene implements IDialogScene {
     }
 
     @Override
-    public TextElement[] getTitle() {
+    public TextComponent getTitle() {
         return null;
     }
 

@@ -18,8 +18,7 @@
 
 package com.noahhusby.sledgehammer.commands.fragments.admin.server;
 
-import com.noahhusby.sledgehammer.chat.ChatConstants;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
@@ -31,19 +30,19 @@ public class ServerOffsetFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(ServerConfig.getInstance().getServer(args[0]) == null) {
-            sender.sendMessage(ChatConstants.notSledgehammerServer);
+            sender.sendMessage(ChatUtil.notSledgehammerServer);
             return;
         }
 
         if(args.length < 4) {
-            sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Usage: /sha server <server name> setoffest <x|z> <offset>", ChatColor.RED)));
+            sender.sendMessage(ChatUtil.combine(ChatColor.RED, "Usage: /sha server <server name> setoffset <x/z> offset"));
             return;
         }
 
         SledgehammerServer s = ServerConfig.getInstance().getServer(args[0]);
         String axis = args[2];
         if(!(axis.equalsIgnoreCase("x") || axis.equalsIgnoreCase("z"))) {
-            sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Usage: /sha server <server name> setoffest <x|z> <offset>", ChatColor.RED)));
+            sender.sendMessage(ChatUtil.combine(ChatColor.RED, "Usage: /sha server <server name> setoffset <x/z> offset"));
             return;
         }
 
@@ -52,16 +51,16 @@ public class ServerOffsetFragment implements ICommandFragment {
         try {
             value = Integer.parseInt(valString);
         } catch (NumberFormatException e) {
-            sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Usage: /sha server <server name> setoffest <x|z> <offset>", ChatColor.RED)));
+            sender.sendMessage(ChatUtil.combine(ChatColor.RED, "Usage: /sha server <server name> setoffset <x/z> offset"));
             return;
         }
 
         if(axis.equalsIgnoreCase("z")) {
-            s.setzOffset(value);
-            sender.sendMessage(ChatConstants.getValueMessage("zOffset", valString, s.getName()));
+            s.setZOffset(value);
+            sender.sendMessage(ChatUtil.getValueMessage("zOffset", valString, s.getName()));
         } else {
-            s.setxOffset(value);
-            sender.sendMessage(ChatConstants.getValueMessage("xOffset", valString, s.getName()));
+            s.setXOffset(value);
+            sender.sendMessage(ChatUtil.getValueMessage("xOffset", valString, s.getName()));
         }
 
         ServerConfig.getInstance().getServers().save(true);

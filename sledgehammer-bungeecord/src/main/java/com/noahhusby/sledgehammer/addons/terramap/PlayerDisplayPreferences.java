@@ -1,8 +1,5 @@
 package com.noahhusby.sledgehammer.addons.terramap;
 
-import java.util.List;
-
-import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 
 /**

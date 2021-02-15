@@ -18,8 +18,7 @@
 
 package com.noahhusby.sledgehammer.commands;
 
-import com.noahhusby.sledgehammer.chat.ChatConstants;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.data.Command;
 import com.noahhusby.sledgehammer.network.P2S.P2SLocationPacket;
 import com.noahhusby.sledgehammer.permissions.PermissionHandler;
@@ -39,12 +38,12 @@ public class TplloCommand extends Command {
     @Override
     public void execute(CommandSender sender, String[] a) {
         if(!(sender instanceof ProxiedPlayer)) {
-            sender.sendMessage(ChatConstants.issueByPlayer);
+            sender.sendMessage(ChatUtil.getPlayerOnly());
             return;
         }
 
         if(!isAllowed(sender)) {
-            sender.sendMessage(ChatConstants.getNotAvailable());
+            sender.sendMessage(ChatUtil.getNotAvailable());
             return;
         }
 
@@ -52,7 +51,7 @@ public class TplloCommand extends Command {
             if(code == PermissionRequest.PermissionCode.PERMISSION) {
                 String[] args = a;
                 if(args.length==0) {
-                    sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Usage: /tpllo <lat> <lon>", ChatColor.RED)));
+                    sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "Usage: /tpllo <lat> <lon>"));
                     return;
                 }
 
@@ -66,7 +65,7 @@ public class TplloCommand extends Command {
                 if(args.length>1&&args[1].endsWith(","))
                     args[1] = args[1].substring(0, args[1].length() - 1);
                 if(args.length!=2&&args.length!=3) {
-                    sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Usage: /tpllo <lat> <lon>", ChatColor.RED)));
+                    sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "Usage: /tpllo <lat> <lon>"));
                     return;
                 }
 
@@ -77,21 +76,21 @@ public class TplloCommand extends Command {
                     lat = Double.parseDouble(args[0]);
                     lon = Double.parseDouble(args[1]);
                 } catch(Exception e) {
-                    sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Usage: /tpllo <lat> <lon>", ChatColor.RED)));
+                    sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "Usage: /tpllo <lat> <lon>"));
                     return;
                 }
 
                 ServerInfo server = ((ProxiedPlayer) sender).getServer().getInfo();
 
-                sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("(Override) Teleporting to ", ChatColor.GRAY),
-                        new TextElement(lat+", "+lon, ChatColor.RED)));
+                sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "(Override) Teleporting to ",
+                        ChatColor.RED, String.format("%s, %s"), lat, lon));
 
                 double[] geo = {lat, lon};
 
                 getNetworkManager().send(new P2SLocationPacket(sender.getName(), server.getName(), geo));
                 return;
             }
-            sender.sendMessage(ChatConstants.noPermission);
+            sender.sendMessage(ChatUtil.getNoPermission());
         });
     }
 }

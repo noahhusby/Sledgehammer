@@ -21,6 +21,7 @@ package com.noahhusby.sledgehammer.dialogs.scenes;
 import com.noahhusby.sledgehammer.dialogs.components.IDialogComponent;
 import com.noahhusby.sledgehammer.dialogs.toolbars.IToolbar;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public interface IDialogScene {
     void init(CommandSender commandSender);
@@ -30,7 +31,7 @@ public interface IDialogScene {
     void onComponentFinish();
     void onInitialization();
     boolean isAdmin();
-    TextElement[] getTitle();
+    TextComponent getTitle();
     IToolbar getToolbar();
     IDialogComponent getCurrentComponent();
     CommandSender getCommandSender();

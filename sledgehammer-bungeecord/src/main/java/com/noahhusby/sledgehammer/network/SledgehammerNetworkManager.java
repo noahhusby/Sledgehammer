@@ -19,22 +19,18 @@
 package com.noahhusby.sledgehammer.network;
 
 import com.google.common.collect.Lists;
-import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.SmartObject;
-import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.network.S2P.*;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
-import net.md_5.bungee.event.EventPriority;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SledgehammerNetworkManager implements Listener {

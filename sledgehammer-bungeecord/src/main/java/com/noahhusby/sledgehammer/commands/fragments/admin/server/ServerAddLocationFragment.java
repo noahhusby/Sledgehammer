@@ -19,9 +19,8 @@
 package com.noahhusby.sledgehammer.commands.fragments.admin.server;
 
 import com.noahhusby.lib.data.JsonUtils;
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
-import com.noahhusby.sledgehammer.chat.ChatConstants;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
@@ -40,17 +39,17 @@ public class ServerAddLocationFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(!(sender instanceof ProxiedPlayer)) {
-            sender.sendMessage(ChatConstants.issueByPlayer);
+            sender.sendMessage(ChatUtil.getPlayerOnly());
             return;
         }
 
         if(ServerConfig.getInstance().getServer(args[0]) == null) {
-            sender.sendMessage(ChatConstants.notSledgehammerServer);
+            sender.sendMessage(ChatUtil.notSledgehammerServer);
             return;
         }
 
         if(!ServerConfig.getInstance().getServer(args[0]).isEarthServer()) {
-            sender.sendMessage(ChatConstants.notEarthServer);
+            sender.sendMessage(ChatUtil.notEarthServer);
             return;
         }
 
@@ -87,14 +86,11 @@ public class ServerAddLocationFragment implements ICommandFragment {
                 ServerConfig.getInstance().pushServer(s);
 
                 String x = "";
-                if(!l.city.equals("")) x+= ChatHelper.capitalize(l.city)+", ";
-                if(!l.county.equals("")) x+= ChatHelper.capitalize(l.county)+", ";
-                if(!l.state.equals("")) x+= ChatHelper.capitalize(l.state)+", ";
-                if(!l.country.equals("")) x+= ChatHelper.capitalize(l.country);
-                sender.sendMessage(ChatHelper.makeAdminTextComponent(
-                        new TextElement("Successfully added ", ChatColor.GRAY),
-                        new TextElement(l.detailType + ": ", ChatColor.BLUE),
-                        new TextElement(x, ChatColor.RED)));
+                if(!l.city.equals("")) x+= ChatUtil.capitalize(l.city)+", ";
+                if(!l.county.equals("")) x+= ChatUtil.capitalize(l.county)+", ";
+                if(!l.state.equals("")) x+= ChatUtil.capitalize(l.state)+", ";
+                if(!l.country.equals("")) x+= ChatUtil.capitalize(l.country);
+                sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Successfully added ", ChatColor.BLUE, l.detailType.name() + ": ", ChatColor.RED, x));
                 return;
             } else if(arg.contains("{")) {
                 sender.sendMessage(ChatColor.RED + "Unable to parse json location! Please try again.");

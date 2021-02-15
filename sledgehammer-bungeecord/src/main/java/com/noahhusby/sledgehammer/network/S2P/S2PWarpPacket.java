@@ -22,7 +22,6 @@ import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.SmartObject;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.gui.GUIHandler;
 import com.noahhusby.sledgehammer.network.P2S.P2STeleportPacket;
 import com.noahhusby.sledgehammer.network.PacketInfo;

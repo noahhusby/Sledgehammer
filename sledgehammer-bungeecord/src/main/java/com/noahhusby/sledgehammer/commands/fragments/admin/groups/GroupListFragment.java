@@ -18,7 +18,7 @@
 
 package com.noahhusby.sledgehammer.commands.fragments.admin.groups;
 
-import com.noahhusby.sledgehammer.chat.ChatHelper;
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.ServerGroup;
@@ -32,7 +32,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 public class GroupListFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
-        TextComponent list = ChatHelper.makeTitleTextComponent(new TextElement("Groups: ", ChatColor.RED));
+        TextComponent list = ChatUtil.adminAndCombine(ChatColor.RED, "Groups: ");
         boolean first = true;
         for(ServerGroup s : ServerConfig.getInstance().getGroups()) {
             if(first) {
@@ -45,7 +45,7 @@ public class GroupListFragment implements ICommandFragment {
                 list.addExtra(t);
                 first = false;
             } else {
-                list.addExtra(ChatHelper.makeTextComponent(new TextElement(", ", ChatColor.GRAY)));
+                list.addExtra(ChatUtil.combine(ChatColor.GRAY, ", "));
                 TextComponent t = new TextComponent(s.getID());
                 t.setColor(ChatColor.BLUE);
                 t.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/sha group info %s",

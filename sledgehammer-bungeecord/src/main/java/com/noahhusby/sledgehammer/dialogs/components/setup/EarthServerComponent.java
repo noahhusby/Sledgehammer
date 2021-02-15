@@ -18,8 +18,10 @@
 
 package com.noahhusby.sledgehammer.dialogs.components.setup;
 
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.dialogs.components.DialogComponent;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class EarthServerComponent extends DialogComponent {
     @Override
@@ -33,10 +35,8 @@ public class EarthServerComponent extends DialogComponent {
     }
 
     @Override
-    public TextElement[] getExplanation() {
-        return new TextElement[]{new TextElement("Enter ", ChatColor.GRAY),
-                new TextElement("Yes [Y]", ChatColor.BLUE), new TextElement(" or ", ChatColor.GRAY),
-                new TextElement("No [N]", ChatColor.BLUE)};
+    public TextComponent getExplanation() {
+        return ChatUtil.combine(ChatColor.GRAY, "Enter ", ChatColor.BLUE, "Yes [Y]", ChatColor.GRAY, " or ", ChatColor.BLUE, "No [N]");
     }
 
     @Override

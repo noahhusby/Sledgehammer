@@ -18,8 +18,8 @@
 
 package com.noahhusby.sledgehammer.commands;
 
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.data.Command;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
 import net.md_5.bungee.api.CommandSender;
 
 public class SledgehammerCommand extends Command {
@@ -29,6 +29,6 @@ public class SledgehammerCommand extends Command {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        ChatHelper.infoMessage(sender);
+        sender.sendMessage(ChatUtil.getVersionMessage());
     }
 }

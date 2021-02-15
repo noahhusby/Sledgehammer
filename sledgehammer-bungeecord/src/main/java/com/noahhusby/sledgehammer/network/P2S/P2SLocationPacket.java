@@ -19,8 +19,6 @@
 package com.noahhusby.sledgehammer.network.P2S;
 
 import com.noahhusby.sledgehammer.Constants;
-import com.noahhusby.sledgehammer.Sledgehammer;
-import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.network.P2SPacket;
@@ -41,8 +39,8 @@ public class P2SLocationPacket extends P2SPacket {
         this.sender = sender;
         SledgehammerServer sledgehammerServer = ServerConfig.getInstance().getServer(server);
         if(sledgehammerServer != null) {
-            xOffset = String.valueOf(sledgehammerServer.getxOffset());
-            zOffset = String.valueOf(sledgehammerServer.getzOffset());
+            xOffset = String.valueOf(sledgehammerServer.getXOffset());
+            zOffset = String.valueOf(sledgehammerServer.getZOffset());
         }
 
         this.lat = String.valueOf(geo[0]);

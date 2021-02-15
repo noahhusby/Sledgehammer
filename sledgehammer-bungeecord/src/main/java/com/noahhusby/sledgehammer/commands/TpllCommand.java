@@ -18,12 +18,11 @@
 
 package com.noahhusby.sledgehammer.commands;
 
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
-import com.noahhusby.sledgehammer.chat.ChatConstants;
 import com.noahhusby.sledgehammer.commands.data.Command;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.network.P2S.P2SLocationPacket;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.permissions.PermissionRequest;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
@@ -45,12 +44,12 @@ public class TpllCommand extends Command {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(!(sender instanceof ProxiedPlayer)) {
-            sender.sendMessage(ChatConstants.issueByPlayer);
+            sender.sendMessage(ChatUtil.getNoPermission());
             return;
         }
 
         if(!isAllowed(sender)) {
-            sender.sendMessage(ChatConstants.getNotAvailable());
+            sender.sendMessage(ChatUtil.getNotAvailable());
             return;
         }
 
@@ -67,7 +66,7 @@ public class TpllCommand extends Command {
 
                 SledgehammerPlayer recipient = SledgehammerPlayer.getPlayer(sender);
                 if(args[0].equalsIgnoreCase("help")) {
-                    TextComponent text = ChatHelper.makeTitleTextComponent();
+                    TextComponent text = ChatUtil.title();
 
                     TextComponent interaction = new TextComponent(ChatColor.YELLOW + "Click here");
                     interaction.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://giant.gfycat.com/JitteryTerrificChimpanzee.webm"));
@@ -86,8 +85,7 @@ public class TpllCommand extends Command {
                     parseArgs = new String[]{args[1], args[2]};
                     recipient = SledgehammerPlayer.getPlayer(args[0]);
                     if(recipient == null) {
-                        sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement(args[0], ChatColor.RED),
-                                new TextElement(" could not be found on the network!", ChatColor.RED)));
+                        sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, args[0], " could not be found on the network!"));
                         return;
                     }
                 }
@@ -125,51 +123,46 @@ public class TpllCommand extends Command {
                 ServerInfo server = OpenStreetMaps.getInstance().getServerFromLocation(lon, lat);
 
                 if (server == null) {
-                    sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("That location could not be found, or is not available on this server!", ChatColor.RED)));
+                    sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "That location could not be found, or is not available on this server!"));
                     return;
                 }
 
                 if(!hasPerms(sender, "admin") && !(hasPerms(sender, server.getName()) || hasPerms(sender, "all"))) {
-                    sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("You don't have permission to tpll to ", ChatColor.RED),
-                            new TextElement(server.getName(), ChatColor.DARK_RED)));
+                    sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "You don't have permission to tpll to ", ChatColor.DARK_RED, sender.getName()));
                     return;
                 }
 
                 if (SledgehammerUtil.getServerFromSender(recipient) != server) {
                     if(!sender.getName().equals(recipient.getName())) {
-                        recipient.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("You were summoned to ", ChatColor.GRAY),
-                                        new TextElement(server.getName(), ChatColor.RED), new TextElement(" by ", ChatColor.GRAY),
-                                        new TextElement(sender.getName(), ChatColor.DARK_RED)));
+                        recipient.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "You were summoned to ",
+                                ChatColor.RED, server.getName(), ChatColor.GRAY, " by ", ChatColor.DARK_RED, sender.getName()));
                     } else {
-                        sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Sending you to ", ChatColor.GRAY), new TextElement(server.getName(), ChatColor.RED)));
+                        sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Sending you to ", ChatColor.RED, sender.getName()));
                     }
                     recipient.connect(server);
                 }
 
                 if(!recipient.equals(sender)) {
-                    recipient.sendMessage(ChatHelper.makeTitleTextComponent(
-                            new TextElement("Teleporting to ", ChatColor.GRAY),
-                            new TextElement(lat+", "+lon, ChatColor.RED)));
+                    recipient.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Teleporting to ", ChatColor.RED, String.format("%s, %s", lat, lon)));
                 } else {
-                    sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Teleporting to ", ChatColor.GRAY),
-                            new TextElement(lat+", "+lon, ChatColor.RED)));
+                    sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Teleporting to ", ChatColor.RED, String.format("%s, %s", lat, lon)));
                 }
                 double[] geo = {lat, lon};
                 getNetworkManager().send(new P2SLocationPacket(recipient.getName(), server.getName(), geo));
                 SledgehammerPlayer.getPlayer(sender).getAttributes().put("TPLL_FAILS", 0);
                 return;
             }
-            sender.sendMessage(ChatConstants.noPermission);
+            sender.sendMessage(ChatUtil.getNoPermission());
         });
     }
 
     private void adminUsage(CommandSender sender) {
-        sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Usage: /tpll [target player] <lat> <lon>", ChatColor.RED)));
+        sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "Usage: /tpll [target player] <lat> <lon>"));
         tpllHelp(sender);
     }
 
     private void regularUsage(CommandSender sender) {
-        sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Usage: /tpll <lat> <lon>", ChatColor.RED)));
+        sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "Usage: /tpll <lat> <lon>"));
         tpllHelp(sender);
     }
 

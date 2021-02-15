@@ -18,7 +18,7 @@
 
 package com.noahhusby.sledgehammer.commands.fragments.admin.groups;
 
-import com.noahhusby.sledgehammer.chat.ChatHelper;
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.ServerGroup;
@@ -29,7 +29,7 @@ public class GroupCreateFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(args.length == 0) {
-            sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Usage: /sha group create <id> [name]", ChatColor.RED)));
+            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Usage: /sha group create <id> [name]"));
             return;
         }
 
@@ -37,7 +37,7 @@ public class GroupCreateFragment implements ICommandFragment {
 
         for(ServerGroup sg : ServerConfig.getInstance().getGroups()) {
             if(sg.getID().equals(ID)) {
-                sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("A group with that name already exists!", ChatColor.RED)));
+                sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "A group with that name already exists!"));
                 return;
             }
         }
@@ -48,8 +48,7 @@ public class GroupCreateFragment implements ICommandFragment {
             group.setID(ID);
             ServerConfig.getInstance().getGroups().add(group);
             ServerConfig.getInstance().getGroups().save(true);
-            sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Succesfully created new group ", ChatColor.GRAY),
-                    new TextElement(group.getID(), ChatColor.BLUE)));
+            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Successfully created new group", ChatColor.BLUE, group.getID()));
             return;
         }
 
@@ -60,9 +59,8 @@ public class GroupCreateFragment implements ICommandFragment {
         ServerGroup group = new ServerGroup();
         group.setID(ID);
         group.setName(name.toString());
-        sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Succesfully created new group ", ChatColor.GRAY),
-                new TextElement(group.getID(), ChatColor.BLUE), new TextElement(" with name ", ChatColor.GRAY),
-                new TextElement(name.toString(), ChatColor.RED)));
+        sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Successfully created new group", ChatColor.BLUE, group.getID(),
+                ChatColor.GRAY, " with name ", ChatColor.RED, name.toString()));
         ServerConfig.getInstance().getGroups().add(group);
         ServerConfig.getInstance().getGroups().save(true);
     }

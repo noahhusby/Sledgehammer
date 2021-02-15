@@ -18,7 +18,7 @@
 
 package com.noahhusby.sledgehammer.dialogs.scenes.setup;
 
-import com.noahhusby.sledgehammer.chat.ChatHelper;
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.dialogs.components.location.LocationRemovalComponent;
@@ -26,6 +26,7 @@ import com.noahhusby.sledgehammer.dialogs.scenes.DialogScene;
 import com.noahhusby.sledgehammer.datasets.Location;
 import com.noahhusby.sledgehammer.dialogs.DialogHandler;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 
 import java.util.List;
@@ -42,9 +43,8 @@ public class LocationRemovalScene extends DialogScene {
     }
 
     @Override
-    public TextElement[] getTitle() {
-        return new TextElement[]{new TextElement("Editing Locations - ", ChatColor.GRAY),
-        new TextElement(server.getName(), ChatColor.RED)};
+    public TextComponent getTitle() {
+        return ChatUtil.combine(ChatColor.GRAY, "Editing Locations - ", ChatColor.RED, server.getName());
     }
 
     @Override
@@ -65,14 +65,12 @@ public class LocationRemovalScene extends DialogScene {
         }
 
         String x = "";
-        if(!l.city.equals("")) x+= ChatHelper.capitalize(l.city)+", ";
-        if(!l.county.equals("")) x+= ChatHelper.capitalize(l.county)+", ";
-        if(!l.state.equals("")) x+= ChatHelper.capitalize(l.state)+", ";
-        if(!l.country.equals("")) x+= ChatHelper.capitalize(l.country);
-        sender.sendMessage(ChatHelper.makeTextComponent(
-                new TextElement("Successfully removed location: ", ChatColor.GRAY),
-                new TextElement(ChatHelper.capitalize(l.detailType.name())+" - ", ChatColor.RED),
-                new TextElement(x, ChatColor.GOLD)));
+        if(!l.city.equals("")) x+= ChatUtil.capitalize(l.city)+", ";
+        if(!l.county.equals("")) x+= ChatUtil.capitalize(l.county)+", ";
+        if(!l.state.equals("")) x+= ChatUtil.capitalize(l.state)+", ";
+        if(!l.country.equals("")) x+= ChatUtil.capitalize(l.country);
+        sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Successfully removed location :",
+                ChatColor.RED, ChatUtil.capitalize(l.detailType.name()) + " - ", ChatColor.GOLD, x));
     }
 
     @Override

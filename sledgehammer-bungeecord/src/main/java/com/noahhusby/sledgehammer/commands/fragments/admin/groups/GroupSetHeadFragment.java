@@ -18,8 +18,7 @@
 
 package com.noahhusby.sledgehammer.commands.fragments.admin.groups;
 
-import com.noahhusby.sledgehammer.chat.ChatConstants;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.ServerGroup;
@@ -30,7 +29,7 @@ public class GroupSetHeadFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(args.length < 2) {
-            sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Usage: /sha group sethead <id> <head texture>", ChatColor.RED)));
+            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Usage: /sha group sethead <id> <head texture>"));
             return;
         }
 
@@ -41,11 +40,11 @@ public class GroupSetHeadFragment implements ICommandFragment {
             if(sg.getID().equals(ID)) group = sg;
 
         if(group == null) {
-            sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("That group doesn't exist!", ChatColor.RED)));
+            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "That group doesn't exist!"));
             return;
         }
 
-        sender.sendMessage(ChatConstants.getValueMessage("head", headTexture, group.getID()));
+        sender.sendMessage(ChatUtil.getValueMessage("head", headTexture, group.getID()));
         group.setHeadID(headTexture);
         ServerConfig.getInstance().getGroups().save(true);
 

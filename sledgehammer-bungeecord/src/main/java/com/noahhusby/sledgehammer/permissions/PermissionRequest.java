@@ -18,13 +18,15 @@
 
 package com.noahhusby.sledgehammer.permissions;
 
+import java.util.function.BiConsumer;
+
 public class PermissionRequest {
-    public final PermissionResponse response;
+    public final BiConsumer<PermissionCode, Boolean> response;
     public final String salt;
     public final long time;
     public final int timeout;
 
-    public PermissionRequest(PermissionResponse response, String salt, long time, int timeout) {
+    public PermissionRequest(BiConsumer<PermissionCode, Boolean> response, String salt, long time, int timeout) {
         this.response = response;
         this.salt = salt;
         this.time = time;

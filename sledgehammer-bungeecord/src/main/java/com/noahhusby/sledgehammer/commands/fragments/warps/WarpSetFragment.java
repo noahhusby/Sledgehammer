@@ -18,8 +18,7 @@
 
 package com.noahhusby.sledgehammer.commands.fragments.warps;
 
-import com.noahhusby.sledgehammer.chat.ChatConstants;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.permissions.PermissionHandler;
@@ -36,24 +35,23 @@ public class WarpSetFragment implements ICommandFragment {
         PermissionHandler.getInstance().check(player, "sledgehammer.warp.set", (code, global) -> {
             if(code == PermissionRequest.PermissionCode.PERMISSION) {
                 if(args.length == 0) {
-                    sender.sendMessage(ChatHelper.makeTextComponent(
-                            new TextElement(String.format("Usage: /%s set <name>", ConfigHandler.warpCommand), ChatColor.RED)));
+                    sender.sendMessage(ChatUtil.combine(ChatColor.RED, String.format("Usage: /%s set <name>", ConfigHandler.warpCommand)));
                     return;
                 }
                 WarpHandler.WarpStatus warpStatus = WarpHandler.getInstance().getWarpStatus(args[0], player.getServer().getInfo().getName());
 
                 switch (warpStatus) {
                     case EXISTS:
-                        sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("A warp with that name already exists!", ChatColor.RED)));
-                        sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Use the warp GUI to move it's location.", ChatColor.GRAY)));
+                        sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "A warp with that name already exists!"));
+                        sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Use the warp GUI to move it's location."));
                         break;
                     case RESERVED:
                         if(global) {
-                            sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("A warp with that name already exists!", ChatColor.RED)));
-                            sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Use the warp GUI to move it's location.", ChatColor.GRAY)));
+                            sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "A warp with that name already exists!"));
+                            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Use the warp GUI to move it's location."));
                             return;
                         }
-                        sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("This warp name is reserved and cannot be used.", ChatColor.RED)));
+                        sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "This warp name is reserved and cannot be used."));
                         break;
                     case AVAILABLE:
                         WarpHandler.getInstance().requestNewWarp(args[0], sender);
@@ -61,7 +59,7 @@ public class WarpSetFragment implements ICommandFragment {
                 }
                 return;
             }
-            sender.sendMessage(ChatConstants.noPermission);
+            sender.sendMessage(ChatUtil.getNoPermission());
         });
     }
 

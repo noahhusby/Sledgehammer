@@ -18,7 +18,7 @@
 
 package com.noahhusby.sledgehammer.commands.fragments.admin.server;
 
-import com.noahhusby.sledgehammer.chat.ChatHelper;
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
@@ -30,7 +30,7 @@ public class ServerSetFriendlyFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(args.length < 3) {
-            sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Usage: /sha server <server name> setname <name>", ChatColor.RED)));
+            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Usage: /sha server <server name> setname <name>"));
             return;
         }
 
@@ -44,9 +44,8 @@ public class ServerSetFriendlyFragment implements ICommandFragment {
 
         ServerConfig.getInstance().pushServer(s);
 
-        sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Changed name of ", ChatColor.GRAY),
-                new TextElement(s.getName(), ChatColor.BLUE), new TextElement(" to ", ChatColor.GRAY),
-                new TextElement(name.toString(), ChatColor.YELLOW)));
+        sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Changed name of ", ChatColor.BLUE,
+                s.getName(), ChatColor.GRAY, " to ", ChatColor.YELLOW, name.toString()));
     }
 
     @Override

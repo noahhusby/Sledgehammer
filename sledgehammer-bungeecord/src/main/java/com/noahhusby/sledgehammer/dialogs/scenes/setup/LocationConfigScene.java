@@ -18,11 +18,13 @@
 
 package com.noahhusby.sledgehammer.dialogs.scenes.setup;
 
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.dialogs.components.setup.LocationMenuComponent;
 import com.noahhusby.sledgehammer.dialogs.scenes.DialogScene;
 import com.noahhusby.sledgehammer.dialogs.scenes.location.LocationSelectionScene;
 import com.noahhusby.sledgehammer.dialogs.DialogHandler;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 
 public class LocationConfigScene extends DialogScene {
@@ -35,9 +37,8 @@ public class LocationConfigScene extends DialogScene {
     }
 
     @Override
-    public TextElement[] getTitle() {
-        return new TextElement[]{new TextElement("Editing Locations - ", ChatColor.GRAY),
-        new TextElement(server.getName(), ChatColor.RED)};
+    public TextComponent getTitle() {
+        return ChatUtil.combine(ChatColor.GRAY, "Editing Locations - ", ChatColor.RED, server.getName());
     }
 
     @Override

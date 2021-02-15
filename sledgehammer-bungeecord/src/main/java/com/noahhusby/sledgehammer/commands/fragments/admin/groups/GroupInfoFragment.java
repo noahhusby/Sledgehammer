@@ -18,7 +18,7 @@
 
 package com.noahhusby.sledgehammer.commands.fragments.admin.groups;
 
-import com.noahhusby.sledgehammer.chat.ChatHelper;
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.ServerGroup;
@@ -29,7 +29,7 @@ public class GroupInfoFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(args.length < 1) {
-            sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Usage: /sha group info <id>", ChatColor.RED)));
+            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Usage: /sha group info <id>"));
             return;
         }
 
@@ -40,15 +40,14 @@ public class GroupInfoFragment implements ICommandFragment {
             if(g.getID().equalsIgnoreCase(gn)) group = g;
 
         if(group == null) {
-            sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Group doesn't exist!", ChatColor.RED)));
+            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Group doesn't exist!"));
             return;
         }
 
-        sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Group Information:", ChatColor.GRAY)));
-        sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("ID: ", ChatColor.GRAY), new TextElement(group.getID(), ChatColor.BLUE)));
-        sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Name: ", ChatColor.GRAY), new TextElement(group.getName(), ChatColor.BLUE)));
-        sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Servers: ", ChatColor.GRAY),
-                new TextElement(String.join(", ", group.getServers()), ChatColor.BLUE)));
+        sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Group Information:"));
+        sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "ID: ", ChatColor.BLUE, group.getID()));
+        sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Name: ", ChatColor.BLUE, group.getName()));
+        sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Servers: ", ChatColor.BLUE, String.join(", ", group.getServers())));
     }
 
     @Override

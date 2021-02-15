@@ -18,7 +18,6 @@
 
 package com.noahhusby.sledgehammer.commands.fragments.warps;
 
-import com.noahhusby.sledgehammer.chat.ChatConstants;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.permissions.PermissionRequest;
@@ -35,7 +34,6 @@ public class WarpListFragment implements ICommandFragment {
                 sender.sendMessage(WarpHandler.getInstance().getWarpList(player.getServer().getInfo().getName()));
                 return;
             }
-            sender.sendMessage(ChatConstants.noPermission);
         });
     }
 

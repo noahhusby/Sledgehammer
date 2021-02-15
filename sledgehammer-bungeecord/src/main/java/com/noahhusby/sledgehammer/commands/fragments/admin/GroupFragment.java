@@ -18,7 +18,7 @@
 
 package com.noahhusby.sledgehammer.commands.fragments.admin;
 
-import com.noahhusby.sledgehammer.chat.ChatConstants;
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.FragmentManager;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.commands.fragments.admin.groups.*;
@@ -28,20 +28,19 @@ import net.md_5.bungee.api.CommandSender;
 public class GroupFragment extends FragmentManager implements ICommandFragment {
 
     public GroupFragment() {
-        setCommandBase("sha group");
-        setTitle("Sledgehammer Group Commands");
-        registerCommandFragment(new GroupInfoFragment());
-        registerCommandFragment(new GroupListFragment());
-        registerCommandFragment(new GroupCreateFragment());
-        registerCommandFragment(new GroupRemoveFragment());
-        registerCommandFragment(new GroupSetHeadFragment());
-        registerCommandFragment(new GroupSetNameFragment());
+        super("sha group");
+        register(new GroupInfoFragment());
+        register(new GroupListFragment());
+        register(new GroupCreateFragment());
+        register(new GroupRemoveFragment());
+        register(new GroupSetHeadFragment());
+        register(new GroupSetNameFragment());
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(!PermissionHandler.getInstance().isAdmin(sender)) {
-            sender.sendMessage(ChatConstants.noPermission);
+            sender.sendMessage(ChatUtil.getNoPermission());
             return;
         }
 

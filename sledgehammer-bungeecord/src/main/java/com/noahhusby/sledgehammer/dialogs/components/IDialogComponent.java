@@ -18,6 +18,8 @@
 
 package com.noahhusby.sledgehammer.dialogs.components;
 
+import net.md_5.bungee.api.chat.TextComponent;
+
 public interface IDialogComponent {
     String getKey();
 
@@ -27,7 +29,7 @@ public interface IDialogComponent {
 
     String getPrompt();
 
-    TextElement[] getExplanation();
+    TextComponent getExplanation();
 
     String[] getAcceptableResponses();
 

@@ -18,8 +18,10 @@
 
 package com.noahhusby.sledgehammer.dialogs.components.location;
 
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.dialogs.components.DialogComponent;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class LocationSelectionComponent extends DialogComponent {
     @Override
@@ -33,11 +35,10 @@ public class LocationSelectionComponent extends DialogComponent {
     }
 
     @Override
-    public TextElement[] getExplanation() {
-        return new TextElement[]{new TextElement("Enter one of the following modes: ", ChatColor.GRAY),
-        new TextElement("City", ChatColor.BLUE), new TextElement(", ", ChatColor.GRAY), new TextElement("County", ChatColor.BLUE),
-        new TextElement(", ", ChatColor.GRAY), new TextElement("State", ChatColor.BLUE), new TextElement(", or ", ChatColor.GRAY),
-        new TextElement("Country", ChatColor.BLUE)};
+    public TextComponent getExplanation() {
+        return ChatUtil.combine(ChatColor.GRAY, "Enter one of the following modes: ", ChatColor.BLUE, "City",
+                ChatColor.GRAY, ", ", ChatColor.BLUE, "County", ChatColor.GRAY, ", ", ChatColor.BLUE, "State",
+                ChatColor.GRAY, ", ", ChatColor.BLUE, "Country");
     }
 
     @Override

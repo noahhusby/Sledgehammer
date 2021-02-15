@@ -39,7 +39,6 @@ import com.noahhusby.lib.data.storage.handlers.LocalStorageHandler;
 import com.noahhusby.lib.data.storage.handlers.SQLStorageHandler;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.addons.terramap.MapStyleRegistry;
-import com.noahhusby.sledgehammer.addons.terramap.TerramapAddon;
 import com.noahhusby.sledgehammer.players.PlayerManager;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
 
@@ -214,32 +213,6 @@ public class ConfigHandler {
                 "Set to false to disable automatic border teleportation, or true to enable it. Border teleportation requires the offline database to be configured.");
 
         order();
-
-        /*
-        cat("Map", "Options for sledgehammer's map");
-        mapEnabled = config.getBoolean(prop("Enable"), "Map", false,
-                "Set this to true to enable sledgehammer's map");
-        mapEnabled = false;
-        mapHost = config.getString(prop("Host"), "Map", "127.0.0.1",
-                "The websocket url/ip where sledgehammer map is running");
-        mapPort = config.getString(prop("Port"), "Map", "7000",
-                "The port that the map websocket is running.\nThe websocket port can be changed in the map's config file");
-        mapTitle = config.getString(prop("Title"), "Map", "A BTE Network", "");
-        mapSubtitle = config.getString(prop("Subtitle"), "Map", "IP: bte-network.net", "");
-        startingLon = config.getFloat(prop("Longitude"), "Map", 0, -90, 90,
-                "The starting longitude when the map loads.");
-        startingLat = config.getFloat(prop("Latitude"), "Map", 0, -90, 90,
-                "The starting latitude when the map loads.");
-        startingZoom = config.getInt(prop("Zoom"), "Map", 6, 5, 18,
-                "The starting zoom when the map loads");
-        mapTimeout = config.getInt(prop("Map Session Timeout"), "Map", 10, 5, 60,
-                "How long (in minutes) a session will last before the player needs to invoke the map command again.");
-        mapLink = config.getString(prop("Map Link"), "Map", "http://map.bte-network.net",
-                "The direct http link for the map. This is the link that players will interact with.\n" +
-                        "NOTE: You must put either http:// or https:// at the beginning");
-                          order();
-
-         */
 
         cat("Terramap", "Terramap Addon Configuration.");
         terramapEnabled = config.getBoolean(prop("Enabled"), category, true, "Enables Terramap integration");

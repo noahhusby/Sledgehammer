@@ -25,7 +25,6 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

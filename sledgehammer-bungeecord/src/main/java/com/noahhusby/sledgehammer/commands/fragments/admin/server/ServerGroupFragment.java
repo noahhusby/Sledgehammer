@@ -18,8 +18,7 @@
 
 package com.noahhusby.sledgehammer.commands.fragments.admin.server;
 
-import com.noahhusby.sledgehammer.chat.ChatConstants;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.ServerGroup;
@@ -32,19 +31,19 @@ public class ServerGroupFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(ServerConfig.getInstance().getServer(args[0]) == null) {
-            sender.sendMessage(ChatConstants.notSledgehammerServer);
+            sender.sendMessage(ChatUtil.notSledgehammerServer);
             return;
         }
 
         if(args.length < 3) {
-            sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Usage: /sha server <server name> setgroup [clear|<group id>]", ChatColor.RED)));
+            sender.sendMessage(ChatUtil.combine(ChatColor.RED, "Usage: /sha server <server name> setgroup [clear|<group id>]"));
             return;
         }
 
         SledgehammerServer s = ServerConfig.getInstance().getServer(args[0]);
         if(args[2].equalsIgnoreCase("clear")) {
             if(s.getGroup().getID().equals(s.getName())) {
-                sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("This server has no groups!", ChatColor.RED)));
+                sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "This server has no groups!"));
                 return;
             }
 
@@ -52,16 +51,15 @@ public class ServerGroupFragment implements ICommandFragment {
                 sg.getServers().remove(s.getName());
 
             ServerConfig.getInstance().getGroups().save(true);
-            sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Server has been removed from all groups!", ChatColor.GREEN)));
+            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GREEN, "Server has been removed from all groups!"));
             return;
         }
 
         for(ServerGroup sg : ServerConfig.getInstance().getGroups()) {
             if(sg.getServers().contains(s.getName())) {
-                sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("This server is assigned to another group!", ChatColor.RED)));
-                sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Use ", ChatColor.GRAY),
-                        new TextElement("/sha server <server name> setgroup clear ", ChatColor.BLUE),
-                        new TextElement("to remove it from all groups!", ChatColor.GRAY)));
+                sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "This server is assigned to another group!"));
+                sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Use ", ChatColor.BLUE,
+                        "/sha server <server name> setgroup clear ", ChatColor.GRAY, "to remove it from all groups!"));
                 return;
             }
         }
@@ -73,14 +71,14 @@ public class ServerGroupFragment implements ICommandFragment {
             if(sg.getID().equals(id)) group = sg;
 
         if(group == null) {
-            sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("That group doesn't exist!", ChatColor.RED)));
+            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "That group doesn't exist!"));
             return;
         }
 
         group.getServers().add(s.getName());
         ServerConfig.getInstance().getGroups().save(true);
 
-        sender.sendMessage(ChatConstants.getValueMessage("group", group.getID(), s.getName()));
+        sender.sendMessage(ChatUtil.getValueMessage("group", group.getID(), s.getName()));
     }
 
     @Override

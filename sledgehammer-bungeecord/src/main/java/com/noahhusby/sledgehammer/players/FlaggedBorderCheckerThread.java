@@ -21,7 +21,6 @@ package com.noahhusby.sledgehammer.players;
 import com.google.common.collect.ImmutableMap;
 import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;

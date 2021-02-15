@@ -27,7 +27,6 @@ import com.noahhusby.sledgehammer.datasets.Location;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.network.PacketInfo;
 import com.noahhusby.sledgehammer.network.S2PPacket;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -114,12 +113,11 @@ public class S2PTestLocationPacket extends S2PPacket {
                 player.sendMessage(text);
             }
             if (!ConfigHandler.useOfflineMode) {
-                player.sendMessage(ChatHelper.makeTextComponent(
-                        new TextElement("Offline: ", ChatColor.RED), new TextElement("Disabled", ChatColor.DARK_RED)));
+                player.sendMessage(ChatUtil.combine(ChatColor.RED, "Offline: ", ChatColor.DARK_RED, "Disabled"));
             } else {
                 Location offline = OpenStreetMaps.getInstance().getOfflineLocation(proj[0], proj[1]);
-                player.sendMessage(ChatHelper.makeTextComponent(new TextElement("Offline ", ChatColor.RED), new TextElement("(", ChatColor.GRAY),
-                        new TextElement("Active", ChatColor.GREEN), new TextElement("):", ChatColor.GRAY)));
+                player.sendMessage(ChatUtil.combine(ChatColor.RED, "Offline ", ChatColor.GRAY, "(",
+                        ChatColor.GREEN, "Active", ChatColor.GRAY, "):"));
                 if (!offline.city.equals("")) {
                     TextComponent add = new TextComponent(ChatColor.GREEN + " [+]");
                     add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Add location").create()));
@@ -128,7 +126,7 @@ public class S2PTestLocationPacket extends S2PPacket {
                             SledgehammerUtil.JsonUtils.gson.toJson(new Location(Location.detail.city,
                                     offline.city, offline.county, offline.state, offline.country))));
 
-                    TextComponent text = ChatHelper.makeTextComponent(new TextElement("City - ", ChatColor.GRAY), new TextElement(offline.city, ChatColor.BLUE));
+                    TextComponent text = ChatUtil.combine(ChatColor.GRAY, "City - ", ChatColor.BLUE, offline.city);
                     text.addExtra(add);
 
                     player.sendMessage(text);
@@ -141,7 +139,7 @@ public class S2PTestLocationPacket extends S2PPacket {
                             SledgehammerUtil.JsonUtils.gson.toJson(new Location(Location.detail.county,
                                     offline.city, offline.county, offline.state, offline.country))));
 
-                    TextComponent text = ChatHelper.makeTextComponent(new TextElement("County - ", ChatColor.GRAY), new TextElement(offline.county, ChatColor.BLUE));
+                    TextComponent text = ChatUtil.combine(ChatColor.GRAY, "County - ", ChatColor.BLUE, offline.county);
                     text.addExtra(add);
 
                     player.sendMessage(text);
@@ -154,7 +152,7 @@ public class S2PTestLocationPacket extends S2PPacket {
                             SledgehammerUtil.JsonUtils.gson.toJson(new Location(Location.detail.state,
                                     offline.city, offline.county, offline.state, offline.country))));
 
-                    TextComponent text = ChatHelper.makeTextComponent(new TextElement("State - ", ChatColor.GRAY), new TextElement(offline.state, ChatColor.BLUE));
+                    TextComponent text = ChatUtil.combine(ChatColor.GRAY, "State - ", ChatColor.BLUE, offline.state);
                     text.addExtra(add);
 
                     player.sendMessage(text);
@@ -167,7 +165,7 @@ public class S2PTestLocationPacket extends S2PPacket {
                             SledgehammerUtil.JsonUtils.gson.toJson(new Location(Location.detail.country,
                                     offline.city, offline.county, offline.state, offline.country))));
 
-                    TextComponent text = ChatHelper.makeTextComponent(new TextElement("Country - ", ChatColor.GRAY), new TextElement(offline.country, ChatColor.BLUE));
+                    TextComponent text = ChatUtil.combine(ChatColor.GRAY, "Country - ", ChatColor.BLUE, offline.country);
                     text.addExtra(add);
 
                     player.sendMessage(text);

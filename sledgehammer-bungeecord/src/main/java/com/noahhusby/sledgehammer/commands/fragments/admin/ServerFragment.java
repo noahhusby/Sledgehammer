@@ -18,10 +18,10 @@
 
 package com.noahhusby.sledgehammer.commands.fragments.admin;
 
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.FragmentManager;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.commands.fragments.admin.server.*;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -33,18 +33,17 @@ import static net.md_5.bungee.api.ProxyServer.getInstance;
 public class ServerFragment extends FragmentManager implements ICommandFragment {
 
     public ServerFragment() {
-        setCommandBase("sha server <server name>");
-        setTitle("Sledgehammer Server Commands");
-        registerCommandFragment(new ServerInfoFragment());
-        registerCommandFragment(new ServerAddLocationFragment());
-        registerCommandFragment(new ServerRemoveLocationFragment());
-        registerCommandFragment(new ServerListLocationFragment());
-        registerCommandFragment(new ServerEarthModeFragment());
-        registerCommandFragment(new ServerSHSelectFragment());
-        registerCommandFragment(new ServerStealthModeFragment());
-        registerCommandFragment(new ServerGroupFragment());
-        registerCommandFragment(new ServerSetFriendlyFragment());
-        registerCommandFragment(new ServerOffsetFragment());
+        super("sha server <server name>");
+        register(new ServerInfoFragment());
+        register(new ServerAddLocationFragment());
+        register(new ServerRemoveLocationFragment());
+        register(new ServerListLocationFragment());
+        register(new ServerEarthModeFragment());
+        register(new ServerSHSelectFragment());
+        register(new ServerStealthModeFragment());
+        register(new ServerGroupFragment());
+        register(new ServerSetFriendlyFragment());
+        register(new ServerOffsetFragment());
     }
 
     @Override
@@ -56,8 +55,7 @@ public class ServerFragment extends FragmentManager implements ICommandFragment 
                     return;
                 }
             }
-            sender.sendMessage(ChatHelper.makeAdminTextComponent(
-                    new TextElement(args[0], ChatColor.DARK_RED), new TextElement(" is not a bungeecord server!", ChatColor.RED)));
+            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.DARK_RED, args[0], ChatColor.RED, " is not a bungeecord server!"));
             return;
         }
         executeFragment(sender, args, 1);

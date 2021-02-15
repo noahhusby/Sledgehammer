@@ -18,7 +18,7 @@
 
 package com.noahhusby.sledgehammer.commands.fragments.admin.groups;
 
-import com.noahhusby.sledgehammer.chat.ChatHelper;
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.ServerGroup;
@@ -29,7 +29,7 @@ public class GroupRemoveFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(args.length == 0) {
-            sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Usage: /sha group remove <id>", ChatColor.RED)));
+            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Usage: /sha group remove <id>"));
             return;
         }
 
@@ -39,12 +39,11 @@ public class GroupRemoveFragment implements ICommandFragment {
             if(sg.getID().equals(ID)) group = sg;
 
         if(group == null) {
-            sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("That group doesn't exist!", ChatColor.RED)));
+            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "That group doesn't exist!"));
             return;
         }
 
-        sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Succesfully removed group ", ChatColor.GRAY),
-                new TextElement(group.getID(), ChatColor.BLUE)));
+        sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Successfully removed group ", ChatColor.BLUE, group.getID()));
         ServerConfig.getInstance().getGroups().remove(group);
         ServerConfig.getInstance().getGroups().save(true);
     }

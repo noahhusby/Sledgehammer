@@ -25,8 +25,6 @@ import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.datasets.Point;
 import net.md_5.bungee.api.config.ServerInfo;
 
-import java.util.List;
-
 /**
  * Finds players and flags them if they are within a certain region of a border
  * Flagged players are then tracked in {@link FlaggedBorderCheckerThread}
@@ -111,5 +109,7 @@ public class BorderCheckerThread implements Runnable {
                 }
             }
         });
+
+
     }
 }

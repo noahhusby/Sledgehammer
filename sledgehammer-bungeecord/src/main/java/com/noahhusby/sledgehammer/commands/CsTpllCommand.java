@@ -18,8 +18,8 @@
 
 package com.noahhusby.sledgehammer.commands;
 
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
-import com.noahhusby.sledgehammer.chat.ChatConstants;
 import com.noahhusby.sledgehammer.commands.data.Command;
 import com.noahhusby.sledgehammer.network.P2S.P2SCommandPacket;
 import net.md_5.bungee.api.CommandSender;
@@ -36,7 +36,7 @@ public class CsTpllCommand extends Command {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (!(sender instanceof ProxiedPlayer)) {
-            sender.sendMessage(ChatConstants.issueByPlayer);
+            sender.sendMessage(ChatUtil.getPlayerOnly());
         }
 
         if (args.length == 0) {

@@ -20,12 +20,13 @@ package com.noahhusby.sledgehammer.network.P2S;
 
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.gui.GUIHandler;
+import com.noahhusby.sledgehammer.network.P2SPacket;
 import com.noahhusby.sledgehammer.network.PacketInfo;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
 import org.json.simple.JSONObject;
 
-public class P2SWarpConfigPacket implements IP2SPacket {
+public class P2SWarpConfigPacket extends P2SPacket {
 
     private final SledgehammerPlayer player;
     private final ServerConfigAction action;

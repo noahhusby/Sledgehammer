@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 
 public class PermissionHandler {
 
@@ -60,26 +61,26 @@ public class PermissionHandler {
      * Checks if player has a given permission both globally and locally
      * @param player The player to check
      * @param permission The permission to be checked
-     * @param response {@link PermissionResponse}
+     * @param consumer
      */
-    public void check(SledgehammerPlayer player, String permission, PermissionResponse response) {
+    public void check(SledgehammerPlayer player, String permission, BiConsumer<PermissionRequest.PermissionCode, Boolean> consumer) {
         if(player == null) {
-            response.onResponse(PermissionRequest.PermissionCode.NO_PERMISSION, false);
+            consumer.accept(PermissionRequest.PermissionCode.NO_PERMISSION, false);
             return;
         }
 
         if(isAdmin(player) || player.hasPermission(permission)) {
-            response.onResponse(PermissionRequest.PermissionCode.PERMISSION, true);
+            consumer.accept(PermissionRequest.PermissionCode.PERMISSION, true);
             return;
         }
 
         if(!player.onSledgehammer()) {
-            response.onResponse(PermissionRequest.PermissionCode.NO_PERMISSION, false);
+            consumer.accept(PermissionRequest.PermissionCode.NO_PERMISSION, false);
             return;
         }
 
         String salt = SledgehammerUtil.getSaltString();
-        PermissionRequest request = new PermissionRequest(response, salt, System.currentTimeMillis(),
+        PermissionRequest request = new PermissionRequest(consumer, salt, System.currentTimeMillis(),
                 1000);
         SledgehammerNetworkManager.getInstance().send(new P2SPermissionPacket(player.getServer().getInfo().getName(),
                 player, permission, salt));
@@ -99,7 +100,7 @@ public class PermissionHandler {
             if(r.salt.equals(salt)) request =  r;
         if(request == null) return;
 
-        request.response.onResponse(permission ? PermissionRequest.PermissionCode.PERMISSION : PermissionRequest.PermissionCode.NO_PERMISSION, false);
+        request.response.accept(permission ? PermissionRequest.PermissionCode.PERMISSION : PermissionRequest.PermissionCode.NO_PERMISSION, false);
         requests.remove(request);
     }
 
@@ -109,7 +110,7 @@ public class PermissionHandler {
     private void checkPermissionRequests() {
         requests.removeIf(request -> {
             if(request.time + request.timeout < System.currentTimeMillis()) {
-                request.response.onResponse(PermissionRequest.PermissionCode.TIMED_OUT, false);
+                request.response.accept(PermissionRequest.PermissionCode.TIMED_OUT, false);
                 return true;
             }
             return false;

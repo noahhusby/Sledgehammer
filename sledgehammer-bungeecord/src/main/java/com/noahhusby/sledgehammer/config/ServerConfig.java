@@ -24,6 +24,7 @@ import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.datasets.Location;
 import com.noahhusby.sledgehammer.network.P2S.P2SInitializationPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
+import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
@@ -45,20 +46,12 @@ public class ServerConfig implements Listener {
         return instance;
     }
 
-    private final StorageList<SledgehammerServer> servers = new StorageList<>(SledgehammerServer.class);
-    private final StorageList<ServerGroup> groups = new StorageList<>(ServerGroup.class);
+    @Getter private final StorageList<SledgehammerServer> servers = new StorageList<>(SledgehammerServer.class);
+    @Getter private final StorageList<ServerGroup> groups = new StorageList<>(ServerGroup.class);
     private final Map<String, String> initialized = Maps.newHashMap();
 
     private ServerConfig() {
         Sledgehammer.addListener(this);
-    }
-
-    /**
-     * Gets all registered {@link SledgehammerServer}
-     * @return List of {@link SledgehammerServer}
-     */
-    public StorageList<SledgehammerServer> getServers() {
-        return servers;
     }
 
     /**
@@ -140,14 +133,6 @@ public class ServerConfig implements Listener {
             if(s.getName().equalsIgnoreCase(server)) return s.getLocations();
 
         return null;
-    }
-
-    /**
-     * Gets list of {@link ServerGroup}
-     * @return List of {@link ServerGroup}
-     */
-    public StorageList<ServerGroup> getGroups() {
-        return groups;
     }
 
     /**

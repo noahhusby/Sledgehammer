@@ -21,6 +21,8 @@ package com.noahhusby.sledgehammer.config;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.noahhusby.sledgehammer.datasets.Location;
+import lombok.Getter;
+import lombok.Setter;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 
@@ -31,26 +33,26 @@ import java.util.List;
 public class SledgehammerServer {
     @Expose
     @SerializedName("Name")
-    private String name;
+    @Getter private String name;
     @Expose
     @SerializedName("Nick")
-    private String friendlyName;
+    @Getter @Setter private String friendlyName;
     @Expose
     @SerializedName("EarthServer")
-    private boolean earthServer;
+    @Getter @Setter private boolean earthServer;
     @Expose
     @SerializedName("Locations")
-    private List<Location> locations = new ArrayList<>();
+    @Getter @Setter private List<Location> locations = new ArrayList<>();
     @Expose
     @SerializedName("XOffset")
-    private int xOffset;
+    @Getter @Setter private int xOffset;
     @Expose
     @SerializedName("ZOffset")
-    private int zOffset;
+    @Getter @Setter private int zOffset;
     @Expose
     @SerializedName("StealthMode")
-    private boolean stealthMode;
-    private String shVersion = null;
+    @Getter @Setter private boolean stealthMode;
+    @Getter private String sledgehammerVersion = null;
 
     public SledgehammerServer() {}
 
@@ -60,107 +62,11 @@ public class SledgehammerServer {
     }
 
     /**
-     * Gets name of the server
-     * @return Name of server
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Gets friendly nickname for server
-     * @return Nickname of server
-     */
-    public String getFriendlyName() {
-        return friendlyName;
-    }
-
-    /**
-     * Sets the friendly nickname for server
-     * @param name Nickname for server
-     */
-    public void setFriendlyName(String name) {
-        this.friendlyName = name;
-    }
-
-    /**
-     * Gets whether the server is a build server
-     * @return True if a build server, false if not
-     */
-    public boolean isEarthServer() {
-        return earthServer;
-    }
-
-    /**
-     * Sets whether the server is a build server
-     * @param earth True if a build server, false if not
-     */
-    public void setEarthServer(boolean earth) {
-        this.earthServer = earth;
-    }
-
-    /**
-     * Gets the list of locations on the server
-     * @return List of locations
-     */
-    public List<Location> getLocations() {
-        return locations;
-    }
-
-    /**
-     * Sets the list of locations on the server
-     * @param locations List of locations
-     */
-    public void setLocations(List<Location> locations) {
-        this.locations = locations;
-    }
-
-    /**
-     * Sets the x offset for tpll requests
-     * @param xOffset
-     */
-    public void setxOffset(int xOffset) {
-        this.xOffset = xOffset;
-    }
-
-    /**
-     * Gets the x offset for tpll requests
-     * @return X Offset
-     */
-    public int getxOffset() {
-        return xOffset;
-    }
-
-    /**
-     * Sets the z offset for tpll requests
-     * @param zOffset
-     */
-    public void setzOffset(int zOffset) {
-        this.zOffset = zOffset;
-    }
-
-    /**
-     * Gets the z offset for tpll requests
-     * @return Z Offset
-     */
-    public int getzOffset() {
-        return zOffset;
-    }
-
-    /**
-     * Gets the version of the sledgehammer plugin
-     * @return Sledgehammer Version
-     */
-    public String getSledgehammerVersion() {
-        return shVersion;
-    }
-
-    /**
      * Initializes server from init packet
      * @param version Sledgehammer Version
      */
     public void initialize(String version) {
-        this.shVersion = version;
+        this.sledgehammerVersion = version;
     }
 
     /**
@@ -168,7 +74,7 @@ public class SledgehammerServer {
      * @return True if initialized, false if not
      */
     public boolean isInitialized() {
-        return shVersion != null;
+        return sledgehammerVersion != null;
     }
 
     /**
@@ -187,21 +93,5 @@ public class SledgehammerServer {
         for(ServerGroup g : ServerConfig.getInstance().getGroups())
             if(g.getServers().contains(name)) return g;
         return new ServerGroup(name, "", friendlyName, Collections.singletonList(name), new ArrayList<>());
-    }
-
-    /**
-     * Gets whether stealth mode is enabled
-     * @return True if enabled, false if disabled
-     */
-    public boolean isStealthMode() {
-        return stealthMode;
-    }
-
-    /**
-     * Sets whether stealth mode should be enabled
-     * @param stealthMode True if players should be hidden, false if not
-     */
-    public void setStealthMode(boolean stealthMode) {
-        this.stealthMode = stealthMode;
     }
 }

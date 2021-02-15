@@ -18,8 +18,10 @@
 
 package com.noahhusby.sledgehammer.dialogs.components.setup;
 
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.dialogs.components.DialogComponent;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class LocationMenuComponent extends DialogComponent {
     @Override
@@ -33,12 +35,11 @@ public class LocationMenuComponent extends DialogComponent {
     }
 
     @Override
-    public TextElement[] getExplanation() {
-        return new TextElement[]{new TextElement("Type ", ChatColor.GRAY),
-                new TextElement("list", ChatColor.RED), new TextElement(" to view current locations, ", ChatColor.GRAY),
-                new TextElement("add", ChatColor.RED), new TextElement(" to add a new location, ", ChatColor.GRAY),
-                new TextElement("remove", ChatColor.RED), new TextElement(" to remove an existing location, or ", ChatColor.GRAY),
-                new TextElement("finish", ChatColor.RED), new TextElement(" to finish setting up this server.", ChatColor.GRAY)};
+    public TextComponent getExplanation() {
+        return ChatUtil.combine(ChatColor.GRAY, "Type ", ChatColor.RED, "list", ChatColor.GRAY, " to view current locations, ",
+                ChatColor.RED, "add", ChatColor.GRAY, "to add a new location, ", ChatColor.RED, "remove",
+                ChatColor.GRAY, " to remove an existing location, or ", ChatColor.RED, "finish",
+                ChatColor.GRAY, " to finish setting up this server.");
     }
 
     @Override

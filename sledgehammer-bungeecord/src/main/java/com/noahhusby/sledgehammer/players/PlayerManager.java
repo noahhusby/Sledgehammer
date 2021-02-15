@@ -19,11 +19,9 @@
 package com.noahhusby.sledgehammer.players;
 
 import com.google.common.collect.Maps;
-import com.google.gson.Gson;
 import com.noahhusby.lib.data.storage.StorageList;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import lombok.Getter;
-import lombok.Setter;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

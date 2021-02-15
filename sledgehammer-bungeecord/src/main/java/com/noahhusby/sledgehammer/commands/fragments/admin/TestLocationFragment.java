@@ -18,12 +18,11 @@
 
 package com.noahhusby.sledgehammer.commands.fragments.admin;
 
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
-import com.noahhusby.sledgehammer.chat.ChatConstants;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.network.P2S.P2STestLocationPacket;
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -32,7 +31,7 @@ public class TestLocationFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(!(sender instanceof ProxiedPlayer)) {
-            sender.sendMessage(ChatConstants.issueByPlayer);
+            sender.sendMessage(ChatUtil.getNoPermission());
             return;
         }
 
@@ -50,9 +49,8 @@ public class TestLocationFragment implements ICommandFragment {
                 SledgehammerNetworkManager.getInstance().send(new P2STestLocationPacket(sender.getName(),
                         SledgehammerUtil.getServerFromSender(sender).getName(), zoom));
             } catch (Exception e) {
-                sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Invalid zoom level!", ChatColor.RED),
-                        new TextElement(" Please enter a value between ", ChatColor.GRAY),
-                        new TextElement("1", ChatColor.BLUE), new TextElement(" and ", ChatColor.GRAY), new TextElement("19", ChatColor.BLUE)));
+                sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Invalid zoom level! ", ChatColor.GRAY,
+                        "Please enter a value between ", ChatColor.BLUE,  1, ChatColor.GRAY, " and ", ChatColor.BLUE, "19"));
             }
         }
     }

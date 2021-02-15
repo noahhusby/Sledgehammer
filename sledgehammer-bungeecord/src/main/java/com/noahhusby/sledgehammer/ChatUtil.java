@@ -1,6 +1,5 @@
 package com.noahhusby.sledgehammer;
 
-import com.noahhusby.sledgehammer.chat.ChatHelper;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.ChatColor;
@@ -9,6 +8,12 @@ import net.md_5.bungee.api.chat.TextComponent;
 
 @UtilityClass
 public class ChatUtil {
+
+    public static final TextComponent notSledgehammerServer = adminAndCombine(ChatColor.GRAY, "This server is not configured as a sledgehammer server! Please use",
+            ChatColor.BLUE, " /sha server <server name> setsledgehammer true ", ChatColor.GRAY, "to enable it.");
+    public static final TextComponent notEarthServer = adminAndCombine(ChatColor.GRAY, "The server is not configured as an earth server! Please use",
+            ChatColor.BLUE, " /sha server <server name> setearth true ", ChatColor.GRAY, "to enable it.");
+
     public static TextComponent title() {
         return new TextComponent(ConfigHandler.messagePrefix.replace("&","\u00A7"));
     }
@@ -83,5 +88,45 @@ public class ChatUtil {
         sender.sendMessage(combine(ChatColor.GRAY, "Most sledgehammer features will be disabled"));
         sender.sendMessage();
         sender.sendMessage(combine(ChatColor.DARK_RED, "----------------------------------------------"));
+    }
+
+    public static TextComponent getValueMessage(String key, String value, String where) {
+        return adminAndCombine(ChatColor.GRAY, "set value ", ChatColor.GOLD, key, ChatColor.GRAY,
+                " to ", ChatColor.RED, value, ChatColor.GRAY, " on ", ChatColor.GOLD, where);
+    }
+
+    public static TextComponent getNotAvailable() {
+        return combine(ConfigHandler.replaceNotAvailable ? (ChatColor.WHITE + "Unknown command. Type \"/help\" for help.") :
+                (ChatColor.RED + "That command is not available."));
+    }
+
+
+
+    public static String capitalize(final String str) {
+        final int strLen = length(str);
+        if (strLen == 0) {
+            return str;
+        }
+
+        final int firstCodepoint = str.codePointAt(0);
+        final int newCodePoint = Character.toTitleCase(firstCodepoint);
+        if (firstCodepoint == newCodePoint) {
+            // already capitalized
+            return str;
+        }
+
+        final int[] newCodePoints = new int[strLen]; // cannot be longer than the char array
+        int outOffset = 0;
+        newCodePoints[outOffset++] = newCodePoint; // copy the first codepoint
+        for (int inOffset = Character.charCount(firstCodepoint); inOffset < strLen; ) {
+            final int codepoint = str.codePointAt(inOffset);
+            newCodePoints[outOffset++] = codepoint; // copy the remaining ones
+            inOffset += Character.charCount(codepoint);
+        }
+        return new String(newCodePoints, 0, outOffset);
+    }
+
+    public static int length(final CharSequence cs) {
+        return cs == null ? 0 : cs.length();
     }
 }

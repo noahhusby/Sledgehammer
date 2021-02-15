@@ -19,8 +19,7 @@
 package com.noahhusby.sledgehammer.commands.fragments.warps;
 
 import com.google.common.collect.Lists;
-import com.noahhusby.sledgehammer.chat.ChatConstants;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.permissions.PermissionHandler;
@@ -41,14 +40,13 @@ public class WarpRemoveFragment implements ICommandFragment {
                 run(sender, args, global);
                 return;
             }
-            sender.sendMessage(ChatConstants.noPermission);
+            sender.sendMessage(ChatUtil.getNoPermission());
         });
     }
 
     private void run(CommandSender sender, String[] args, boolean global) {
         if(args.length < 1) {
-            sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Usage: /" + ConfigHandler.warpCommand +
-                    " remove <name>", ChatColor.RED)));
+            sender.sendMessage(ChatUtil.combine(ChatColor.RED, String.format("Usage: /%s remove <name>", ConfigHandler.warpCommand)));
             return;
         }
 
@@ -66,7 +64,7 @@ public class WarpRemoveFragment implements ICommandFragment {
         }
 
         if(warps.isEmpty()) {
-            sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("Warp not found!", ChatColor.RED)));
+            sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "Warp not found!"));
             return;
         }
 
@@ -89,14 +87,14 @@ public class WarpRemoveFragment implements ICommandFragment {
         }
 
         if(showWarps) {
-            sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement("There are multiple warps with that name!", ChatColor.BLUE)));
-            for(int i = 0; i < warps.size(); i++)
-                sender.sendMessage(ChatHelper.makeTextComponent(new TextElement(i + ": ", ChatColor.RED),
-                        new TextElement(warps.get(i).getName(), ChatColor.BLUE), new TextElement(" - ", ChatColor.GRAY),
-                        new TextElement(warps.get(i).getServer(), ChatColor.YELLOW)));
-            sender.sendMessage(ChatHelper.makeTextComponent(new TextElement("Use '", ChatColor.GRAY),
-                    new TextElement("/" + ConfigHandler.warpCommand + " remove " + args[0], ChatColor.YELLOW),
-                    new TextElement(" <id>", ChatColor.RED), new TextElement("' to remove a specific warp!", ChatColor.GRAY)));
+            sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "There are multiple warps with that name!"));
+            for(int i = 0; i < warps.size(); i++) {
+                sender.sendMessage(ChatUtil.combine(ChatColor.RED, i + ": ", ChatColor.BLUE, warps.get(i).getName(),
+                        ChatColor.GRAY, " - ", ChatColor.YELLOW, warps.get(i).getServer()));
+            }
+            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY,  "Use ", ChatColor.YELLOW,
+                    String.format("/%s remove %s", ConfigHandler.warpCommand, args[0], ChatColor.RED,
+                            " <id>", ChatColor.GRAY, " to remove a specific warp!")));
             return;
         }
 

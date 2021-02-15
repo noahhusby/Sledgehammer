@@ -18,14 +18,16 @@
 
 package com.noahhusby.sledgehammer.commands.fragments;
 
+import com.google.common.collect.Maps;
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.data.Command;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public abstract class CommandFragmentManager extends Command {
 
@@ -35,98 +37,57 @@ public abstract class CommandFragmentManager extends Command {
 
     public CommandFragmentManager(String name, String node, String[] alias) {
         super(name, node, alias);
-        registerCommandFragment(new ICommandFragment() {
-            @Override
-            public void execute(CommandSender sender, String[] args) {
-                displayCommands(sender, args);
-            }
-
-            @Override
-            public String getName() {
-                return "help";
-            }
-
-            @Override
-            public String getPurpose() {
-                return "List all commands";
-            }
-
-            @Override
-            public String[] getArguments() {
-                return new String[]{"[page]"};
-            }
-        });
-
+        this.commandBase = String.format("%s", name);
     }
 
-    private final List<ICommandFragment> commandFragments = new ArrayList<>();
-    private String title = "";
-    private String commandBase = "";
+    private final Map<String, ICommandFragment> fragments = Maps.newHashMap();
+    private final String commandBase;
 
-    protected void registerCommandFragment(ICommandFragment c) {
-        commandFragments.add(c);
-    }
-
-    protected void setTitle(String t) {
-        this.title = " "+t;
-    }
-
-    protected void setCommandBase(String b) {
-        this.commandBase = "/"+b+" ";
+    protected void register(ICommandFragment c) {
+        fragments.put(c.getName(), c);
     }
 
     protected void executeFragment(CommandSender sender, String[] args) {
         if (args.length != 0) {
-            ArrayList<String> dataList = new ArrayList<>();
-            for (int x = 1; x < args.length; x++) dataList.add(args[x]);
+            ICommandFragment fragment = fragments.get(args[0].toLowerCase(Locale.ROOT));
+            if(fragment != null) {
+                ArrayList<String> dataList = new ArrayList<>();
+                for (int x = 1; x < args.length; x++) dataList.add(args[x]);
 
-            String[] data = dataList.toArray(new String[dataList.size()]);
-            for (ICommandFragment f : commandFragments) {
-                if (f.getName().equals(args[0].toLowerCase())) {
-                    f.execute(sender, data);
-                    return;
-                }
+                String[] data = dataList.toArray(new String[dataList.size()]);
+                fragment.execute(sender, data);
+                return;
             }
         }
-        displayCommands(sender, args);
+        displayCommands(sender);
     }
 
-    private void displayCommands(CommandSender sender, String[] args) {
-        int page = 1;
-        if(args != null) {
-            try {
-                page = Integer.parseInt(args[0]);
-            } catch (Exception e) { }
-            if(page > Math.ceil(commandFragments.size() / 7.0)) page = 1;
+    private void displayCommands(CommandSender sender) {
+        for(int i = 0; i < 2; i++) {
+            sender.sendMessage();
         }
 
-        sender.sendMessage(ChatHelper.makeTitleTextComponent(new TextElement(title + ":", ChatColor.GRAY)));
-        for(int xf = (page - 1) * 7; xf < Math.min(((page - 1) * 7) + 7, commandFragments.size()); xf++) {
-            ICommandFragment f = commandFragments.get(xf);
+        sender.sendMessage(ChatUtil.combine(ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH, "==============",
+                ChatColor.DARK_GREEN + "" + ChatColor.BLUE, " Sledgehammer ", ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH, "=============="));
+        sender.sendMessage(ChatUtil.combine(""));
 
-            TextComponent message = ChatHelper.makeTextComponent(new TextElement(commandBase, ChatColor.YELLOW));
-            message.addExtra(ChatHelper.makeTextComponent(new TextElement(f.getName() + " ", ChatColor.GREEN)));
+        for(ICommandFragment f : fragments.values()) {
+            TextComponent message = ChatUtil.combine(ChatColor.YELLOW, commandBase);
+            message.addExtra(ChatUtil.combine(ChatColor.GREEN, " ", f.getName(), " "));
             if(f.getArguments() != null) {
                 for(int x = 0; x < f.getArguments().length; x++) {
                     String argument = f.getArguments()[x];
                     if(argument.startsWith("<")) {
-                        message.addExtra(ChatHelper.makeTextComponent(new TextElement(argument + " ", ChatColor.RED)));
+                        message.addExtra(ChatUtil.combine(ChatColor.RED, argument + " "));
                     } else {
-                        message.addExtra(ChatHelper.makeTextComponent(new TextElement(argument + " ", ChatColor.GRAY)));
+                        message.addExtra(ChatUtil.combine(ChatColor.GRAY, argument + " "));
                     }
                 }
             }
-            message.addExtra(ChatHelper.makeTextComponent(new TextElement("- ", ChatColor.GRAY),
-                    new TextElement(f.getPurpose(), ChatColor.BLUE)));
-
+            message.addExtra(ChatUtil.combine(ChatColor.GRAY, "- ", ChatColor.BLUE, f.getPurpose()));
             sender.sendMessage(message);
         }
-
-        if(Math.ceil(commandFragments.size() / 7.0) < 2) return;
-
-        String end = page >= Math.ceil(commandFragments.size() / 7.0) ? "Use '" + commandBase + "help " + (page - 1) + "' to see the previous page."
-                : "Use '" + commandBase + "help " + (page + 1) + "' to see the next page.";
-        sender.sendMessage(ChatHelper.makeTextComponent(new TextElement(end, ChatColor.GOLD)));
+        sender.sendMessage(ChatUtil.combine(""));
+        sender.sendMessage(ChatUtil.combine(ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH, "========================================="));
     }
-
 }

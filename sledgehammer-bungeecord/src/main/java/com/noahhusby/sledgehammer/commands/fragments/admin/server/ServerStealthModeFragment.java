@@ -18,8 +18,7 @@
 
 package com.noahhusby.sledgehammer.commands.fragments.admin.server;
 
-import com.noahhusby.sledgehammer.chat.ChatConstants;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
@@ -32,12 +31,12 @@ public class ServerStealthModeFragment implements ICommandFragment {
     public void execute(CommandSender sender, String[] args) {
 
         if(ServerConfig.getInstance().getServer(args[0]) == null) {
-            sender.sendMessage(ChatConstants.notSledgehammerServer);
+            sender.sendMessage(ChatUtil.notSledgehammerServer);
             return;
         }
 
         if(args.length < 3) {
-            sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Usage: /sha server <server name> setstealth <true/false>", ChatColor.RED)));
+            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Usage: /sha server <server name> setstealth <true/false>"));
             return;
         }
 
@@ -46,9 +45,9 @@ public class ServerStealthModeFragment implements ICommandFragment {
             SledgehammerServer s = ServerConfig.getInstance().getServer(args[0]);
             s.setStealthMode(Boolean.parseBoolean(arg));
             ServerConfig.getInstance().pushServer(s);
-            sender.sendMessage(ChatConstants.getValueMessage("stealth", arg, s.getName()));
+            sender.sendMessage(ChatUtil.getValueMessage("stealth", arg, s.getName()));
         } else {
-            sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Usage: /sha server <server name> setstealth <true/false>", ChatColor.RED)));
+            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Usage: /sha server <server name> setstealth <true/false>"));
         }
 
     }

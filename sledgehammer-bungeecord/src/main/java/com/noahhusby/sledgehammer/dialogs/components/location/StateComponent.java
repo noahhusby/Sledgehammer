@@ -19,6 +19,7 @@
 package com.noahhusby.sledgehammer.dialogs.components.location;
 
 import com.noahhusby.sledgehammer.dialogs.components.DialogComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class StateComponent extends DialogComponent {
     @Override
@@ -32,7 +33,7 @@ public class StateComponent extends DialogComponent {
     }
 
     @Override
-    public TextElement[] getExplanation() {
+    public TextComponent getExplanation() {
         return null;
     }
 

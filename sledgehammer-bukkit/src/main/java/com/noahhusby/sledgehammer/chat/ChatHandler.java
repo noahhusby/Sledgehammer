@@ -1,6 +1,7 @@
 package com.noahhusby.sledgehammer.chat;
 
 import com.google.common.collect.Maps;
+import com.noahhusby.sledgehammer.Sledgehammer;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,6 +10,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 public class ChatHandler implements Listener {
     private static ChatHandler instance = null;
@@ -36,11 +38,13 @@ public class ChatHandler implements Listener {
     public void onChat(AsyncPlayerChatEvent e) {
         boolean cancel = entries.containsKey(e.getPlayer());
         if(!cancel) return;
-
         e.setCancelled(true);
-        boolean cancelled = e.getMessage().equalsIgnoreCase("cancel");
-        entries.get(e.getPlayer()).onResponse(!cancelled, e.getMessage());
-        entries.remove(e.getPlayer());
+
+        Sledgehammer.sledgehammer.getServer().getScheduler().scheduleSyncDelayedTask(Sledgehammer.sledgehammer, () -> {
+            boolean cancelled = e.getMessage().equalsIgnoreCase("cancel");
+            entries.get(e.getPlayer()).onResponse(!cancelled, e.getMessage());
+            entries.remove(e.getPlayer());
+        });
     }
 
     @EventHandler

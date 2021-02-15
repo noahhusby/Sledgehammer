@@ -18,51 +18,51 @@
 
 package com.noahhusby.sledgehammer.commands.fragments.admin.server;
 
-import com.noahhusby.sledgehammer.chat.ChatConstants;
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.ServerConfig;
 import com.noahhusby.sledgehammer.datasets.Location;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 
 import java.util.List;
+import java.util.Locale;
 
 public class ServerListLocationFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
 
         if(ServerConfig.getInstance().getServer(args[0]) == null) {
-            sender.sendMessage(ChatConstants.notSledgehammerServer);
+            sender.sendMessage(ChatUtil.notSledgehammerServer);
             return;
         }
 
         if(!ServerConfig.getInstance().getServer(args[0]).isEarthServer()) {
-            sender.sendMessage(ChatConstants.notEarthServer);
+            sender.sendMessage(ChatUtil.notEarthServer);
             return;
         }
 
         List<Location> locations = ServerConfig.getInstance().getLocationsFromServer(args[0]);
         if(locations == null) {
-            sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("No locations were found on that server!", ChatColor.GRAY)));
+            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "No locations were found on that server!"));
             return;
         }
 
         if(locations.isEmpty()) {
-            sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("No locations were found on that server!", ChatColor.GRAY)));
+            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "No locations were found on that server!"));
             return;
         }
 
-        sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Locations for ", ChatColor.GRAY),
-                new TextElement(args[0].toLowerCase(), ChatColor.BLUE), new TextElement(":", ChatColor.GRAY)));
+        sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Locations for ",
+                ChatColor.BLUE, args[0].toLowerCase(Locale.ROOT), ChatColor.GRAY, ":"));
         for(Location l : locations) {
             String x = "";
-            if(!l.city.equals("")) x+= ChatHelper.capitalize(l.city)+", ";
-            if(!l.county.equals("")) x+= ChatHelper.capitalize(l.county)+", ";
-            if(!l.state.equals("")) x+= ChatHelper.capitalize(l.state)+", ";
-            if(!l.country.equals("")) x+= ChatHelper.capitalize(l.country);
-            sender.sendMessage(ChatHelper.makeTextComponent(new TextElement(ChatHelper.capitalize(l.detailType.name())+" - ", ChatColor.RED),
-                    new TextElement(x, ChatColor.GOLD)));
+            if(!l.city.equals("")) x+= ChatUtil.capitalize(l.city)+", ";
+            if(!l.county.equals("")) x+= ChatUtil.capitalize(l.county)+", ";
+            if(!l.state.equals("")) x+= ChatUtil.capitalize(l.state)+", ";
+            if(!l.country.equals("")) x+= ChatUtil.capitalize(l.country);
+            sender.sendMessage(ChatUtil.combine(ChatColor.RED, ChatUtil.capitalize(l.detailType.name()) + " - ",
+                    ChatColor.GOLD, x));
         }
     }
 

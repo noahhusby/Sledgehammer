@@ -18,8 +18,8 @@
 
 package com.noahhusby.sledgehammer.commands.fragments.admin;
 
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -37,16 +37,16 @@ public class PermissionCheckFragment implements ICommandFragment {
         }
 
         if(p == null) {
-            sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement(args[0], ChatColor.RED),
-                    new TextElement(" could not be found on the network!", ChatColor.DARK_RED)));
+            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, args[0], ChatColor.DARK_RED, " could not be found on the network!"));
             return;
         }
 
-        sender.sendMessage(ChatHelper.makeAdminTextComponent(new TextElement("Permissions for ", ChatColor.GRAY),
-                new TextElement(p.getName(), ChatColor.BLUE)));
+        sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Permissions for ", ChatColor.BLUE, p.getName()));
 
         for(String s : p.getPermissions()) {
-            if(s.contains("sledgehammer")) sender.sendMessage(ChatHelper.makeTextComponent(new TextElement(s, ChatColor.GOLD)));
+            if(s.contains("sledgehammer")) {
+                sender.sendMessage(ChatUtil.combine(ChatColor.GOLD, s));
+            }
         }
     }
 

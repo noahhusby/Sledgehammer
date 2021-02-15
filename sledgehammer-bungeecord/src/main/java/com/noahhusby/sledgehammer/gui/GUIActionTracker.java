@@ -19,28 +19,11 @@
 package com.noahhusby.sledgehammer.gui;
 
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@AllArgsConstructor
 public class GUIActionTracker {
-    private final SledgehammerPlayer player;
-    private final String salt;
-    public GUIActionTracker(SledgehammerPlayer player, String salt) {
-        this.player = player;
-        this.salt = salt;
-    }
-
-    /**
-     * Gets player assigned to action tracker
-     * @return {@link SledgehammerPlayer}
-     */
-    public SledgehammerPlayer getPlayer() {
-        return player;
-    }
-
-    /**
-     * Gets the random salt code assigned to player
-     * @return Salt code
-     */
-    public String getSalt() {
-        return salt;
-    }
+    @Getter private final SledgehammerPlayer player;
+    @Getter private final String salt;
 }

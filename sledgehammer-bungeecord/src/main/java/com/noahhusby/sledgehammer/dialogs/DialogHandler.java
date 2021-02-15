@@ -19,9 +19,9 @@
 package com.noahhusby.sledgehammer.dialogs;
 
 import com.google.common.collect.Maps;
+import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.dialogs.scenes.IDialogScene;
-import com.noahhusby.sledgehammer.chat.ChatHelper;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -77,30 +77,30 @@ public class DialogHandler implements Listener {
         }
 
         if(error) {
-            s.getCommandSender().sendMessage(ChatHelper.makeTextComponent(new TextElement("Invalid entry!", ChatColor.RED)));
+            s.getCommandSender().sendMessage(ChatUtil.combine(ChatColor.RED, "Invalid entry!"));
             s.getCommandSender().sendMessage();
         }
 
         if(s.getTitle() != null) {
-            s.getCommandSender().sendMessage(ChatHelper.makeTextComponent(s.getTitle()));
+            s.getCommandSender().sendMessage(ChatUtil.combine(s.getTitle()));
         }
 
         if(s.getToolbar() != null) {
             Map<String, String> tools = s.getToolbar().getTools();
             for(Map.Entry<String, String> x : tools.entrySet()) {
-                s.getCommandSender().sendMessage(ChatHelper.makeTextComponent(new TextElement("Use ", ChatColor.GRAY),
-                        new TextElement(x.getKey(), ChatColor.BLUE), new TextElement(" to ", ChatColor.GRAY), new TextElement(x.getValue(), ChatColor.GRAY)));
+                s.getCommandSender().sendMessage(ChatUtil.combine(ChatColor.GRAY, "Use ", ChatColor.BLUE, x.getKey(),
+                        ChatColor.GRAY, " to ", x.getValue()));
             }
             s.getCommandSender().sendMessage();
         }
 
         if(s.isAdmin()) {
-            s.getCommandSender().sendMessage(ChatHelper.makeAdminTextComponent(new TextElement(s.getCurrentComponent().getPrompt(), ChatColor.YELLOW)));
+            s.getCommandSender().sendMessage(ChatUtil.adminAndCombine(ChatColor.YELLOW, s.getCurrentComponent().getPrompt()));
         } else {
-            s.getCommandSender().sendMessage(ChatHelper.makeTitleTextComponent(new TextElement(s.getCurrentComponent().getPrompt(), ChatColor.YELLOW)));
+            s.getCommandSender().sendMessage(ChatUtil.titleAndCombine(ChatColor.YELLOW, s.getCurrentComponent().getPrompt()));
         }
         if(s.getCurrentComponent().getExplanation() != null) {
-            s.getCommandSender().sendMessage(ChatHelper.makeTextComponent(s.getCurrentComponent().getExplanation()));
+            s.getCommandSender().sendMessage(ChatUtil.combine(s.getCurrentComponent().getExplanation()));
         }
     }
 
