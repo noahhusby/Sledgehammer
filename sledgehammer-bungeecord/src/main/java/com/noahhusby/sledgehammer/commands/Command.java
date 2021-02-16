@@ -16,7 +16,7 @@
  *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
-package com.noahhusby.sledgehammer.commands.data;
+package com.noahhusby.sledgehammer.commands;
 
 import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
 import com.noahhusby.sledgehammer.permissions.PermissionHandler;
@@ -71,7 +71,6 @@ public abstract class Command extends net.md_5.bungee.api.plugin.Command {
     public boolean isAdmin(CommandSender sender) {
         return PermissionHandler.getInstance().isAdmin(sender);
     }
-
 
     protected SledgehammerNetworkManager getNetworkManager() {
         return SledgehammerNetworkManager.getInstance();

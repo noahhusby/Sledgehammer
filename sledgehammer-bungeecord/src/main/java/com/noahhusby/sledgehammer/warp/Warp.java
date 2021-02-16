@@ -25,6 +25,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.json.simple.JSONObject;
 
+import java.util.function.BiConsumer;
+
 public class Warp {
 
     @Expose
@@ -46,7 +48,7 @@ public class Warp {
     @SerializedName("Id")
     @Getter @Setter private int id;
 
-    @Getter @Setter private WarpResponse response;
+    @Getter @Setter private BiConsumer<Boolean, Warp> response;
 
     public Warp() {
         this(-1, "", new Point(), "", PinnedMode.NONE, "");

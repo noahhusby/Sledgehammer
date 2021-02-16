@@ -19,7 +19,6 @@
 package com.noahhusby.sledgehammer.commands;
 
 import com.noahhusby.sledgehammer.ChatUtil;
-import com.noahhusby.sledgehammer.commands.data.Command;
 import net.md_5.bungee.api.CommandSender;
 
 public class SledgehammerCommand extends Command {

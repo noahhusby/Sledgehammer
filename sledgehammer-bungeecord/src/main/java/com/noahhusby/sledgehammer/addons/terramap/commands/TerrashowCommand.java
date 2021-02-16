@@ -9,12 +9,11 @@ import com.noahhusby.sledgehammer.addons.terramap.TerramapAddon;
 import com.noahhusby.sledgehammer.addons.terramap.TerramapVersion;
 import com.noahhusby.sledgehammer.addons.terramap.TerramapVersion.ReleaseType;
 import com.noahhusby.sledgehammer.addons.terramap.commands.TranslationContextBuilder.TranslationContext;
-import com.noahhusby.sledgehammer.commands.data.Command;
+import com.noahhusby.sledgehammer.commands.Command;
 import com.noahhusby.sledgehammer.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.players.PlayerManager;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

@@ -18,7 +18,7 @@
 
 package com.noahhusby.sledgehammer.commands.fragments.warps;
 
-import com.noahhusby.sledgehammer.commands.data.Command;
+import com.noahhusby.sledgehammer.commands.Command;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import net.md_5.bungee.api.CommandSender;
 

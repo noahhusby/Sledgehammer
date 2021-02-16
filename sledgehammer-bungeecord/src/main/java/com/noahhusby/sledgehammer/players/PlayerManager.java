@@ -34,11 +34,10 @@ import net.md_5.bungee.event.EventPriority;
 import java.util.*;
 
 public class PlayerManager implements Listener {
-    private static PlayerManager mInstance = null;
+    private static PlayerManager instance = null;
 
     public static PlayerManager getInstance() {
-        if(mInstance == null) mInstance = new PlayerManager();
-        return mInstance;
+        return instance == null ? instance = new PlayerManager() : instance;
     }
 
     @Getter private final Map<UUID, SledgehammerPlayer> players = Maps.newHashMap();
@@ -62,7 +61,6 @@ public class PlayerManager implements Listener {
      * @param p {@link ProxiedPlayer}
      */
     private SledgehammerPlayer onPlayerJoin(ProxiedPlayer p) {
-        players.remove(p.getUniqueId());
         SledgehammerPlayer newPlayer = new SledgehammerPlayer(p);
 
         Attribute attribute = null;
@@ -110,7 +108,6 @@ public class PlayerManager implements Listener {
         }
 
         attributes.save(true);
-
         players.remove(player.getUniqueId());
     }
 

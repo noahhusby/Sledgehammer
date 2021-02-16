@@ -25,6 +25,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.noahhusby.sledgehammer.addons.AddonManager;
 import com.noahhusby.sledgehammer.addons.terramap.TerramapAddon;
 import com.noahhusby.sledgehammer.commands.BorderCommand;
@@ -40,6 +41,7 @@ import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.players.FlaggedBorderCheckerThread;
 import com.noahhusby.sledgehammer.players.BorderCheckerThread;
 
+import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -50,9 +52,9 @@ import net.md_5.bungee.event.EventPriority;
 public class Sledgehammer extends Plugin implements Listener {
     public static Logger logger;
     public static Sledgehammer sledgehammer;
-    public static AddonManager addonManager;
+    public final ScheduledThreadPoolExecutor alternativeThreads = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(16, new ThreadFactoryBuilder().setNameFormat("sledgehammer-general-%d").build());
 
-    public final ScheduledThreadPoolExecutor alternativeThreads = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(2);
+    @Getter private static AddonManager addonManager;
 
     @Override
     public void onEnable() {
@@ -60,7 +62,7 @@ public class Sledgehammer extends Plugin implements Listener {
         logger = getLogger();
         alternativeThreads.setRemoveOnCancelPolicy(true);
 
-        ProxyServer.getInstance().getPluginManager().registerListener(this, this);
+        addListener(this);
         ConfigHandler.getInstance().init(getDataFolder());
         registerFromConfig();
     }

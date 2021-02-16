@@ -35,11 +35,10 @@ import net.md_5.bungee.event.EventPriority;
 import java.util.Map;
 
 public class DialogHandler implements Listener {
-    private static DialogHandler mInstance = null;
+    private static DialogHandler instance = null;
 
     public static DialogHandler getInstance() {
-        if(mInstance == null) mInstance = new DialogHandler();
-        return mInstance;
+        return instance == null ? instance = new DialogHandler() : instance;
     }
 
     private DialogHandler() {

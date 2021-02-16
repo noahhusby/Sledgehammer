@@ -44,13 +44,13 @@ import org.json.simple.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 public class WarpHandler {
     private static WarpHandler instance;
 
     public static WarpHandler getInstance() {
-        if(instance == null) instance = new WarpHandler();
-        return instance;
+        return instance == null ? instance = new WarpHandler() : instance;
     }
 
     public StorageList<Warp> warps = new StorageList<>(Warp.class);
@@ -102,12 +102,12 @@ public class WarpHandler {
      * Requests a new warp that should be created
      * @param warpName The name of the warp
      * @param sender The command sender
-     * @param response The warp response
+     * @param consumer The warp response
      */
-    public void requestNewWarp(String warpName, CommandSender sender, WarpResponse response) {
+    public void requestNewWarp(String warpName, CommandSender sender, BiConsumer<Boolean, Warp> consumer) {
         Warp warp = new Warp();
         warp.setName(warpName);
-        warp.setResponse(response);
+        warp.setResponse(consumer);
         requestedWarps.put(sender, warp);
         SledgehammerNetworkManager.getInstance().send(new P2SSetwarpPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName()));
 
@@ -162,7 +162,7 @@ public class WarpHandler {
             warps.save(true);
 
             if(warp.getResponse() != null) {
-                warp.getResponse().onResponse(true, warp);
+                warp.getResponse().accept(true, warp);
             } else {
                 player.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Created warp ", ChatColor.RED, warp.getName(), " on ",
                         ChatColor.RED, warp.getServer()));
