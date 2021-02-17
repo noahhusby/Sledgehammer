@@ -343,3 +343,4 @@ Sledgehammer [Bungeecord]\.idea/sonarlint
 
 
 # End of https://www.gitignore.io/api/c++,java,linux,macos,gradle,windows,visualstudiocode
+/bungeecord/src/main/java/com/noahhusby/sledgehammer/proxy/btenet/
