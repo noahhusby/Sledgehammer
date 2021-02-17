@@ -1,27 +1,21 @@
 package com.noahhusby.sledgehammer.network.S2P;
 
+import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.Constants;
-import com.noahhusby.sledgehammer.network.IS2PPacket;
 import com.noahhusby.sledgehammer.network.PacketInfo;
+import com.noahhusby.sledgehammer.network.S2PPacket;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
 
-public class S2PWarpConfigPacket implements IS2PPacket {
+@RequiredArgsConstructor
+@AllArgsConstructor
+public class S2PWarpConfigPacket extends S2PPacket {
     private final ProxyConfigAction action;
     private final Player player;
     private final String salt;
-    private final JSONObject data;
-
-    public S2PWarpConfigPacket(ProxyConfigAction action, Player player, String salt) {
-        this(action, player, salt, new JSONObject());
-    }
-
-    public S2PWarpConfigPacket(ProxyConfigAction action, Player player, String salt, JSONObject data) {
-        this.action = action;
-        this.player = player;
-        this.salt = salt;
-        this.data = data;
-    }
+    private JsonObject data = new JsonObject();
 
     @Override
     public String getPacketID() {
@@ -29,11 +23,10 @@ public class S2PWarpConfigPacket implements IS2PPacket {
     }
 
     @Override
-    public JSONObject getMessage(JSONObject data) {
-        data.put("salt", salt);
-        data.put("action", action.name());
-        data.put("data", this.data);
-        return data;
+    public void getMessage(JsonObject data) {
+        data.addProperty("salt", salt);
+        data.addProperty("action", action.name());
+        data.add("data", this.data);
     }
 
     @Override

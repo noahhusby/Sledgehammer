@@ -18,14 +18,18 @@
 
 package com.noahhusby.sledgehammer.network;
 
+import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.Sledgehammer;
 
-public abstract class P2SPacket implements IP2SPacket {
-    public SledgehammerNetworkManager getManager() {
-        return SledgehammerNetworkManager.getInstance();
+public abstract class P2SPacket {
+    public NetworkHandler getManager() {
+        return NetworkHandler.getInstance();
     }
 
     protected void throwNoSender() {
-        Sledgehammer.logger.warning("The task manager attempted to execute a task without an available sender.");
+        Sledgehammer.getLogger().warning("The task manager attempted to execute a task without an available sender.");
     }
+
+    public abstract String getPacketID();
+    public abstract void onMessage(PacketInfo info, JsonObject data);
 }

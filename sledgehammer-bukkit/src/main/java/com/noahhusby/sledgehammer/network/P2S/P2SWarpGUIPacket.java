@@ -18,6 +18,7 @@
 
 package com.noahhusby.sledgehammer.network.P2S;
 
+import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SmartObject;
 import com.noahhusby.sledgehammer.data.warp.WarpPayload;
@@ -37,7 +38,7 @@ public class P2SWarpGUIPacket extends P2SPacket {
     }
 
     @Override
-    public void onMessage(PacketInfo info, SmartObject data) {
+    public void onMessage(PacketInfo info, JsonObject data) {
         Player p = Bukkit.getPlayer(info.getSender());
         if(p == null) {
             throwNoSender();

@@ -19,8 +19,9 @@
 package com.noahhusby.sledgehammer.players;
 
 import com.google.common.collect.Maps;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.noahhusby.sledgehammer.network.S2P.S2PPlayerUpdatePacket;
-import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
+import com.noahhusby.sledgehammer.network.NetworkHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -39,21 +40,19 @@ public class PlayerManager {
     }
 
     private PlayerManager() {
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(new PlayerLocationUpdate(), 0, 100, TimeUnit.MILLISECONDS);
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("sledgehammer-location-%d").build());
+        executor.scheduleAtFixedRate(new PlayerLocationUpdate(), 0, 250, TimeUnit.MILLISECONDS);
     }
 
-    private class PlayerLocationUpdate implements Runnable {
-
+    private static class PlayerLocationUpdate implements Runnable {
         Map<UUID, Location> lastLocation = Maps.newHashMap();
-
         @Override
         public void run() {
             for(Player p : Bukkit.getOnlinePlayers()) {
                 Location last = lastLocation.get(p.getUniqueId());
-                if(last == null || !last.equals(p.getLocation()))
-                    SledgehammerNetworkManager.getInstance().send(new S2PPlayerUpdatePacket(p));
-
+                if(last == null || !last.equals(p.getLocation())) {
+                    NetworkHandler.getInstance().send(new S2PPlayerUpdatePacket(p));
+                }
                 lastLocation.put(p.getUniqueId(), p.getLocation());
             }
         }

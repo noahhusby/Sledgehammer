@@ -11,6 +11,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.function.BiConsumer;
 
 public class ChatHandler implements Listener {
     private static ChatHandler instance = null;
@@ -18,12 +19,12 @@ public class ChatHandler implements Listener {
         return instance == null ? instance = new ChatHandler() : instance;
     }
 
-    private Map<Player, ChatResponse> entries = Maps.newHashMap();
+    private final Map<Player, BiConsumer<Boolean, String>> entries = Maps.newHashMap();
 
-    public void startEntry(Player player, String message, ChatResponse response) {
+    public void startEntry(Player player, String message, BiConsumer<Boolean, String> consumer) {
         entries.remove(player);
 
-        entries.put(player, response);
+        entries.put(player, consumer);
         for(int i = 0; i < 18; i++) {
             player.sendMessage();
         }
@@ -42,7 +43,7 @@ public class ChatHandler implements Listener {
 
         Sledgehammer.sledgehammer.getServer().getScheduler().scheduleSyncDelayedTask(Sledgehammer.sledgehammer, () -> {
             boolean cancelled = e.getMessage().equalsIgnoreCase("cancel");
-            entries.get(e.getPlayer()).onResponse(!cancelled, e.getMessage());
+            entries.get(e.getPlayer()).accept(!cancelled, e.getMessage());
             entries.remove(e.getPlayer());
         });
     }

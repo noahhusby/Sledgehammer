@@ -18,7 +18,10 @@
 
 package com.noahhusby.sledgehammer;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import dev.dbassett.skullcreator.SkullCreator;
+import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -28,7 +31,12 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+@UtilityClass
 public class SledgehammerUtil {
+
+    public static final Gson GSON = new Gson();
+    public static final JsonParser parser = new JsonParser();
+
     public static Player getPlayerFromName(String name) {
         return Bukkit.getServer().getPlayer(name);
     }
