@@ -18,11 +18,13 @@
 
 package com.noahhusby.sledgehammer.gui;
 
+import com.google.common.collect.Maps;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class GUIHandler {
     private static GUIHandler instance = null;
@@ -30,7 +32,7 @@ public class GUIHandler {
         return instance == null ? instance = new GUIHandler() : instance;
     }
 
-    private final List<GUIActionTracker> trackers = new ArrayList<>();
+    private final Map<SledgehammerPlayer, String> guiTrackers = Maps.newHashMap();
 
     /**
      * Track a new player with random code
@@ -38,10 +40,8 @@ public class GUIHandler {
      * @return Salt code
      */
     public String track(SledgehammerPlayer player) {
-        trackers.removeIf(t -> t.getPlayer().getUniqueId().equals(player.getUniqueId()));
         String salt = SledgehammerUtil.getSaltString();
-
-        trackers.add(new GUIActionTracker(player, salt));
+        guiTrackers.put(player, salt);
         return salt;
     }
 
@@ -52,9 +52,9 @@ public class GUIHandler {
      * @return True if valid, false if not
      */
     public boolean validateRequest(SledgehammerPlayer player, String salt) {
-        for(GUIActionTracker g : trackers)
-            if(g.getPlayer().getUniqueId().equals(player.getUniqueId()) && g.getSalt().equals(salt)) return true;
-        return false;
+        String storedSalt = guiTrackers.get(player);
+        if(storedSalt == null) return false;
+        return storedSalt.equals(salt);
     }
 
     /**
@@ -62,6 +62,6 @@ public class GUIHandler {
      * @param player {@link SledgehammerPlayer}
      */
     public void invalidate(SledgehammerPlayer player) {
-        trackers.removeIf(t -> t.getPlayer().getUniqueId().equals(player.getUniqueId()));
+        guiTrackers.remove(player);
     }
 }

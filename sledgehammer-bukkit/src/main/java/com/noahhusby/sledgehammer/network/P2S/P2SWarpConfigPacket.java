@@ -9,12 +9,12 @@ import com.noahhusby.sledgehammer.data.warp.WarpGroup;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
 import com.noahhusby.sledgehammer.gui.inventories.warp.config.ConfigMenuController;
 import com.noahhusby.sledgehammer.gui.inventories.warp.config.confirmation.ConfirmationController;
-import com.noahhusby.sledgehammer.network.IP2SPacket;
+import com.noahhusby.sledgehammer.network.P2SPacket;
 import com.noahhusby.sledgehammer.network.PacketInfo;
 import org.bukkit.Bukkit;
 import org.json.simple.JSONObject;
 
-public class P2SWarpConfigPacket implements IP2SPacket {
+public class P2SWarpConfigPacket extends P2SPacket {
     @Override
     public String getPacketID() {
         return Constants.warpConfigID;

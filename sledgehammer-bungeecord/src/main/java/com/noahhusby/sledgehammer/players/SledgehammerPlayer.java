@@ -23,7 +23,7 @@ import com.google.common.collect.Maps;
 import com.noahhusby.sledgehammer.addons.terramap.TerramapAddon;
 import com.noahhusby.sledgehammer.addons.terramap.TerramapVersion;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
-import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.ServerHandler;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.datasets.Point;
 import net.md_5.bungee.api.*;
@@ -328,7 +328,7 @@ public class SledgehammerPlayer implements ProxiedPlayer {
     public boolean onEarthServer() {
     	Server playerServer = getServer();
     	if(playerServer == null) return false;
-        SledgehammerServer server = ServerConfig.getInstance().getServer(playerServer.getInfo().getName());
+        SledgehammerServer server = ServerHandler.getInstance().getServer(playerServer.getInfo().getName());
         if(server == null) return false;
         return server.isEarthServer();
     }
@@ -338,7 +338,7 @@ public class SledgehammerPlayer implements ProxiedPlayer {
      * @return {@link SledgehammerServer}
      */
     public SledgehammerServer getSledgehammerServer() {
-        return ServerConfig.getInstance().getServer(getServer().getInfo().getName());
+        return ServerHandler.getInstance().getServer(getServer().getInfo().getName());
     }
     
     /**

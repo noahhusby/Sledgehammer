@@ -19,7 +19,7 @@
 package com.noahhusby.sledgehammer.dialogs.scenes.setup;
 
 import com.noahhusby.sledgehammer.ChatUtil;
-import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.ServerHandler;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.dialogs.components.setup.EarthServerComponent;
 import com.noahhusby.sledgehammer.dialogs.components.setup.EditComponent;
@@ -48,7 +48,7 @@ public class ConfigScene extends DialogScene {
         this.server = server;
         this.increase = increase;
         if(server == null) {
-            this.server = ServerConfig.getInstance().getBungeeServers().get(0);
+            this.server = ServerHandler.getInstance().getBungeeServers().get(0);
         }
         registerComponent(new EditComponent());
         registerComponent(new SledgehammerServerComponent());
@@ -59,7 +59,7 @@ public class ConfigScene extends DialogScene {
     public void onInitialization() {
         if(increase) {
             increase = false;
-            LinkedList<ServerInfo> servers = ServerConfig.getInstance().getBungeeServers();
+            LinkedList<ServerInfo> servers = ServerHandler.getInstance().getBungeeServers();
 
             DialogHandler.getInstance().discardDialog(this);
 
@@ -74,12 +74,12 @@ public class ConfigScene extends DialogScene {
 
     @Override
     public void onFinish() {
-        SledgehammerServer s = ServerConfig.getInstance().getServer(server.getName());
+        SledgehammerServer s = ServerHandler.getInstance().getServer(server.getName());
 
         if(s == null) s = new SledgehammerServer(server.getName());
 
         s.setEarthServer(true);
-        ServerConfig.getInstance().pushServer(s);
+        ServerHandler.getInstance().pushServer(s);
 
         DialogHandler.getInstance().discardDialog(this);
         DialogHandler.getInstance().startDialog(getCommandSender(), new LocationConfigScene(server));
@@ -107,7 +107,7 @@ public class ConfigScene extends DialogScene {
 
     @Override
     public TextComponent getTitle() {
-        List<ServerInfo> servers = ServerConfig.getInstance().getBungeeServers();
+        List<ServerInfo> servers = ServerHandler.getInstance().getBungeeServers();
         ServerInfo currentServer = this.server;
 
         return ChatUtil.combine(ChatColor.GRAY, "Server ", ChatColor.GREEN, String.valueOf(indexOf(currentServer) + 1),
@@ -124,7 +124,7 @@ public class ConfigScene extends DialogScene {
             } else if (response.equals("no") || response.equals("n")) {
                 DialogHandler.getInstance().discardDialog(this);
 
-                List<ServerInfo> servers = ServerConfig.getInstance().getBungeeServers();
+                List<ServerInfo> servers = ServerHandler.getInstance().getBungeeServers();
                 ServerInfo currentServer = this.server;
 
                 if (indexOf(currentServer) + 2 > servers.size()) {
@@ -142,10 +142,10 @@ public class ConfigScene extends DialogScene {
             } else if (response.equals("no") || response.equals("n")) {
                 DialogHandler.getInstance().discardDialog(this);
 
-                SledgehammerServer s = ServerConfig.getInstance().getServer(server.getName());
+                SledgehammerServer s = ServerHandler.getInstance().getServer(server.getName());
                 if(s == null) s = new SledgehammerServer(server.getName());
                 s.setEarthServer(false);
-                ServerConfig.getInstance().pushServer(s);
+                ServerHandler.getInstance().pushServer(s);
 
                 DialogHandler.getInstance().startDialog(sender, new ConfigScene(server, true));
             }
@@ -156,8 +156,8 @@ public class ConfigScene extends DialogScene {
             } else if (response.equals("no") || response.equals("n")) {
                 DialogHandler.getInstance().discardDialog(this);
 
-                SledgehammerServer s = ServerConfig.getInstance().getServer(server.getName());
-                if(s != null) ServerConfig.getInstance().removeServer(s);
+                SledgehammerServer s = ServerHandler.getInstance().getServer(server.getName());
+                if(s != null) ServerHandler.getInstance().removeServer(s);
 
                 DialogHandler.getInstance().startDialog(sender, new ConfigScene(server, true));
             }
@@ -165,8 +165,8 @@ public class ConfigScene extends DialogScene {
     }
 
     private int indexOf(ServerInfo info) {
-        for(int x = 0; x < ServerConfig.getInstance().getBungeeServers().size(); x++) {
-            if(ServerConfig.getInstance().getBungeeServers().get(x).getName().equalsIgnoreCase(info.getName())) return x;
+        for(int x = 0; x < ServerHandler.getInstance().getBungeeServers().size(); x++) {
+            if(ServerHandler.getInstance().getBungeeServers().get(x).getName().equalsIgnoreCase(info.getName())) return x;
         }
 
         return -1;

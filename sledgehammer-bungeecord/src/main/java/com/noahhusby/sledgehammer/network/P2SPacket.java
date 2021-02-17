@@ -18,13 +18,13 @@
 
 package com.noahhusby.sledgehammer.network;
 
-import org.json.simple.JSONObject;
+import com.google.gson.JsonObject;
 
 public abstract class P2SPacket {
     public abstract String getPacketID();
-    public abstract JSONObject getMessage(JSONObject data);
+    public abstract void getMessage(JsonObject data);
     public abstract PacketInfo getPacketInfo();
-    public SledgehammerNetworkManager getManager() {
-        return SledgehammerNetworkManager.getInstance();
+    public NetworkHandler getManager() {
+        return NetworkHandler.getInstance();
     }
 }

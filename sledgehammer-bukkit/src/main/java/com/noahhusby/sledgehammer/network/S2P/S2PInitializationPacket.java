@@ -18,19 +18,18 @@
 
 package com.noahhusby.sledgehammer.network.S2P;
 
+import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.network.PacketInfo;
 import com.noahhusby.sledgehammer.network.S2PPacket;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
 
+@RequiredArgsConstructor
 public class S2PInitializationPacket extends S2PPacket {
 
     private final Player player;
-
-    public S2PInitializationPacket(Player player) {
-        this.player = player;
-    }
 
     @Override
     public String getPacketID() {
@@ -38,9 +37,8 @@ public class S2PInitializationPacket extends S2PPacket {
     }
 
     @Override
-    public JSONObject getMessage(JSONObject data) {
-        data.put("version", Constants.VERSION);
-        return data;
+    public void getMessage(JsonObject data) {
+        data.addProperty("version", Constants.VERSION);
     }
 
     @Override

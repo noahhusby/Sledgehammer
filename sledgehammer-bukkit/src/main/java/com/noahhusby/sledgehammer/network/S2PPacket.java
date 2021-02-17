@@ -18,8 +18,14 @@
 
 package com.noahhusby.sledgehammer.network;
 
-public abstract class S2PPacket implements IS2PPacket {
-    public SledgehammerNetworkManager getManager() {
-        return SledgehammerNetworkManager.getInstance();
+import com.google.gson.JsonObject;
+
+public abstract class S2PPacket {
+    public NetworkHandler getManager() {
+        return NetworkHandler.getInstance();
     }
+
+    public abstract String getPacketID();
+    public abstract void getMessage(JsonObject data);
+    public abstract PacketInfo getPacketInfo();
 }

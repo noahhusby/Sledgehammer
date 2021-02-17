@@ -18,23 +18,23 @@
 
 package com.noahhusby.sledgehammer.network.S2P;
 
+import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.Constants;
+import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.data.location.Point;
 import com.noahhusby.sledgehammer.network.PacketInfo;
 import com.noahhusby.sledgehammer.network.S2PPacket;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
+@RequiredArgsConstructor
 public class S2PPlayerUpdatePacket extends S2PPacket {
 
     private final Player player;
-
-    public S2PPlayerUpdatePacket(Player player) {
-        this.player = player;
-    }
 
     @Override
     public String getPacketID() {
@@ -42,17 +42,15 @@ public class S2PPlayerUpdatePacket extends S2PPacket {
     }
 
     @Override
-    public JSONObject getMessage(JSONObject data) {
+    public void getMessage(JsonObject data) {
         DecimalFormat df = new DecimalFormat("#.###");
         df.setRoundingMode(RoundingMode.DOWN);
-
         Point point = new Point(df.format(player.getLocation().getX()),
                 df.format(player.getLocation().getY()), df.format(player.getLocation().getZ()),
                 df.format(player.getLocation().getPitch()), df.format(player.getLocation().getYaw()));
 
-        data.put("point", point.getJSON());
-        data.put("gameMode", player.getGameMode().name());
-        return data;
+        data.add("point", SledgehammerUtil.GSON.toJsonTree(point));
+        data.addProperty("gameMode", player.getGameMode().name());
     }
 
     @Override

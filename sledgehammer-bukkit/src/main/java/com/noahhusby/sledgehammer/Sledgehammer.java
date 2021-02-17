@@ -20,34 +20,39 @@ package com.noahhusby.sledgehammer;
 
 import com.noahhusby.sledgehammer.chat.ChatHandler;
 import com.noahhusby.sledgehammer.eventhandler.ServerEventHandler;
-import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
+import com.noahhusby.sledgehammer.network.NetworkHandler;
 import com.noahhusby.sledgehammer.players.PlayerManager;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
 
 public final class Sledgehammer extends JavaPlugin implements Listener {
 
-    public static Logger logger;
-    public static Plugin sledgehammer;
+    @Getter private static Logger logger;
+    @Getter private static Sledgehammer instance;
     public static String bungeecordName = "";
 
     @Override
     public void onEnable() {
-        logger = getLogger();
-        sledgehammer = this;
+        logger = ((JavaPlugin) this).getLogger();
+        instance = this;
 
         Bukkit.getServer().getPluginManager().registerEvents(ChatHandler.getInstance(), this);
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
         Bukkit.getServer().getPluginManager().registerEvents(new ServerEventHandler(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(SledgehammerNetworkManager.getInstance(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(NetworkHandler.getInstance(), this);
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "sledgehammer:channel");
-        getServer().getMessenger().registerIncomingPluginChannel( this, "sledgehammer:channel", SledgehammerNetworkManager.getInstance());
+        getServer().getMessenger().registerIncomingPluginChannel( this, "sledgehammer:channel", NetworkHandler.getInstance());
 
         PlayerManager.getInstance();
+    }
+
+    @Override
+    public void onDisable() {
+        instance = null;
     }
 }

@@ -18,20 +18,17 @@
 
 package com.noahhusby.sledgehammer.network.P2S;
 
+import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.network.P2SPacket;
 import com.noahhusby.sledgehammer.network.PacketInfo;
-import org.json.simple.JSONObject;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class P2SSetwarpPacket extends P2SPacket {
 
     private final String server;
     private final String sender;
-
-    public P2SSetwarpPacket(String sender, String server) {
-        this.server = server;
-        this.sender = sender;
-    }
 
     @Override
     public String getPacketID() {
@@ -39,9 +36,7 @@ public class P2SSetwarpPacket extends P2SPacket {
     }
 
     @Override
-    public JSONObject getMessage(JSONObject data) {
-        return data;
-    }
+    public void getMessage(JsonObject data) { }
 
     @Override
     public PacketInfo getPacketInfo() {

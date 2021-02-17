@@ -20,7 +20,7 @@ package com.noahhusby.sledgehammer.commands.fragments.admin.server;
 
 import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.ServerHandler;
 import com.noahhusby.sledgehammer.datasets.Location;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -32,17 +32,17 @@ public class ServerListLocationFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
 
-        if(ServerConfig.getInstance().getServer(args[0]) == null) {
+        if(ServerHandler.getInstance().getServer(args[0]) == null) {
             sender.sendMessage(ChatUtil.notSledgehammerServer);
             return;
         }
 
-        if(!ServerConfig.getInstance().getServer(args[0]).isEarthServer()) {
+        if(!ServerHandler.getInstance().getServer(args[0]).isEarthServer()) {
             sender.sendMessage(ChatUtil.notEarthServer);
             return;
         }
 
-        List<Location> locations = ServerConfig.getInstance().getLocationsFromServer(args[0]);
+        List<Location> locations = ServerHandler.getInstance().getLocationsFromServer(args[0]);
         if(locations == null) {
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "No locations were found on that server!"));
             return;

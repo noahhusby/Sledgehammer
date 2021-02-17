@@ -3,8 +3,11 @@ package com.noahhusby.sledgehammer;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 @UtilityClass
 public class ChatUtil {
@@ -100,7 +103,9 @@ public class ChatUtil {
                 (ChatColor.RED + "That command is not available."));
     }
 
-
+    public static void sendActionBar(ProxiedPlayer player, BaseComponent message) {
+        player.sendMessage(ChatMessageType.ACTION_BAR, message);
+    }
 
     public static String capitalize(final String str) {
         final int strLen = length(str);

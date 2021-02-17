@@ -19,7 +19,7 @@
 package com.noahhusby.sledgehammer.dialogs.scenes.setup;
 
 import com.noahhusby.sledgehammer.ChatUtil;
-import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.ServerHandler;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.dialogs.components.location.LocationRemovalComponent;
 import com.noahhusby.sledgehammer.dialogs.scenes.DialogScene;
@@ -49,15 +49,15 @@ public class LocationRemovalScene extends DialogScene {
 
     @Override
     public void onFinish() {
-        List<Location> locations = ServerConfig.getInstance().getLocationsFromServer(server.getName());
-        List<Location> newLocations = ServerConfig.getInstance().getLocationsFromServer(server.getName());
+        List<Location> locations = ServerHandler.getInstance().getLocationsFromServer(server.getName());
+        List<Location> newLocations = ServerHandler.getInstance().getLocationsFromServer(server.getName());
         Location l = locations.get(Integer.parseInt(getValue("locationremove").trim()));
         newLocations.remove(l);
 
-        SledgehammerServer s = ServerConfig.getInstance().getServer(server.getName());
+        SledgehammerServer s = ServerHandler.getInstance().getServer(server.getName());
         s.setLocations(newLocations);
 
-        ServerConfig.getInstance().pushServer(s);
+        ServerHandler.getInstance().pushServer(s);
         if(scene != null) {
             DialogHandler.getInstance().discardDialog(this);
             DialogHandler.getInstance().startDialog(getCommandSender(), scene);

@@ -20,7 +20,7 @@ package com.noahhusby.sledgehammer.commands.fragments.admin.server;
 
 import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.ServerHandler;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -39,10 +39,10 @@ public class ServerSetFriendlyFragment implements ICommandFragment {
             name.append(" ").append(args[i]);
         }
 
-        SledgehammerServer s = ServerConfig.getInstance().getServer(args[0]);
+        SledgehammerServer s = ServerHandler.getInstance().getServer(args[0]);
         s.setFriendlyName(name.toString());
 
-        ServerConfig.getInstance().pushServer(s);
+        ServerHandler.getInstance().pushServer(s);
 
         sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Changed name of ", ChatColor.BLUE,
                 s.getName(), ChatColor.GRAY, " to ", ChatColor.YELLOW, name.toString()));

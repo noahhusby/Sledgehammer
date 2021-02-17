@@ -20,7 +20,6 @@ package com.noahhusby.sledgehammer.commands;
 
 import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
-import com.noahhusby.sledgehammer.commands.data.Command;
 import com.noahhusby.sledgehammer.network.P2S.P2SCommandPacket;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

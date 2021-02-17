@@ -18,24 +18,19 @@
 
 package com.noahhusby.sledgehammer.network.P2S;
 
+import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.network.P2SPacket;
 import com.noahhusby.sledgehammer.network.PacketInfo;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
-import org.json.simple.JSONObject;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class P2SPermissionPacket extends P2SPacket {
     private final String server;
-    private final String salt;
     private final SledgehammerPlayer player;
     private final String permission;
-
-    public P2SPermissionPacket(String server, SledgehammerPlayer player, String permission, String salt) {
-        this.salt = salt;
-        this.player = player;
-        this.server = server;
-        this.permission = permission;
-    }
+    private final String salt;
 
     @Override
     public String getPacketID() {
@@ -43,11 +38,10 @@ public class P2SPermissionPacket extends P2SPacket {
     }
 
     @Override
-    public JSONObject getMessage(JSONObject data) {
-        data.put("salt", salt);
-        data.put("player", player.getName());
-        data.put("permission", permission);
-        return data;
+    public void getMessage(JsonObject data) {
+        data.addProperty("salt", salt);
+        data.addProperty("player", player.getName());
+        data.addProperty("permission", permission);
     }
 
     @Override

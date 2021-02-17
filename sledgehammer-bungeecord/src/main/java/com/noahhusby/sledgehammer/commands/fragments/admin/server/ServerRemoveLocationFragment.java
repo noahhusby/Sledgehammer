@@ -20,7 +20,7 @@ package com.noahhusby.sledgehammer.commands.fragments.admin.server;
 
 import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.ServerHandler;
 import com.noahhusby.sledgehammer.dialogs.scenes.setup.LocationRemovalScene;
 import com.noahhusby.sledgehammer.dialogs.DialogHandler;
 import net.md_5.bungee.api.CommandSender;
@@ -31,12 +31,12 @@ public class ServerRemoveLocationFragment implements ICommandFragment {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(ServerConfig.getInstance().getServer(args[0]) == null) {
+        if(ServerHandler.getInstance().getServer(args[0]) == null) {
             sender.sendMessage(ChatUtil.notSledgehammerServer);
             return;
         }
 
-        if(!ServerConfig.getInstance().getServer(args[0]).isEarthServer()) {
+        if(!ServerHandler.getInstance().getServer(args[0]).isEarthServer()) {
             sender.sendMessage(ChatUtil.notEarthServer);
             return;
         }

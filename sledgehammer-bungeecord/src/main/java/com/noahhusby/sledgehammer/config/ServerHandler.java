@@ -18,12 +18,13 @@
 
 package com.noahhusby.sledgehammer.config;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.noahhusby.lib.data.storage.StorageList;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.datasets.Location;
 import com.noahhusby.sledgehammer.network.P2S.P2SInitializationPacket;
-import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
+import com.noahhusby.sledgehammer.network.NetworkHandler;
 import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -31,36 +32,37 @@ import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-public class ServerConfig implements Listener {
-    private static ServerConfig instance;
+public class ServerHandler implements Listener {
+    private static ServerHandler instance;
 
-    public static ServerConfig getInstance() {
-        if(instance == null) instance = new ServerConfig();
-        return instance;
+    public static ServerHandler getInstance() {
+        return instance == null ? instance = new ServerHandler() : instance;
     }
+
+    @Getter private Map<String, SledgehammerServer> serverCache = Maps.newHashMap();
 
     @Getter private final StorageList<SledgehammerServer> servers = new StorageList<>(SledgehammerServer.class);
     @Getter private final StorageList<ServerGroup> groups = new StorageList<>(ServerGroup.class);
     private final Map<String, String> initialized = Maps.newHashMap();
 
-    private ServerConfig() {
+    private ServerHandler() {
         Sledgehammer.addListener(this);
+        Sledgehammer.sledgehammer.getGeneralThreads().scheduleAtFixedRate(this::updateCache, 0, 5, TimeUnit.SECONDS);
     }
 
     /**
      * Initialize a sledgehammer server
      * @param serverInfo {@link ServerInfo}
-     * @param data Incoming data from init packet
+     * @param version Version of initialized server
      */
-    public void initialize(ServerInfo serverInfo, JSONObject data) {
-        String version = (String) data.get("version");
+    public void initialize(ServerInfo serverInfo, String version) {
         String name = serverInfo.getName();
 
         SledgehammerServer s = getServer(name);
@@ -116,11 +118,7 @@ public class ServerConfig implements Listener {
      * @return {@link SledgehammerServer}
      */
     public SledgehammerServer getServer(String name) {
-        for(SledgehammerServer s : servers) {
-            if(s.getName().equalsIgnoreCase(name)) return s;
-        }
-
-        return null;
+        return serverCache.get(name);
     }
 
     /**
@@ -129,10 +127,8 @@ public class ServerConfig implements Listener {
      * @return {@link ArrayList<Location>}
      */
     public List<Location> getLocationsFromServer(String server) {
-        for(SledgehammerServer s : servers)
-            if(s.getName().equalsIgnoreCase(server)) return s.getLocations();
-
-        return null;
+        SledgehammerServer sledgehammerServer = serverCache.get(server);
+        return sledgehammerServer == null ? null : sledgehammerServer.getLocations();
     }
 
     /**
@@ -143,12 +139,20 @@ public class ServerConfig implements Listener {
         return initialized;
     }
 
+    private void updateCache() {
+        Map<String, SledgehammerServer> tempServerCache = Maps.newHashMap();
+        for(SledgehammerServer s : servers) {
+            tempServerCache.put(s.getName(), s);
+        }
+        this.serverCache = ImmutableMap.copyOf(tempServerCache);
+    }
+
     /**
      * Sends initialization packet on join
      * @param e {@link net.md_5.bungee.api.event.ServerConnectedEvent}
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onServerJoin(ServerConnectedEvent e) {
-        SledgehammerNetworkManager.getInstance().send(new P2SInitializationPacket(e.getPlayer().getName(), e.getServer().getInfo().getName()));
+        NetworkHandler.getInstance().send(new P2SInitializationPacket(e.getPlayer().getName(), e.getServer().getInfo().getName()));
     }
 }

@@ -22,7 +22,7 @@ import com.noahhusby.lib.data.JsonUtils;
 import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.ServerHandler;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.datasets.Location;
 import com.noahhusby.sledgehammer.dialogs.scenes.location.*;
@@ -43,12 +43,12 @@ public class ServerAddLocationFragment implements ICommandFragment {
             return;
         }
 
-        if(ServerConfig.getInstance().getServer(args[0]) == null) {
+        if(ServerHandler.getInstance().getServer(args[0]) == null) {
             sender.sendMessage(ChatUtil.notSledgehammerServer);
             return;
         }
 
-        if(!ServerConfig.getInstance().getServer(args[0]).isEarthServer()) {
+        if(!ServerHandler.getInstance().getServer(args[0]).isEarthServer()) {
             sender.sendMessage(ChatUtil.notEarthServer);
             return;
         }
@@ -75,15 +75,15 @@ public class ServerAddLocationFragment implements ICommandFragment {
             } catch (IOException ignored) { }
 
             if(validJson) {
-                Location l = SledgehammerUtil.JsonUtils.gson.fromJson(arg, Location.class);
+                Location l = SledgehammerUtil.GSON.fromJson(arg, Location.class);
                 if(l == null) {
                     sender.sendMessage(ChatColor.RED + "Unable to parse json location! Please try again.");
                     return;
                 }
 
-                SledgehammerServer s = ServerConfig.getInstance().getServer(args[0]);
+                SledgehammerServer s = ServerHandler.getInstance().getServer(args[0]);
                 s.getLocations().add(l);
-                ServerConfig.getInstance().pushServer(s);
+                ServerHandler.getInstance().pushServer(s);
 
                 String x = "";
                 if(!l.city.equals("")) x+= ChatUtil.capitalize(l.city)+", ";

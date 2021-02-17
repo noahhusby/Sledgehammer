@@ -20,7 +20,7 @@ package com.noahhusby.sledgehammer;
 
 import com.google.gson.Gson;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
-import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.ServerHandler;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.datasets.projection.GeographicProjection;
@@ -31,10 +31,6 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import org.apache.commons.lang3.Validate;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,6 +38,8 @@ import java.util.List;
 import java.util.Random;
 
 public class SledgehammerUtil {
+
+    public static final Gson GSON = new Gson();
 
     private static final GeographicProjection projection = new ModifiedAirocean();
     private static final GeographicProjection uprightProj = GeographicProjection.orientProjection(projection, GeographicProjection.Orientation.upright);
@@ -121,7 +119,7 @@ public class SledgehammerUtil {
      * @return True if the Bungeecord server is a Sledgehammer server, False if not
      */
     public static boolean isSledgehammerServer(ServerInfo server) {
-        for(SledgehammerServer s : ServerConfig.getInstance().getServers()) {
+        for(SledgehammerServer s : ServerHandler.getInstance().getServers()) {
             if(s.getServerInfo() == null) continue;
             if(s.getServerInfo().equals(server)) return true;
         }
@@ -135,7 +133,7 @@ public class SledgehammerUtil {
      * @deprecated As of release 0.4, replaced by {@link #isSledgehammerServer(ServerInfo)}
      */
     @Deprecated public static boolean isSledgehammerServer(String name) {
-        for(SledgehammerServer s : ServerConfig.getInstance().getServers()) {
+        for(SledgehammerServer s : ServerHandler.getInstance().getServers()) {
             if(s.getName().equals(name)) return true;
         }
         return false;
@@ -237,50 +235,5 @@ public class SledgehammerUtil {
             return false;
         }
         return string.regionMatches(true, 0, prefix, 0, prefix.length());
-    }
-
-    public static class JsonUtils {
-        public static Gson gson = new Gson();
-        public static JSONObject toObject(String s) {
-            try {
-                return (JSONObject) new JSONParser().parse(s);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        public static JSONArray toArray(Object o) {
-            return toArray((String) o);
-        }
-
-        public static JSONArray toArray(String s) {
-            try {
-                return (JSONArray) new JSONParser().parse(s);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        public static int fromBoolean(boolean b) {
-            return b ? 1 : 0;
-        }
-
-        public static boolean fromBooleanValue(long l) {
-            return new Long(l).intValue() != 0;
-        }
-
-        public static int toInt(Object val) {
-            int x = 0;
-            if(val instanceof Long) {
-                x = ((Long) val).intValue();
-            } else if(val instanceof Double) {
-                x = ((Double) val).intValue();
-            } else {
-                x = (int) val;
-            }
-            return x;
-        }
     }
 }

@@ -19,11 +19,10 @@
 package com.noahhusby.sledgehammer.datasets;
 
 import com.google.gson.annotations.Expose;
-import org.json.simple.JSONObject;
 
 public class Location {
     @Expose
-    public detail detailType;
+    public Detail detailType;
     @Expose
     public String city = "";
     @Expose
@@ -35,7 +34,7 @@ public class Location {
 
     public Location() {}
 
-    public Location(detail detailType, String city, String county, String state, String country) {
+    public Location(Detail detailType, String city, String county, String state, String country) {
         this.detailType = detailType;
         if(city != null) this.city = city.toLowerCase();
         if(county != null) this.county = county.toLowerCase();
@@ -43,16 +42,25 @@ public class Location {
         if(country != null) this.country = country.toLowerCase();
     }
 
-    public JSONObject save(JSONObject data) {
-        data.put("detailType", detailType.name());
-        data.put("city", city);
-        data.put("county", county);
-        data.put("state", state);
-        data.put("country", country);
-        return data;
+    public boolean compare(Location location, Detail detail) {
+        switch (detail) {
+            case city:
+                return location.city.equalsIgnoreCase(city) && (location.state.equalsIgnoreCase(state) || location.country.equalsIgnoreCase(country));
+            case county:
+                if (!country.equals("")) {
+                    return location.county.equalsIgnoreCase(county) && location.state.equalsIgnoreCase(state) && location.country.equalsIgnoreCase(country);
+                } else {
+                    return location.county.equalsIgnoreCase(county) && location.state.equalsIgnoreCase(state);
+                }
+            case state:
+                return location.state.equalsIgnoreCase(state) && location.country.equalsIgnoreCase(country);
+            case country:
+                return location.country.equalsIgnoreCase(country);
+        }
+        return false;
     }
 
-    public enum detail {
+    public enum Detail {
         none, city, county, state, country
     }
 }

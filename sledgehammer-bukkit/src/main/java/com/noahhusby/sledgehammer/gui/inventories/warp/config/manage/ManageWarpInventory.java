@@ -1,7 +1,6 @@
 package com.noahhusby.sledgehammer.gui.inventories.warp.config.manage;
 
 import com.noahhusby.sledgehammer.Constants;
-import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.chat.ChatHandler;
 import com.noahhusby.sledgehammer.data.location.Point;
@@ -12,20 +11,16 @@ import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
 import com.noahhusby.sledgehammer.gui.inventories.warp.config.ManageGroupInventoryController;
 import com.noahhusby.sledgehammer.gui.inventories.warp.config.confirmation.ConfirmationController;
 import com.noahhusby.sledgehammer.network.S2P.S2PWarpConfigPacket;
-import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
-import org.bukkit.Bukkit;
+import com.noahhusby.sledgehammer.network.NetworkHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.Server;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 public class ManageWarpInventory extends GUIChild {
 
@@ -152,7 +147,7 @@ public class ManageWarpInventory extends GUIChild {
                     String.valueOf(player.getLocation().getYaw()));
             data.put("point", point.getJSON());
 
-            SledgehammerNetworkManager.getInstance().send(new S2PWarpConfigPacket(
+            NetworkHandler.getInstance().send(new S2PWarpConfigPacket(
                     S2PWarpConfigPacket.ProxyConfigAction.WARP_UPDATE_LOCATION,
                     getPlayer(), payload.getSalt(), data));
         }
@@ -192,13 +187,13 @@ public class ManageWarpInventory extends GUIChild {
             JSONObject data = new JSONObject();
             data.put("warpId", cur.getId());
 
-            SledgehammerNetworkManager.getInstance().send(new S2PWarpConfigPacket(
+            NetworkHandler.getInstance().send(new S2PWarpConfigPacket(
                     S2PWarpConfigPacket.ProxyConfigAction.REMOVE_WARP,
                     getPlayer(), payload.getSalt(), data));
         }
 
         if(e.getSlot() == 26) {
-            SledgehammerNetworkManager.getInstance().send(
+            NetworkHandler.getInstance().send(
                     new S2PWarpConfigPacket(S2PWarpConfigPacket.ProxyConfigAction.UPDATE_WARP, getPlayer(),
                             ((ManageWarpInventoryController) controller).getPayload().getSalt(), cur.toJson()));
             GUIRegistry.register(new ConfirmationController(getPlayer(), payload, ConfirmationController.Type.HEAD_UPDATE));

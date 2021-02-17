@@ -23,7 +23,7 @@ import com.noahhusby.sledgehammer.commands.WarpCommand;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.network.P2S.P2SWarpGUIPacket;
-import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
+import com.noahhusby.sledgehammer.network.NetworkHandler;
 import com.noahhusby.sledgehammer.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.permissions.PermissionRequest;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
@@ -45,7 +45,7 @@ public class WarpMenuFragment implements ICommandFragment {
         }
 
         PermissionHandler.getInstance().check(SledgehammerPlayer.getPlayer(sender), "sledgehammer.warp.edit", (code, global) -> {
-            SledgehammerNetworkManager.getInstance().send(new P2SWarpGUIPacket(sender.getName(),
+            NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(),
                     SledgehammerUtil.getServerFromSender(sender).getName(), code == PermissionRequest.PermissionCode.PERMISSION));
         });
     }

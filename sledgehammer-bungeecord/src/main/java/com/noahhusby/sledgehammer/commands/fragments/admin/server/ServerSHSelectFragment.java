@@ -20,7 +20,7 @@ package com.noahhusby.sledgehammer.commands.fragments.admin.server;
 
 import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.ServerHandler;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -34,13 +34,13 @@ public class ServerSHSelectFragment implements ICommandFragment {
         } else {
             String arg = args[2].toLowerCase();
             if(arg.equals("true") || arg.equals("false")) {
-                SledgehammerServer s = ServerConfig.getInstance().getServer(args[0]);
+                SledgehammerServer s = ServerHandler.getInstance().getServer(args[0]);
 
                 if(!Boolean.parseBoolean(arg)) {
-                    ServerConfig.getInstance().removeServer(s);
+                    ServerHandler.getInstance().removeServer(s);
                 } else {
                     if(s == null) s = new SledgehammerServer(args[0]);
-                    ServerConfig.getInstance().pushServer(s);
+                    ServerHandler.getInstance().pushServer(s);
                 }
 
                 sender.sendMessage(ChatUtil.getValueMessage("runs_sledgehammer", arg, s.getName()));

@@ -18,22 +18,21 @@
 
 package com.noahhusby.sledgehammer.network.S2P;
 
+import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.Constants;
+import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.data.location.Point;
 import com.noahhusby.sledgehammer.network.PacketInfo;
 import com.noahhusby.sledgehammer.network.S2PPacket;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
 
+@RequiredArgsConstructor
 public class S2PSetwarpPacket extends S2PPacket {
 
     private final PacketInfo info;
-    private Point point;
-
-    public S2PSetwarpPacket(PacketInfo info) {
-        this.info = info;
-    }
 
     @Override
     public String getPacketID() {
@@ -41,17 +40,12 @@ public class S2PSetwarpPacket extends S2PPacket {
     }
 
     @Override
-    public JSONObject getMessage(JSONObject data) {
+    public void getMessage(JsonObject data) {
         Player p = Bukkit.getPlayer(info.getSender());
-        if(p == null) return null;
-        if(!p.isOnline()) return null;
-
-        point = new Point(String.valueOf(p.getLocation().getX()), String.valueOf(p.getLocation().getY()), String.valueOf(p.getLocation().getZ()),
-                String.valueOf(p.getLocation().getPitch()), String.valueOf(p.getLocation().getYaw()));
-
-        data.put("point", point.getJSON());
-
-        return data;
+        if(p == null) return;
+        if(!p.isOnline()) return;
+        Point point = new Point(String.valueOf(p.getLocation().getX()), String.valueOf(p.getLocation().getY()), String.valueOf(p.getLocation().getZ()), String.valueOf(p.getLocation().getPitch()), String.valueOf(p.getLocation().getYaw()));
+        data.add("point", SledgehammerUtil.GSON.toJsonTree(point));
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.noahhusby.sledgehammer.data.warp.WarpConfigPayload;
 import com.noahhusby.sledgehammer.gui.inventories.anvil.AnvilChild;
 import com.noahhusby.sledgehammer.gui.inventories.general.GUIRegistry;
 import com.noahhusby.sledgehammer.network.S2P.S2PWarpConfigPacket;
-import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
+import com.noahhusby.sledgehammer.network.NetworkHandler;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -56,7 +56,7 @@ public class WarpNameEntryAnvil extends AnvilChild {
                 } else {
                     JSONObject data = new JSONObject();
                     data.put("warpName", getText());
-                    SledgehammerNetworkManager.getInstance().send(new S2PWarpConfigPacket(
+                    NetworkHandler.getInstance().send(new S2PWarpConfigPacket(
                             S2PWarpConfigPacket.ProxyConfigAction.CREATE_WARP, getController().getPlayer(), payload.getSalt(),
                             data));
                 }

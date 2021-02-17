@@ -18,12 +18,15 @@
 
 package com.noahhusby.sledgehammer.warp;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.datasets.Point;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.simple.JSONObject;
+
+import java.util.function.BiConsumer;
 
 public class Warp {
 
@@ -46,7 +49,7 @@ public class Warp {
     @SerializedName("Id")
     @Getter @Setter private int id;
 
-    @Getter @Setter private WarpResponse response;
+    @Getter @Setter private BiConsumer<Boolean, Warp> response;
 
     public Warp() {
         this(-1, "", new Point(), "", PinnedMode.NONE, "");
@@ -61,20 +64,14 @@ public class Warp {
         this.headID = headID;
     }
 
-    public JSONObject save(JSONObject data) {
-        data.put("Id", id);
-        data.put("Name", name);
-        data.put("Server", server);
-        data.put("Pinned", pinned.name());
-        data.put("Point", point.getJSON().toJSONString());
-        data.put("HeadId", headID);
-        return data;
+    public JsonObject toJson() {
+        return SledgehammerUtil.GSON.toJsonTree(this).getAsJsonObject();
     }
 
-    public JSONObject toWaypoint() {
-        JSONObject data = save(new JSONObject());
-        data.remove("Point");
-        return data;
+    public JsonObject toWaypoint() {
+        JsonObject obj = toJson();
+        obj.remove("point");
+        return obj;
     }
 
     public enum PinnedMode {

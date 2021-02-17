@@ -20,7 +20,7 @@ package com.noahhusby.sledgehammer.commands.fragments.admin.groups;
 
 import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.ServerHandler;
 import com.noahhusby.sledgehammer.config.ServerGroup;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -36,7 +36,7 @@ public class GroupInfoFragment implements ICommandFragment {
         String gn = args[0];
         ServerGroup group = null;
 
-        for(ServerGroup g : ServerConfig.getInstance().getGroups())
+        for(ServerGroup g : ServerHandler.getInstance().getGroups())
             if(g.getID().equalsIgnoreCase(gn)) group = g;
 
         if(group == null) {

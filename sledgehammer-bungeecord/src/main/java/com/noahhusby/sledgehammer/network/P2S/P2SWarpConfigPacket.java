@@ -18,31 +18,24 @@
 
 package com.noahhusby.sledgehammer.network.P2S;
 
+import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.gui.GUIHandler;
 import com.noahhusby.sledgehammer.network.P2SPacket;
 import com.noahhusby.sledgehammer.network.PacketInfo;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
-import org.json.simple.JSONObject;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class P2SWarpConfigPacket extends P2SPacket {
 
     private final SledgehammerPlayer player;
     private final ServerConfigAction action;
-    private final JSONObject data;
     private final boolean admin;
-
-    public P2SWarpConfigPacket(SledgehammerPlayer player, ServerConfigAction action, boolean admin) {
-        this(player, action, admin, new JSONObject());
-    }
-
-    public P2SWarpConfigPacket(SledgehammerPlayer player, ServerConfigAction action, boolean admin, JSONObject data) {
-        this.player = player;
-        this.action = action;
-        this.data = data;
-        this.admin = admin;
-    }
+    private JsonObject data = new JsonObject();
 
     @Override
     public String getPacketID() {
@@ -50,12 +43,11 @@ public class P2SWarpConfigPacket extends P2SPacket {
     }
 
     @Override
-    public JSONObject getMessage(JSONObject data) {
+    public void getMessage(JsonObject data) {
         data = WarpHandler.getInstance().generateConfigPayload(player, admin);
-        data.put("salt", GUIHandler.getInstance().track(player));
-        data.put("action", action.name());
-        data.put("data", this.data);
-        return data;
+        data.addProperty("salt", GUIHandler.getInstance().track(player));
+        data.addProperty("action", action.name());
+        data.add("data", this.data);
     }
 
     @Override

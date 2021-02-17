@@ -20,7 +20,6 @@ package com.noahhusby.sledgehammer.commands;
 
 import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
-import com.noahhusby.sledgehammer.commands.data.Command;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.network.P2S.P2SLocationPacket;
 import com.noahhusby.sledgehammer.permissions.PermissionHandler;
@@ -170,7 +169,7 @@ public class TpllCommand extends Command {
         SledgehammerPlayer player = SledgehammerPlayer.getPlayer(sender);
         if(player != null) {
             if(player.getAttributes().containsKey("TPLL_FAILS")) {
-                int x = SledgehammerUtil.JsonUtils.toInt(player.getAttributes().get("TPLL_FAILS"));
+                int x = ((Long) player.getAttributes().get("TPLL_FAILS")).intValue();
                 if(x == 3) {
                     player.getAttributes().put("TPLL_FAILS", 0);
 

@@ -130,7 +130,7 @@ public class ConfigHandler {
      * Reloads all data/data fields. Called upon startup or reload
      */
     public void loadData() {
-        Storage serverData = ServerConfig.getInstance().getServers();
+        Storage serverData = ServerHandler.getInstance().getServers();
         serverData.clearHandlers();
         if(serverData.getComparator() instanceof CutComparator)
             serverData.setComparator(new ValueComparator("Name"));
@@ -145,7 +145,7 @@ public class ConfigHandler {
         if(attributeData.getComparator() instanceof CutComparator)
             attributeData.setComparator(new ValueComparator("UUID"));
 
-        Storage serverGroups = ServerConfig.getInstance().getGroups();
+        Storage serverGroups = ServerHandler.getInstance().getGroups();
         serverGroups.clearHandlers();
         if(serverGroups.getComparator() instanceof CutComparator)
             serverGroups.setComparator(new ValueComparator("Id"));
@@ -317,7 +317,7 @@ public class ConfigHandler {
         attributeData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
         serverGroups.setAutoLoad(autoLoad, TimeUnit.SECONDS);
 
-        Sledgehammer.sledgehammer.alternativeThreads.schedule(() -> {
+        Sledgehammer.sledgehammer.getGeneralThreads().schedule(() -> {
             serverData.load(true);
             warpData.load(true);
             attributeData.load(true);
@@ -346,8 +346,8 @@ public class ConfigHandler {
      * Migrates the data from local storage to databases
      */
     public void migrate() {
-        ServerConfig.getInstance().getServers().migrate(0);
-        ServerConfig.getInstance().getGroups().migrate(0);
+        ServerHandler.getInstance().getServers().migrate(0);
+        ServerHandler.getInstance().getGroups().migrate(0);
         WarpHandler.getInstance().getWarps().migrate(0);
         PlayerManager.getInstance().getAttributes().migrate(0);
     }

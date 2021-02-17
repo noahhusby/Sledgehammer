@@ -18,11 +18,11 @@
 
 package com.noahhusby.sledgehammer.network.P2S;
 
+import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.network.P2SPacket;
 import com.noahhusby.sledgehammer.network.PacketInfo;
-import org.json.simple.JSONObject;
 
 public class P2STestLocationPacket extends P2SPacket {
     private final String server;
@@ -41,9 +41,8 @@ public class P2STestLocationPacket extends P2SPacket {
     }
 
     @Override
-    public JSONObject getMessage(JSONObject data) {
-        data.put("zoom", zoom);
-        return data;
+    public void getMessage(JsonObject data) {
+        data.addProperty("zoom", zoom);
     }
 
     @Override

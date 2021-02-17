@@ -18,15 +18,15 @@
 
 package com.noahhusby.sledgehammer.network.S2P;
 
+import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
-import com.noahhusby.sledgehammer.SmartObject;
 import com.noahhusby.sledgehammer.gui.GUIHandler;
 import com.noahhusby.sledgehammer.network.P2S.P2STeleportPacket;
 import com.noahhusby.sledgehammer.network.PacketInfo;
 import com.noahhusby.sledgehammer.network.S2PPacket;
-import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
+import com.noahhusby.sledgehammer.network.NetworkHandler;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.warp.Warp;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
@@ -39,14 +39,13 @@ public class S2PWarpPacket extends S2PPacket {
     }
 
     @Override
-    public void onMessage(PacketInfo info, SmartObject data) {
+    public void onMessage(PacketInfo info, JsonObject data) {
 
-        if(!GUIHandler.getInstance().validateRequest(
-                SledgehammerPlayer.getPlayer(info.getSender()), data.getString("salt"))) return;
+        if(!GUIHandler.getInstance().validateRequest(SledgehammerPlayer.getPlayer(info.getSender()), data.get("salt").getAsString())) return;
 
         SledgehammerPlayer player = SledgehammerPlayer.getPlayer(info.getSender());
         if(player == null) return;
-        int warpId = SledgehammerUtil.JsonUtils.toInt(data.get("warpId"));
+        int warpId = data.get("warpId").getAsInt();
 
         Warp warp = null;
         for(Warp w : WarpHandler.getInstance().getWarps())
@@ -63,6 +62,6 @@ public class S2PWarpPacket extends S2PPacket {
         }
 
         player.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Warping to ", ChatColor.RED, warp.getName()));
-        SledgehammerNetworkManager.getInstance().send(new P2STeleportPacket(player.getName(), warp.getServer(), warp.getPoint()));
+        NetworkHandler.getInstance().send(new P2STeleportPacket(player.getName(), warp.getServer(), warp.getPoint()));
     }
 }
