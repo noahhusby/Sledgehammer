@@ -21,8 +21,6 @@ package com.noahhusby.sledgehammer.network.S2P;
 import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.Constants;
-import com.noahhusby.sledgehammer.SledgehammerUtil;
-import com.noahhusby.sledgehammer.SmartObject;
 import com.noahhusby.sledgehammer.datasets.Point;
 import com.noahhusby.sledgehammer.gui.GUIHandler;
 import com.noahhusby.sledgehammer.network.P2S.P2SWarpConfigPacket;
@@ -34,7 +32,6 @@ import com.noahhusby.sledgehammer.permissions.PermissionRequest;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.warp.Warp;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
-import org.json.simple.JSONObject;
 
 import java.text.DecimalFormat;
 
@@ -87,7 +84,7 @@ public class S2PWarpConfigPacket extends S2PPacket {
                 }
                 break;
             case UPDATE_WARP:
-                int warpId = SledgehammerUtil.JsonUtils.toInt(data.get("id"));
+                int warpId = data.get("id").getAsInt();
                 String name = data.get("name").getAsString();
                 String headId = data.get("headId").getAsString();
                 Warp.PinnedMode pin = Warp.PinnedMode.valueOf(data.get("pinned").getAsString());
@@ -131,8 +128,7 @@ public class S2PWarpConfigPacket extends S2PPacket {
                         g, response));
                 break;
             case REMOVE_WARP:
-                WarpHandler.getInstance().getWarps().remove(WarpHandler.getInstance().getWarp(
-                        SledgehammerUtil.JsonUtils.toInt(data.get("warpId"))));
+                WarpHandler.getInstance().getWarps().remove(WarpHandler.getInstance().getWarp(data.get("warpId").getAsInt()));
                 WarpHandler.getInstance().getWarps().save(true);
                 NetworkHandler.getInstance().send(new P2SWarpConfigPacket(player,
                         P2SWarpConfigPacket.ServerConfigAction.REMOVE_SUCCESSFUL, g));

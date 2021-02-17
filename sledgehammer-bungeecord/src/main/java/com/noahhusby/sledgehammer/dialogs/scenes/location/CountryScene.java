@@ -45,7 +45,7 @@ public class CountryScene extends DialogScene {
 
     @Override
     public void onFinish() {
-        Location l = new Location(Location.detail.country, "", "", "", getValue("country"));
+        Location l = new Location(Location.Detail.country, "", "", "", getValue("country"));
         SledgehammerServer s = ServerHandler.getInstance().getServer(server.getName());
 
         if(s == null) s = new SledgehammerServer(server.getName());

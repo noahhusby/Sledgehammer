@@ -32,7 +32,6 @@ import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -61,10 +60,9 @@ public class ServerHandler implements Listener {
     /**
      * Initialize a sledgehammer server
      * @param serverInfo {@link ServerInfo}
-     * @param data Incoming data from init packet
+     * @param version Version of initialized server
      */
-    public void initialize(ServerInfo serverInfo, JSONObject data) {
-        String version = (String) data.get("version");
+    public void initialize(ServerInfo serverInfo, String version) {
         String name = serverInfo.getName();
 
         SledgehammerServer s = getServer(name);

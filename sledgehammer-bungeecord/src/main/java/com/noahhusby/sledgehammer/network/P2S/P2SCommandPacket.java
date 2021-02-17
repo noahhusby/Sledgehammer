@@ -18,10 +18,10 @@
 
 package com.noahhusby.sledgehammer.network.P2S;
 
+import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.network.P2SPacket;
 import com.noahhusby.sledgehammer.network.PacketInfo;
-import org.json.simple.JSONObject;
 
 public class P2SCommandPacket extends P2SPacket {
 
@@ -41,15 +41,14 @@ public class P2SCommandPacket extends P2SPacket {
     }
 
     @Override
-    public JSONObject getMessage(JSONObject data) {
+    public void getMessage(JsonObject data) {
         StringBuilder a = new StringBuilder(args[0]);
 
         if(args.length > 1)
             for(int x = 1; x < args.length; x++)
                 a.append(" ").append(args[x]);
 
-        data.put("args", a.toString());
-        return data;
+        data.addProperty("args", a.toString());
     }
 
     @Override

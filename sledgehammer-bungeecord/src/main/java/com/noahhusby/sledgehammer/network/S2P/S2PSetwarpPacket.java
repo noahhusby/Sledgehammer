@@ -20,16 +20,11 @@ package com.noahhusby.sledgehammer.network.S2P;
 
 import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.Constants;
-import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
-import com.noahhusby.sledgehammer.SmartObject;
 import com.noahhusby.sledgehammer.datasets.Point;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
 import com.noahhusby.sledgehammer.network.PacketInfo;
 import com.noahhusby.sledgehammer.network.S2PPacket;
-import org.json.simple.JSONObject;
-
-import java.text.DecimalFormat;
 
 public class S2PSetwarpPacket extends S2PPacket {
     @Override

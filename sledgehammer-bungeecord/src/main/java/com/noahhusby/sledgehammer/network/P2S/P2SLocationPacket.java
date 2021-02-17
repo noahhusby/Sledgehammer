@@ -18,12 +18,12 @@
 
 package com.noahhusby.sledgehammer.network.P2S;
 
+import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.config.ServerHandler;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.network.P2SPacket;
 import com.noahhusby.sledgehammer.network.PacketInfo;
-import org.json.simple.JSONObject;
 
 public class P2SLocationPacket extends P2SPacket {
 
@@ -52,12 +52,11 @@ public class P2SLocationPacket extends P2SPacket {
     }
 
     @Override
-    public JSONObject getMessage(JSONObject data) {
-        data.put("lat", lat);
-        data.put("lon", lon);
-        data.put("xOffset", xOffset);
-        data.put("zOffset", zOffset);
-        return data;
+    public void getMessage(JsonObject data) {
+        data.addProperty("lat", lat);
+        data.addProperty("lon", lon);
+        data.addProperty("xOffset", xOffset);
+        data.addProperty("zOffset", zOffset);
     }
 
     @Override

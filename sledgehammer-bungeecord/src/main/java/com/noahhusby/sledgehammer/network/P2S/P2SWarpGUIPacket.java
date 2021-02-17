@@ -18,14 +18,18 @@
 
 package com.noahhusby.sledgehammer.network.P2S;
 
+import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.gui.GUIHandler;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
 import com.noahhusby.sledgehammer.network.P2SPacket;
 import com.noahhusby.sledgehammer.network.PacketInfo;
-import org.json.simple.JSONObject;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class P2SWarpGUIPacket extends P2SPacket {
 
     private final String server;
@@ -33,32 +37,20 @@ public class P2SWarpGUIPacket extends P2SPacket {
     private final boolean editAccess;
     private String group = null;
 
-    public P2SWarpGUIPacket(String sender, String server, boolean editAccess) {
-        this.server = server;
-        this.sender = sender;
-        this.editAccess = editAccess;
-    }
-
-    public P2SWarpGUIPacket(String sender, String server, boolean editAccess, String group) {
-        this(sender, server, editAccess);
-        this.group = group;
-    }
-
     @Override
     public String getPacketID() {
         return Constants.warpGUIID;
     }
 
     @Override
-    public JSONObject getMessage(JSONObject data) {
-        JSONObject payload = WarpHandler.getInstance().generateGUIPayload(SledgehammerPlayer.getPlayer(sender), editAccess);
+    public void getMessage(JsonObject data) {
+        data = WarpHandler.getInstance().generateGUIPayload(SledgehammerPlayer.getPlayer(sender), editAccess);
         if(group != null) {
-            payload.remove("requestGroup");
-            payload.put("requestGroup", group);
-            payload.put("defaultPage", "group");
+            data.remove("requestGroup");
+            data.addProperty("requestGroup", group);
+            data.addProperty("defaultPage", "group");
         }
-        payload.put("salt", GUIHandler.getInstance().track(SledgehammerPlayer.getPlayer(sender)));
-        return payload;
+        data.addProperty("salt", GUIHandler.getInstance().track(SledgehammerPlayer.getPlayer(sender)));
     }
 
     @Override

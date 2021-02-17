@@ -20,13 +20,11 @@ package com.noahhusby.sledgehammer.network.S2P;
 import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
-import com.noahhusby.sledgehammer.SmartObject;
 import com.noahhusby.sledgehammer.datasets.Point;
 import com.noahhusby.sledgehammer.network.PacketInfo;
 import com.noahhusby.sledgehammer.network.S2PPacket;
 import com.noahhusby.sledgehammer.players.GameMode;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
-import org.json.simple.JSONObject;
 
 public class S2PPlayerUpdatePacket extends S2PPacket {
     @Override

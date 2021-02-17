@@ -19,14 +19,13 @@
 package com.noahhusby.sledgehammer.datasets;
 
 import com.google.common.collect.Maps;
+import com.google.gson.JsonObject;
+import com.noahhusby.lib.data.JsonUtils;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
 import com.noahhusby.sledgehammer.config.ServerHandler;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import net.md_5.bungee.api.config.ServerInfo;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -160,24 +159,23 @@ public class OpenStreetMaps {
                     response.append(responseLine.trim());
                 }
 
-                JSONParser parser = new JSONParser();
-                JSONObject geocode = (JSONObject) parser.parse(response.toString());
-                JSONObject address = (JSONObject) geocode.get("address");
+                JsonObject geocode = JsonUtils.parseString(response.toString()).getAsJsonObject();
+                JsonObject address = geocode.getAsJsonObject("address");
 
-                String city = (String) address.get("city");
+                String city = address.get("city").getAsString();
                 if(city == null && (address.get("town") != null)) {
-                    city = (String) address.get("town");
+                    city = address.get("town").getAsString();
                 }
-                String county = (String) address.get("county");
-                String state = (String) address.get("state");
+                String county = address.get("county").getAsString();
+                String state = address.get("state").getAsString();
                 if(state == null && (address.get("territory") != null)) {
-                    state = (String) address.get("territory");
+                    state = address.get("territory").getAsString();
                 }
-                String country = (String) address.get("country");
+                String country = address.get("country").getAsString();
 
                 return new Location(Location.Detail.none, city, county, state, country);
             }
-        } catch (IOException | ParseException | NullPointerException e) {
+        } catch (IOException | NullPointerException e) {
             return null;
         }
     }

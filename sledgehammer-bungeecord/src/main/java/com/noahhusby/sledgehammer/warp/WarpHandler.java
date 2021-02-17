@@ -20,6 +20,9 @@ package com.noahhusby.sledgehammer.warp;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.noahhusby.lib.data.storage.StorageList;
 import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.Constants;
@@ -32,14 +35,13 @@ import com.noahhusby.sledgehammer.network.P2S.P2SSetwarpPacket;
 import com.noahhusby.sledgehammer.network.NetworkHandler;
 import com.noahhusby.sledgehammer.datasets.Point;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
+import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -239,14 +241,14 @@ public class WarpHandler {
      * @param editAccess True if player has permission to edit warps, false if not
      * @return GUI Payload
      */
-    public JSONObject generateGUIPayload(SledgehammerPlayer player, boolean editAccess) {
+    public JsonObject generateGUIPayload(SledgehammerPlayer player, boolean editAccess) {
         SledgehammerServer s = player.getSledgehammerServer();
-        if(s == null) return new JSONObject();
+        if(s == null) return new JsonObject();
 
-        JSONObject data = new JSONObject();
-        data.put("local", ConfigHandler.localWarp);
-        data.put("editAccess", editAccess);
-        data.put("requestGroup", s.getGroup().getID());
+        JsonObject data = new JsonObject();
+        data.addProperty("local", ConfigHandler.localWarp);
+        data.addProperty("editAccess", editAccess);
+        data.addProperty("requestGroup", s.getGroup().getID());
 
 
         List<WarpGroup> groupsList = new ArrayList<>();
@@ -288,13 +290,13 @@ public class WarpHandler {
             defaultPage = "pinned";
         }
 
-        data.put("defaultPage", defaultPage);
+        data.addProperty("defaultPage", defaultPage);
 
-        JSONArray groups = new JSONArray();
-        for(WarpGroup wg : groupsList)
+        JsonArray groups = new JsonArray();
+        for(WarpGroup wg : groupsList) {
             groups.add(wg.toJson());
-
-        data.put("groups", groups);
+        }
+        data.add("groups", groups);
         return data;
     }
 
@@ -304,14 +306,14 @@ public class WarpHandler {
      * @param admin True if they are able to edit all groups
      * @return Config Payload
      */
-    public JSONObject generateConfigPayload(SledgehammerPlayer player, boolean admin) {
+    public JsonObject generateConfigPayload(SledgehammerPlayer player, boolean admin) {
         SledgehammerServer s = player.getSledgehammerServer();
-        if(s == null) return new JSONObject();
+        if(s == null) return new JsonObject();
 
-        JSONObject data = new JSONObject();
-        data.put("requestGroup", s.getGroup().getID());
-        data.put("admin", admin);
-        data.put("local", ConfigHandler.localWarp);
+        JsonObject data = new JsonObject();
+        data.addProperty("requestGroup", s.getGroup().getID());
+        data.addProperty("admin", admin);
+        data.addProperty("local", ConfigHandler.localWarp);
 
         List<WarpGroup> groupsList = new ArrayList<>();
 
@@ -321,8 +323,9 @@ public class WarpHandler {
             if(!server.getGroup().getID().equals(s.getGroup().getID()) && !admin) continue;
 
             WarpGroup wg = null;
-            for(WarpGroup g : groupsList)
+            for(WarpGroup g : groupsList) {
                 if(g.ID.equals(server.getGroup().getID())) wg = g;
+            }
 
             if(wg == null) {
                 ServerGroup sg = server.getGroup();
@@ -334,11 +337,11 @@ public class WarpHandler {
             }
         }
 
-        JSONArray groups = new JSONArray();
-        for(WarpGroup wg : groupsList)
+        JsonArray groups = new JsonArray();
+        for(WarpGroup wg : groupsList) {
             groups.add(wg.toJson());
-
-        data.put("groups", groups);
+        }
+        data.add("groups", groups);
         return data;
     }
 
@@ -374,31 +377,23 @@ public class WarpHandler {
         }
     }
 
+    @RequiredArgsConstructor
     private class WarpGroup {
-        public String ID;
-        public String name;
-        public String headID;
-        public List<Warp> warps;
+        public final String ID;
+        public final String name;
+        public final String headId;
+        public List<Warp> warps = Lists.newArrayList();
 
-        public WarpGroup(String ID, String name, String headID) {
-            this.ID = ID;
-            this.name = name;
-            this.headID = headID;
-            this.warps = new ArrayList<>();
-        }
-
-        public JSONObject toJson() {
-            JSONObject wg = new JSONObject();
-            wg.put("id", ID);
-            wg.put("name", name);
-            wg.put("headId", headID);
-
-            JSONArray wa = new JSONArray();
-            for(Warp w : warps)
-                wa.add(w.toWaypoint());
-
-            wg.put("warps", wa);
-            return wg;
+        public JsonObject toJson() {
+            JsonObject warpGroup = new JsonObject();
+            warpGroup.addProperty("id", ID);
+            warpGroup.addProperty("name", name);
+            JsonArray waypoints = new JsonArray();
+            warpGroup.addProperty("headId", headId);
+            for(Warp w : warps) {
+                waypoints.add(w.toWaypoint());
+            }
+            return warpGroup;
         }
     }
 

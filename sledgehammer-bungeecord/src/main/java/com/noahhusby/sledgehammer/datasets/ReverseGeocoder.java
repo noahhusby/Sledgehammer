@@ -226,8 +226,8 @@ public class ReverseGeocoder implements AutoCloseable {
         cache = null;
         if(buffer != null) {
             // Restricted API, but e.g. the JMH benchmarks fail if we do not unmap.
-            sun.misc.Cleaner cleaner = ((sun.nio.ch.DirectBuffer) buffer).cleaner();
-            cleaner.clean();
+            //sun.misc.Cleaner cleaner = ((sun.nio.ch.DirectBuffer) buffer).cleaner();
+            //cleaner.clean();
             buffer = null;
         }
         if(file != null) {

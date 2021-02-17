@@ -19,7 +19,6 @@
 package com.noahhusby.sledgehammer.datasets;
 
 import com.google.gson.annotations.Expose;
-import org.json.simple.JSONObject;
 
 public class Location {
     @Expose
@@ -59,15 +58,6 @@ public class Location {
                 return location.country.equalsIgnoreCase(country);
         }
         return false;
-    }
-
-    public JSONObject save(JSONObject data) {
-        data.put("detailType", detailType.name());
-        data.put("city", city);
-        data.put("county", county);
-        data.put("state", state);
-        data.put("country", country);
-        return data;
     }
 
     public enum Detail {

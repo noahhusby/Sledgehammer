@@ -75,7 +75,7 @@ public class ServerAddLocationFragment implements ICommandFragment {
             } catch (IOException ignored) { }
 
             if(validJson) {
-                Location l = SledgehammerUtil.JsonUtils.gson.fromJson(arg, Location.class);
+                Location l = SledgehammerUtil.GSON.fromJson(arg, Location.class);
                 if(l == null) {
                     sender.sendMessage(ChatColor.RED + "Unable to parse json location! Please try again.");
                     return;

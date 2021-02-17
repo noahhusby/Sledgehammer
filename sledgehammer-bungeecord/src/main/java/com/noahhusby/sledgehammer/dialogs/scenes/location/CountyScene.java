@@ -51,7 +51,7 @@ public class CountyScene extends DialogScene {
 
     @Override
     public void onFinish() {
-        Location l = new Location(Location.detail.state, "", getValue("county"), getValue("state"), getValue("country"));
+        Location l = new Location(Location.Detail.state, "", getValue("county"), getValue("state"), getValue("country"));
 
         SledgehammerServer s = ServerHandler.getInstance().getServer(server.getName());
 

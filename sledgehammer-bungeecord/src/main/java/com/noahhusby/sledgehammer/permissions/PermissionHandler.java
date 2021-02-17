@@ -25,7 +25,6 @@ import com.noahhusby.sledgehammer.network.NetworkHandler;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +41,7 @@ public class PermissionHandler {
     }
 
     private PermissionHandler() {
-        Sledgehammer.sledgehammer.alternativeThreads.scheduleAtFixedRate(this::checkPermissionRequests, 0, 500, TimeUnit.MILLISECONDS);
+        Sledgehammer.sledgehammer.getGeneralThreads().scheduleAtFixedRate(this::checkPermissionRequests, 0, 500, TimeUnit.MILLISECONDS);
     }
 
     private List<PermissionRequest> requests = new ArrayList<>();
@@ -89,12 +88,10 @@ public class PermissionHandler {
 
     /**
      * Called when a local server responds with a permission check
-     * @param data Incoming json data from local server
+     * @param salt Salt code
+     * @param permission True if player has permission, false if not
      */
-    public void response(JSONObject data) {
-        String salt = (String) data.get("salt");
-        boolean permission = (boolean) data.get("permission");
-
+    public void response(String salt, boolean permission) {
         PermissionRequest request = null;
         for(PermissionRequest r : requests)
             if(r.salt.equals(salt)) request =  r;

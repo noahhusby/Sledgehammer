@@ -169,7 +169,7 @@ public class TpllCommand extends Command {
         SledgehammerPlayer player = SledgehammerPlayer.getPlayer(sender);
         if(player != null) {
             if(player.getAttributes().containsKey("TPLL_FAILS")) {
-                int x = SledgehammerUtil.JsonUtils.toInt(player.getAttributes().get("TPLL_FAILS"));
+                int x = ((Long) player.getAttributes().get("TPLL_FAILS")).intValue();
                 if(x == 3) {
                     player.getAttributes().put("TPLL_FAILS", 0);
 
