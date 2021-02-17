@@ -18,7 +18,10 @@
 
 package com.noahhusby.sledgehammer.network.S2P;
 
+import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.Constants;
+import com.noahhusby.sledgehammer.Sledgehammer;
+import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.SmartObject;
 import com.noahhusby.sledgehammer.datasets.Point;
 import com.noahhusby.sledgehammer.warp.WarpHandler;
@@ -35,16 +38,9 @@ public class S2PSetwarpPacket extends S2PPacket {
     }
 
     @Override
-    public void onMessage(PacketInfo info, SmartObject data) {
-        SmartObject point = SmartObject.fromJSON((JSONObject) data.get("point"));
-        DecimalFormat format = new DecimalFormat("###.###");
-
-        String x = format.format(Double.parseDouble(point.getString("x")));
-        String y = format.format(Double.parseDouble(point.getString("y")));
-        String z = format.format(Double.parseDouble(point.getString("z")));
-        String yaw = format.format(Double.parseDouble(point.getString("yaw")));
-        String pitch = format.format(Double.parseDouble(point.getString("pitch")));
-
-        WarpHandler.getInstance().incomingLocationResponse(info.getSender(), new Point(x, y, z, yaw, pitch));
+    public void onMessage(PacketInfo info, JsonObject data) {
+        //TODO: Points
+        Point p = SledgehammerUtil.GSON.fromJson(data.get("point"), Point.class);
+        WarpHandler.getInstance().incomingLocationResponse(info.getSender(), p);
     }
 }

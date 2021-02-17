@@ -19,7 +19,7 @@
 package com.noahhusby.sledgehammer.network.P2S;
 
 import com.noahhusby.sledgehammer.Constants;
-import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.ServerHandler;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.network.P2SPacket;
 import com.noahhusby.sledgehammer.network.PacketInfo;
@@ -37,7 +37,7 @@ public class P2SLocationPacket extends P2SPacket {
     public P2SLocationPacket(String sender, String server, double[] geo) {
         this.server = server;
         this.sender = sender;
-        SledgehammerServer sledgehammerServer = ServerConfig.getInstance().getServer(server);
+        SledgehammerServer sledgehammerServer = ServerHandler.getInstance().getServer(server);
         if(sledgehammerServer != null) {
             xOffset = String.valueOf(sledgehammerServer.getXOffset());
             zOffset = String.valueOf(sledgehammerServer.getZOffset());

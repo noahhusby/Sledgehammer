@@ -17,7 +17,9 @@
  */
 package com.noahhusby.sledgehammer.network.S2P;
 
+import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.Constants;
+import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.SmartObject;
 import com.noahhusby.sledgehammer.datasets.Point;
 import com.noahhusby.sledgehammer.network.PacketInfo;
@@ -33,13 +35,11 @@ public class S2PPlayerUpdatePacket extends S2PPacket {
     }
 
     @Override
-    public void onMessage(PacketInfo info, SmartObject data) {
+    public void onMessage(PacketInfo info, JsonObject data) {
         SledgehammerPlayer player = SledgehammerPlayer.getPlayer(info.getSender());
         if(player == null) return;
-        SmartObject point = SmartObject.fromJSON((JSONObject) data.get("point"));
-        Point p = new Point(point.getString("x"), point.getString("y"),
-                point.getString("z"), point.getString("yaw"), point.getString("pitch"));
-        player.setLocation(p);
-        player.setGameMode(GameMode.valueOf(data.getString("gameMode")));
+        Point point = SledgehammerUtil.GSON.fromJson(data.get("point"), Point.class);
+        player.setLocation(point);
+        player.setGameMode(GameMode.valueOf(data.get("gameMode").getAsString()));
     }
 }

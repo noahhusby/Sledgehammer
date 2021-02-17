@@ -21,7 +21,7 @@ package com.noahhusby.sledgehammer.datasets;
 import com.google.common.collect.Maps;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
-import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.ServerHandler;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import org.json.simple.JSONObject;
@@ -76,46 +76,33 @@ public class OpenStreetMaps {
     public ServerInfo getServerFromLocation(double lon, double lat, boolean offline) {
         Location location = offline ? getOfflineLocation(lon, lat) : getLocation(lon, lat);
         if(location == null) return null;
-        Map<Location.detail, ServerInfo> serverInfoMap = Maps.newHashMap();
+        Map<Location.Detail, ServerInfo> serverInfoMap = Maps.newHashMap();
 
-        for (SledgehammerServer s : ServerConfig.getInstance().getServers()) {
+        for (SledgehammerServer s : ServerHandler.getInstance().getServers()) {
             if (!s.isEarthServer()) continue;
             if(s.getLocations() == null || s.getLocations().isEmpty()) continue;
             for (Location l : s.getLocations()) {
                 switch (l.detailType) {
                     case city:
-                        if (location.city.equalsIgnoreCase(l.city) &&
-                                (location.state.equalsIgnoreCase(l.state) ||
-                                        location.country.equalsIgnoreCase(l.country))) {
+                        if(l.compare(location, Location.Detail.city)) {
                             serverInfoMap.put(l.detailType, s.getServerInfo());
                             continue;
                         }
                         break;
                     case county:
-                        if (!l.country.equals("")) {
-                            if (location.county.equalsIgnoreCase(l.county) &&
-                                    location.state.equalsIgnoreCase(l.state) &&
-                                    location.country.equalsIgnoreCase(l.country)) {
-                                serverInfoMap.put(l.detailType, s.getServerInfo());
-                                continue;
-                            }
-                        } else {
-                            if (location.county.equalsIgnoreCase(l.county) &&
-                                    location.state.equalsIgnoreCase(l.state)) {
-                                serverInfoMap.put(l.detailType, s.getServerInfo());
-                                continue;
-                            }
+                        if(l.compare(location, Location.Detail.county)) {
+                            serverInfoMap.put(l.detailType, s.getServerInfo());
+                            continue;
                         }
                         break;
                     case state:
-                        if (location.state.equalsIgnoreCase(l.state) &&
-                                location.country.equalsIgnoreCase(l.country)) {
+                        if(l.compare(location, Location.Detail.state)) {
                             serverInfoMap.put(l.detailType, s.getServerInfo());
                             continue;
                         }
                         break;
                     case country:
-                        if (location.country.equalsIgnoreCase(l.country)) {
+                        if(l.compare(location, Location.Detail.country)) {
                             serverInfoMap.put(l.detailType, s.getServerInfo());
                             continue;
                         }
@@ -124,17 +111,17 @@ public class OpenStreetMaps {
             }
         }
 
-        if (serverInfoMap.get(Location.detail.city) != null)
-            return serverInfoMap.get(Location.detail.city);
+        if (serverInfoMap.get(Location.Detail.city) != null)
+            return serverInfoMap.get(Location.Detail.city);
 
-        if (serverInfoMap.get(Location.detail.county) != null)
-            return serverInfoMap.get(Location.detail.county);
+        if (serverInfoMap.get(Location.Detail.county) != null)
+            return serverInfoMap.get(Location.Detail.county);
 
-        if (serverInfoMap.get(Location.detail.state) != null)
-            return serverInfoMap.get(Location.detail.state);
+        if (serverInfoMap.get(Location.Detail.state) != null)
+            return serverInfoMap.get(Location.Detail.state);
 
-        if (serverInfoMap.get(Location.detail.country) != null)
-            return serverInfoMap.get(Location.detail.country);
+        if (serverInfoMap.get(Location.Detail.country) != null)
+            return serverInfoMap.get(Location.Detail.country);
 
         return null;
     }
@@ -188,7 +175,7 @@ public class OpenStreetMaps {
                 }
                 String country = (String) address.get("country");
 
-                return new Location(Location.detail.none, city, county, state, country);
+                return new Location(Location.Detail.none, city, county, state, country);
             }
         } catch (IOException | ParseException | NullPointerException e) {
             return null;
@@ -228,7 +215,7 @@ public class OpenStreetMaps {
             }
         }
 
-        Location l = new Location(Location.detail.none, city, county, state, country);
+        Location l = new Location(Location.Detail.none, city, county, state, country);
         return l;
     }
 

@@ -23,7 +23,7 @@ import org.json.simple.JSONObject;
 
 public class Location {
     @Expose
-    public detail detailType;
+    public Detail detailType;
     @Expose
     public String city = "";
     @Expose
@@ -35,12 +35,30 @@ public class Location {
 
     public Location() {}
 
-    public Location(detail detailType, String city, String county, String state, String country) {
+    public Location(Detail detailType, String city, String county, String state, String country) {
         this.detailType = detailType;
         if(city != null) this.city = city.toLowerCase();
         if(county != null) this.county = county.toLowerCase();
         if(state != null) this.state = state.toLowerCase();
         if(country != null) this.country = country.toLowerCase();
+    }
+
+    public boolean compare(Location location, Detail detail) {
+        switch (detail) {
+            case city:
+                return location.city.equalsIgnoreCase(city) && (location.state.equalsIgnoreCase(state) || location.country.equalsIgnoreCase(country));
+            case county:
+                if (!country.equals("")) {
+                    return location.county.equalsIgnoreCase(county) && location.state.equalsIgnoreCase(state) && location.country.equalsIgnoreCase(country);
+                } else {
+                    return location.county.equalsIgnoreCase(county) && location.state.equalsIgnoreCase(state);
+                }
+            case state:
+                return location.state.equalsIgnoreCase(state) && location.country.equalsIgnoreCase(country);
+            case country:
+                return location.country.equalsIgnoreCase(country);
+        }
+        return false;
     }
 
     public JSONObject save(JSONObject data) {
@@ -52,7 +70,7 @@ public class Location {
         return data;
     }
 
-    public enum detail {
+    public enum Detail {
         none, city, county, state, country
     }
 }

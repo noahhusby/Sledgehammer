@@ -21,7 +21,7 @@ package com.noahhusby.sledgehammer.permissions;
 import com.noahhusby.sledgehammer.Sledgehammer;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.network.P2S.P2SPermissionPacket;
-import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
+import com.noahhusby.sledgehammer.network.NetworkHandler;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -82,7 +82,7 @@ public class PermissionHandler {
         String salt = SledgehammerUtil.getSaltString();
         PermissionRequest request = new PermissionRequest(consumer, salt, System.currentTimeMillis(),
                 1000);
-        SledgehammerNetworkManager.getInstance().send(new P2SPermissionPacket(player.getServer().getInfo().getName(),
+        NetworkHandler.getInstance().send(new P2SPermissionPacket(player.getServer().getInfo().getName(),
                 player, permission, salt));
         requests.add(request);
     }

@@ -20,7 +20,7 @@ package com.noahhusby.sledgehammer.commands.fragments.admin.groups;
 
 import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.ServerHandler;
 import com.noahhusby.sledgehammer.config.ServerGroup;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -34,7 +34,7 @@ public class GroupListFragment implements ICommandFragment {
     public void execute(CommandSender sender, String[] args) {
         TextComponent list = ChatUtil.adminAndCombine(ChatColor.RED, "Groups: ");
         boolean first = true;
-        for(ServerGroup s : ServerConfig.getInstance().getGroups()) {
+        for(ServerGroup s : ServerHandler.getInstance().getGroups()) {
             if(first) {
                 TextComponent t = new TextComponent(s.getID());
                 t.setColor(ChatColor.BLUE);

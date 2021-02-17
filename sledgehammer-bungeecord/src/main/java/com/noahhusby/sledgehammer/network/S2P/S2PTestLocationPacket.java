@@ -18,6 +18,7 @@
 
 package com.noahhusby.sledgehammer.network.S2P;
 
+import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
@@ -43,12 +44,12 @@ public class S2PTestLocationPacket extends S2PPacket {
     }
 
     @Override
-    public void onMessage(PacketInfo info, SmartObject data) {
+    public void onMessage(PacketInfo info, JsonObject data) {
         new Thread(() -> {
-            JSONObject point = (JSONObject) data.get("point");
+            JsonObject point = data.getAsJsonObject("point");
 
-            int zoom = Math.round((long) data.get("zoom"));
-            double[] proj = SledgehammerUtil.toGeo(Double.parseDouble((String) point.get("x")), Double.parseDouble((String) point.get("z")));
+            int zoom = Math.round(data.get("zoom").getAsInt());
+            double[] proj = SledgehammerUtil.toGeo(Double.parseDouble(point.get("x").getAsString()), Double.parseDouble(point.get("z").getAsString()));
             Location online = OpenStreetMaps.getInstance().getLocation(proj[0], proj[1], zoom);
             CommandSender player = ProxyServer.getInstance().getPlayer(info.getSender());
 
@@ -65,7 +66,7 @@ public class S2PTestLocationPacket extends S2PPacket {
                 add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Add location").create()));
                 add.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/sha server " +
                         info.getServer() + " addlocation " +
-                        SledgehammerUtil.JsonUtils.gson.toJson(new Location(Location.detail.city,
+                        SledgehammerUtil.JsonUtils.gson.toJson(new Location(Location.Detail.city,
                                 online.city, online.county, online.state, online.country))));
 
                 TextComponent text = ChatUtil.combine(ChatColor.GRAY, "City - ", ChatColor.BLUE, online.city);
@@ -78,7 +79,7 @@ public class S2PTestLocationPacket extends S2PPacket {
                 add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Add location").create()));
                 add.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/sha server " +
                         info.getServer() + " addlocation " +
-                        SledgehammerUtil.JsonUtils.gson.toJson(new Location(Location.detail.county,
+                        SledgehammerUtil.JsonUtils.gson.toJson(new Location(Location.Detail.county,
                                 online.city, online.county, online.state, online.country))));
 
                 TextComponent text = ChatUtil.combine(ChatColor.GRAY, "County - ", ChatColor.BLUE, online.county);
@@ -91,7 +92,7 @@ public class S2PTestLocationPacket extends S2PPacket {
                 add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Add location").create()));
                 add.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/sha server " +
                         info.getServer() + " addlocation " +
-                        SledgehammerUtil.JsonUtils.gson.toJson(new Location(Location.detail.state,
+                        SledgehammerUtil.JsonUtils.gson.toJson(new Location(Location.Detail.state,
                                 online.city, online.county, online.state, online.country))));
 
                 TextComponent text = ChatUtil.combine(ChatColor.GRAY, "State - ", ChatColor.BLUE, online.state);
@@ -104,7 +105,7 @@ public class S2PTestLocationPacket extends S2PPacket {
                 add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Add location").create()));
                 add.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/sha server " +
                         info.getServer() + " addlocation " +
-                        SledgehammerUtil.JsonUtils.gson.toJson(new Location(Location.detail.country,
+                        SledgehammerUtil.JsonUtils.gson.toJson(new Location(Location.Detail.country,
                                 online.city, online.county, online.state, online.country))));
 
                 TextComponent text = ChatUtil.combine(ChatColor.GRAY, "Country - ", ChatColor.BLUE, online.country);
@@ -123,7 +124,7 @@ public class S2PTestLocationPacket extends S2PPacket {
                     add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Add location").create()));
                     add.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/sha server " +
                             info.getServer() + " addlocation " +
-                            SledgehammerUtil.JsonUtils.gson.toJson(new Location(Location.detail.city,
+                            SledgehammerUtil.JsonUtils.gson.toJson(new Location(Location.Detail.city,
                                     offline.city, offline.county, offline.state, offline.country))));
 
                     TextComponent text = ChatUtil.combine(ChatColor.GRAY, "City - ", ChatColor.BLUE, offline.city);
@@ -136,7 +137,7 @@ public class S2PTestLocationPacket extends S2PPacket {
                     add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Add location").create()));
                     add.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/sha server " +
                             info.getServer() + " addlocation " +
-                            SledgehammerUtil.JsonUtils.gson.toJson(new Location(Location.detail.county,
+                            SledgehammerUtil.JsonUtils.gson.toJson(new Location(Location.Detail.county,
                                     offline.city, offline.county, offline.state, offline.country))));
 
                     TextComponent text = ChatUtil.combine(ChatColor.GRAY, "County - ", ChatColor.BLUE, offline.county);
@@ -149,7 +150,7 @@ public class S2PTestLocationPacket extends S2PPacket {
                     add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Add location").create()));
                     add.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/sha server " +
                             info.getServer() + " addlocation " +
-                            SledgehammerUtil.JsonUtils.gson.toJson(new Location(Location.detail.state,
+                            SledgehammerUtil.JsonUtils.gson.toJson(new Location(Location.Detail.state,
                                     offline.city, offline.county, offline.state, offline.country))));
 
                     TextComponent text = ChatUtil.combine(ChatColor.GRAY, "State - ", ChatColor.BLUE, offline.state);
@@ -162,7 +163,7 @@ public class S2PTestLocationPacket extends S2PPacket {
                     add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Add location").create()));
                     add.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/sha server " +
                             info.getServer() + " addlocation " +
-                            SledgehammerUtil.JsonUtils.gson.toJson(new Location(Location.detail.country,
+                            SledgehammerUtil.JsonUtils.gson.toJson(new Location(Location.Detail.country,
                                     offline.city, offline.county, offline.state, offline.country))));
 
                     TextComponent text = ChatUtil.combine(ChatColor.GRAY, "Country - ", ChatColor.BLUE, offline.country);

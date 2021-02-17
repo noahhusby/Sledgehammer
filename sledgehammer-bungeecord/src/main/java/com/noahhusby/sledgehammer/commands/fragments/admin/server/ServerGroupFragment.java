@@ -20,7 +20,7 @@ package com.noahhusby.sledgehammer.commands.fragments.admin.server;
 
 import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.ServerHandler;
 import com.noahhusby.sledgehammer.config.ServerGroup;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import net.md_5.bungee.api.ChatColor;
@@ -30,7 +30,7 @@ public class ServerGroupFragment implements ICommandFragment {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(ServerConfig.getInstance().getServer(args[0]) == null) {
+        if(ServerHandler.getInstance().getServer(args[0]) == null) {
             sender.sendMessage(ChatUtil.notSledgehammerServer);
             return;
         }
@@ -40,22 +40,22 @@ public class ServerGroupFragment implements ICommandFragment {
             return;
         }
 
-        SledgehammerServer s = ServerConfig.getInstance().getServer(args[0]);
+        SledgehammerServer s = ServerHandler.getInstance().getServer(args[0]);
         if(args[2].equalsIgnoreCase("clear")) {
             if(s.getGroup().getID().equals(s.getName())) {
                 sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "This server has no groups!"));
                 return;
             }
 
-            for(ServerGroup sg : ServerConfig.getInstance().getGroups())
+            for(ServerGroup sg : ServerHandler.getInstance().getGroups())
                 sg.getServers().remove(s.getName());
 
-            ServerConfig.getInstance().getGroups().save(true);
+            ServerHandler.getInstance().getGroups().save(true);
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GREEN, "Server has been removed from all groups!"));
             return;
         }
 
-        for(ServerGroup sg : ServerConfig.getInstance().getGroups()) {
+        for(ServerGroup sg : ServerHandler.getInstance().getGroups()) {
             if(sg.getServers().contains(s.getName())) {
                 sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "This server is assigned to another group!"));
                 sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Use ", ChatColor.BLUE,
@@ -67,7 +67,7 @@ public class ServerGroupFragment implements ICommandFragment {
         String id = args[2];
         ServerGroup group = null;
 
-        for(ServerGroup sg : ServerConfig.getInstance().getGroups())
+        for(ServerGroup sg : ServerHandler.getInstance().getGroups())
             if(sg.getID().equals(id)) group = sg;
 
         if(group == null) {
@@ -76,7 +76,7 @@ public class ServerGroupFragment implements ICommandFragment {
         }
 
         group.getServers().add(s.getName());
-        ServerConfig.getInstance().getGroups().save(true);
+        ServerHandler.getInstance().getGroups().save(true);
 
         sender.sendMessage(ChatUtil.getValueMessage("group", group.getID(), s.getName()));
     }

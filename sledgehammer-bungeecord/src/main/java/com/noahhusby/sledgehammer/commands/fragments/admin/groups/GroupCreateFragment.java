@@ -20,7 +20,7 @@ package com.noahhusby.sledgehammer.commands.fragments.admin.groups;
 
 import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.ServerHandler;
 import com.noahhusby.sledgehammer.config.ServerGroup;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -35,7 +35,7 @@ public class GroupCreateFragment implements ICommandFragment {
 
         String ID = args[0];
 
-        for(ServerGroup sg : ServerConfig.getInstance().getGroups()) {
+        for(ServerGroup sg : ServerHandler.getInstance().getGroups()) {
             if(sg.getID().equals(ID)) {
                 sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "A group with that name already exists!"));
                 return;
@@ -46,8 +46,8 @@ public class GroupCreateFragment implements ICommandFragment {
 
             ServerGroup group = new ServerGroup();
             group.setID(ID);
-            ServerConfig.getInstance().getGroups().add(group);
-            ServerConfig.getInstance().getGroups().save(true);
+            ServerHandler.getInstance().getGroups().add(group);
+            ServerHandler.getInstance().getGroups().save(true);
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Successfully created new group", ChatColor.BLUE, group.getID()));
             return;
         }
@@ -61,8 +61,8 @@ public class GroupCreateFragment implements ICommandFragment {
         group.setName(name.toString());
         sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Successfully created new group", ChatColor.BLUE, group.getID(),
                 ChatColor.GRAY, " with name ", ChatColor.RED, name.toString()));
-        ServerConfig.getInstance().getGroups().add(group);
-        ServerConfig.getInstance().getGroups().save(true);
+        ServerHandler.getInstance().getGroups().add(group);
+        ServerHandler.getInstance().getGroups().save(true);
     }
 
     @Override

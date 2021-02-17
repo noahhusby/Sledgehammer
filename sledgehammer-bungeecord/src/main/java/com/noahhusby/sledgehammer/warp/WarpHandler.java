@@ -25,11 +25,11 @@ import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.Constants;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
-import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.ServerHandler;
 import com.noahhusby.sledgehammer.config.ServerGroup;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.network.P2S.P2SSetwarpPacket;
-import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
+import com.noahhusby.sledgehammer.network.NetworkHandler;
 import com.noahhusby.sledgehammer.datasets.Point;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import net.md_5.bungee.api.ChatColor;
@@ -109,7 +109,7 @@ public class WarpHandler {
         warp.setName(warpName);
         warp.setResponse(consumer);
         requestedWarps.put(sender, warp);
-        SledgehammerNetworkManager.getInstance().send(new P2SSetwarpPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName()));
+        NetworkHandler.getInstance().send(new P2SSetwarpPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName()));
 
     }
 
@@ -180,7 +180,7 @@ public class WarpHandler {
     public WarpStatus getWarpStatus(String warpName, String server) {
         for(Warp w : warps)
             if(w.getName().equalsIgnoreCase(warpName) && (!ConfigHandler.localWarp ||
-                ServerConfig.getInstance().getServer(server).getGroup().getServers().contains(w.getServer())))
+                ServerHandler.getInstance().getServer(server).getGroup().getServers().contains(w.getServer())))
                 return getWarpStatus(w.getId(), server);
 
         return WarpStatus.AVAILABLE;
@@ -192,7 +192,7 @@ public class WarpHandler {
             if(w.getId() == warpId && !local && w.getPinned() == Warp.PinnedMode.GLOBAL) return WarpStatus.RESERVED;
 
         for(Warp w: warps)
-            if(w.getId() == warpId && (!local || ServerConfig.getInstance().getServer(server).getGroup().getServers().contains(w.getServer())))
+            if(w.getId() == warpId && (!local || ServerHandler.getInstance().getServer(server).getGroup().getServers().contains(w.getServer())))
                 return WarpStatus.EXISTS;
 
         return WarpStatus.AVAILABLE;
@@ -252,7 +252,7 @@ public class WarpHandler {
         List<WarpGroup> groupsList = new ArrayList<>();
 
         for(Warp w : warps) {
-            SledgehammerServer server = ServerConfig.getInstance().getServer(w.getServer());
+            SledgehammerServer server = ServerHandler.getInstance().getServer(w.getServer());
             if(server == null) continue;
 
             WarpGroup wg = null;
@@ -316,7 +316,7 @@ public class WarpHandler {
         List<WarpGroup> groupsList = new ArrayList<>();
 
         for(Warp w : warps) {
-            SledgehammerServer server = ServerConfig.getInstance().getServer(w.getServer());
+            SledgehammerServer server = ServerHandler.getInstance().getServer(w.getServer());
             if(server == null) continue;
             if(!server.getGroup().getID().equals(s.getGroup().getID()) && !admin) continue;
 

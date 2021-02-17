@@ -20,7 +20,7 @@ package com.noahhusby.sledgehammer.commands.fragments.admin.server;
 
 import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.ServerHandler;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -29,7 +29,7 @@ public class ServerOffsetFragment implements ICommandFragment {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(ServerConfig.getInstance().getServer(args[0]) == null) {
+        if(ServerHandler.getInstance().getServer(args[0]) == null) {
             sender.sendMessage(ChatUtil.notSledgehammerServer);
             return;
         }
@@ -39,7 +39,7 @@ public class ServerOffsetFragment implements ICommandFragment {
             return;
         }
 
-        SledgehammerServer s = ServerConfig.getInstance().getServer(args[0]);
+        SledgehammerServer s = ServerHandler.getInstance().getServer(args[0]);
         String axis = args[2];
         if(!(axis.equalsIgnoreCase("x") || axis.equalsIgnoreCase("z"))) {
             sender.sendMessage(ChatUtil.combine(ChatColor.RED, "Usage: /sha server <server name> setoffset <x/z> offset"));
@@ -63,7 +63,7 @@ public class ServerOffsetFragment implements ICommandFragment {
             sender.sendMessage(ChatUtil.getValueMessage("xOffset", valString, s.getName()));
         }
 
-        ServerConfig.getInstance().getServers().save(true);
+        ServerHandler.getInstance().getServers().save(true);
     }
 
     @Override

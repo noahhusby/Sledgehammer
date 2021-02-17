@@ -18,8 +18,6 @@
 
 package com.noahhusby.sledgehammer;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +34,7 @@ import com.noahhusby.sledgehammer.commands.TpllCommand;
 import com.noahhusby.sledgehammer.commands.TplloCommand;
 import com.noahhusby.sledgehammer.commands.WarpCommand;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
-import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.ServerHandler;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.players.FlaggedBorderCheckerThread;
 import com.noahhusby.sledgehammer.players.BorderCheckerThread;
@@ -52,7 +50,7 @@ import net.md_5.bungee.event.EventPriority;
 public class Sledgehammer extends Plugin implements Listener {
     public static Logger logger;
     public static Sledgehammer sledgehammer;
-    public final ScheduledThreadPoolExecutor alternativeThreads = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(16, new ThreadFactoryBuilder().setNameFormat("sledgehammer-general-%d").build());
+    @Getter private final ScheduledThreadPoolExecutor generalThreads = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(16, new ThreadFactoryBuilder().setNameFormat("sledgehammer-general-%d").build());
 
     @Getter private static AddonManager addonManager;
 
@@ -60,7 +58,7 @@ public class Sledgehammer extends Plugin implements Listener {
     public void onEnable() {
         sledgehammer = this;
         logger = getLogger();
-        alternativeThreads.setRemoveOnCancelPolicy(true);
+        generalThreads.setRemoveOnCancelPolicy(true);
 
         addListener(this);
         ConfigHandler.getInstance().init(getDataFolder());
@@ -76,16 +74,14 @@ public class Sledgehammer extends Plugin implements Listener {
      * Called upon startup or reload. These are settings that can be changed without a restart
      */
     public void registerFromConfig() {
-        List<Runnable> remove = new ArrayList<>(alternativeThreads.getQueue());
-
-        for(Runnable r : remove) alternativeThreads.remove(r);
+        generalThreads.getQueue().removeIf(r -> true);
 
         ProxyServer.getInstance().getPluginManager().unregisterCommands(this);
 
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerCommand());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerAdminCommand());
 
-        ServerConfig.getInstance();
+        ServerHandler.getInstance();
 
         if(!ConfigHandler.getInstance().isAuthCodeConfigured()) {
             logger.severe("------------------------------");
@@ -152,8 +148,8 @@ public class Sledgehammer extends Plugin implements Listener {
 
         if(ConfigHandler.borderTeleportation) {
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new BorderCommand());
-            alternativeThreads.scheduleAtFixedRate(new BorderCheckerThread(), 0, 10, TimeUnit.SECONDS);
-            alternativeThreads.scheduleAtFixedRate(new FlaggedBorderCheckerThread(), 0, 5, TimeUnit.SECONDS);
+            generalThreads.scheduleAtFixedRate(new BorderCheckerThread(), 0, 10, TimeUnit.SECONDS);
+            generalThreads.scheduleAtFixedRate(new FlaggedBorderCheckerThread(), 0, 5, TimeUnit.SECONDS);
         }
 
         OpenStreetMaps.getInstance().init();

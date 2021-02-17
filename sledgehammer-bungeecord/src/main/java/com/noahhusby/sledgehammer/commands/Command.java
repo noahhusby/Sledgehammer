@@ -18,7 +18,7 @@
 
 package com.noahhusby.sledgehammer.commands;
 
-import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
+import com.noahhusby.sledgehammer.network.NetworkHandler;
 import com.noahhusby.sledgehammer.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import net.md_5.bungee.api.CommandSender;
@@ -72,8 +72,8 @@ public abstract class Command extends net.md_5.bungee.api.plugin.Command {
         return PermissionHandler.getInstance().isAdmin(sender);
     }
 
-    protected SledgehammerNetworkManager getNetworkManager() {
-        return SledgehammerNetworkManager.getInstance();
+    protected NetworkHandler getNetworkManager() {
+        return NetworkHandler.getInstance();
     }
 }
 

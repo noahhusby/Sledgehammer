@@ -19,7 +19,7 @@
 package com.noahhusby.sledgehammer.dialogs.components.location;
 
 import com.noahhusby.sledgehammer.ChatUtil;
-import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.ServerHandler;
 import com.noahhusby.sledgehammer.dialogs.components.DialogComponent;
 import com.noahhusby.sledgehammer.datasets.Location;
 import net.md_5.bungee.api.ChatColor;
@@ -51,7 +51,7 @@ public class LocationRemovalComponent extends DialogComponent {
     public TextComponent getExplanation() {
         TextComponent explanation = ChatUtil.combine(ChatColor.GRAY, "Enter the # of the location to delete:");
 
-        locations = ServerConfig.getInstance().getLocationsFromServer(server.getName());
+        locations = ServerHandler.getInstance().getLocationsFromServer(server.getName());
         int v = 0;
         for(Location l : locations) {
             String x = "";

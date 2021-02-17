@@ -20,7 +20,7 @@ package com.noahhusby.sledgehammer;
 
 import com.google.gson.Gson;
 import com.noahhusby.sledgehammer.config.ConfigHandler;
-import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.ServerHandler;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.datasets.projection.GeographicProjection;
@@ -42,6 +42,8 @@ import java.util.List;
 import java.util.Random;
 
 public class SledgehammerUtil {
+
+    public static final Gson GSON = new Gson();
 
     private static final GeographicProjection projection = new ModifiedAirocean();
     private static final GeographicProjection uprightProj = GeographicProjection.orientProjection(projection, GeographicProjection.Orientation.upright);
@@ -121,7 +123,7 @@ public class SledgehammerUtil {
      * @return True if the Bungeecord server is a Sledgehammer server, False if not
      */
     public static boolean isSledgehammerServer(ServerInfo server) {
-        for(SledgehammerServer s : ServerConfig.getInstance().getServers()) {
+        for(SledgehammerServer s : ServerHandler.getInstance().getServers()) {
             if(s.getServerInfo() == null) continue;
             if(s.getServerInfo().equals(server)) return true;
         }
@@ -135,7 +137,7 @@ public class SledgehammerUtil {
      * @deprecated As of release 0.4, replaced by {@link #isSledgehammerServer(ServerInfo)}
      */
     @Deprecated public static boolean isSledgehammerServer(String name) {
-        for(SledgehammerServer s : ServerConfig.getInstance().getServers()) {
+        for(SledgehammerServer s : ServerHandler.getInstance().getServers()) {
             if(s.getName().equals(name)) return true;
         }
         return false;

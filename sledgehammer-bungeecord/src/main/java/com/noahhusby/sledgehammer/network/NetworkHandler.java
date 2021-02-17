@@ -18,49 +18,50 @@
 
 package com.noahhusby.sledgehammer.network;
 
-import com.google.common.collect.Lists;
+import com.google.gson.JsonObject;
+import com.noahhusby.lib.data.JsonUtils;
 import com.noahhusby.sledgehammer.Sledgehammer;
+import com.noahhusby.sledgehammer.SledgehammerUtil;
 import com.noahhusby.sledgehammer.SmartObject;
 import com.noahhusby.sledgehammer.network.S2P.*;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+import net.md_5.bungee.util.CaseInsensitiveMap;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
-import java.util.List;
+import java.util.Map;
 
-public class SledgehammerNetworkManager implements Listener {
-    private static SledgehammerNetworkManager instance = null;
+public class NetworkHandler implements Listener {
+    private static NetworkHandler instance = null;
 
-    public static SledgehammerNetworkManager getInstance() {
-        return instance == null ? instance = new SledgehammerNetworkManager() : instance;
+    public static NetworkHandler getInstance() {
+        return instance == null ? instance = new NetworkHandler() : instance;
     }
 
-    private SledgehammerNetworkManager() {
+    private NetworkHandler() {
         Sledgehammer.addListener(this);
-
         register(new S2PInitializationPacket());
         register(new S2PSetwarpPacket());
         register(new S2PTestLocationPacket());
         register(new S2PWarpPacket());
-        register(new S2PWebMapPacket());
         register(new S2PPlayerUpdatePacket());
         register(new S2PPermissionPacket());
         register(new S2PWarpConfigPacket());
     }
 
-    private final List<S2PPacket> registeredPackets = Lists.newArrayList();
+    private final Map<String, S2PPacket> registeredPackets = new CaseInsensitiveMap<>();
 
     /**
      * Register incoming packets
      * @param packet {@link S2PPacket}
      */
     private void register(S2PPacket packet) {
-        registeredPackets.add(packet);
+        registeredPackets.put(packet.getPacketID(), packet);
     }
 
     /**
@@ -68,18 +69,21 @@ public class SledgehammerNetworkManager implements Listener {
      * @param packet {@link P2SPacket}
      */
     public void send(P2SPacket packet) {
-        JSONObject response = new JSONObject();
-        response.put("command", packet.getPacketInfo().getID());
-        response.put("sender", packet.getPacketInfo().getSender());
-        response.put("server", packet.getPacketInfo().getServer());
-        response.put("time", System.currentTimeMillis());
-        response.put("data", packet.getMessage(new JSONObject()));
+        PacketInfo info = packet.getPacketInfo();
+        JsonObject message = new JsonObject();
+        message.addProperty("command", info.getID());
+        message.addProperty("sender", info.getSender());
+        message.addProperty("server", info.getServer());
+        message.addProperty("time", System.currentTimeMillis());
+        JsonObject data = new JsonObject();
+        packet.getMessage(data);
+        message.add("data", data);
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(stream);
 
         try {
-            out.writeUTF(response.toJSONString());
+            out.writeUTF(SledgehammerUtil.GSON.toJson(message));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -91,27 +95,23 @@ public class SledgehammerNetworkManager implements Listener {
      * Checks for sledgehammer packets from incoming plugin messages
      * @param e {@link PluginMessageEvent}
      */
-    //@EventHandler(priority = EventPriority.LOWEST)
     @EventHandler
     public void onIncomingPacket(PluginMessageEvent e) {
         if (!e.getTag().equalsIgnoreCase("sledgehammer:channel")) return;
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(e.getData()));
+        JsonObject packetMessage = JsonUtils.parseString(getRawMessage(in)).getAsJsonObject();
 
-        try {
-            SmartObject packet = SmartObject.fromJSON((JSONObject) new JSONParser().parse(getRawMessage(in)));
+        String command = packetMessage.get("command").getAsString();
+        String sender = packetMessage.get("sender").getAsString();
+        String server = packetMessage.get("server").getAsString();
+        long time = packetMessage.get("time").getAsLong();
+        PacketInfo info = new PacketInfo(command, sender, server, time);
+        JsonObject data = packetMessage.getAsJsonObject("data");
 
-            SmartObject packetData = SmartObject.fromJSON((JSONObject) packet.get("data"));
-            PacketInfo packetInfo = new PacketInfo(packet.getString("command"), packet.getString("sender"),
-                    packet.getString("server"), (long) packet.get("time"));
-
-            for(S2PPacket p : registeredPackets) {
-                if(p.getPacketID().equalsIgnoreCase(packetInfo.getID())) {
-                    p.onMessage(packetInfo, packetData);
-                }
-            }
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-        } catch (Exception ignored) { }
+        S2PPacket p = registeredPackets.get(command);
+        if(p != null) {
+            p.onMessage(info, data);
+        }
     }
 
     /**

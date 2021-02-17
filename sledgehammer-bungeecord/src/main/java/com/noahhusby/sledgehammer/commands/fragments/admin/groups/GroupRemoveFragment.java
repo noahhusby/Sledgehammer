@@ -20,7 +20,7 @@ package com.noahhusby.sledgehammer.commands.fragments.admin.groups;
 
 import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.ServerHandler;
 import com.noahhusby.sledgehammer.config.ServerGroup;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -35,7 +35,7 @@ public class GroupRemoveFragment implements ICommandFragment {
 
         String ID = args[0];
         ServerGroup group = null;
-        for(ServerGroup sg : ServerConfig.getInstance().getGroups())
+        for(ServerGroup sg : ServerHandler.getInstance().getGroups())
             if(sg.getID().equals(ID)) group = sg;
 
         if(group == null) {
@@ -44,8 +44,8 @@ public class GroupRemoveFragment implements ICommandFragment {
         }
 
         sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Successfully removed group ", ChatColor.BLUE, group.getID()));
-        ServerConfig.getInstance().getGroups().remove(group);
-        ServerConfig.getInstance().getGroups().save(true);
+        ServerHandler.getInstance().getGroups().remove(group);
+        ServerHandler.getInstance().getGroups().save(true);
     }
 
     @Override

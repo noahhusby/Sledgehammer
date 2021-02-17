@@ -21,12 +21,12 @@ package com.noahhusby.sledgehammer.players;
 import com.google.common.collect.ImmutableMap;
 import com.noahhusby.sledgehammer.ChatUtil;
 import com.noahhusby.sledgehammer.SledgehammerUtil;
-import com.noahhusby.sledgehammer.config.ServerConfig;
+import com.noahhusby.sledgehammer.config.ServerHandler;
 import com.noahhusby.sledgehammer.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.datasets.Point;
 import com.noahhusby.sledgehammer.network.P2S.P2STeleportPacket;
-import com.noahhusby.sledgehammer.network.SledgehammerNetworkManager;
+import com.noahhusby.sledgehammer.network.NetworkHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.Title;
@@ -54,13 +54,13 @@ public class FlaggedBorderCheckerThread implements Runnable {
             double[] proj = SledgehammerUtil.toGeo(Double.parseDouble(location.x), Double.parseDouble(location.z));
             ServerInfo info = OpenStreetMaps.getInstance().getServerFromLocation(proj[0], proj[1], true);
             if(info == null) return;
-            SledgehammerServer server = ServerConfig.getInstance().getServer(info.getName());
+            SledgehammerServer server = ServerHandler.getInstance().getServer(info.getName());
             if(server == null) return;
             if(server.isStealthMode()) return;
 
             if(!info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
                 p.connect(info);
-                SledgehammerNetworkManager.getInstance().send(new P2STeleportPacket(p.getName(), info.getName(), location));
+                NetworkHandler.getInstance().send(new P2STeleportPacket(p.getName(), info.getName(), location));
                 Title title = ProxyServer.getInstance().createTitle();
                 title.subTitle(ChatUtil.combine(ChatColor.RED, "You've crossed the border!"));
                 title.title(ChatUtil.combine(ChatColor.GRAY, "Teleporting to ", ChatColor.BLUE, info.getName()));
