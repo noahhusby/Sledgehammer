@@ -1,0 +1,6 @@
+name: Sledgehammer
+version: 0.4.2
+main: com.noahhusby.sledgehammer.server.Sledgehammer
+prefix: Sledgehammer
+authors: [ noahhusby ]
+website: https://github.com/noahhusby/sledgehammer

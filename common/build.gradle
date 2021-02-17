@@ -1,0 +1,4 @@
+dependencies {
+    implementation 'org.projectlombok:lombok:1.18.16'
+    implementation 'com.google.code.gson:gson:2.8.0'
+}

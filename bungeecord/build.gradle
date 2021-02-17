@@ -1,0 +1,8 @@
+dependencies {
+    implementation 'org.projectlombok:lombok:1.18.16'
+    compileOnly 'net.md-5:bungeecord-api:1.16-R0.5-SNAPSHOT'
+    compileOnly group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
+    compile group: 'commons-io', name: 'commons-io', version: '2.7'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+    compile group: 'com.noahhusby', name: 'HusbyLib', version: '0.0.1'
+}

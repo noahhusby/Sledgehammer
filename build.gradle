@@ -1,0 +1,73 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '4.0.4'
+    id 'net.linguica.maven-settings' version '0.5'
+}
+
+group 'com.noahhusby'
+version '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+allprojects {
+    apply plugin: "java"
+    apply plugin: "net.linguica.maven-settings"
+
+    ext {
+        sledgehammerVersion = "0.4.3";
+    }
+
+    group "com.noahhusby"
+    version "$sledgehammerVersion"
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+
+    repositories {
+        mavenCentral()
+        maven {
+            name 'buildtheearth'
+            url 'https://maven.noahhusby.com/repository/buildtheearth'
+        }
+        maven {
+            name = 'sonatype'
+            url = 'https://oss.sonatype.org/service/local/repositories/snapshots/content'
+        }
+        maven {
+            name = 'papermc-repo'
+            url = 'https://papermc.io/repo/repository/maven-public/'
+        }
+        maven {
+            name = 'sonatype'
+            url = 'https://oss.sonatype.org/content/groups/public/'
+        }
+        maven {
+            name = 'codemc-snapshots'
+            url = 'https://repo.codemc.io/repository/maven-snapshots'
+        }
+        maven {
+            name = 'skullcreator-repo'
+            url = 'https://dl.bintray.com/deanveloper/SkullCreator'
+        }
+    }
+
+    dependencies {
+        if (!("common".equalsIgnoreCase(project.name))) {
+            compile project(":common")
+        }
+
+        compileOnly "org.projectlombok:lombok:1.18.16"
+        annotationProcessor "org.projectlombok:lombok:1.18.16"
+    }
+}
+
+dependencies {
+    for (Project prj : project.allprojects) {
+        if (!"sledgehammer".equalsIgnoreCase(prj.name) && prj.parent.name.equalsIgnoreCase("sledgehammer")) {
+            compile project(":" + prj.name)
+        }
+    }
+}
