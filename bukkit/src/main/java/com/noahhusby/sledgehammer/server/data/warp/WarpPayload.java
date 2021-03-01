@@ -6,12 +6,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.common.warps.WarpGroup;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
-import com.noahhusby.sledgehammer.server.SmartObject;
 import lombok.AllArgsConstructor;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor

@@ -40,24 +40,10 @@ import java.io.InputStream;
 public class SledgehammerUtil extends CommonUtil {
 
     public static final JsonParser parser = new JsonParser();
-    private static final boolean hasTerraPlusPlus;
     private static final EarthGeneratorSettings bteGeneratorSettings = EarthGeneratorSettings.parse(EarthGeneratorSettings.BTE_DEFAULT_SETTINGS);
 
-    static {
-        boolean terraplusplus;
-        try {
-            Class.forName("net.buildtheearth.terraplusplus.TerraMod");
-            terraplusplus = true;
-            Sledgehammer.logger.warning("TerraPlusPlus is installed! Using terra teleport mode.");
-        } catch(ClassNotFoundException ignored) {
-            terraplusplus = false;
-            Sledgehammer.logger.warning("TerraPlusPlus is not installed! Using vanilla teleport mode.");
-        }
-        hasTerraPlusPlus = terraplusplus;
-    }
-
     public static boolean hasTerraPlusPlus() {
-        return hasTerraPlusPlus;
+        return Sledgehammer.getInstance().hasTerraPlusPlus;
     }
 
     public static EarthGeneratorSettings getBTEDefaultSettings() {

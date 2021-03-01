@@ -19,13 +19,15 @@
 package com.noahhusby.sledgehammer.server.gui.inventories.general;
 
 import com.noahhusby.sledgehammer.server.gui.inventories.anvil.AnvilController;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GUIRegistry {
+public class GUIRegistry implements Listener {
     private final static List<IController> registeredControllers = new ArrayList<>();
 
     public static void register(IController c) {
@@ -59,5 +61,15 @@ public class GUIRegistry {
         for(IController i : expired) {
             registeredControllers.remove(i);
         }
+    }
+
+    @EventHandler
+    public void onInventoryClickEvent(InventoryClickEvent e) {
+        onInventoryClick(e);
+    }
+
+    @EventHandler
+    public void onInventoryCloseEvent(InventoryCloseEvent e) {
+        onInventoryClose(e);
     }
 }

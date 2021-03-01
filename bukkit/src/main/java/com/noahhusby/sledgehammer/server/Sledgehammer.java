@@ -19,7 +19,7 @@
 package com.noahhusby.sledgehammer.server;
 
 import com.noahhusby.sledgehammer.server.chat.ChatHandler;
-import com.noahhusby.sledgehammer.server.eventhandler.ServerEventHandler;
+import com.noahhusby.sledgehammer.server.gui.inventories.general.GUIRegistry;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
 import com.noahhusby.sledgehammer.server.players.PlayerManager;
 import lombok.Getter;
@@ -31,6 +31,8 @@ import java.util.logging.Logger;
 
 public final class Sledgehammer extends JavaPlugin implements Listener {
 
+    public boolean hasTerraPlusPlus = false;
+
     public static Logger logger = Logger.getLogger("Sledgehammer Bootstrap");
     @Getter private static Sledgehammer instance;
     public static String bungeecordName = "";
@@ -40,9 +42,16 @@ public final class Sledgehammer extends JavaPlugin implements Listener {
         instance = this;
         logger = getLogger();
 
+        try {
+            Class.forName("net.buildtheearth.terraplusplus.TerraMod");
+            hasTerraPlusPlus = true;
+            Sledgehammer.logger.warning("TerraPlusPlus is installed! Using terra teleport mode.");
+        } catch(ClassNotFoundException ignored) {
+            Sledgehammer.logger.warning("TerraPlusPlus is not installed! Using vanilla teleport mode.");
+        }
+
         Bukkit.getServer().getPluginManager().registerEvents(ChatHandler.getInstance(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(this, this);
-        Bukkit.getServer().getPluginManager().registerEvents(new ServerEventHandler(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new GUIRegistry(), this);
         Bukkit.getServer().getPluginManager().registerEvents(NetworkHandler.getInstance(), this);
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "sledgehammer:channel");
