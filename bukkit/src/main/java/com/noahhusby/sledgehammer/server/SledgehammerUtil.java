@@ -22,6 +22,8 @@ import com.google.gson.JsonParser;
 import com.noahhusby.sledgehammer.common.CommonUtil;
 import dev.dbassett.skullcreator.SkullCreator;
 import lombok.experimental.UtilityClass;
+import net.buildtheearth.terraplusplus.dep.net.daporkchop.lib.binary.oio.StreamUtil;
+import net.buildtheearth.terraplusplus.generator.EarthGeneratorSettings;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -31,10 +33,36 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 @UtilityClass
 public class SledgehammerUtil extends CommonUtil {
 
     public static final JsonParser parser = new JsonParser();
+    private static final boolean hasTerraPlusPlus;
+    private static final EarthGeneratorSettings bteGeneratorSettings = EarthGeneratorSettings.parse(EarthGeneratorSettings.BTE_DEFAULT_SETTINGS);
+
+    static {
+        boolean terraplusplus;
+        try {
+            Class.forName("net.buildtheearth.terraplusplus.TerraMod");
+            terraplusplus = true;
+            Sledgehammer.logger.warning("TerraPlusPlus is installed! Using terra teleport mode.");
+        } catch(ClassNotFoundException ignored) {
+            terraplusplus = false;
+            Sledgehammer.logger.warning("TerraPlusPlus is not installed! Using vanilla teleport mode.");
+        }
+        hasTerraPlusPlus = terraplusplus;
+    }
+
+    public static boolean hasTerraPlusPlus() {
+        return hasTerraPlusPlus;
+    }
+
+    public static EarthGeneratorSettings getBTEDefaultSettings() {
+        return bteGeneratorSettings;
+    }
 
     public static Player getPlayerFromName(String name) {
         return Bukkit.getServer().getPlayer(name);

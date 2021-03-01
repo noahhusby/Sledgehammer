@@ -31,13 +31,14 @@ import java.util.logging.Logger;
 
 public final class Sledgehammer extends JavaPlugin implements Listener {
 
-    public static Logger logger;
+    public static Logger logger = Logger.getLogger("Sledgehammer Bootstrap");
     @Getter private static Sledgehammer instance;
     public static String bungeecordName = "";
 
     @Override
     public void onEnable() {
         instance = this;
+        logger = getLogger();
 
         Bukkit.getServer().getPluginManager().registerEvents(ChatHandler.getInstance(), this);
         Bukkit.getServer().getPluginManager().registerEvents(this, this);

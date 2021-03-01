@@ -23,9 +23,20 @@ import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.network.P2SPacket;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
+import net.buildtheearth.terraplusplus.TerraConstants;
+import net.buildtheearth.terraplusplus.control.TerraTeleport;
+import net.buildtheearth.terraplusplus.dataset.IScalarDataset;
+import net.buildtheearth.terraplusplus.dep.net.daporkchop.lib.common.ref.Ref;
+import net.buildtheearth.terraplusplus.generator.EarthGeneratorPipelines;
+import net.buildtheearth.terraplusplus.generator.EarthGeneratorSettings;
+import net.buildtheearth.terraplusplus.generator.GeneratorDatasets;
+import net.buildtheearth.terraplusplus.projection.OutOfProjectionBoundsException;
+import net.buildtheearth.terraplusplus.projection.dymaxion.BTEDymaxionProjection;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+
+import java.util.concurrent.CompletableFuture;
 
 public class P2SLocationPacket extends P2SPacket {
     @Override
@@ -57,17 +68,34 @@ public class P2SLocationPacket extends P2SPacket {
         int x = (int) Math.floor(proj[0]) + xOffset;
         int z = (int) Math.floor(proj[1]) + zOffset;
 
-        int y = Constants.scanHeight;
+        int altitude = 0;
 
-        while(player.getWorld().getBlockAt(x, y, z).getType() != Material.AIR) {
-            y += Constants.scanHeight;
+        if(SledgehammerUtil.hasTerraPlusPlus()) {
+            double[] adjustedProj = SledgehammerUtil.toGeo(x, z);
+            double adjustedLon = adjustedProj[0];
+            double adjustedLat = adjustedProj[1];
+            GeneratorDatasets datasets = new GeneratorDatasets(SledgehammerUtil.getBTEDefaultSettings());
+            CompletableFuture<Double> altFuture;
+            try {
+               altFuture = datasets.<IScalarDataset>getCustom(EarthGeneratorPipelines.KEY_DATASET_HEIGHTS)
+                        .getAsync(adjustedLon, adjustedLat)
+                        .thenApply(a -> a + 1.0d);
+            } catch (OutOfProjectionBoundsException e) {
+                altFuture = CompletableFuture.completedFuture(0.0);
+            }
+            altFuture.thenAccept(a -> Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),String.format("minecraft:tp %s %s %s %s", player.getName(), x, altitude, z)));
+        } else {
+            int y = Constants.scanHeight;
+
+            while(player.getWorld().getBlockAt(x, y, z).getType() != Material.AIR) {
+                y += Constants.scanHeight;
+            }
+
+            while(player.getWorld().getBlockAt(x, y, z).getType() == Material.AIR) {
+                y -= 1;
+            }
+
+            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),String.format("minecraft:tp %s %s %s %s", player.getName(), x, y+1, z));
         }
-
-        while(player.getWorld().getBlockAt(x, y, z).getType() == Material.AIR) {
-            y -= 1;
-        }
-
-        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),String.format("minecraft:tp %s %s %s %s", player.getName(), x, y+1, z));
-
     }
 }

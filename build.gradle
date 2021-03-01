@@ -29,6 +29,10 @@ allprojects {
     repositories {
         mavenCentral()
         maven {
+            name = "JitPack"
+            url = "https://jitpack.io/"
+        }
+        maven {
             name 'buildtheearth'
             url 'https://maven.noahhusby.com/repository/buildtheearth'
         }
@@ -51,6 +55,10 @@ allprojects {
         maven {
             name = 'skullcreator-repo'
             url = 'https://dl.bintray.com/deanveloper/SkullCreator'
+        }
+        maven {
+            name = "DaPorkchop_"
+            url = "https://maven.daporkchop.net/"
         }
     }
 
