@@ -47,7 +47,7 @@ public class MessageChannel implements PluginMessageListener {
 
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] message) {
-        if (!this.channel.equalsIgnoreCase( channel)) {
+        if (!this.channel.equalsIgnoreCase(channel)) {
             return;
         }
         ByteArrayDataInput in = ByteStreams.newDataInput(message);

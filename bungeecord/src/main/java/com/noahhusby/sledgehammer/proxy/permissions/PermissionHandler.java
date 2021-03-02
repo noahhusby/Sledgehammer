@@ -20,8 +20,8 @@ package com.noahhusby.sledgehammer.proxy.permissions;
 
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
-import com.noahhusby.sledgehammer.proxy.network.P2S.P2SPermissionPacket;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
+import com.noahhusby.sledgehammer.proxy.network.P2S.P2SPermissionPacket;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -44,36 +44,38 @@ public class PermissionHandler {
         Sledgehammer.sledgehammer.getGeneralThreads().scheduleAtFixedRate(this::checkPermissionRequests, 0, 500, TimeUnit.MILLISECONDS);
     }
 
-    private List<PermissionRequest> requests = new ArrayList<>();
+    private final List<PermissionRequest> requests = new ArrayList<>();
 
     /**
      * Checks if {@link CommandSender} is a Sledgehammer admin
+     *
      * @param sender {@link CommandSender}
      * @return True if admin, false if not
      */
     public boolean isAdmin(CommandSender sender) {
         return sender.hasPermission("sledgehammer.admin") || (sender instanceof ProxiedPlayer &&
-                ((ProxiedPlayer) sender).getUniqueId().equals(UUID.fromString("4cfa7dc1-3021-42b0-969b-224a9656cc6d")));
+                                                              ((ProxiedPlayer) sender).getUniqueId().equals(UUID.fromString("4cfa7dc1-3021-42b0-969b-224a9656cc6d")));
     }
 
     /**
      * Checks if player has a given permission both globally and locally
-     * @param player The player to check
+     *
+     * @param player     The player to check
      * @param permission The permission to be checked
      * @param consumer
      */
     public void check(SledgehammerPlayer player, String permission, BiConsumer<PermissionRequest.PermissionCode, Boolean> consumer) {
-        if(player == null) {
+        if (player == null) {
             consumer.accept(PermissionRequest.PermissionCode.NO_PERMISSION, false);
             return;
         }
 
-        if(isAdmin(player) || player.hasPermission(permission)) {
+        if (isAdmin(player) || player.hasPermission(permission)) {
             consumer.accept(PermissionRequest.PermissionCode.PERMISSION, true);
             return;
         }
 
-        if(!player.onSledgehammer()) {
+        if (!player.onSledgehammer()) {
             consumer.accept(PermissionRequest.PermissionCode.NO_PERMISSION, false);
             return;
         }
@@ -88,14 +90,20 @@ public class PermissionHandler {
 
     /**
      * Called when a local server responds with a permission check
-     * @param salt Salt code
+     *
+     * @param salt       Salt code
      * @param permission True if player has permission, false if not
      */
     public void response(String salt, boolean permission) {
         PermissionRequest request = null;
-        for(PermissionRequest r : requests)
-            if(r.salt.equals(salt)) request =  r;
-        if(request == null) return;
+        for (PermissionRequest r : requests) {
+            if (r.salt.equals(salt)) {
+                request = r;
+            }
+        }
+        if (request == null) {
+            return;
+        }
 
         request.response.accept(permission ? PermissionRequest.PermissionCode.PERMISSION : PermissionRequest.PermissionCode.NO_PERMISSION, false);
         requests.remove(request);
@@ -106,7 +114,7 @@ public class PermissionHandler {
      */
     private void checkPermissionRequests() {
         requests.removeIf(request -> {
-            if(request.time + request.timeout < System.currentTimeMillis()) {
+            if (request.time + request.timeout < System.currentTimeMillis()) {
                 request.response.accept(PermissionRequest.PermissionCode.TIMED_OUT, false);
                 return true;
             }

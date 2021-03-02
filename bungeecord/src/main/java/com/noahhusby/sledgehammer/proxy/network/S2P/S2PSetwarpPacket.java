@@ -22,9 +22,9 @@ import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
-import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 import com.noahhusby.sledgehammer.proxy.network.PacketInfo;
 import com.noahhusby.sledgehammer.proxy.network.S2PPacket;
+import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 
 public class S2PSetwarpPacket extends S2PPacket {
     @Override

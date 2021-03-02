@@ -25,6 +25,7 @@ import net.md_5.bungee.api.CommandSender;
 
 public abstract class Command extends net.md_5.bungee.api.plugin.Command {
     private final String permissionNode;
+
     public Command(String name, String node) {
         super(name);
         this.permissionNode = node;
@@ -36,7 +37,9 @@ public abstract class Command extends net.md_5.bungee.api.plugin.Command {
     }
 
     protected boolean isAllowed(CommandSender sender) {
-        if(!sender.hasPermission("sledgehammer.requiresh")) return true;
+        if (!sender.hasPermission("sledgehammer.requiresh")) {
+            return true;
+        }
         return SledgehammerPlayer.getPlayer(sender).onSledgehammer();
     }
 
@@ -45,24 +48,40 @@ public abstract class Command extends net.md_5.bungee.api.plugin.Command {
     }
 
     protected boolean hasPerms(CommandSender sender, boolean exact) {
-        if(PermissionHandler.getInstance().isAdmin(sender)) return true;
-        if(permissionNode == null) return false;
+        if (PermissionHandler.getInstance().isAdmin(sender)) {
+            return true;
+        }
+        if (permissionNode == null) {
+            return false;
+        }
 
-        if(sender.hasPermission(permissionNode+".admin")) return true;
-        for(String s : sender.getPermissions())
-            if((exact && s.equalsIgnoreCase(permissionNode)) || (!exact && s.contains(permissionNode)))
+        if (sender.hasPermission(permissionNode + ".admin")) {
+            return true;
+        }
+        for (String s : sender.getPermissions()) {
+            if ((exact && s.equalsIgnoreCase(permissionNode)) || (!exact && s.contains(permissionNode))) {
                 return true;
+            }
+        }
 
         return false;
     }
 
     protected boolean hasPerms(CommandSender sender, String specificNode) {
-        if(PermissionHandler.getInstance().isAdmin(sender)) return true;
-        if(permissionNode == null) return false;
+        if (PermissionHandler.getInstance().isAdmin(sender)) {
+            return true;
+        }
+        if (permissionNode == null) {
+            return false;
+        }
 
-        for(String s : sender.getPermissions()) {
-            if(s == null) continue;
-            if(s.equals(permissionNode+"."+specificNode)) return true;
+        for (String s : sender.getPermissions()) {
+            if (s == null) {
+                continue;
+            }
+            if (s.equals(permissionNode + "." + specificNode)) {
+                return true;
+            }
         }
 
         return false;

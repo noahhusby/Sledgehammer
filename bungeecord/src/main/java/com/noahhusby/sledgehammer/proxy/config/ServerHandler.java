@@ -23,8 +23,8 @@ import com.google.common.collect.Maps;
 import com.noahhusby.lib.data.storage.StorageList;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.datasets.Location;
-import com.noahhusby.sledgehammer.proxy.network.P2S.P2SInitializationPacket;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
+import com.noahhusby.sledgehammer.proxy.network.P2S.P2SInitializationPacket;
 import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -46,10 +46,13 @@ public class ServerHandler implements Listener {
         return instance == null ? instance = new ServerHandler() : instance;
     }
 
-    @Getter private Map<String, SledgehammerServer> serverCache = Maps.newHashMap();
+    @Getter
+    private Map<String, SledgehammerServer> serverCache = Maps.newHashMap();
 
-    @Getter private final StorageList<SledgehammerServer> servers = new StorageList<>(SledgehammerServer.class);
-    @Getter private final StorageList<ServerGroup> groups = new StorageList<>(ServerGroup.class);
+    @Getter
+    private final StorageList<SledgehammerServer> servers = new StorageList<>(SledgehammerServer.class);
+    @Getter
+    private final StorageList<ServerGroup> groups = new StorageList<>(ServerGroup.class);
     private final Map<String, String> initialized = Maps.newHashMap();
 
     private ServerHandler() {
@@ -59,20 +62,23 @@ public class ServerHandler implements Listener {
 
     /**
      * Initialize a sledgehammer server
+     *
      * @param serverInfo {@link ServerInfo}
-     * @param version Version of initialized server
+     * @param version    Version of initialized server
      */
     public void initialize(ServerInfo serverInfo, String version) {
         String name = serverInfo.getName();
 
         SledgehammerServer s = getServer(name);
-        if(s == null) {
+        if (s == null) {
             s = new SledgehammerServer(name);
             servers.add(s);
             servers.save(true);
         }
 
-        if(s.isInitialized()) return;
+        if (s.isInitialized()) {
+            return;
+        }
 
         s.initialize(version);
         initialized.put(s.getName(), version);
@@ -80,13 +86,14 @@ public class ServerHandler implements Listener {
 
     /**
      * Returns a list of Bungeecord servers
+     *
      * @return {@link LinkedList<ServerInfo>}
      */
     public LinkedList<ServerInfo> getBungeeServers() {
         LinkedList<ServerInfo> bungeeServers = new LinkedList<>();
 
         Map<String, ServerInfo> serversTemp = ProxyServer.getInstance().getServers();
-        for(Map.Entry<String, ServerInfo> s : serversTemp.entrySet()) {
+        for (Map.Entry<String, ServerInfo> s : serversTemp.entrySet()) {
             bungeeServers.add(s.getValue());
         }
 
@@ -95,6 +102,7 @@ public class ServerHandler implements Listener {
 
     /**
      * Updates and saves {@link SledgehammerServer} to storage
+     *
      * @param server {@link SledgehammerServer}
      */
     public void pushServer(SledgehammerServer server) {
@@ -105,6 +113,7 @@ public class ServerHandler implements Listener {
 
     /**
      * Removes a server from memory and storage
+     *
      * @param server {@link SledgehammerServer}
      */
     public void removeServer(SledgehammerServer server) {
@@ -114,6 +123,7 @@ public class ServerHandler implements Listener {
 
     /**
      * Gets {@link SledgehammerServer} by name
+     *
      * @param name Name of server
      * @return {@link SledgehammerServer}
      */
@@ -123,6 +133,7 @@ public class ServerHandler implements Listener {
 
     /**
      * Gets list of {@link Location} from {@link SledgehammerServer}
+     *
      * @param server Name of server
      * @return {@link ArrayList<Location>}
      */
@@ -133,6 +144,7 @@ public class ServerHandler implements Listener {
 
     /**
      * Gets map of initialized servers with SH versions
+     *
      * @return Map of initialized servers
      */
     public Map<String, String> getInitializedMap() {
@@ -141,7 +153,7 @@ public class ServerHandler implements Listener {
 
     private void updateCache() {
         Map<String, SledgehammerServer> tempServerCache = Maps.newHashMap();
-        for(SledgehammerServer s : servers) {
+        for (SledgehammerServer s : servers) {
             tempServerCache.put(s.getName(), s);
         }
         this.serverCache = ImmutableMap.copyOf(tempServerCache);
@@ -149,6 +161,7 @@ public class ServerHandler implements Listener {
 
     /**
      * Sends initialization packet on join
+     *
      * @param e {@link net.md_5.bungee.api.event.ServerConnectedEvent}
      */
     @EventHandler(priority = EventPriority.LOWEST)

@@ -25,8 +25,12 @@ import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.proxy.config.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.proxy.datasets.Location;
-import com.noahhusby.sledgehammer.proxy.dialogs.scenes.location.*;
 import com.noahhusby.sledgehammer.proxy.dialogs.DialogHandler;
+import com.noahhusby.sledgehammer.proxy.dialogs.scenes.location.CityScene;
+import com.noahhusby.sledgehammer.proxy.dialogs.scenes.location.CountryScene;
+import com.noahhusby.sledgehammer.proxy.dialogs.scenes.location.CountyScene;
+import com.noahhusby.sledgehammer.proxy.dialogs.scenes.location.LocationSelectionScene;
+import com.noahhusby.sledgehammer.proxy.dialogs.scenes.location.StateScene;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -38,33 +42,33 @@ public class ServerAddLocationFragment implements ICommandFragment {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(!(sender instanceof ProxiedPlayer)) {
+        if (!(sender instanceof ProxiedPlayer)) {
             sender.sendMessage(ChatUtil.getPlayerOnly());
             return;
         }
 
-        if(ServerHandler.getInstance().getServer(args[0]) == null) {
+        if (ServerHandler.getInstance().getServer(args[0]) == null) {
             sender.sendMessage(ChatUtil.notSledgehammerServer);
             return;
         }
 
-        if(!ServerHandler.getInstance().getServer(args[0]).isEarthServer()) {
+        if (!ServerHandler.getInstance().getServer(args[0]).isEarthServer()) {
             sender.sendMessage(ChatUtil.notEarthServer);
             return;
         }
 
-        if(args.length > 2) {
+        if (args.length > 2) {
             String arg = SledgehammerUtil.getRawArguments(SledgehammerUtil.selectArray(args, 2));
-            if(arg.equalsIgnoreCase("city")) {
+            if (arg.equalsIgnoreCase("city")) {
                 DialogHandler.getInstance().startDialog(sender, new CityScene(ProxyServer.getInstance().getServerInfo(args[0])));
                 return;
-            } else if(arg.equalsIgnoreCase("county")) {
+            } else if (arg.equalsIgnoreCase("county")) {
                 DialogHandler.getInstance().startDialog(sender, new CountyScene(ProxyServer.getInstance().getServerInfo(args[0])));
                 return;
-            } else if(arg.equalsIgnoreCase("state")) {
+            } else if (arg.equalsIgnoreCase("state")) {
                 DialogHandler.getInstance().startDialog(sender, new StateScene(ProxyServer.getInstance().getServerInfo(args[0])));
                 return;
-            } else if(arg.equalsIgnoreCase("country")) {
+            } else if (arg.equalsIgnoreCase("country")) {
                 DialogHandler.getInstance().startDialog(sender, new CountryScene(ProxyServer.getInstance().getServerInfo(args[0])));
                 return;
             }
@@ -72,12 +76,13 @@ public class ServerAddLocationFragment implements ICommandFragment {
             boolean validJson = false;
             try {
                 validJson = JsonUtils.isJsonValid(arg);
-            } catch (IOException ignored) { }
+            } catch (IOException ignored) {
+            }
 
-            if(validJson) {
+            if (validJson) {
                 Location l = SledgehammerUtil.GSON.fromJson(arg, Location.class);
-                if(l == null) {
-                    sender.sendMessage(ChatColor.RED + "Unable to parse json location! Please try again.");
+                if (l == null) {
+                    sender.sendMessage(ChatUtil.combine(ChatColor.RED, "Unable to parse json location! Please try again."));
                     return;
                 }
 
@@ -86,13 +91,21 @@ public class ServerAddLocationFragment implements ICommandFragment {
                 ServerHandler.getInstance().pushServer(s);
 
                 String x = "";
-                if(!l.city.equals("")) x+= ChatUtil.capitalize(l.city)+", ";
-                if(!l.county.equals("")) x+= ChatUtil.capitalize(l.county)+", ";
-                if(!l.state.equals("")) x+= ChatUtil.capitalize(l.state)+", ";
-                if(!l.country.equals("")) x+= ChatUtil.capitalize(l.country);
+                if (!l.city.equals("")) {
+                    x += ChatUtil.capitalize(l.city) + ", ";
+                }
+                if (!l.county.equals("")) {
+                    x += ChatUtil.capitalize(l.county) + ", ";
+                }
+                if (!l.state.equals("")) {
+                    x += ChatUtil.capitalize(l.state) + ", ";
+                }
+                if (!l.country.equals("")) {
+                    x += ChatUtil.capitalize(l.country);
+                }
                 sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Successfully added ", ChatColor.BLUE, l.detailType.name() + ": ", ChatColor.RED, x));
                 return;
-            } else if(arg.contains("{")) {
+            } else if (arg.contains("{")) {
                 sender.sendMessage(ChatColor.RED + "Unable to parse json location! Please try again.");
                 return;
             }
@@ -113,6 +126,6 @@ public class ServerAddLocationFragment implements ICommandFragment {
 
     @Override
     public String[] getArguments() {
-        return new String[]{"[city|county|state|county|{json}]"};
+        return new String[]{ "[city|county|state|county|{json}]" };
     }
 }

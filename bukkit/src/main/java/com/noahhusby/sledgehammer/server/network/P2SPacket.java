@@ -31,5 +31,6 @@ public abstract class P2SPacket {
     }
 
     public abstract String getPacketID();
+
     public abstract void onMessage(PacketInfo info, JsonObject data);
 }

@@ -25,8 +25,8 @@ import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.config.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.proxy.datasets.OpenStreetMaps;
-import com.noahhusby.sledgehammer.proxy.network.P2S.P2STeleportPacket;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
+import com.noahhusby.sledgehammer.proxy.network.P2S.P2STeleportPacket;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.Title;
@@ -42,8 +42,10 @@ public class FlaggedBorderCheckerThread implements Runnable {
     @Override
     public void run() {
         ImmutableMap.copyOf(PlayerManager.getInstance().getPlayers()).forEach((u, p) -> {
-            if(!p.isFlagged()) return;
-            if(p.checkAttribute("BORDER_MODE", false)) {
+            if (!p.isFlagged()) {
+                return;
+            }
+            if (p.checkAttribute("BORDER_MODE", false)) {
                 p.setFlagged(false);
                 p.setTrackingPoint(null);
                 return;
@@ -53,12 +55,18 @@ public class FlaggedBorderCheckerThread implements Runnable {
 
             double[] proj = SledgehammerUtil.toGeo(Double.parseDouble(location.x), Double.parseDouble(location.z));
             ServerInfo info = OpenStreetMaps.getInstance().getServerFromLocation(proj[0], proj[1], true);
-            if(info == null) return;
+            if (info == null) {
+                return;
+            }
             SledgehammerServer server = ServerHandler.getInstance().getServer(info.getName());
-            if(server == null) return;
-            if(server.isStealthMode()) return;
+            if (server == null) {
+                return;
+            }
+            if (server.isStealthMode()) {
+                return;
+            }
 
-            if(!info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
+            if (!info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
                 p.connect(info);
                 NetworkHandler.getInstance().send(new P2STeleportPacket(p.getName(), info.getName(), location));
                 Title title = ProxyServer.getInstance().createTitle();
@@ -72,7 +80,7 @@ public class FlaggedBorderCheckerThread implements Runnable {
 
                 Executors.newSingleThreadScheduledExecutor().schedule(() -> {
                     p.sendTitle(title);
-                    if(!p.checkAttribute("PASSED_BORDER", true)) {
+                    if (!p.checkAttribute("PASSED_BORDER", true)) {
                         p.sendMessage(ChatUtil.combine(ChatColor.RED + "" + ChatColor.BOLD, "Reminder: ",
                                 ChatColor.GRAY, "You can use ", ChatColor.YELLOW, "/border", ChatColor.GRAY,
                                 " to toggle border teleportation!"));

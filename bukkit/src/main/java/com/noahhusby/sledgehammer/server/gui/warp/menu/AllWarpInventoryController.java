@@ -40,13 +40,15 @@ public class AllWarpInventoryController extends AbstractWarpInventoryController<
     @Override
     public void init() {
         List<Warp> warps = new ArrayList<>();
-        for(WarpGroup wg : payload.getGroups())
-            for(Warp w : wg.getWarps())
-                warps.add(w);
+        for (WarpGroup wg : payload.getGroups()) {
+            warps.addAll(wg.getWarps());
+        }
 
         int total_pages = (int) Math.ceil(warps.size() / 27.0);
-        if(total_pages == 0) total_pages = 1;
-        for(int x = 0; x < total_pages; x++) {
+        if (total_pages == 0) {
+            total_pages = 1;
+        }
+        for (int x = 0; x < total_pages; x++) {
             addPage(new AllWarpInventory(x, warps));
         }
         openChild(getChildByPage(0));

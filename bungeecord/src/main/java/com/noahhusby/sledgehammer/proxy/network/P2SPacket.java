@@ -22,8 +22,11 @@ import com.google.gson.JsonObject;
 
 public abstract class P2SPacket {
     public abstract String getPacketID();
+
     public abstract void getMessage(JsonObject data);
+
     public abstract PacketInfo getPacketInfo();
+
     public NetworkHandler getManager() {
         return NetworkHandler.getInstance();
     }

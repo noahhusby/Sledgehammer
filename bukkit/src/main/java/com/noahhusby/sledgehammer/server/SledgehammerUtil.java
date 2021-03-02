@@ -37,27 +37,47 @@ public class SledgehammerUtil extends CommonUtil {
     @Getter
     private static TerraConnector terraConnector = null;
 
-    public static Player getPlayerFromName(String name) {
-        return Bukkit.getServer().getPlayer(name);
+    /**
+     * Checks whether a player is online or not
+     * @param name Name of player
+     * @return True if online, false if not
+     */
+    public static boolean isPlayerAvailable(String name) {
+        return isPlayerAvailable(Bukkit.getPlayer(name));
     }
 
-    public static boolean isPlayerAvailable(String p) {
-        return isPlayerAvailable(getPlayerFromName(p));
-    }
-
+    /**
+     * Checks whether a player is online or not
+     * @param p {@link Player}
+     * @return True if online, false if not
+     */
     public static boolean isPlayerAvailable(Player p) {
-        if(p == null) return false;
+        if (p == null) {
+            return false;
+        }
         return p.isOnline();
     }
 
+    /**
+     * Gets a skull from a base64 texture
+     * @param base64 Base64 Texture
+     * @param name Display Name of Skull
+     * @return {@link ItemStack}
+     */
     public static ItemStack getSkull(String base64, String name) {
         try {
             return setItemDisplayName(SkullUtil.itemFromBase64(base64), name);
-        } catch (StringIndexOutOfBoundsException | NullPointerException e){
+        } catch (StringIndexOutOfBoundsException | NullPointerException e) {
             return getSkull(Constants.steveHead, name);
         }
     }
 
+    /**
+     * Sets the display name of an item
+     * @param item {@link ItemStack}
+     * @param name Display name of Item
+     * @return {@link ItemStack}
+     */
     public static ItemStack setItemDisplayName(@NonNull ItemStack item, @NonNull String name) {
         item.getItemMeta().setDisplayName(name);
         return item;
@@ -71,12 +91,15 @@ public class SledgehammerUtil extends CommonUtil {
         return terraConnector != null;
     }
 
+    /**
+     * Checks if TerraPlusPlus is installed
+     */
     protected static void checkForTerra() {
         try {
             Class.forName("net.buildtheearth.terraplusplus.TerraMod");
             terraConnector = new TerraConnector();
             Sledgehammer.LOGGER.info("TerraPlusPlus is installed. Using terra height mode.");
-        } catch(ClassNotFoundException ignored) {
+        } catch (ClassNotFoundException ignored) {
             Sledgehammer.LOGGER.info("TerraPlusPlus is not installed. Using vanilla height mode.");
         }
     }

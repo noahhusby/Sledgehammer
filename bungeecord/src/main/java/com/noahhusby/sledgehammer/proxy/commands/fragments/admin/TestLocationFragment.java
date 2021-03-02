@@ -21,8 +21,8 @@ package com.noahhusby.sledgehammer.proxy.commands.fragments.admin;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.proxy.network.P2S.P2STestLocationPacket;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
+import com.noahhusby.sledgehammer.proxy.network.P2S.P2STestLocationPacket;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -30,19 +30,19 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 public class TestLocationFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(!(sender instanceof ProxiedPlayer)) {
+        if (!(sender instanceof ProxiedPlayer)) {
             sender.sendMessage(ChatUtil.getNoPermission());
             return;
         }
 
-        if(args.length == 0) {
+        if (args.length == 0) {
             NetworkHandler.getInstance().send(new P2STestLocationPacket(sender.getName(),
                     SledgehammerUtil.getServerFromSender(sender).getName(), -1));
         } else {
             try {
                 int zoom = Integer.parseInt(args[0]);
 
-                if(zoom < 1 || zoom > 19) {
+                if (zoom < 1 || zoom > 19) {
                     throw new Exception();
                 }
 
@@ -50,7 +50,7 @@ public class TestLocationFragment implements ICommandFragment {
                         SledgehammerUtil.getServerFromSender(sender).getName(), zoom));
             } catch (Exception e) {
                 sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Invalid zoom level! ", ChatColor.GRAY,
-                        "Please enter a value between ", ChatColor.BLUE,  1, ChatColor.GRAY, " and ", ChatColor.BLUE, "19"));
+                        "Please enter a value between ", ChatColor.BLUE, 1, ChatColor.GRAY, " and ", ChatColor.BLUE, "19"));
             }
         }
     }
@@ -67,6 +67,6 @@ public class TestLocationFragment implements ICommandFragment {
 
     @Override
     public String[] getArguments() {
-        return new String[]{"[zoom]"};
+        return new String[]{ "[zoom]" };
     }
 }

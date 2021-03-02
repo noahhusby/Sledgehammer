@@ -33,8 +33,11 @@ public class P2STestLocationPacket extends P2SPacket {
         this.server = server;
         this.sender = sender;
         this.zoom = zoom;
-        if(zoom == -1) this.zoom = ConfigHandler.zoom;
+        if (zoom == -1) {
+            this.zoom = ConfigHandler.zoom;
+        }
     }
+
     @Override
     public String getPacketID() {
         return Constants.testLocationID;

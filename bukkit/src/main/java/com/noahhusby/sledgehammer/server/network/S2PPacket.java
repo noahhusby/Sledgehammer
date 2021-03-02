@@ -26,6 +26,8 @@ public abstract class S2PPacket {
     }
 
     public abstract String getPacketID();
+
     public abstract void getMessage(JsonObject data);
+
     public abstract PacketInfo getPacketInfo();
 }

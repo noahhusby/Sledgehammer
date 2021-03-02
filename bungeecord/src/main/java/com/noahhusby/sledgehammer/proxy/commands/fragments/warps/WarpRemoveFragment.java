@@ -36,7 +36,7 @@ public class WarpRemoveFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
         PermissionHandler.getInstance().check(SledgehammerPlayer.getPlayer(sender), "sledgehammer.warp.remove", (code, global) -> {
-            if(code == PermissionRequest.PermissionCode.PERMISSION) {
+            if (code == PermissionRequest.PermissionCode.PERMISSION) {
                 run(sender, args, global);
                 return;
             }
@@ -45,7 +45,7 @@ public class WarpRemoveFragment implements ICommandFragment {
     }
 
     private void run(CommandSender sender, String[] args, boolean global) {
-        if(args.length < 1) {
+        if (args.length < 1) {
             sender.sendMessage(ChatUtil.combine(ChatColor.RED, String.format("Usage: /%s remove <name>", ConfigHandler.warpCommand)));
             return;
         }
@@ -53,32 +53,33 @@ public class WarpRemoveFragment implements ICommandFragment {
         List<Warp> rawWarps = WarpHandler.getInstance().getWarps(args[0]);
         List<Warp> warps = Lists.newArrayList();
 
-        for(Warp w : rawWarps) {
-            if(global) {
+        for (Warp w : rawWarps) {
+            if (global) {
                 warps.add(w);
                 continue;
             }
 
-            if(SledgehammerPlayer.getPlayer(sender).getSledgehammerServer().getGroup().getServers().contains(w.getServer()))
+            if (SledgehammerPlayer.getPlayer(sender).getSledgehammerServer().getGroup().getServers().contains(w.getServer())) {
                 warps.add(w);
+            }
         }
 
-        if(warps.isEmpty()) {
+        if (warps.isEmpty()) {
             sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "Warp not found!"));
             return;
         }
 
-        if(warps.size() == 1) {
+        if (warps.size() == 1) {
             WarpHandler.getInstance().removeWarp(warps.get(0).getId(), sender);
             return;
         }
 
         boolean showWarps = (args.length == 1);
 
-        if(!showWarps) {
+        if (!showWarps) {
             try {
                 int val = Integer.parseInt(args[1]);
-                if(val < 0 || val > warps.size()) {
+                if (val < 0 || val > warps.size()) {
                     showWarps = true;
                 }
             } catch (Exception e) {
@@ -86,15 +87,15 @@ public class WarpRemoveFragment implements ICommandFragment {
             }
         }
 
-        if(showWarps) {
+        if (showWarps) {
             sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "There are multiple warps with that name!"));
-            for(int i = 0; i < warps.size(); i++) {
+            for (int i = 0; i < warps.size(); i++) {
                 sender.sendMessage(ChatUtil.combine(ChatColor.RED, i + ": ", ChatColor.BLUE, warps.get(i).getName(),
                         ChatColor.GRAY, " - ", ChatColor.YELLOW, warps.get(i).getServer()));
             }
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY,  "Use ", ChatColor.YELLOW,
-                    String.format("/%s remove %s", ConfigHandler.warpCommand, args[0], ChatColor.RED,
-                            " <id>", ChatColor.GRAY, " to remove a specific warp!")));
+            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Use ", ChatColor.YELLOW,
+                    String.format("/%s remove %s", ConfigHandler.warpCommand, args[0]), ChatColor.RED,
+                            " <id>", ChatColor.GRAY, " to remove a specific warp!"));
             return;
         }
 

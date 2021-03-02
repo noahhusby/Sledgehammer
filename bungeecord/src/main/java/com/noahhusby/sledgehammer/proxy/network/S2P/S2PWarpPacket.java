@@ -24,10 +24,10 @@ import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.gui.GUIHandler;
+import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
 import com.noahhusby.sledgehammer.proxy.network.P2S.P2STeleportPacket;
 import com.noahhusby.sledgehammer.proxy.network.PacketInfo;
 import com.noahhusby.sledgehammer.proxy.network.S2PPacket;
-import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 import net.md_5.bungee.api.ChatColor;
@@ -41,22 +41,29 @@ public class S2PWarpPacket extends S2PPacket {
     @Override
     public void onMessage(PacketInfo info, JsonObject data) {
 
-        if(!GUIHandler.getInstance().validateRequest(SledgehammerPlayer.getPlayer(info.getSender()), data.get("salt").getAsString())) return;
+        if (!GUIHandler.getInstance().validateRequest(SledgehammerPlayer.getPlayer(info.getSender()), data.get("salt").getAsString())) {
+            return;
+        }
 
         SledgehammerPlayer player = SledgehammerPlayer.getPlayer(info.getSender());
-        if(player == null) return;
+        if (player == null) {
+            return;
+        }
         int warpId = data.get("warpId").getAsInt();
 
         Warp warp = null;
-        for(Warp w : WarpHandler.getInstance().getWarps())
-            if(w.getId() == warpId) warp = w;
+        for (Warp w : WarpHandler.getInstance().getWarps()) {
+            if (w.getId() == warpId) {
+                warp = w;
+            }
+        }
 
-        if(warp == null) {
+        if (warp == null) {
             player.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "That warp does not exist!"));
             return;
         }
 
-        if(SledgehammerUtil.getServerFromSender(player) != SledgehammerUtil.getServerByName(warp.getServer())) {
+        if (SledgehammerUtil.getServerFromSender(player) != SledgehammerUtil.getServerByName(warp.getServer())) {
             player.connect(SledgehammerUtil.getServerByName(warp.getServer()));
             player.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Sending you to ", ChatColor.RED, warp.getServer()));
         }

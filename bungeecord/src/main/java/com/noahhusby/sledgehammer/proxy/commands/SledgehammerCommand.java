@@ -23,7 +23,7 @@ import net.md_5.bungee.api.CommandSender;
 
 public class SledgehammerCommand extends Command {
     public SledgehammerCommand() {
-        super("sledgehammer", "sledgehammer.admin", new String[]{"sh"});
+        super("sledgehammer", "sledgehammer.admin", new String[]{ "sh" });
     }
 
     @Override

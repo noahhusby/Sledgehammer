@@ -19,8 +19,8 @@
 package com.noahhusby.sledgehammer.proxy.commands.fragments.admin;
 
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.proxy.dialogs.scenes.setup.ConfigScene;
 import com.noahhusby.sledgehammer.proxy.dialogs.DialogHandler;
+import com.noahhusby.sledgehammer.proxy.dialogs.scenes.setup.ConfigScene;
 import net.md_5.bungee.api.CommandSender;
 
 public class SetupFragment implements ICommandFragment {

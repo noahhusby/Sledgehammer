@@ -25,8 +25,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
 public abstract class GUIController implements IController {
-    @Getter private final Inventory inventory;
-    @Getter private final Player player;
+    @Getter
+    private final Inventory inventory;
+    @Getter
+    private final Player player;
 
     private GUIChild currentChild = null;
 
@@ -46,7 +48,9 @@ public abstract class GUIController implements IController {
     }
 
     public void openChild(GUIChild child) {
-        if(child == null) return;
+        if (child == null) {
+            return;
+        }
         this.currentChild = child;
         inventory.setContents(child.getInventory().getContents());
         player.updateInventory();
@@ -56,5 +60,6 @@ public abstract class GUIController implements IController {
         player.closeInventory();
     }
 
-    public void init() {}
+    public void init() {
+    }
 }

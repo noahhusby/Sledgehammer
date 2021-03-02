@@ -43,7 +43,7 @@ public class LocationSelectionComponent extends DialogComponent {
 
     @Override
     public String[] getAcceptableResponses() {
-        return new String[]{"*"};
+        return new String[]{ "*" };
     }
 
     @Override

@@ -19,10 +19,10 @@
 package com.noahhusby.sledgehammer.proxy.dialogs.scenes.setup;
 
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.dialogs.DialogHandler;
 import com.noahhusby.sledgehammer.proxy.dialogs.components.setup.LocationMenuComponent;
 import com.noahhusby.sledgehammer.proxy.dialogs.scenes.DialogScene;
 import com.noahhusby.sledgehammer.proxy.dialogs.scenes.location.LocationSelectionScene;
-import com.noahhusby.sledgehammer.proxy.dialogs.DialogHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -44,16 +44,16 @@ public class LocationConfigScene extends DialogScene {
     @Override
     public void onFinish() {
         String v = getValue("location").trim().toLowerCase();
-        if(v.equals("add")) {
+        if (v.equals("add")) {
             DialogHandler.getInstance().discardDialog(this);
             DialogHandler.getInstance().startDialog(getCommandSender(), new LocationSelectionScene(server, new LocationConfigScene(server)));
-        } else if(v.equals("finish")) {
+        } else if (v.equals("finish")) {
             DialogHandler.getInstance().discardDialog(this);
             DialogHandler.getInstance().startDialog(getCommandSender(), new ConfigScene(server, true));
-        } else if(v.equals("remove")) {
+        } else if (v.equals("remove")) {
             DialogHandler.getInstance().discardDialog(this);
             DialogHandler.getInstance().startDialog(getCommandSender(), new LocationRemovalScene(server, new LocationConfigScene(server)));
-        } else if(v.equals("list")) {
+        } else if (v.equals("list")) {
             DialogHandler.getInstance().discardDialog(this);
             DialogHandler.getInstance().startDialog(getCommandSender(), new LocationListScene(server, new LocationConfigScene(server)));
         }

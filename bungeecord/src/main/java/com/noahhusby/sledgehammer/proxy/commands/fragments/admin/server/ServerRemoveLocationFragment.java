@@ -21,8 +21,8 @@ package com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.proxy.config.ServerHandler;
-import com.noahhusby.sledgehammer.proxy.dialogs.scenes.setup.LocationRemovalScene;
 import com.noahhusby.sledgehammer.proxy.dialogs.DialogHandler;
+import com.noahhusby.sledgehammer.proxy.dialogs.scenes.setup.LocationRemovalScene;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -31,17 +31,17 @@ public class ServerRemoveLocationFragment implements ICommandFragment {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(ServerHandler.getInstance().getServer(args[0]) == null) {
+        if (ServerHandler.getInstance().getServer(args[0]) == null) {
             sender.sendMessage(ChatUtil.notSledgehammerServer);
             return;
         }
 
-        if(!ServerHandler.getInstance().getServer(args[0]).isEarthServer()) {
+        if (!ServerHandler.getInstance().getServer(args[0]).isEarthServer()) {
             sender.sendMessage(ChatUtil.notEarthServer);
             return;
         }
 
-        if(!(sender instanceof ProxiedPlayer)) {
+        if (!(sender instanceof ProxiedPlayer)) {
             sender.sendMessage(ChatUtil.getNoPermission());
             return;
         }

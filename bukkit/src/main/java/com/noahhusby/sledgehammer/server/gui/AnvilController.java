@@ -35,7 +35,9 @@ public class AnvilController implements IController {
     }
 
     public void openChild(AnvilChild child) {
-        if(child == null) return;
+        if (child == null) {
+            return;
+        }
         child.setController(this);
 
         AnvilGUI.Builder builder = new AnvilGUI.Builder();
@@ -65,5 +67,6 @@ public class AnvilController implements IController {
         player.closeInventory();
     }
 
-    public void init() {}
+    public void init() {
+    }
 }

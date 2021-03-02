@@ -24,37 +24,28 @@ import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.gui.GUIChild;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.util.SkullUtil;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class ManageGroupInventory extends GUIChild {
     private final int page;
     private final List<WarpGroup> groups;
 
-    private Inventory inventory;
-
-    public ManageGroupInventory(int page, List<WarpGroup> groups) {
-        this.page = page;
-        this.groups = groups;
-    }
-
     @Override
     public void init() {
-        this.inventory = getInventory();
-        int total_pages = (int) Math.ceil(groups.size() / 27.0);
-
-        for(int x = 0; x < 45; x++) {
+        for (int x = 0; x < 45; x++) {
             ItemStack glass = new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) 15);
 
             ItemMeta meta = glass.getItemMeta();
-            meta.setDisplayName(ChatColor.RESET+"");
+            meta.setDisplayName(ChatColor.RESET + "");
             meta.setDisplayName(null);
             glass.setItemMeta(meta);
 
@@ -64,36 +55,38 @@ public class ManageGroupInventory extends GUIChild {
         inventory.setItem(4, SledgehammerUtil.getSkull(Constants.monitorHead, ChatColor.GREEN + "" + ChatColor.BOLD + "Groups"));
 
         boolean paged = false;
-        if(page != 0) {
+        if (page != 0) {
             ItemStack head = SledgehammerUtil.getSkull(Constants.arrowLeftHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Previous Page");
             inventory.setItem(42, head);
             paged = true;
         }
 
-        if(groups.size() > (page + 1) * Constants.warpsPerPage) {
+        if (groups.size() > (page + 1) * Constants.warpsPerPage) {
             ItemStack head = SledgehammerUtil.getSkull(Constants.arrowRightHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Next Page");
             inventory.setItem(44, head);
             paged = true;
         }
 
-        if(paged) {
+        if (paged) {
             setItem(43, SledgehammerUtil.setItemDisplayName(SkullUtil.itemFromNumber(page + 1), ChatColor.GREEN
-             + "" + ChatColor.BOLD + "Page " + (page + 1)));
+                                                                                                + "" + ChatColor.BOLD + "Page " + (page + 1)));
         }
 
         int min = page * 27;
         int max = min + 27;
 
-        if(max > groups.size()) {
+        if (max > groups.size()) {
             max = min + (groups.size() - (page * 27));
         }
 
         int current = 9;
-        for(int x = min; x < max; x++) {
+        for (int x = min; x < max; x++) {
             WarpGroup group = groups.get(x);
 
             String headId = group.getHeadId();
-            if(headId.equals("")) headId = Constants.cyanWoolHead;
+            if (headId.equals("")) {
+                headId = Constants.cyanWoolHead;
+            }
             ItemStack item = SledgehammerUtil.getSkull(headId, group.getName());
 
             ItemMeta meta = item.getItemMeta();
@@ -115,31 +108,40 @@ public class ManageGroupInventory extends GUIChild {
     @Override
     public void onInventoryClick(InventoryClickEvent e) {
         e.setCancelled(true);
-        if(e.getCurrentItem() == null) return;
-        if(e.getCurrentItem().getItemMeta() == null) return;
-        if(e.getCurrentItem().getItemMeta().getDisplayName() == null) return;
+        if (e.getCurrentItem() == null) {
+            return;
+        }
+        if (e.getCurrentItem().getItemMeta() == null) {
+            return;
+        }
+        if (e.getCurrentItem().getItemMeta().getDisplayName() == null) {
+            return;
+        }
 
         ManageGroupInventoryController controller = (ManageGroupInventoryController) getController();
 
-        if(e.getCurrentItem().getItemMeta().getDisplayName() == null) return;
-
-        if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Previous Page")) {
-            controller.openChild(controller.getChildByPage(page-1));
+        if (e.getCurrentItem().getItemMeta().getDisplayName() == null) {
             return;
         }
 
-        if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Next Page")) {
-            controller.openChild(controller.getChildByPage(page+1));
+        if (ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Previous Page")) {
+            controller.openChild(controller.getChildByPage(page - 1));
             return;
         }
 
-        if(e.getSlot() > 8 && e.getSlot() < 36) {
+        if (ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Next Page")) {
+            controller.openChild(controller.getChildByPage(page + 1));
+            return;
+        }
+
+        if (e.getSlot() > 8 && e.getSlot() < 36) {
             ItemMeta meta = e.getCurrentItem().getItemMeta();
             String id = "";
             List<String> lore = meta.getLore();
-            for(String s : lore) {
-                if(s.contains("ID:"))
+            for (String s : lore) {
+                if (s.contains("ID:")) {
                     id = ChatColor.stripColor(s).trim().replace("ID: ", "");
+                }
             }
 
             GUIRegistry.register(new ManageGroupWarpInventoryController(getController(), controller.getPayload(), id));

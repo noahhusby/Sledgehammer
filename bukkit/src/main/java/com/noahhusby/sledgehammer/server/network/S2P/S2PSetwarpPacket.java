@@ -41,8 +41,12 @@ public class S2PSetwarpPacket extends S2PPacket {
     @Override
     public void getMessage(JsonObject data) {
         Player p = Bukkit.getPlayer(info.getSender());
-        if(p == null) return;
-        if(!p.isOnline()) return;
+        if (p == null) {
+            return;
+        }
+        if (!p.isOnline()) {
+            return;
+        }
         Point point = new Point(String.valueOf(p.getLocation().getX()), String.valueOf(p.getLocation().getY()), String.valueOf(p.getLocation().getZ()), String.valueOf(p.getLocation().getPitch()), String.valueOf(p.getLocation().getYaw()));
         data.add("point", SledgehammerUtil.GSON.toJsonTree(point));
     }

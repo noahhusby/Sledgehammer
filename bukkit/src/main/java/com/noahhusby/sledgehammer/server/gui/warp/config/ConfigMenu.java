@@ -10,7 +10,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class ConfigMenu extends GUIChild {
 
-    public ConfigMenu() {}
+    public ConfigMenu() {
+    }
 
     @Override
     public void init() {
@@ -22,14 +23,20 @@ public class ConfigMenu extends GUIChild {
     @Override
     public void onInventoryClick(InventoryClickEvent e) {
         e.setCancelled(true);
-        if(e.getCurrentItem() == null) return;
-        if(e.getCurrentItem().getItemMeta() == null) return;
-        if(e.getCurrentItem().getItemMeta().getDisplayName() == null) return;
+        if (e.getCurrentItem() == null) {
+            return;
+        }
+        if (e.getCurrentItem().getItemMeta() == null) {
+            return;
+        }
+        if (e.getCurrentItem().getItemMeta().getDisplayName() == null) {
+            return;
+        }
         if (e.getSlot() == 13) {
             GUIRegistry.register(new WarpNameEntryController(getPlayer(), ((ConfigMenuController) controller).getPayload()));
             return;
         }
-        if(e.getSlot() == 15) {
+        if (e.getSlot() == 15) {
             GUIRegistry.register(new ManageGroupInventoryController(getPlayer(), ((ConfigMenuController) controller).getPayload()));
             return;
         }

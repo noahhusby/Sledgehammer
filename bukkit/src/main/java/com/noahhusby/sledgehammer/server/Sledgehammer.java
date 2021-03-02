@@ -21,6 +21,15 @@ package com.noahhusby.sledgehammer.server;
 import com.noahhusby.sledgehammer.server.chat.ChatHandler;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
+import com.noahhusby.sledgehammer.server.network.P2S.P2SCommandPacket;
+import com.noahhusby.sledgehammer.server.network.P2S.P2SInitilizationPacket;
+import com.noahhusby.sledgehammer.server.network.P2S.P2SLocationPacket;
+import com.noahhusby.sledgehammer.server.network.P2S.P2SPermissionPacket;
+import com.noahhusby.sledgehammer.server.network.P2S.P2SSetwarpPacket;
+import com.noahhusby.sledgehammer.server.network.P2S.P2STeleportPacket;
+import com.noahhusby.sledgehammer.server.network.P2S.P2STestLocationPacket;
+import com.noahhusby.sledgehammer.server.network.P2S.P2SWarpConfigPacket;
+import com.noahhusby.sledgehammer.server.network.P2S.P2SWarpGUIPacket;
 import com.noahhusby.sledgehammer.server.players.PlayerManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -32,7 +41,8 @@ import java.util.logging.Logger;
 public final class Sledgehammer extends JavaPlugin implements Listener {
 
     public static Logger LOGGER = Logger.getLogger("Sledgehammer Bootstrap");
-    @Getter private static Sledgehammer instance;
+    @Getter
+    private static Sledgehammer instance;
 
     public static String bungeecordName = "";
 
@@ -42,6 +52,18 @@ public final class Sledgehammer extends JavaPlugin implements Listener {
         LOGGER = getLogger();
 
         SledgehammerUtil.checkForTerra();
+
+        NetworkHandler.getInstance().register(
+                new P2SCommandPacket(),
+                new P2SInitilizationPacket(),
+                new P2SLocationPacket(),
+                new P2SSetwarpPacket(),
+                new P2STeleportPacket(),
+                new P2STestLocationPacket(),
+                new P2SWarpGUIPacket(),
+                new P2SPermissionPacket(),
+                new P2SWarpConfigPacket()
+        );
 
         Bukkit.getServer().getPluginManager().registerEvents(ChatHandler.getInstance(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new GUIRegistry(), this);

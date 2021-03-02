@@ -29,22 +29,22 @@ public enum GameMode {
     ADVENTURE(2, "adventure"),
 
     SPECTATOR(3, "spectator");
-	
+
     private final int value;
     private final String name;
-    
+
     GameMode(final int value, final String name) {
         this.value = value;
         this.name = name;
     }
-    
+
     @Override
-	public String toString() {
-    	return this.name;
+    public String toString() {
+        return this.name;
     }
-    
+
     public int getId() {
-    	return this.value;
+        return this.value;
     }
-    
+
 }

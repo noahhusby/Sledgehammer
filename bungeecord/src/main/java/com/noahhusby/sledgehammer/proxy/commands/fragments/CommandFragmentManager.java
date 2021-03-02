@@ -26,6 +26,7 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 
@@ -50,10 +51,8 @@ public abstract class CommandFragmentManager extends Command {
     protected void executeFragment(CommandSender sender, String[] args) {
         if (args.length != 0) {
             ICommandFragment fragment = fragments.get(args[0].toLowerCase(Locale.ROOT));
-            if(fragment != null) {
-                ArrayList<String> dataList = new ArrayList<>();
-                for (int x = 1; x < args.length; x++) dataList.add(args[x]);
-
+            if (fragment != null) {
+                ArrayList<String> dataList = new ArrayList<>(Arrays.asList(args).subList(1, args.length));
                 String[] data = dataList.toArray(new String[dataList.size()]);
                 fragment.execute(sender, data);
                 return;
@@ -63,7 +62,7 @@ public abstract class CommandFragmentManager extends Command {
     }
 
     private void displayCommands(CommandSender sender) {
-        for(int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
             sender.sendMessage();
         }
 
@@ -71,13 +70,13 @@ public abstract class CommandFragmentManager extends Command {
                 ChatColor.DARK_GREEN + "" + ChatColor.BLUE, " Sledgehammer ", ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH, "=============="));
         sender.sendMessage(ChatUtil.combine(""));
 
-        for(ICommandFragment f : fragments.values()) {
+        for (ICommandFragment f : fragments.values()) {
             TextComponent message = ChatUtil.combine(ChatColor.YELLOW, commandBase);
             message.addExtra(ChatUtil.combine(ChatColor.GREEN, " ", f.getName(), " "));
-            if(f.getArguments() != null) {
-                for(int x = 0; x < f.getArguments().length; x++) {
+            if (f.getArguments() != null) {
+                for (int x = 0; x < f.getArguments().length; x++) {
                     String argument = f.getArguments()[x];
-                    if(argument.startsWith("<")) {
+                    if (argument.startsWith("<")) {
                         message.addExtra(ChatUtil.combine(ChatColor.RED, argument + " "));
                     } else {
                         message.addExtra(ChatUtil.combine(ChatColor.GRAY, argument + " "));

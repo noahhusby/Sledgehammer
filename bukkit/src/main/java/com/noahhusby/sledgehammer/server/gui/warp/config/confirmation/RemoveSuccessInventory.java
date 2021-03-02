@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class RemoveSuccessInventory extends GUIChild {
     private final WarpConfigPayload payload;
+
     public RemoveSuccessInventory(WarpConfigPayload payload) {
         this.payload = payload;
     }
@@ -20,7 +21,7 @@ public class RemoveSuccessInventory extends GUIChild {
     @Override
     public void init() {
         ItemStack skull = SledgehammerUtil.getSkull(Constants.redCheckmarkHead, ChatColor.GREEN + "" + ChatColor.BOLD +
-                "Successfully removed warp!");
+                                                                                "Successfully removed warp!");
         skull.setLore(Lists.newArrayList(ChatColor.BLUE + "Click to continue"));
         fillInventory(skull);
     }

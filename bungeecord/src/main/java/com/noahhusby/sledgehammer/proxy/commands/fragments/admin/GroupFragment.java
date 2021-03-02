@@ -21,7 +21,12 @@ package com.noahhusby.sledgehammer.proxy.commands.fragments.admin;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.FragmentManager;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.groups.*;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.groups.GroupCreateFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.groups.GroupInfoFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.groups.GroupListFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.groups.GroupRemoveFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.groups.GroupSetHeadFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.groups.GroupSetNameFragment;
 import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
 import net.md_5.bungee.api.CommandSender;
 
@@ -39,7 +44,7 @@ public class GroupFragment extends FragmentManager implements ICommandFragment {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(!PermissionHandler.getInstance().isAdmin(sender)) {
+        if (!PermissionHandler.getInstance().isAdmin(sender)) {
             sender.sendMessage(ChatUtil.getNoPermission());
             return;
         }

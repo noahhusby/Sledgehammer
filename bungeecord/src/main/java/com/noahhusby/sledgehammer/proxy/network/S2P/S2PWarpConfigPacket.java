@@ -24,10 +24,10 @@ import com.noahhusby.sledgehammer.common.warps.Warp;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.gui.GUIHandler;
+import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
 import com.noahhusby.sledgehammer.proxy.network.P2S.P2SWarpConfigPacket;
 import com.noahhusby.sledgehammer.proxy.network.PacketInfo;
 import com.noahhusby.sledgehammer.proxy.network.S2PPacket;
-import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
 import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.proxy.permissions.PermissionRequest;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
@@ -43,7 +43,9 @@ public class S2PWarpConfigPacket extends S2PPacket {
 
     @Override
     public void onMessage(PacketInfo info, JsonObject packet) {
-        if(!GUIHandler.getInstance().validateRequest(SledgehammerPlayer.getPlayer(info.getSender()), packet.get("salt").getAsString())) return;
+        if (!GUIHandler.getInstance().validateRequest(SledgehammerPlayer.getPlayer(info.getSender()), packet.get("salt").getAsString())) {
+            return;
+        }
 
         JsonObject data = packet.getAsJsonObject("data");
         SledgehammerPlayer player = SledgehammerPlayer.getPlayer(info.getSender());
@@ -53,7 +55,7 @@ public class S2PWarpConfigPacket extends S2PPacket {
         switch (ProxyConfigAction.valueOf(packet.get("action").getAsString())) {
             case OPEN_CONFIG:
                 PermissionHandler.getInstance().check(player, "sledgehammer.warp.edit", (code, global) -> {
-                    if(code == PermissionRequest.PermissionCode.PERMISSION) {
+                    if (code == PermissionRequest.PermissionCode.PERMISSION) {
                         NetworkHandler.getInstance().send(new P2SWarpConfigPacket(player,
                                 P2SWarpConfigPacket.ServerConfigAction.OPEN_CONFIG, global));
                         return;
@@ -90,7 +92,9 @@ public class S2PWarpConfigPacket extends S2PPacket {
                 Warp.PinnedMode pin = Warp.PinnedMode.valueOf(data.get("pinned").getAsString());
 
                 Warp warp = WarpHandler.getInstance().getWarp(warpId);
-                if(warp == null) return;
+                if (warp == null) {
+                    return;
+                }
                 warp.setHeadID(headId);
                 warp.setName(name);
                 warp.setPinned(pin);
@@ -99,11 +103,11 @@ public class S2PWarpConfigPacket extends S2PPacket {
                 break;
             case UPDATE_PLAYER_DEFAULT:
                 String sort = data.get("sort").getAsString();
-                if(sort.equalsIgnoreCase("all")) {
+                if (sort.equalsIgnoreCase("all")) {
                     player.getAttributes().put("WARP_SORT", "WARP_SORT_ALL");
-                } else if(sort.equalsIgnoreCase("group")) {
+                } else if (sort.equalsIgnoreCase("group")) {
                     player.getAttributes().put("WARP_SORT", "WARP_SORT_GROUP");
-                } else if(sort.equalsIgnoreCase("pinned")) {
+                } else if (sort.equalsIgnoreCase("pinned")) {
                     player.getAttributes().put("WARP_SORT", "WARP_SORT_PINNED");
                 }
                 break;

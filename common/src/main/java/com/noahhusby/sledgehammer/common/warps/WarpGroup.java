@@ -13,10 +13,14 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 public class WarpGroup {
-    @Getter private final String Id;
-    @Getter private final String name;
-    @Getter private final String headId;
-    @Getter private List<Warp> warps = new ArrayList<>();
+    @Getter
+    private final String Id;
+    @Getter
+    private final String name;
+    @Getter
+    private final String headId;
+    @Getter
+    private List<Warp> warps = new ArrayList<>();
 
     public JsonObject toJson() {
         JsonObject warpGroup = new JsonObject();
@@ -24,7 +28,7 @@ public class WarpGroup {
         warpGroup.addProperty("name", name);
         JsonArray waypoints = new JsonArray();
         warpGroup.addProperty("headId", headId);
-        for(Warp w : warps) {
+        for (Warp w : warps) {
             waypoints.add(w.toWaypoint());
         }
         return warpGroup;

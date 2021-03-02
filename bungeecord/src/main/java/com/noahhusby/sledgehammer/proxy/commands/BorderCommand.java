@@ -34,21 +34,21 @@ public class BorderCommand extends Command {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(!(sender instanceof ProxiedPlayer)) {
+        if (!(sender instanceof ProxiedPlayer)) {
             sender.sendMessage(ChatUtil.getPlayerOnly());
             return;
         }
 
-        if(!isAllowed(sender)) {
+        if (!isAllowed(sender)) {
             sender.sendMessage(ChatUtil.getNotAvailable());
             return;
         }
 
         PermissionHandler.getInstance().check(SledgehammerPlayer.getPlayer(sender), "sledgehammer.border", (code, global) -> {
-            if(code == PermissionRequest.PermissionCode.PERMISSION) {
+            if (code == PermissionRequest.PermissionCode.PERMISSION) {
                 SledgehammerPlayer p = PlayerManager.getInstance().getPlayer(sender);
-                if(args.length == 0) {
-                    if(p.checkAttribute("BORDER_MODE", false)) {
+                if (args.length == 0) {
+                    if (p.checkAttribute("BORDER_MODE", false)) {
                         sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Border teleportation is currently set to ", ChatColor.RED, "off!"));
                         sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Use ", ChatColor.YELLOW, "/border on", ChatColor.GRAY, " to turn it on!"));
                         return;
@@ -61,14 +61,14 @@ public class BorderCommand extends Command {
 
                 String command = args[0];
 
-                if(command.equalsIgnoreCase("on")) {
+                if (command.equalsIgnoreCase("on")) {
                     sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Border teleportation has been set to ", ChatColor.GREEN, "on!"));
                     p.getAttributes().put("BORDER_MODE", true);
 
                     return;
                 }
 
-                if(command.equalsIgnoreCase("off")) {
+                if (command.equalsIgnoreCase("off")) {
                     sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Border teleportation has been set to ", ChatColor.RED, "off!"));
                     p.getAttributes().put("BORDER_MODE", false);
                     return;

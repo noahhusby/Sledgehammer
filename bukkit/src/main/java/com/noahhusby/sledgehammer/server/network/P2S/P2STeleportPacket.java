@@ -35,13 +35,13 @@ public class P2STeleportPacket extends P2SPacket {
 
     @Override
     public void onMessage(PacketInfo info, JsonObject data) {
-        Player player = SledgehammerUtil.getPlayerFromName(info.getSender());
-        if(player == null) {
+        Player player = Bukkit.getPlayer(info.getSender());
+        if (player == null) {
             throwNoSender();
             return;
         }
 
-        if(!player.isOnline()) {
+        if (!player.isOnline()) {
             throwNoSender();
             return;
         }

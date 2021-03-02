@@ -21,14 +21,23 @@ package com.noahhusby.sledgehammer.proxy.commands.fragments.admin;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.FragmentManager;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server.*;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server.ServerAddLocationFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server.ServerEarthModeFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server.ServerGroupFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server.ServerInfoFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server.ServerListLocationFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server.ServerOffsetFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server.ServerRemoveLocationFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server.ServerSHSelectFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server.ServerSetFriendlyFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server.ServerStealthModeFragment;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.config.ServerInfo;
 
 import java.util.Map;
 
-import static net.md_5.bungee.api.ProxyServer.getInstance;
+import static net.md_5.bungee.api.ProxyServer.*;
 
 public class ServerFragment extends FragmentManager implements ICommandFragment {
 
@@ -48,9 +57,9 @@ public class ServerFragment extends FragmentManager implements ICommandFragment 
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(args.length != 0) {
-            for(Map.Entry<String, ServerInfo> s : getInstance().getServers().entrySet()) {
-                if(s.getValue().getName().toLowerCase().equals(args[0].toLowerCase())) {
+        if (args.length != 0) {
+            for (Map.Entry<String, ServerInfo> s : getInstance().getServers().entrySet()) {
+                if (s.getValue().getName().toLowerCase().equals(args[0].toLowerCase())) {
                     executeFragment(sender, args, 1);
                     return;
                 }
@@ -73,6 +82,6 @@ public class ServerFragment extends FragmentManager implements ICommandFragment 
 
     @Override
     public String[] getArguments() {
-        return new String[]{"<server name>"};
+        return new String[]{ "<server name>" };
     }
 }

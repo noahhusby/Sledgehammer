@@ -39,18 +39,20 @@ public class P2SWarpGUIPacket extends P2SPacket {
     @Override
     public void onMessage(PacketInfo info, JsonObject data) {
         Player p = Bukkit.getPlayer(info.getSender());
-        if(p == null) {
+        if (p == null) {
             throwNoSender();
             return;
         }
 
-        if(!p.isOnline()) {
+        if (!p.isOnline()) {
             throwNoSender();
             return;
         }
 
         WarpPayload payload = WarpPayload.fromPayload(data);
-        if(payload.getGroups().isEmpty()) payload.setDefaultPage("pinned");
+        if (payload.getGroups().isEmpty()) {
+            payload.setDefaultPage("pinned");
+        }
 
         switch (payload.getDefaultPage()) {
             default:

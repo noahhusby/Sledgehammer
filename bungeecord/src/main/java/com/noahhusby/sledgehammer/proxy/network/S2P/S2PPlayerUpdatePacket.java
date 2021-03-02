@@ -35,7 +35,9 @@ public class S2PPlayerUpdatePacket extends S2PPacket {
     @Override
     public void onMessage(PacketInfo info, JsonObject data) {
         SledgehammerPlayer player = SledgehammerPlayer.getPlayer(info.getSender());
-        if(player == null) return;
+        if (player == null) {
+            return;
+        }
         Point point = SledgehammerUtil.GSON.fromJson(data.get("point"), Point.class);
         player.setLocation(point);
         player.setGameMode(GameMode.valueOf(data.get("gameMode").getAsString()));

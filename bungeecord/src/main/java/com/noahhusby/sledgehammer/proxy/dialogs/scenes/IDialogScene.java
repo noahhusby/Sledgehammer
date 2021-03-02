@@ -25,14 +25,24 @@ import net.md_5.bungee.api.chat.TextComponent;
 
 public interface IDialogScene {
     void init(CommandSender commandSender);
+
     void onMessage(String m);
+
     void onFinish();
+
     void onToolbarAction(String m);
+
     void onComponentFinish();
+
     void onInitialization();
+
     boolean isAdmin();
+
     TextComponent getTitle();
+
     IToolbar getToolbar();
+
     IDialogComponent getCurrentComponent();
+
     CommandSender getCommandSender();
 }

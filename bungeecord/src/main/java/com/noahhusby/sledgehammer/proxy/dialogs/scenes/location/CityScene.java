@@ -21,14 +21,14 @@ package com.noahhusby.sledgehammer.proxy.dialogs.scenes.location;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.config.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerServer;
+import com.noahhusby.sledgehammer.proxy.datasets.Location;
+import com.noahhusby.sledgehammer.proxy.dialogs.DialogHandler;
 import com.noahhusby.sledgehammer.proxy.dialogs.components.location.CityComponent;
 import com.noahhusby.sledgehammer.proxy.dialogs.components.location.CountryComponent;
 import com.noahhusby.sledgehammer.proxy.dialogs.components.location.StateComponent;
 import com.noahhusby.sledgehammer.proxy.dialogs.scenes.DialogScene;
 import com.noahhusby.sledgehammer.proxy.dialogs.toolbars.ExitSkipToolbar;
 import com.noahhusby.sledgehammer.proxy.dialogs.toolbars.IToolbar;
-import com.noahhusby.sledgehammer.proxy.datasets.Location;
-import com.noahhusby.sledgehammer.proxy.dialogs.DialogHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.config.ServerInfo;
 
@@ -55,22 +55,32 @@ public class CityScene extends DialogScene {
 
         SledgehammerServer s = ServerHandler.getInstance().getServer(server.getName());
 
-        if(s == null) s = new SledgehammerServer(server.getName());
+        if (s == null) {
+            s = new SledgehammerServer(server.getName());
+        }
 
         s.getLocations().add(l);
         ServerHandler.getInstance().pushServer(s);
 
-        if(scene != null) {
+        if (scene != null) {
             DialogHandler.getInstance().discardDialog(this);
             DialogHandler.getInstance().startDialog(getCommandSender(), scene);
             return;
         }
 
         String x = "";
-        if(!l.city.equals("")) x+= ChatUtil.capitalize(l.city)+", ";
-        if(!l.county.equals("")) x+= ChatUtil.capitalize(l.county)+", ";
-        if(!l.state.equals("")) x+= ChatUtil.capitalize(l.state)+", ";
-        if(!l.country.equals("")) x+= ChatUtil.capitalize(l.country);
+        if (!l.city.equals("")) {
+            x += ChatUtil.capitalize(l.city) + ", ";
+        }
+        if (!l.county.equals("")) {
+            x += ChatUtil.capitalize(l.county) + ", ";
+        }
+        if (!l.state.equals("")) {
+            x += ChatUtil.capitalize(l.state) + ", ";
+        }
+        if (!l.country.equals("")) {
+            x += ChatUtil.capitalize(l.country);
+        }
         sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Successfully added ",
                 ChatColor.RED, ChatUtil.capitalize(l.detailType.name()) + " - ", ChatColor.GOLD, x));
     }
@@ -82,10 +92,10 @@ public class CityScene extends DialogScene {
 
     @Override
     public void onToolbarAction(String m) {
-        if(m.equals("exit")) {
+        if (m.equals("exit")) {
             DialogHandler.getInstance().discardDialog(this);
             DialogHandler.getInstance().startDialog(getCommandSender(), new LocationSelectionScene(server));
-        } else if(m.equals("@")) {
+        } else if (m.equals("@")) {
             progressDialog("");
         }
     }

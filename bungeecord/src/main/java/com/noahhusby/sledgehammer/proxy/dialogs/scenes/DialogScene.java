@@ -20,10 +20,10 @@ package com.noahhusby.sledgehammer.proxy.dialogs.scenes;
 
 import com.google.common.collect.Maps;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.dialogs.DialogHandler;
 import com.noahhusby.sledgehammer.proxy.dialogs.components.IDialogComponent;
 import com.noahhusby.sledgehammer.proxy.dialogs.toolbars.DefaultToolbar;
 import com.noahhusby.sledgehammer.proxy.dialogs.toolbars.IToolbar;
-import com.noahhusby.sledgehammer.proxy.dialogs.DialogHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -62,8 +62,8 @@ public abstract class DialogScene implements IDialogScene {
 
     @Override
     public void onMessage(String m) {
-        for(Map.Entry<String, String> x : getToolbar().getTools().entrySet()) {
-            if(x.getKey().equals(m.toLowerCase().trim())) {
+        for (Map.Entry<String, String> x : getToolbar().getTools().entrySet()) {
+            if (x.getKey().equals(m.toLowerCase().trim())) {
                 onToolbarAction(m);
                 return;
             }
@@ -79,7 +79,7 @@ public abstract class DialogScene implements IDialogScene {
 
     @Override
     public void onToolbarAction(String m) {
-        if(m.equals("exit")) {
+        if (m.equals("exit")) {
             dialogHandler.discardDialog(this);
             getCommandSender().sendMessage();
             getCommandSender().sendMessage(ChatUtil.combine(ChatColor.RED, "Exited the dialog!"));
@@ -97,19 +97,21 @@ public abstract class DialogScene implements IDialogScene {
     }
 
     @Override
-    public void onComponentFinish() { }
+    public void onComponentFinish() {
+    }
 
     @Override
-    public void onInitialization() { }
+    public void onInitialization() {
+    }
 
     public void progressDialog(String m) {
         progressDialog(m, false);
     }
 
     public void progressDialog(String m, boolean override) {
-        if(currentComponent.validateResponse(m)) {
+        if (currentComponent.validateResponse(m)) {
             currentComponent.setValue(m);
-            if(currentComponent.isManual() && !override) {
+            if (currentComponent.isManual() && !override) {
                 onComponentFinish();
                 return;
             }
@@ -119,14 +121,14 @@ public abstract class DialogScene implements IDialogScene {
         }
 
         int x = components.size();
-        for(Map.Entry<Integer, IDialogComponent> c : components.entrySet()) {
-            if(c.getValue() == currentComponent) {
-                if((c.getKey() + 1) >= x) {
+        for (Map.Entry<Integer, IDialogComponent> c : components.entrySet()) {
+            if (c.getValue() == currentComponent) {
+                if ((c.getKey() + 1) >= x) {
                     dialogHandler.discardDialog(this);
                     onFinish();
                     return;
                 }
-                currentComponent = components.get(c.getKey()+1);
+                currentComponent = components.get(c.getKey() + 1);
                 dialogHandler.progressDialog(this, false);
                 return;
             }
@@ -135,8 +137,8 @@ public abstract class DialogScene implements IDialogScene {
     }
 
     public String getValue(String key) {
-        for(Map.Entry<Integer, IDialogComponent> s : components.entrySet()) {
-            if(s.getValue().getKey().toLowerCase().equals(key.toLowerCase())) {
+        for (Map.Entry<Integer, IDialogComponent> s : components.entrySet()) {
+            if (s.getValue().getKey().toLowerCase().equals(key.toLowerCase())) {
                 return s.getValue().getValue();
             }
         }

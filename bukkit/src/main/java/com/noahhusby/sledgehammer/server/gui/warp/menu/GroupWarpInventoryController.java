@@ -45,10 +45,13 @@ public class GroupWarpInventoryController extends AbstractWarpInventoryControlle
     @Override
     public void init() {
         WarpGroup group = null;
-        for(WarpGroup g : payload.getGroups())
-            if(g.getId().equals(groupId)) group = g;
+        for (WarpGroup g : payload.getGroups()) {
+            if (g.getId().equals(groupId)) {
+                group = g;
+            }
+        }
 
-        if(group == null) {
+        if (group == null) {
             GUIRegistry.register(new AllWarpInventoryController(getPlayer(), payload));
             return;
         }
@@ -56,8 +59,10 @@ public class GroupWarpInventoryController extends AbstractWarpInventoryControlle
         List<Warp> warps = group.getWarps();
 
         int total_pages = (int) Math.ceil(warps.size() / 27.0);
-        if(total_pages == 0) total_pages = 1;
-        for(int x = 0; x < total_pages; x++) {
+        if (total_pages == 0) {
+            total_pages = 1;
+        }
+        for (int x = 0; x < total_pages; x++) {
             addPage(new GroupWarpInventory(x, warps, group));
         }
         openChild(getChildByPage(0));

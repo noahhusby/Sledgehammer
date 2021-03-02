@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class CreationFailureInventory extends GUIChild {
     private final WarpConfigPayload payload;
+
     public CreationFailureInventory(WarpConfigPayload payload) {
         this.payload = payload;
     }
@@ -20,7 +21,7 @@ public class CreationFailureInventory extends GUIChild {
     @Override
     public void init() {
         ItemStack skull = SledgehammerUtil.getSkull(Constants.redExclamationMark, ChatColor.RED + "" + ChatColor.BOLD +
-                "Failed to create warp!");
+                                                                                  "Failed to create warp!");
         skull.setLore(Lists.newArrayList(ChatColor.BLUE + "Click to continue"));
         fillInventory(skull);
     }

@@ -20,29 +20,29 @@ package com.noahhusby.sledgehammer.proxy.commands.fragments.admin.groups;
 
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.proxy.config.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.config.ServerGroup;
+import com.noahhusby.sledgehammer.proxy.config.ServerHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 
 public class GroupCreateFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(args.length == 0) {
+        if (args.length == 0) {
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Usage: /sha group create <id> [name]"));
             return;
         }
 
         String ID = args[0];
 
-        for(ServerGroup sg : ServerHandler.getInstance().getGroups()) {
-            if(sg.getID().equals(ID)) {
+        for (ServerGroup sg : ServerHandler.getInstance().getGroups()) {
+            if (sg.getID().equals(ID)) {
                 sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "A group with that name already exists!"));
                 return;
             }
         }
 
-        if(args.length == 1) {
+        if (args.length == 1) {
 
             ServerGroup group = new ServerGroup();
             group.setID(ID);
@@ -53,8 +53,9 @@ public class GroupCreateFragment implements ICommandFragment {
         }
 
         StringBuilder name = new StringBuilder(args[1]);
-        for(int i = 2; i < args.length; i++)
+        for (int i = 2; i < args.length; i++) {
             name.append(" ").append(args[i]);
+        }
 
         ServerGroup group = new ServerGroup();
         group.setID(ID);
@@ -77,6 +78,6 @@ public class GroupCreateFragment implements ICommandFragment {
 
     @Override
     public String[] getArguments() {
-        return new String[]{"<id>","[name]"};
+        return new String[]{ "<id>", "[name]" };
     }
 }

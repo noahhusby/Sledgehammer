@@ -23,7 +23,7 @@ public class P2SPermissionPacket extends P2SPacket {
         boolean permissionResponse = false;
 
         Player p = Bukkit.getPlayer(player);
-        if(p != null) {
+        if (p != null) {
             permissionResponse = p.hasPermission(permission);
         }
 

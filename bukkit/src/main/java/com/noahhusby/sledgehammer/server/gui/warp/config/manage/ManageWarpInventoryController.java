@@ -26,15 +26,19 @@ import org.bukkit.entity.Player;
 
 public class ManageWarpInventoryController extends GUIController {
 
-    private WarpConfigPayload payload;
+    private final WarpConfigPayload payload;
     private Warp warp;
 
     public ManageWarpInventoryController(Player p, WarpConfigPayload payload, int warpId) {
         super(27, "Edit Warp Settings", p);
         this.payload = payload;
-        for(WarpGroup wg : payload.getGroups())
-            for(Warp w : wg.getWarps())
-                if(w.getId() == warpId) this.warp = w;
+        for (WarpGroup wg : payload.getGroups()) {
+            for (Warp w : wg.getWarps()) {
+                if (w.getId() == warpId) {
+                    this.warp = w;
+                }
+            }
+        }
         init();
     }
 

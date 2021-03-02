@@ -25,6 +25,7 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class CsTpllCommand extends Command {
 
@@ -47,9 +48,8 @@ public class CsTpllCommand extends Command {
             return;
         }
 
-        ArrayList<String> dataList = new ArrayList<>();
-        for(int x = 1; x < args.length; x++) dataList.add(args[x]);
-        String[] data = dataList.toArray(new String[dataList.size()]);
+        ArrayList<String> dataList = new ArrayList<>(Arrays.asList(args).subList(1, args.length));
+        String[] data = dataList.toArray(new String[0]);
 
         new TpllCommand().execute(sender, data);
     }

@@ -32,35 +32,43 @@ public class ServerListLocationFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
 
-        if(ServerHandler.getInstance().getServer(args[0]) == null) {
+        if (ServerHandler.getInstance().getServer(args[0]) == null) {
             sender.sendMessage(ChatUtil.notSledgehammerServer);
             return;
         }
 
-        if(!ServerHandler.getInstance().getServer(args[0]).isEarthServer()) {
+        if (!ServerHandler.getInstance().getServer(args[0]).isEarthServer()) {
             sender.sendMessage(ChatUtil.notEarthServer);
             return;
         }
 
         List<Location> locations = ServerHandler.getInstance().getLocationsFromServer(args[0]);
-        if(locations == null) {
+        if (locations == null) {
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "No locations were found on that server!"));
             return;
         }
 
-        if(locations.isEmpty()) {
+        if (locations.isEmpty()) {
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "No locations were found on that server!"));
             return;
         }
 
         sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Locations for ",
                 ChatColor.BLUE, args[0].toLowerCase(Locale.ROOT), ChatColor.GRAY, ":"));
-        for(Location l : locations) {
+        for (Location l : locations) {
             String x = "";
-            if(!l.city.equals("")) x+= ChatUtil.capitalize(l.city)+", ";
-            if(!l.county.equals("")) x+= ChatUtil.capitalize(l.county)+", ";
-            if(!l.state.equals("")) x+= ChatUtil.capitalize(l.state)+", ";
-            if(!l.country.equals("")) x+= ChatUtil.capitalize(l.country);
+            if (!l.city.equals("")) {
+                x += ChatUtil.capitalize(l.city) + ", ";
+            }
+            if (!l.county.equals("")) {
+                x += ChatUtil.capitalize(l.county) + ", ";
+            }
+            if (!l.state.equals("")) {
+                x += ChatUtil.capitalize(l.state) + ", ";
+            }
+            if (!l.country.equals("")) {
+                x += ChatUtil.capitalize(l.country);
+            }
             sender.sendMessage(ChatUtil.combine(ChatColor.RED, ChatUtil.capitalize(l.detailType.name()) + " - ",
                     ChatColor.GOLD, x));
         }

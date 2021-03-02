@@ -33,28 +33,43 @@ import java.util.List;
 public class SledgehammerServer {
     @Expose
     @SerializedName("Name")
-    @Getter private String name;
+    @Getter
+    private String name;
     @Expose
     @SerializedName("Nick")
-    @Getter @Setter private String friendlyName;
+    @Getter
+    @Setter
+    private String friendlyName;
     @Expose
     @SerializedName("EarthServer")
-    @Getter @Setter private boolean earthServer;
+    @Getter
+    @Setter
+    private boolean earthServer;
     @Expose
     @SerializedName("Locations")
-    @Getter @Setter private List<Location> locations = new ArrayList<>();
+    @Getter
+    @Setter
+    private List<Location> locations = new ArrayList<>();
     @Expose
     @SerializedName("XOffset")
-    @Getter @Setter private int xOffset;
+    @Getter
+    @Setter
+    private int xOffset;
     @Expose
     @SerializedName("ZOffset")
-    @Getter @Setter private int zOffset;
+    @Getter
+    @Setter
+    private int zOffset;
     @Expose
     @SerializedName("StealthMode")
-    @Getter @Setter private boolean stealthMode;
-    @Getter private String sledgehammerVersion = null;
+    @Getter
+    @Setter
+    private boolean stealthMode;
+    @Getter
+    private String sledgehammerVersion = null;
 
-    public SledgehammerServer() {}
+    public SledgehammerServer() {
+    }
 
     public SledgehammerServer(String name) {
         this.name = name;
@@ -63,6 +78,7 @@ public class SledgehammerServer {
 
     /**
      * Initializes server from init packet
+     *
      * @param version Sledgehammer Version
      */
     public void initialize(String version) {
@@ -71,6 +87,7 @@ public class SledgehammerServer {
 
     /**
      * Gets whether the server is initialized
+     *
      * @return True if initialized, false if not
      */
     public boolean isInitialized() {
@@ -79,6 +96,7 @@ public class SledgehammerServer {
 
     /**
      * Gets {@link ServerInfo}
+     *
      * @return {@link ServerInfo}
      */
     public ServerInfo getServerInfo() {
@@ -87,11 +105,15 @@ public class SledgehammerServer {
 
     /**
      * Gets the group assigned to this server
+     *
      * @return Returns the associated group, or a new group if none exists
      */
     public ServerGroup getGroup() {
-        for(ServerGroup g : ServerHandler.getInstance().getGroups())
-            if(g.getServers().contains(name)) return g;
+        for (ServerGroup g : ServerHandler.getInstance().getGroups()) {
+            if (g.getServers().contains(name)) {
+                return g;
+            }
+        }
         return new ServerGroup(name, "", friendlyName, Collections.singletonList(name), new ArrayList<>());
     }
 }

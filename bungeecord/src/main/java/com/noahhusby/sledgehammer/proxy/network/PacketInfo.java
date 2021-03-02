@@ -35,6 +35,7 @@ public class PacketInfo {
 
     /**
      * Gets the packet creation time
+     *
      * @return The packet creation time
      */
     public double getTime() {
@@ -43,6 +44,7 @@ public class PacketInfo {
 
     /**
      * Gets the packet ID
+     *
      * @return The packet ID
      */
     public String getID() {
@@ -51,6 +53,7 @@ public class PacketInfo {
 
     /**
      * Gets the name sender
+     *
      * @return Name of the sender
      */
     public String getSender() {
@@ -59,6 +62,7 @@ public class PacketInfo {
 
     /**
      * Gets the name of the server
+     *
      * @return Name of the server
      */
     public String getServer() {
@@ -67,7 +71,8 @@ public class PacketInfo {
 
     /**
      * Creates new {@link PacketInfo}
-     * @param id ID of the packet
+     *
+     * @param id     ID of the packet
      * @param sender Name of sender
      * @param server Name of server
      * @return {@link PacketInfo}
@@ -78,17 +83,19 @@ public class PacketInfo {
 
     /**
      * Creates new {@link PacketInfo}
-     * @param id ID of the packet
+     *
+     * @param id     ID of the packet
      * @param sender {@link CommandSender}
      * @param server Name of server
      * @return {@link PacketInfo}
      */
-    public static PacketInfo build(String id, CommandSender sender, String server)  {
+    public static PacketInfo build(String id, CommandSender sender, String server) {
         return build(id, sender.getName(), server);
     }
 
     /**
      * Renews packet info to current time
+     *
      * @param info Current {@link PacketInfo}
      * @return New {@link PacketInfo}
      */

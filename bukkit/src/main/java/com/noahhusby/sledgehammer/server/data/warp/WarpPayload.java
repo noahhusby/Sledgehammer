@@ -13,11 +13,11 @@ import java.util.List;
 @AllArgsConstructor
 public class WarpPayload {
     private String defaultPage;
-    private String requestGroup;
-    private String salt;
-    private boolean editAccess;
-    private boolean local;
-    private List<WarpGroup> groups;
+    private final String requestGroup;
+    private final String salt;
+    private final boolean editAccess;
+    private final boolean local;
+    private final List<WarpGroup> groups;
 
     public String getDefaultPage() {
         return defaultPage;
@@ -50,7 +50,7 @@ public class WarpPayload {
     public static WarpPayload fromPayload(JsonObject data) {
         JsonArray groups = data.getAsJsonArray("groups");
         List<WarpGroup> warpGroupList = Lists.newArrayList();
-        for(JsonElement je : groups) {
+        for (JsonElement je : groups) {
             warpGroupList.add(SledgehammerUtil.GSON.fromJson(je, WarpGroup.class));
         }
 

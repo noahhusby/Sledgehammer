@@ -18,9 +18,9 @@
 
 package com.noahhusby.sledgehammer.proxy.dialogs.scenes.location;
 
+import com.noahhusby.sledgehammer.proxy.dialogs.DialogHandler;
 import com.noahhusby.sledgehammer.proxy.dialogs.components.location.LocationSelectionComponent;
 import com.noahhusby.sledgehammer.proxy.dialogs.scenes.DialogScene;
-import com.noahhusby.sledgehammer.proxy.dialogs.DialogHandler;
 import net.md_5.bungee.api.config.ServerInfo;
 
 public class LocationSelectionScene extends DialogScene {
@@ -55,7 +55,6 @@ public class LocationSelectionScene extends DialogScene {
                 break;
         }
     }
-
 
 
     @Override

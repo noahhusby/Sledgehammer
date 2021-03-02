@@ -33,7 +33,7 @@ public class BorderCheckerThread implements Runnable {
     @Override
     public void run() {
         ImmutableMap.copyOf(PlayerManager.getInstance().getPlayers()).forEach((u, p) -> {
-            if(!p.onEarthServer() || !SledgehammerUtil.inEarthRegion(p) || p.checkAttribute("BORDER_MODE", false)) {
+            if (!p.onEarthServer() || !SledgehammerUtil.inEarthRegion(p) || p.checkAttribute("BORDER_MODE", false)) {
                 p.setTrackingPoint(null);
                 p.setFlagged(false);
                 return;
@@ -41,13 +41,13 @@ public class BorderCheckerThread implements Runnable {
 
             boolean checkLocation = false;
 
-            if(p.getTrackingPoint() == null) {
+            if (p.getTrackingPoint() == null) {
                 p.setTrackingPoint(p.getLocation());
                 p.setFlagged(false);
                 checkLocation = true;
             }
 
-            if(!checkLocation) {
+            if (!checkLocation) {
                 Point location = p.getLocation();
                 Point track = p.getTrackingPoint();
 
@@ -59,20 +59,20 @@ public class BorderCheckerThread implements Runnable {
 
                 boolean inZone = x < tx + Constants.borderZone && x > tx - Constants.borderZone && z < tz + Constants.borderZone && z > tz - Constants.borderZone;
 
-                if(!inZone) {
+                if (!inZone) {
                     p.setTrackingPoint(p.getLocation());
                     p.setFlagged(false);
                     checkLocation = true;
                 }
             }
 
-            if(checkLocation) {
+            if (checkLocation) {
                 Point track = p.getTrackingPoint();
 
                 double[] proj = SledgehammerUtil.toGeo(Double.parseDouble(track.x), Double.parseDouble(track.z));
                 ServerInfo info = OpenStreetMaps.getInstance().getServerFromLocation(proj[0], proj[1], true);
 
-                if(info != null && !info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
+                if (info != null && !info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
                     p.setFlagged(true);
                     return;
                 }
@@ -80,7 +80,7 @@ public class BorderCheckerThread implements Runnable {
                 proj = SledgehammerUtil.toGeo(Double.parseDouble(track.x) + Constants.borderZone, Double.parseDouble(track.z) + Constants.borderZone);
                 info = OpenStreetMaps.getInstance().getServerFromLocation(proj[0], proj[1], true);
 
-                if(info != null && !info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
+                if (info != null && !info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
                     p.setFlagged(true);
                     return;
                 }
@@ -88,7 +88,7 @@ public class BorderCheckerThread implements Runnable {
                 proj = SledgehammerUtil.toGeo(Double.parseDouble(track.x) + Constants.borderZone, Double.parseDouble(track.z) - Constants.borderZone);
                 info = OpenStreetMaps.getInstance().getServerFromLocation(proj[0], proj[1], true);
 
-                if(info != null && !info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
+                if (info != null && !info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
                     p.setFlagged(true);
                     return;
                 }
@@ -96,7 +96,7 @@ public class BorderCheckerThread implements Runnable {
                 proj = SledgehammerUtil.toGeo(Double.parseDouble(track.x) - Constants.borderZone, Double.parseDouble(track.z) + Constants.borderZone);
                 info = OpenStreetMaps.getInstance().getServerFromLocation(proj[0], proj[1], true);
 
-                if(info != null && !info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
+                if (info != null && !info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
                     p.setFlagged(true);
                     return;
                 }
@@ -104,7 +104,7 @@ public class BorderCheckerThread implements Runnable {
                 proj = SledgehammerUtil.toGeo(Double.parseDouble(track.x) - Constants.borderZone, Double.parseDouble(track.z) - Constants.borderZone);
                 info = OpenStreetMaps.getInstance().getServerFromLocation(proj[0], proj[1], true);
 
-                if(info != null && !info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
+                if (info != null && !info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
                     p.setFlagged(true);
                 }
             }

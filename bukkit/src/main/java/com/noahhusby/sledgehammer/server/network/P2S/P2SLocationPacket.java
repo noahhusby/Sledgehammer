@@ -34,8 +34,8 @@ public class P2SLocationPacket extends P2SPacket {
 
     @Override
     public void onMessage(PacketInfo info, JsonObject data) {
-        Player player = SledgehammerUtil.getPlayerFromName(info.getSender());
-        if(player == null) {
+        Player player = Bukkit.getPlayer(info.getSender());
+        if (player == null) {
             throwNoSender();
             return;
         }
@@ -49,15 +49,16 @@ public class P2SLocationPacket extends P2SPacket {
         try {
             xOffset = Integer.parseInt(data.get("xOffset").getAsString());
             zOffset = Integer.parseInt(data.get("zOffset").getAsString());
-        } catch (Exception ignored) { }
+        } catch (Exception ignored) {
+        }
 
         double[] proj = SledgehammerUtil.fromGeo(Double.parseDouble(lon), Double.parseDouble(lat));
 
         int x = (int) Math.floor(proj[0]) + xOffset;
         int z = (int) Math.floor(proj[1]) + zOffset;
 
-        if(SledgehammerUtil.hasTerraPlusPlus()) {
-            SledgehammerUtil.getTerraConnector().getHeight(x, z).thenAccept(y -> Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),String.format("minecraft:tp %s %s %s %s", player.getName(), x, y, z)));
+        if (SledgehammerUtil.hasTerraPlusPlus()) {
+            SledgehammerUtil.getTerraConnector().getHeight(x, z).thenAccept(y -> Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), String.format("minecraft:tp %s %s %s %s", player.getName(), x, y, z)));
         } else {
             /*
             int y = Constants.scanHeight;
@@ -72,7 +73,7 @@ public class P2SLocationPacket extends P2SPacket {
 
              */
             int y = player.getWorld().getHighestBlockYAt(x, z);
-            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),String.format("minecraft:tp %s %s %s %s", player.getName(), x, y+1, z));
+            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), String.format("minecraft:tp %s %s %s %s", player.getName(), x, y + 1, z));
         }
     }
 }

@@ -21,12 +21,17 @@ package com.noahhusby.sledgehammer.proxy.players;
 
 import com.google.common.collect.Maps;
 import com.noahhusby.sledgehammer.common.warps.Point;
+import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.addons.terramap.TerramapAddon;
 import com.noahhusby.sledgehammer.proxy.addons.terramap.TerramapVersion;
-import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.config.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerServer;
-import net.md_5.bungee.api.*;
+import net.md_5.bungee.api.Callback;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ServerConnectRequest;
+import net.md_5.bungee.api.SkinConfiguration;
+import net.md_5.bungee.api.Title;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.PendingConnection;
@@ -37,7 +42,10 @@ import net.md_5.bungee.api.score.Scoreboard;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.*;
+import java.util.Collection;
+import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * An object representing a player on the network with Sledgehammer specific access.
@@ -46,7 +54,7 @@ import java.util.*;
 @SuppressWarnings("deprecation")
 public class SledgehammerPlayer implements ProxiedPlayer {
 
-    private ProxiedPlayer player;
+    private final ProxiedPlayer player;
 
     private boolean flagged = false;
     private GameMode gameMode = GameMode.NONE;
@@ -315,6 +323,7 @@ public class SledgehammerPlayer implements ProxiedPlayer {
 
     /**
      * Checks if player is on a sledgehammer server
+     *
      * @return True if on a sledgehammer server, false if not
      */
     public boolean onSledgehammer() {
@@ -323,37 +332,43 @@ public class SledgehammerPlayer implements ProxiedPlayer {
 
     /**
      * Checks if the player is on a build server
+     *
      * @return True if on a build server, false if not
      */
     public boolean onEarthServer() {
-    	Server playerServer = getServer();
-    	if(playerServer == null) return false;
+        Server playerServer = getServer();
+        if (playerServer == null) {
+            return false;
+        }
         SledgehammerServer server = ServerHandler.getInstance().getServer(playerServer.getInfo().getName());
-        if(server == null) return false;
+        if (server == null) {
+            return false;
+        }
         return server.isEarthServer();
     }
 
     /**
      * Gets {@link SledgehammerServer} from player
+     *
      * @return {@link SledgehammerServer}
      */
     public SledgehammerServer getSledgehammerServer() {
         return ServerHandler.getInstance().getServer(getServer().getInfo().getName());
     }
-    
+
     /**
+     * @return whether or not this player has a compatible version of Terramap installed
      * @author SmylerMC
      * Do not block features depending on the result of this method, just test if the user has Forge instead.
      * This will only work if the user has logged onto a Forge server at least once, and will return false otherwise.
-     * 
-     * @return whether or not this player has a compatible version of Terramap installed
      */
     public boolean hasCompatibleTerramap() {
-    	return TerramapAddon.MINIMUM_COMPATIBLE_VERSION.isOlderOrSame(TerramapVersion.getClientVersion(this));
+        return TerramapAddon.MINIMUM_COMPATIBLE_VERSION.isOlderOrSame(TerramapVersion.getClientVersion(this));
     }
 
     /**
      * Gets the current location of the player
+     *
      * @return Location of player if known, null if not
      */
     public Point getLocation() {
@@ -362,11 +377,12 @@ public class SledgehammerPlayer implements ProxiedPlayer {
 
     /**
      * Sets the current location of the player
+     *
      * @param p Location of player
      */
     public void setLocation(Point p) {
-        if(getSledgehammerServer() != null) {
-            if(getSledgehammerServer().isStealthMode()) {
+        if (getSledgehammerServer() != null) {
+            if (getSledgehammerServer().isStealthMode()) {
                 this.location = null;
                 return;
             }
@@ -376,6 +392,7 @@ public class SledgehammerPlayer implements ProxiedPlayer {
 
     /**
      * Gets the current tracking point for border teleportation
+     *
      * @return The current tracking point if known, null if not
      */
     public Point getTrackingPoint() {
@@ -384,6 +401,7 @@ public class SledgehammerPlayer implements ProxiedPlayer {
 
     /**
      * Set the current tracking point for border teleportation
+     *
      * @param p Location of tracking point
      */
     public void setTrackingPoint(Point p) {
@@ -392,6 +410,7 @@ public class SledgehammerPlayer implements ProxiedPlayer {
 
     /**
      * Checks whether the player is flagged for border checking
+     *
      * @return True if flagged, false if not
      */
     public boolean isFlagged() {
@@ -400,6 +419,7 @@ public class SledgehammerPlayer implements ProxiedPlayer {
 
     /**
      * Set whether the player is flagged for border checking
+     *
      * @param flagged True to flag, false to not
      */
     public void setFlagged(boolean flagged) {
@@ -408,6 +428,7 @@ public class SledgehammerPlayer implements ProxiedPlayer {
 
     /**
      * Gets the current GameMode of the player
+     *
      * @return {@link GameMode}
      */
     public GameMode getGameMode() {
@@ -416,6 +437,7 @@ public class SledgehammerPlayer implements ProxiedPlayer {
 
     /**
      * Set the current GameMode of the player
+     *
      * @param gameMode GameMode of Player
      */
     public void setGameMode(GameMode gameMode) {
@@ -424,6 +446,7 @@ public class SledgehammerPlayer implements ProxiedPlayer {
 
     /**
      * Get the map of player attributes
+     *
      * @return Map of attributes
      */
     public Map<String, Object> getAttributes() {
@@ -433,6 +456,7 @@ public class SledgehammerPlayer implements ProxiedPlayer {
     /**
      * Set the map of attributes
      * Only use this to set the entire map. To add, check, or remove an item, use {@link #getAttributes().put()}
+     *
      * @param attributes The new map of attributes
      */
     public void setAttributes(Map<String, Object> attributes) {
@@ -441,17 +465,21 @@ public class SledgehammerPlayer implements ProxiedPlayer {
 
     /**
      * Gets whether a specific attribute exists
-     * @param key Attribute Key
+     *
+     * @param key    Attribute Key
      * @param object Attribute Value
      * @return True if the attribute exists and matches, false if the attribute doesn't exist or doesn't match
      */
     public boolean checkAttribute(String key, Object object) {
-        if(attributes.get(key) == null) return false;
+        if (attributes.get(key) == null) {
+            return false;
+        }
         return attributes.get(key).equals(object);
     }
 
     /**
      * Get SledgehammerPlayer from player name
+     *
      * @param s Name of player
      * @return {@link SledgehammerPlayer}
      */
@@ -461,6 +489,7 @@ public class SledgehammerPlayer implements ProxiedPlayer {
 
     /**
      * Get SledgehammerPlayer by command sender
+     *
      * @param s CommandSender
      * @return {@link SledgehammerPlayer}
      */

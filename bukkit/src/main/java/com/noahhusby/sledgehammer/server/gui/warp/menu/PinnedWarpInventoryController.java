@@ -42,15 +42,20 @@ public class PinnedWarpInventoryController extends AbstractWarpInventoryControll
     @Override
     public void init() {
         List<Warp> warps = new ArrayList<>();
-        for(WarpGroup wg : payload.getGroups())
-            for(Warp w : wg.getWarps())
-                if((payload.isLocal() && w.getPinned() == Warp.PinnedMode.GLOBAL) ||
-                        (!payload.isLocal() && (w.getPinned() == Warp.PinnedMode.GLOBAL || w.getPinned() == Warp.PinnedMode.LOCAL)))
+        for (WarpGroup wg : payload.getGroups()) {
+            for (Warp w : wg.getWarps()) {
+                if ((payload.isLocal() && w.getPinned() == Warp.PinnedMode.GLOBAL) ||
+                    (!payload.isLocal() && (w.getPinned() == Warp.PinnedMode.GLOBAL || w.getPinned() == Warp.PinnedMode.LOCAL))) {
                     warps.add(w);
+                }
+            }
+        }
 
         int total_pages = (int) Math.ceil(warps.size() / 27.0);
-        if(total_pages == 0) total_pages = 1;
-        for(int x = 0; x < total_pages; x++) {
+        if (total_pages == 0) {
+            total_pages = 1;
+        }
+        for (int x = 0; x < total_pages; x++) {
             addPage(new PinnedWarpInventory(x, warps));
         }
         openChild(getChildByPage(0));

@@ -4,8 +4,8 @@ import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.server.data.warp.WarpPayload;
 import com.noahhusby.sledgehammer.server.gui.GUIChild;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
-import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpConfigPacket;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
+import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpConfigPacket;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -34,7 +34,9 @@ public class WarpSortInventory extends GUIChild {
             meta.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "Pinned Warps");
 
             List<String> lore = new ArrayList<>();
-            if(payload.getDefaultPage().equalsIgnoreCase("pinned")) lore.add(ChatColor.RED + "Current Default");
+            if (payload.getDefaultPage().equalsIgnoreCase("pinned")) {
+                lore.add(ChatColor.RED + "Current Default");
+            }
             lore.add(ChatColor.BLUE + "This will show pinned warps when opened.");
             meta.setLore(lore);
 
@@ -49,7 +51,9 @@ public class WarpSortInventory extends GUIChild {
             meta.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "All Warps");
 
             List<String> lore = new ArrayList<>();
-            if(payload.getDefaultPage().equalsIgnoreCase("all")) lore.add(ChatColor.RED + "Current Default");
+            if (payload.getDefaultPage().equalsIgnoreCase("all")) {
+                lore.add(ChatColor.RED + "Current Default");
+            }
             lore.add(ChatColor.BLUE + "This will show all warps when opened.");
             meta.setLore(lore);
 
@@ -64,7 +68,9 @@ public class WarpSortInventory extends GUIChild {
             meta.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "Group Warps");
 
             List<String> lore = new ArrayList<>();
-            if(payload.getDefaultPage().equalsIgnoreCase("group")) lore.add(ChatColor.RED + "Current Default");
+            if (payload.getDefaultPage().equalsIgnoreCase("group")) {
+                lore.add(ChatColor.RED + "Current Default");
+            }
             lore.add(ChatColor.BLUE + "This will show your local group when opened.");
             meta.setLore(lore);
 
@@ -81,23 +87,29 @@ public class WarpSortInventory extends GUIChild {
 
         WarpSortInventoryController controller = (WarpSortInventoryController) getController();
 
-        if(e.getCurrentItem() == null) return;
-        if(e.getCurrentItem().getItemMeta() == null) return;
-        if(e.getCurrentItem().getItemMeta().getDisplayName() == null) return;
+        if (e.getCurrentItem() == null) {
+            return;
+        }
+        if (e.getCurrentItem().getItemMeta() == null) {
+            return;
+        }
+        if (e.getCurrentItem().getItemMeta().getDisplayName() == null) {
+            return;
+        }
 
         JsonObject data = new JsonObject();
 
-        if(e.getSlot() == 11) {
+        if (e.getSlot() == 11) {
             payload.setDefaultPage("pinned");
             data.addProperty("sort", "pinned");
         }
 
-        if(e.getSlot() == 13) {
+        if (e.getSlot() == 13) {
             payload.setDefaultPage("all");
             data.addProperty("sort", "all");
         }
 
-        if(e.getSlot() == 15) {
+        if (e.getSlot() == 15) {
             payload.setDefaultPage("group");
             data.addProperty("sort", "group");
         }

@@ -20,8 +20,8 @@ package com.noahhusby.sledgehammer.proxy.commands.fragments.admin.groups;
 
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.proxy.config.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.config.ServerGroup;
+import com.noahhusby.sledgehammer.proxy.config.ServerHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -34,8 +34,8 @@ public class GroupListFragment implements ICommandFragment {
     public void execute(CommandSender sender, String[] args) {
         TextComponent list = ChatUtil.adminAndCombine(ChatColor.RED, "Groups: ");
         boolean first = true;
-        for(ServerGroup s : ServerHandler.getInstance().getGroups()) {
-            if(first) {
+        for (ServerGroup s : ServerHandler.getInstance().getGroups()) {
+            if (first) {
                 TextComponent t = new TextComponent(s.getID());
                 t.setColor(ChatColor.BLUE);
                 t.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/sha group info %s",

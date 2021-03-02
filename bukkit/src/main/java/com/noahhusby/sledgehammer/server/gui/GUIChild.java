@@ -51,6 +51,7 @@ public abstract class GUIChild {
     }
 
     public abstract void onInventoryClick(InventoryClickEvent e);
+
     public abstract void init();
 
     protected ItemStack createItem(Material material, int amount, String name) {
@@ -70,7 +71,7 @@ public abstract class GUIChild {
     }
 
     protected void fillInventory(ItemStack item) {
-        for(int x = 0; x < inventory.getSize(); x++) {
+        for (int x = 0; x < inventory.getSize(); x++) {
             setItem(x, item);
         }
     }

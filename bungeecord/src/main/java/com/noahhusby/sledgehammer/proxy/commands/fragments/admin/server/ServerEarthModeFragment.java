@@ -30,18 +30,18 @@ public class ServerEarthModeFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
 
-        if(ServerHandler.getInstance().getServer(args[0]) == null) {
+        if (ServerHandler.getInstance().getServer(args[0]) == null) {
             sender.sendMessage(ChatUtil.notSledgehammerServer);
             return;
         }
 
-        if(args.length < 3) {
+        if (args.length < 3) {
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Usage: /sha server <server name> setearth <true/false>"));
             return;
         }
 
         String arg = args[2].toLowerCase();
-        if(arg.equals("true") || arg.equals("false")) {
+        if (arg.equals("true") || arg.equals("false")) {
             SledgehammerServer s = ServerHandler.getInstance().getServer(args[0]);
             s.setEarthServer(Boolean.parseBoolean(arg));
             ServerHandler.getInstance().pushServer(s);
@@ -64,6 +64,6 @@ public class ServerEarthModeFragment implements ICommandFragment {
 
     @Override
     public String[] getArguments() {
-        return new String[]{"<true/false>"};
+        return new String[]{ "<true/false>" };
     }
 }

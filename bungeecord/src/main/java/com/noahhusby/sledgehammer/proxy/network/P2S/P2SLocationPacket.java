@@ -38,7 +38,7 @@ public class P2SLocationPacket extends P2SPacket {
         this.server = server;
         this.sender = sender;
         SledgehammerServer sledgehammerServer = ServerHandler.getInstance().getServer(server);
-        if(sledgehammerServer != null) {
+        if (sledgehammerServer != null) {
             xOffset = String.valueOf(sledgehammerServer.getXOffset());
             zOffset = String.valueOf(sledgehammerServer.getZOffset());
         }
@@ -46,6 +46,7 @@ public class P2SLocationPacket extends P2SPacket {
         this.lat = String.valueOf(geo[0]);
         this.lon = String.valueOf(geo[1]);
     }
+
     @Override
     public String getPacketID() {
         return Constants.locationID;

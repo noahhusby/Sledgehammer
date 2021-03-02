@@ -31,7 +31,8 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 
-import java.util.*;
+import java.util.Map;
+import java.util.UUID;
 
 public class PlayerManager implements Listener {
     private static PlayerManager instance = null;
@@ -40,8 +41,10 @@ public class PlayerManager implements Listener {
         return instance == null ? instance = new PlayerManager() : instance;
     }
 
-    @Getter private final Map<UUID, SledgehammerPlayer> players = Maps.newHashMap();
-    @Getter private final StorageList<Attribute> attributes = new StorageList<>(Attribute.class);
+    @Getter
+    private final Map<UUID, SledgehammerPlayer> players = Maps.newHashMap();
+    @Getter
+    private final StorageList<Attribute> attributes = new StorageList<>(Attribute.class);
 
     private PlayerManager() {
         Sledgehammer.addListener(this);
@@ -49,6 +52,7 @@ public class PlayerManager implements Listener {
 
     /**
      * Creates a new SledgehammerPlayer and sets attributes from storage upon player joining
+     *
      * @param e {@link PostLoginEvent}
      */
     @EventHandler(priority = EventPriority.LOWEST)
@@ -58,16 +62,20 @@ public class PlayerManager implements Listener {
 
     /**
      * Creates a new SledgehammerPlayer and sets attributes from storage upon player joining
+     *
      * @param p {@link ProxiedPlayer}
      */
     private SledgehammerPlayer onPlayerJoin(ProxiedPlayer p) {
         SledgehammerPlayer newPlayer = new SledgehammerPlayer(p);
 
         Attribute attribute = null;
-        for(Attribute a : attributes)
-            if(a.getUuid().equals(p.getUniqueId())) attribute = a;
+        for (Attribute a : attributes) {
+            if (a.getUuid().equals(p.getUniqueId())) {
+                attribute = a;
+            }
+        }
 
-        if(attribute != null) {
+        if (attribute != null) {
             newPlayer.setAttributes(attribute.getAttributes());
         }
 
@@ -77,6 +85,7 @@ public class PlayerManager implements Listener {
 
     /**
      * Removes the SledgehammerPlayer and saves the attributes to storage upon player leaving
+     *
      * @param e {@link PlayerDisconnectEvent}
      */
     @EventHandler(priority = EventPriority.LOWEST)
@@ -86,23 +95,29 @@ public class PlayerManager implements Listener {
 
     /**
      * Removes the SledgehammerPlayer and saves the attributes to storage upon player leaving
+     *
      * @param player {@link ProxiedPlayer}
      */
     private void onPlayerDisconnect(ProxiedPlayer player) {
         SledgehammerPlayer p = players.get(player.getUniqueId());
 
-        if(p == null) return;
+        if (p == null) {
+            return;
+        }
 
         Attribute attribute = null;
-        for(Attribute a : attributes)
-            if(a.getUuid().equals(player.getUniqueId())) attribute = a;
+        for (Attribute a : attributes) {
+            if (a.getUuid().equals(player.getUniqueId())) {
+                attribute = a;
+            }
+        }
 
-        if(attribute == null) {
-            if(!p.getAttributes().isEmpty()) {
+        if (attribute == null) {
+            if (!p.getAttributes().isEmpty()) {
                 attributes.add(new Attribute(p.getUniqueId(), p.getAttributes()));
             }
         } else {
-            if(p.getAttributes().isEmpty()) {
+            if (p.getAttributes().isEmpty()) {
                 attributes.remove(attribute);
             }
         }
@@ -113,24 +128,32 @@ public class PlayerManager implements Listener {
 
     /**
      * Gets SledgehammerPlayer by player name
+     *
      * @param s Player name
      * @return {@link SledgehammerPlayer}
      */
     public SledgehammerPlayer getPlayer(String s) {
         ProxiedPlayer proxiedPlayer = ProxyServer.getInstance().getPlayer(s);
-        if(proxiedPlayer == null) return null;
+        if (proxiedPlayer == null) {
+            return null;
+        }
         SledgehammerPlayer player = players.get(proxiedPlayer.getUniqueId());
         return player == null ? onPlayerJoin(proxiedPlayer) : player;
     }
 
     /**
      * Gets SledgehammerPlayer by command sender
+     *
      * @param s {@link CommandSender}
      * @return {@link SledgehammerPlayer}
      */
     public SledgehammerPlayer getPlayer(CommandSender s) {
-        if(s == null) return null;
-        if(!(s instanceof ProxiedPlayer)) return null;
+        if (s == null) {
+            return null;
+        }
+        if (!(s instanceof ProxiedPlayer)) {
+            return null;
+        }
         ProxiedPlayer proxiedPlayer = (ProxiedPlayer) s;
         SledgehammerPlayer player = players.get(proxiedPlayer.getUniqueId());
         return player == null ? onPlayerJoin(proxiedPlayer) : player;

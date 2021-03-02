@@ -22,7 +22,7 @@ public class P2SWarpConfigPacket extends P2SPacket {
     public void onMessage(PacketInfo info, JsonObject data) {
         ServerConfigAction action = ServerConfigAction.valueOf(data.get("action").getAsString());
         WarpConfigPayload payload = WarpConfigPayload.fromPayload(data);
-        switch(action) {
+        switch (action) {
             case OPEN_CONFIG:
                 GUIRegistry.register(new ConfigMenuController(Bukkit.getPlayer(info.getSender()), payload));
                 break;
@@ -35,9 +35,9 @@ public class P2SWarpConfigPacket extends P2SPacket {
                 break;
             case LOCATION_UPDATE:
                 JsonObject d = data.getAsJsonObject("data");
-                for(WarpGroup wg : payload.getGroups()) {
-                    for(Warp w : wg.getWarps()) {
-                        if(w.getId() == d.get("warpId").getAsInt()) {
+                for (WarpGroup wg : payload.getGroups()) {
+                    for (Warp w : wg.getWarps()) {
+                        if (w.getId() == d.get("warpId").getAsInt()) {
                             GUIRegistry.register(new ConfirmationController(Bukkit.getPlayer(info.getSender()),
                                     payload, ConfirmationController.Type.LOCATION_UPDATE, w));
                             return;

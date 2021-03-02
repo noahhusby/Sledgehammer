@@ -14,6 +14,7 @@ import java.util.function.BiConsumer;
 
 public class ChatHandler implements Listener {
     private static ChatHandler instance = null;
+
     public static ChatHandler getInstance() {
         return instance == null ? instance = new ChatHandler() : instance;
     }
@@ -24,7 +25,7 @@ public class ChatHandler implements Listener {
         entries.remove(player);
 
         entries.put(player, consumer);
-        for(int i = 0; i < 18; i++) {
+        for (int i = 0; i < 18; i++) {
             player.sendMessage();
         }
 
@@ -37,7 +38,9 @@ public class ChatHandler implements Listener {
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e) {
         boolean cancel = entries.containsKey(e.getPlayer());
-        if(!cancel) return;
+        if (!cancel) {
+            return;
+        }
         e.setCancelled(true);
 
         Sledgehammer.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(Sledgehammer.getInstance(), () -> {

@@ -32,7 +32,7 @@ public class WarpMenuInventoryController extends AbstractWarpInventoryController
         init();
     }
 
-    public WarpMenuInventoryController(GUIController controller, WarpPayload payload){
+    public WarpMenuInventoryController(GUIController controller, WarpPayload payload) {
         super(controller, payload);
         init();
     }
@@ -42,8 +42,10 @@ public class WarpMenuInventoryController extends AbstractWarpInventoryController
         List<WarpGroup> groups = payload.getGroups();
 
         int total_pages = (int) Math.ceil(groups.size() / 27.0);
-        if(total_pages == 0) total_pages = 1;
-        for(int x = 0; x < total_pages; x++) {
+        if (total_pages == 0) {
+            total_pages = 1;
+        }
+        for (int x = 0; x < total_pages; x++) {
             addPage(new WarpMenuInventory(x, groups));
         }
 

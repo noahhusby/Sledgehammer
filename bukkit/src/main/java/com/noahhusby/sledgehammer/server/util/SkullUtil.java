@@ -3,7 +3,6 @@ package com.noahhusby.sledgehammer.server.util;
 import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import com.noahhusby.sledgehammer.server.Sledgehammer;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
@@ -40,7 +39,8 @@ public class SkullUtil {
         try {
             Material.class.getDeclaredField("PLAYER_HEAD");
             Material.valueOf("SKULL");
-        } catch (NoSuchFieldException | IllegalArgumentException ignored) {}
+        } catch (NoSuchFieldException | IllegalArgumentException ignored) {
+        }
 
         numberHeads.put(0, itemFromTextureId("3f09018f46f349e553446946a38649fcfcf9fdfd62916aec33ebca96bb21b5"));
         numberHeads.put(1, itemFromTextureId("ca516fbae16058f251aef9a68d3078549f48f6d5b683f19cf5a1745217d72cc"));
@@ -108,6 +108,7 @@ public class SkullUtil {
 
     /**
      * Creates a player skull item based on the number index
+     *
      * @param index Number Head 0 - 20
      * @return {@link ItemStack}
      */

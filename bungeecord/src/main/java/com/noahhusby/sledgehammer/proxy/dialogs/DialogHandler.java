@@ -49,6 +49,7 @@ public class DialogHandler implements Listener {
 
     /**
      * Start a dialog scene
+     *
      * @param c The {@link CommandSender} that the dialog should be shown to
      * @param s The {@link com.noahhusby.sledgehammer.proxy.dialogs.scenes.DialogScene} that should be shown
      */
@@ -59,6 +60,7 @@ public class DialogHandler implements Listener {
 
     /**
      * Stop the dialog from running
+     *
      * @param s The {@link IDialogScene} to discard
      */
     public void discardDialog(IDialogScene s) {
@@ -67,48 +69,49 @@ public class DialogHandler implements Listener {
 
     /**
      * Move the dialog to the next component
-     * @param s The scene to progress
+     *
+     * @param s     The scene to progress
      * @param error True if the last entry was incorrect, false if correct
      */
     public void progressDialog(IDialogScene s, boolean error) {
-        for(int x = 0; x < 20; x++) {
+        for (int x = 0; x < 20; x++) {
             s.getCommandSender().sendMessage();
         }
 
-        if(error) {
+        if (error) {
             s.getCommandSender().sendMessage(ChatUtil.combine(ChatColor.RED, "Invalid entry!"));
             s.getCommandSender().sendMessage();
         }
 
-        if(s.getTitle() != null) {
+        if (s.getTitle() != null) {
             s.getCommandSender().sendMessage(ChatUtil.combine(s.getTitle()));
         }
 
-        if(s.getToolbar() != null) {
+        if (s.getToolbar() != null) {
             Map<String, String> tools = s.getToolbar().getTools();
-            for(Map.Entry<String, String> x : tools.entrySet()) {
+            for (Map.Entry<String, String> x : tools.entrySet()) {
                 s.getCommandSender().sendMessage(ChatUtil.combine(ChatColor.GRAY, "Use ", ChatColor.BLUE, x.getKey(),
                         ChatColor.GRAY, " to ", x.getValue()));
             }
             s.getCommandSender().sendMessage();
         }
 
-        if(s.isAdmin()) {
+        if (s.isAdmin()) {
             s.getCommandSender().sendMessage(ChatUtil.adminAndCombine(ChatColor.YELLOW, s.getCurrentComponent().getPrompt()));
         } else {
             s.getCommandSender().sendMessage(ChatUtil.titleAndCombine(ChatColor.YELLOW, s.getCurrentComponent().getPrompt()));
         }
-        if(s.getCurrentComponent().getExplanation() != null) {
+        if (s.getCurrentComponent().getExplanation() != null) {
             s.getCommandSender().sendMessage(ChatUtil.combine(s.getCurrentComponent().getExplanation()));
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onChatEvent(ChatEvent e) {
-        for(Map.Entry<CommandSender, IDialogScene> l : activeScenes.entrySet()) {
+        for (Map.Entry<CommandSender, IDialogScene> l : activeScenes.entrySet()) {
             ProxiedPlayer p = ProxyServer.getInstance().getPlayer(l.getKey().getName());
-            if(p != null) {
-                if(p.equals(e.getSender())) {
+            if (p != null) {
+                if (p.equals(e.getSender())) {
                     e.setCancelled(true);
                     l.getValue().onMessage(e.getMessage());
                 }
@@ -118,8 +121,8 @@ public class DialogHandler implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerLeave(PlayerDisconnectEvent e) {
-        for(CommandSender c : activeScenes.keySet()) {
-            if(c.getName().equals(e.getPlayer().getName())) {
+        for (CommandSender c : activeScenes.keySet()) {
+            if (c.getName().equals(e.getPlayer().getName())) {
                 activeScenes.remove(c);
                 return;
             }

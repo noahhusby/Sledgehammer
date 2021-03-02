@@ -12,8 +12,10 @@ import java.util.List;
  * @author Noah Husby
  */
 public abstract class AbstractWarpInventoryController<T extends AbstractWarpInventory> extends GUIController {
-    @Getter protected final WarpPayload payload;
-    @Getter private final List<T> pages = Lists.newArrayList();
+    @Getter
+    protected final WarpPayload payload;
+    @Getter
+    private final List<T> pages = Lists.newArrayList();
 
     public AbstractWarpInventoryController(String name, Player player, WarpPayload payload) {
         super(54, name, player);
@@ -25,14 +27,14 @@ public abstract class AbstractWarpInventoryController<T extends AbstractWarpInve
         this.payload = payload;
     }
 
-    protected void addPage(T page)  {
+    protected void addPage(T page) {
         page.initFromController(this, getPlayer(), getInventory());
         pages.add(page);
     }
 
     public T getChildByPage(int page) {
-        for(T w : pages) {
-            if(w.getPage() == page) {
+        for (T w : pages) {
+            if (w.getPage() == page) {
                 return w;
             }
         }

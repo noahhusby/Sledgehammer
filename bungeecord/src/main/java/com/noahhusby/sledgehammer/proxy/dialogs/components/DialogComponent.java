@@ -20,6 +20,7 @@ package com.noahhusby.sledgehammer.proxy.dialogs.components;
 
 public abstract class DialogComponent implements IDialogComponent {
     private String value = "";
+
     @Override
     public String getValue() {
         return value;

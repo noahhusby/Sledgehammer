@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 public class LocationSuccessInventory extends GUIChild {
     private final WarpConfigPayload payload;
     private final Warp warp;
+
     public LocationSuccessInventory(WarpConfigPayload payload, Warp warp) {
         this.payload = payload;
         this.warp = warp;
@@ -23,7 +24,7 @@ public class LocationSuccessInventory extends GUIChild {
     @Override
     public void init() {
         ItemStack skull = SledgehammerUtil.getSkull(Constants.purpleExclamationMark, ChatColor.GREEN + "" + ChatColor.BOLD +
-                "Successfully updated warp location!");
+                                                                                     "Successfully updated warp location!");
         skull.setLore(Lists.newArrayList(ChatColor.BLUE + "Click to continue"));
         fillInventory(skull);
     }

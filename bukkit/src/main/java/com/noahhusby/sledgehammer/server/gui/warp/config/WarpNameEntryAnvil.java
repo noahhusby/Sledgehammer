@@ -5,8 +5,8 @@ import com.noahhusby.sledgehammer.server.Sledgehammer;
 import com.noahhusby.sledgehammer.server.data.warp.WarpConfigPayload;
 import com.noahhusby.sledgehammer.server.gui.AnvilChild;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
-import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpConfigPacket;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
+import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpConfigPacket;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -22,8 +22,8 @@ public class WarpNameEntryAnvil extends AnvilChild {
     @Override
     public void build(AnvilGUI.Builder builder) {
         builder.text("Enter Warp Name")
-            .title("Create a warp")
-            .plugin(Sledgehammer.getInstance());
+                .title("Create a warp")
+                .plugin(Sledgehammer.getInstance());
 
         ItemStack warp = new ItemStack(Material.WOOL, 1, (byte) 4);
         builder.itemLeft(warp);
@@ -41,7 +41,7 @@ public class WarpNameEntryAnvil extends AnvilChild {
 
     @Override
     public void onFinish(CloseMode mode) {
-        switch (mode)  {
+        switch (mode) {
             case EXIT:
                 break;
             case RIGHT:
@@ -49,7 +49,7 @@ public class WarpNameEntryAnvil extends AnvilChild {
                 GUIRegistry.register(new ConfigMenuController(getController().getPlayer(), payload));
                 break;
             case FINISH:
-                if(getText().equals("")) {
+                if (getText().equals("")) {
                     GUIRegistry.register(new WarpNameEntryController(getController().getPlayer(), payload));
                 } else {
                     JsonObject data = new JsonObject();

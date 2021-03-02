@@ -23,6 +23,7 @@ import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
 import net.md_5.bungee.api.CommandSender;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class WarpFragmentManager extends Command {
@@ -36,15 +37,15 @@ public abstract class WarpFragmentManager extends Command {
     }
 
     private final List<ICommandFragment> commandFragments = new ArrayList<>();
+
     protected void registerCommandFragment(ICommandFragment c) {
         commandFragments.add(c);
     }
 
     protected boolean executeFragment(CommandSender sender, String[] args) {
         if (args.length != 0) {
-            ArrayList<String> dataList = new ArrayList<>();
-            for (int x = 1; x < args.length; x++) dataList.add(args[x]);
-            String[] data = dataList.toArray(new String[dataList.size()]);
+            ArrayList<String> dataList = new ArrayList<>(Arrays.asList(args).subList(1, args.length));
+            String[] data = dataList.toArray(new String[0]);
             for (ICommandFragment f : commandFragments) {
                 if (f.getName().equals(args[0].toLowerCase())) {
                     f.execute(sender, data);

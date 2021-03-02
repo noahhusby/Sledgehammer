@@ -42,7 +42,7 @@ public class EditComponent extends DialogComponent {
 
     @Override
     public String[] getAcceptableResponses() {
-        return new String[]{"yes", "no", "y", "n"};
+        return new String[]{ "yes", "no", "y", "n" };
     }
 
     @Override

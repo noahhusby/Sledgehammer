@@ -20,7 +20,6 @@ package com.noahhusby.sledgehammer.server.network.P2S;
 
 import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.server.Constants;
-import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.network.P2SPacket;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
 import org.bukkit.Bukkit;
@@ -34,8 +33,8 @@ public class P2SCommandPacket extends P2SPacket {
 
     @Override
     public void onMessage(PacketInfo info, JsonObject data) {
-        Player player = SledgehammerUtil.getPlayerFromName(info.getSender());
-        if(player == null) {
+        Player player = Bukkit.getPlayer(info.getSender());
+        if (player == null) {
             throwNoSender();
             return;
         }

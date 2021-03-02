@@ -33,8 +33,8 @@ public class WarpSetFragment implements ICommandFragment {
     public void execute(CommandSender sender, String[] args) {
         SledgehammerPlayer player = SledgehammerPlayer.getPlayer(sender);
         PermissionHandler.getInstance().check(player, "sledgehammer.warp.set", (code, global) -> {
-            if(code == PermissionRequest.PermissionCode.PERMISSION) {
-                if(args.length == 0) {
+            if (code == PermissionRequest.PermissionCode.PERMISSION) {
+                if (args.length == 0) {
                     sender.sendMessage(ChatUtil.combine(ChatColor.RED, String.format("Usage: /%s set <name>", ConfigHandler.warpCommand)));
                     return;
                 }
@@ -46,7 +46,7 @@ public class WarpSetFragment implements ICommandFragment {
                         sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Use the warp GUI to move it's location."));
                         break;
                     case RESERVED:
-                        if(global) {
+                        if (global) {
                             sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "A warp with that name already exists!"));
                             sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Use the warp GUI to move it's location."));
                             return;

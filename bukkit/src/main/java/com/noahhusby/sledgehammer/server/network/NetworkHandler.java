@@ -23,7 +23,6 @@ import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.Sledgehammer;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
-import com.noahhusby.sledgehammer.server.network.P2S.*;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -43,24 +42,20 @@ public class NetworkHandler implements Listener {
         cachedPackets = Maps.newHashMap();
         channel = new MessageChannel(Sledgehammer.getInstance(), Constants.serverChannel);
         channel.onMessage(m -> onMessage(SledgehammerUtil.parser.parse(m).getAsJsonObject()));
-
-        register(new P2SCommandPacket());
-        register(new P2SInitilizationPacket());
-        register(new P2SLocationPacket());
-        register(new P2SSetwarpPacket());
-        register(new P2STeleportPacket());
-        register(new P2STestLocationPacket());
-        register(new P2SWarpGUIPacket());
-        register(new P2SPermissionPacket());
-        register(new P2SWarpConfigPacket());
     }
 
     private final Map<String, P2SPacket> registeredPackets;
     private final Map<JsonObject, String> cachedPackets;
-    private MessageChannel channel;
+    private final MessageChannel channel;
 
-    private void register(P2SPacket packet) {
+    public void register(P2SPacket packet) {
         registeredPackets.put(packet.getPacketID(), packet);
+    }
+
+    public void register(P2SPacket... packets) {
+        for (P2SPacket p : packets) {
+            register(p);
+        }
     }
 
     public void send(S2PPacket packet) {
@@ -82,21 +77,21 @@ public class NetworkHandler implements Listener {
         String server = message.get("server").getAsString();
         long time = message.get("time").getAsLong();
         PacketInfo packetInfo = new PacketInfo(command, sender, server, time);
-        if(!SledgehammerUtil.isPlayerAvailable(packetInfo.getSender())) {
+        if (!SledgehammerUtil.isPlayerAvailable(packetInfo.getSender())) {
             cachedPackets.put(message, sender);
             return;
         }
 
         P2SPacket p = registeredPackets.get(packetInfo.getID());
-        if(p != null) {
+        if (p != null) {
             p.onMessage(packetInfo, message.getAsJsonObject("data"));
         }
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        for(Map.Entry<JsonObject, String> e : cachedPackets.entrySet()) {
-            if(e.getValue().equalsIgnoreCase(event.getPlayer().getName())) {
+        for (Map.Entry<JsonObject, String> e : cachedPackets.entrySet()) {
+            if (e.getValue().equalsIgnoreCase(event.getPlayer().getName())) {
                 onMessage(e.getKey());
             }
         }

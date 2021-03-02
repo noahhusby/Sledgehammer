@@ -31,40 +31,60 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * Class to perform a reverse geocode operation.
- *
+ * <p>
  * Notice: this class is <em>not thread-safe</em>. Synchronize if necessary!
  *
  * @author Erich Schubert
  */
 public class ReverseGeocoder implements AutoCloseable {
-    /** Number of header bytes total. */
+    /**
+     * Number of header bytes total.
+     */
     private static final int HEADER_SIZE = 32;
 
-    /** Decoder */
+    /**
+     * Decoder
+     */
     private static final CharsetDecoder DECODER = StandardCharsets.UTF_8.newDecoder();
 
-    /** Empty array - no match */
+    /**
+     * Empty array - no match
+     */
     private static final String[] EMPTY = new String[0];
 
-    /** File name */
+    /**
+     * File name
+     */
     private final File filename;
 
-    /** Java file object */
+    /**
+     * Java file object
+     */
     private RandomAccessFile file;
 
-    /** Java memory map */
+    /**
+     * Java memory map
+     */
     private MappedByteBuffer buffer;
 
-    /** Map size */
+    /**
+     * Map size
+     */
     private int width, height;
 
-    /** Map extends */
+    /**
+     * Map extends
+     */
     private float xscale, yscale, xshift, yshift;
 
-    /** Number of entries in the map. */
+    /**
+     * Number of entries in the map.
+     */
     private int numentries;
 
-    /** String cache, so we only have to decode UTF-8 once. */
+    /**
+     * String cache, so we only have to decode UTF-8 once.
+     */
     private String[][] cache;
 
     /**
@@ -87,7 +107,7 @@ public class ReverseGeocoder implements AutoCloseable {
         file = new RandomAccessFile(filename, "r");
         buffer = file.getChannel().map(MapMode.READ_ONLY, 0, file.length());
         int magic = buffer.getInt();
-        if(magic != 0x6e06e001) {
+        if (magic != 0x6e06e001) {
             throw new IOException("Index file does not have the correct type or version.");
         }
         width = buffer.getInt();
@@ -123,7 +143,7 @@ public class ReverseGeocoder implements AutoCloseable {
     public int lookupUncached(float lon, float lat) {
         int x = (int) Math.floor((lon + xshift) * xscale);
         int y = (int) Math.floor((lat + yshift) * yscale);
-        if(x < 0 || x >= width || y < 0 || y >= height) {
+        if (x < 0 || x >= width || y < 0 || y >= height) {
             return 0;
         }
         // Find the row position
@@ -132,10 +152,10 @@ public class ReverseGeocoder implements AutoCloseable {
         int rowpos = buffer.getInt();
         // Seek to row
         buffer.position(rowpos);
-        for(int i = 0; i <= x;) {
+        for (int i = 0; i <= x; ) {
             int c = readUnsignedVarint(buffer);
             i += readUnsignedVarint(buffer) + 1;
-            if(x < i) {
+            if (x < i) {
                 return c;
             }
         }
@@ -151,14 +171,14 @@ public class ReverseGeocoder implements AutoCloseable {
     private static int readUnsignedVarint(ByteBuffer buffer) {
         int val = 0;
         int bits = 0;
-        while(true) {
+        while (true) {
             final int data = buffer.get();
             val |= (data & 0x7F) << bits;
-            if((data & 0x80) == 0) {
+            if ((data & 0x80) == 0) {
                 return val;
             }
             bits += 7;
-            if(bits > 35) {
+            if (bits > 35) {
                 throw new RuntimeException("Variable length quantity is too long for expected integer.");
             }
         }
@@ -171,7 +191,7 @@ public class ReverseGeocoder implements AutoCloseable {
      * @return String
      */
     public String[] lookupEntry(int idx) {
-        if(idx < 0 || idx >= numentries) {
+        if (idx < 0 || idx >= numentries) {
             return EMPTY;
         }
         return (cache[idx] != null) ? cache[idx] : //
@@ -185,14 +205,14 @@ public class ReverseGeocoder implements AutoCloseable {
      * @return Decoded data.
      */
     public String[] lookupEntryUncached(int idx) {
-        if(idx < 0 || idx >= numentries) {
+        if (idx < 0 || idx >= numentries) {
             return EMPTY;
         }
         // Find the row position
         buffer.limit(buffer.capacity());
         buffer.position(HEADER_SIZE + ((height + idx) << 2));
         int start = buffer.getInt(), endp = buffer.getInt();
-        if(start == endp) {
+        if (start == endp) {
             return EMPTY;
         }
         try {
@@ -201,21 +221,20 @@ public class ReverseGeocoder implements AutoCloseable {
             CharBuffer decoded = DECODER.decode(buffer);
             // Count the number of 0-delimited entries
             int nummeta = 0, end = decoded.length();
-            for(int i = 0; i < end; i++) {
-                if(decoded.get(i) == '\0') {
+            for (int i = 0; i < end; i++) {
+                if (decoded.get(i) == '\0') {
                     ++nummeta;
                 }
             }
             String[] ret = new String[nummeta];
-            for(int i = 0, j = 0, k = 0; i < end; i++) {
-                if(decoded.get(i) == '\0') {
+            for (int i = 0, j = 0, k = 0; i < end; i++) {
+                if (decoded.get(i) == '\0') {
                     ret[k++] = decoded.subSequence(j, i).toString();
                     j = i + 1;
                 }
             }
             return ret;
-        }
-        catch(CharacterCodingException e) {
+        } catch (CharacterCodingException e) {
             throw new RuntimeException("Invalid encoding in index for entry: " + idx, e);
         }
     }
@@ -224,13 +243,11 @@ public class ReverseGeocoder implements AutoCloseable {
     @Override
     public void close() throws IOException {
         cache = null;
-        if(buffer != null) {
+        if (buffer != null) {
             // Restricted API, but e.g. the JMH benchmarks fail if we do not unmap.
-            //sun.misc.Cleaner cleaner = ((sun.nio.ch.DirectBuffer) buffer).cleaner();
-            //cleaner.clean();
             buffer = null;
         }
-        if(file != null) {
+        if (file != null) {
             file.close();
             file = null;
         }

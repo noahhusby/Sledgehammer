@@ -29,13 +29,13 @@ public class ServerSetFriendlyFragment implements ICommandFragment {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(args.length < 3) {
+        if (args.length < 3) {
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Usage: /sha server <server name> setname <name>"));
             return;
         }
 
         StringBuilder name = new StringBuilder(args[2]);
-        for(int i = 3; i < args.length; i++) {
+        for (int i = 3; i < args.length; i++) {
             name.append(" ").append(args[i]);
         }
 
@@ -60,6 +60,6 @@ public class ServerSetFriendlyFragment implements ICommandFragment {
 
     @Override
     public String[] getArguments() {
-        return new String[]{"<name>"};
+        return new String[]{ "<name>" };
     }
 }

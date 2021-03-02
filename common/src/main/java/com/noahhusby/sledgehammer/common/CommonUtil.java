@@ -17,6 +17,7 @@ public abstract class CommonUtil {
 
     /**
      * Gets the geographical location from in-game coordinates
+     *
      * @param x X-Axis in-game
      * @param z Z-Axis in-game
      * @return The geographical location (Long, Lat)
@@ -27,6 +28,7 @@ public abstract class CommonUtil {
 
     /**
      * Gets in-game coordinates from geographical location
+     *
      * @param lon Geographical Longitude
      * @param lat Geographic Latitude
      * @return The in-game coordinates (x, z)
@@ -37,8 +39,9 @@ public abstract class CommonUtil {
 
     /**
      * Gets the geographic projection used to convert coordinates
-     * @author SmylerMC
+     *
      * @return a BTE compatible projection
+     * @author SmylerMC
      */
     public static GeographicProjection getBTEProjection() {
         return scaleProj;

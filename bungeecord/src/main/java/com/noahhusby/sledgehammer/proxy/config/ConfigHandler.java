@@ -19,14 +19,6 @@
 package com.noahhusby.sledgehammer.proxy.config;
 
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
-
 import com.google.common.collect.Maps;
 import com.noahhusby.lib.data.sql.Credentials;
 import com.noahhusby.lib.data.sql.MySQL;
@@ -42,11 +34,21 @@ import com.noahhusby.sledgehammer.proxy.addons.terramap.MapStyleRegistry;
 import com.noahhusby.sledgehammer.proxy.players.PlayerManager;
 import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
+
 public class ConfigHandler {
     private static ConfigHandler mInstance = null;
 
     public static ConfigHandler getInstance() {
-        if(mInstance == null) mInstance = new ConfigHandler();
+        if (mInstance == null) {
+            mInstance = new ConfigHandler();
+        }
         return mInstance;
     }
 
@@ -58,7 +60,8 @@ public class ConfigHandler {
     public static File attributeFile;
     public static File groupsFile;
 
-    private ConfigHandler() { }
+    private ConfigHandler() {
+    }
 
     public static net.minecraftforge.common.config.Configuration config;
     private boolean authCodeConfigured;
@@ -107,19 +110,23 @@ public class ConfigHandler {
 
     /**
      * Creates initial data structures upon startup
+     *
      * @param dataFolder Sledgehammer plugin folder
      */
     public void init(File dataFolder) {
         this.dataFolder = dataFolder;
         localStorage = new File(dataFolder, "local");
-        if(!localStorage.exists()) localStorage.mkdir();
+        if (!localStorage.exists()) {
+            localStorage.mkdir();
+        }
         warpFile = new File(localStorage, "warps.json");
         serverFile = new File(localStorage, "servers.json");
         attributeFile = new File(localStorage, "attributes.json");
         groupsFile = new File(localStorage, "groups.json");
 
-        if (!dataFolder.exists())
+        if (!dataFolder.exists()) {
             dataFolder.mkdir();
+        }
 
         config = new net.minecraftforge.common.config.Configuration(new File(dataFolder, "sledgehammer.cfg"));
 
@@ -132,30 +139,34 @@ public class ConfigHandler {
     public void loadData() {
         Storage serverData = ServerHandler.getInstance().getServers();
         serverData.clearHandlers();
-        if(serverData.getComparator() instanceof CutComparator)
+        if (serverData.getComparator() instanceof CutComparator) {
             serverData.setComparator(new ValueComparator("Name"));
+        }
 
         Storage warpData = WarpHandler.getInstance().getWarps();
         warpData.clearHandlers();
-        if(warpData.getComparator() instanceof CutComparator)
+        if (warpData.getComparator() instanceof CutComparator) {
             warpData.setComparator(new ValueComparator("Id"));
+        }
 
         Storage attributeData = PlayerManager.getInstance().getAttributes();
         attributeData.clearHandlers();
-        if(attributeData.getComparator() instanceof CutComparator)
+        if (attributeData.getComparator() instanceof CutComparator) {
             attributeData.setComparator(new ValueComparator("UUID"));
+        }
 
         Storage serverGroups = ServerHandler.getInstance().getGroups();
         serverGroups.clearHandlers();
-        if(serverGroups.getComparator() instanceof CutComparator)
+        if (serverGroups.getComparator() instanceof CutComparator) {
             serverGroups.setComparator(new ValueComparator("Id"));
+        }
 
         config.load();
         cat("General", "General options for sledgehammer");
         authenticationCode = config.getString(prop("Network Authentication Code"), "General", "",
                 "Generate a new key using https://uuidgenerator.net/version4\n" +
-                        "All corresponding sledgehammer clients must have the same code\n" +
-                        "Don't share this key with anyone you don't trust as it will allow anybody to run any command on connected servers.");
+                "All corresponding sledgehammer clients must have the same code\n" +
+                "Don't share this key with anyone you don't trust as it will allow anybody to run any command on connected servers.");
 
         Pattern p = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
         authCodeConfigured = p.matcher(authenticationCode).matches();
@@ -164,7 +175,7 @@ public class ConfigHandler {
                 "The Id of the proxy. The first proxy starts at zero. Leave at zero if this is a single-proxy configuration");
         proxyTotal = config.getInt(prop("Proxy Total"), category, -1, -1, 100,
                 "The total amount of proxies, if a multi-server setup. Zero includes first proxy.\n" +
-                        "Set this to -1 if this is a single-proxy configuaraion");
+                "Set this to -1 if this is a single-proxy configuaraion");
         messagePrefix = config.getString(prop("Message Prefix"), "General", "&9&lBTE &8&l> "
                 , "The prefix of messages broadcasted to players from the proxy.");
         globalTpll = config.getBoolean(prop("Global Tpll"), "General", true, "Set this to false to disable global tpll. [/tpll & /cs tpll]");
@@ -176,7 +187,7 @@ public class ConfigHandler {
         cat("MySQL Database", "Settings for the MySQL Database");
         useSql = config.getBoolean(prop("Enable SQL"), category, false, "Should SQL be used to synchronize/store data?");
         sqlHost = config.getString(prop("Host"), category, "127.0.0.1", "The host IP for the database.");
-        sqlPort = config.getInt(prop("Port"), category, 3306, 0, 65535,"The port for the database.");
+        sqlPort = config.getInt(prop("Port"), category, 3306, 0, 65535, "The port for the database.");
         sqlUser = config.getString(prop("Username"), category, "", "The username for the database.");
         sqlPassword = config.getString(prop("Password"), category, "", "The password for the database.");
         sqlDb = config.getString(prop("Database"), category, "", "The name of the database.");
@@ -192,12 +203,12 @@ public class ConfigHandler {
                 "All warps are accessible regardless of warp mode.");
         warpMenuDefault = config.getBoolean(prop("Default Warp Menu"), category, true,
                 "This will open the interactive GUI by default when the warp command is called.\n" +
-            "Otherwise `/[warp command] menu` is required to open the menu.");
+                "Otherwise `/[warp command] menu` is required to open the menu.");
         warpMenuPage = config.getString(prop("Default Menu Page"), category, "group",
                 "This is the main page that will be shown upon the warp menu opening.\n" +
-                        "Use `group` to show the warps on the current server (or groups of servers)\n" +
-                        "Use `all` to show all the warps by default\n" +
-                        "or Use `pinned` to show the pinned warps.");
+                "Use `group` to show the warps on the current server (or groups of servers)\n" +
+                "Use `all` to show all the warps by default\n" +
+                "or Use `pinned` to show the pinned warps.");
         showPinnedOnBlank = config.getBoolean(prop("Pinned on Blank"), category, false,
                 "If enabled, the warp GUI will show the pinned page if that server has no warps.");
         order();
@@ -208,7 +219,7 @@ public class ConfigHandler {
                 "Zoom detail level for OSM requests.");
         useOfflineMode = config.getBoolean(prop("OSM Offline Mode"), "Geography", false,
                 "Set false for fetching the latest data from OSM (more up to date), or true for using a downloaded database.\n" +
-                        "Please follow the guide on https://github.com/noahhusby/Sledgehammer/wiki/Border-Offline-Database about downloading and configuring the offline database.");
+                "Please follow the guide on https://github.com/noahhusby/Sledgehammer/wiki/Border-Offline-Database about downloading and configuring the offline database.");
         borderTeleportation = config.getBoolean(prop("Auto Border Teleportation"), "Geography", false,
                 "Set to false to disable automatic border teleportation, or true to enable it. Border teleportation requires the offline database to be configured.");
 
@@ -217,32 +228,34 @@ public class ConfigHandler {
         cat("Terramap", "Terramap Addon Configuration.");
         terramapEnabled = config.getBoolean(prop("Enabled"), category, true, "Enables Terramap integration");
         terramapSyncPlayers = config.getBoolean(prop("Sync Players"), category, true,
-        		"Wether or not to synchronize players from server to client so everyone appears on the map, no matter the distance");
+                "Wether or not to synchronize players from server to client so everyone appears on the map, no matter the distance");
         terramapSyncInterval = config.getInt(prop("Sync Interval"), category, 500, 1, Integer.MAX_VALUE,
-        		"The time interval, in milliseconds at which to synchronize players with clients");
+                "The time interval, in milliseconds at which to synchronize players with clients");
         terramapSyncTimeout = config.getInt(prop("Sync Timeout"), category, 120000, 20000, Integer.MAX_VALUE,
                 "The default time interval, in milliseconds, before a clients needs to register again to continue getting player position updates.");
         terramapPlayersDisplayDefault = config.getBoolean(prop("Player Display Default"), category, true,
-        		"If player sync is enabled, sould players be displayed by default (true) or should they explicitly opt-in with /terrashow (false)");
+                "If player sync is enabled, sould players be displayed by default (true) or should they explicitly opt-in with /terrashow (false)");
         terramapSendCustomMapsToClient = config.getBoolean(prop("Send Custom Maps to Clients"), category, true,
-        		"Set to false if you do not want to send custom maps to clients. This is only for testing, as if you don't want to send map styles to client, the first thing to do is to not configure any.");
+                "Set to false if you do not want to send custom maps to clients. This is only for testing, as if you don't want to send map styles to client, the first thing to do is to not configure any.");
         terramapGlobalMap = config.getBoolean(prop("Global Map"), category, true,
-        		"Set this to false to only allow players to use the map when they are on an Earth world.");
+                "Set this to false to only allow players to use the map when they are on an Earth world.");
         terramapGlobalSettings = config.getBoolean(prop("Global Settings"), category, false,
-        		"Set this to true is you want client's settings to be saved for the entire network instead of per-world.");
-        terramapProxyUUID = config.getString(prop("Proxy UUID"), "terramap", UUID.randomUUID().toString(), 
-        		"A UUID v4 that will be used by Terramap clients to identify this network when saving settings. DO NOT PUT YOUR NETWORK AUTHENTIFICATION CODE IN HERE, THIS IS SHARED WITH CLIENTS! You want this to be the same on all your network's proxies. The default value is randomly generated.");
+                "Set this to true is you want client's settings to be saved for the entire network instead of per-world.");
+        terramapProxyUUID = config.getString(prop("Proxy UUID"), "terramap", UUID.randomUUID().toString(),
+                "A UUID v4 that will be used by Terramap clients to identify this network when saving settings. DO NOT PUT YOUR NETWORK AUTHENTIFICATION CODE IN HERE, THIS IS SHARED WITH CLIENTS! You want this to be the same on all your network's proxies. The default value is randomly generated.");
 
         order();
-        if(config.hasChanged()) config.save();
+        if (config.hasChanged()) {
+            config.save();
+        }
 
         File f = new File(localStorage, "offline.bin");
         doesOfflineExist = f.exists();
-        
-        if(terramapEnabled) {        	
-        	File customMaps = new File(dataFolder + "/" + MapStyleRegistry.FILENAME);
-        	MapStyleRegistry.setConfigMapFile(customMaps);
-        	MapStyleRegistry.loadFromConfigFile();
+
+        if (terramapEnabled) {
+            File customMaps = new File(dataFolder + "/" + MapStyleRegistry.FILENAME);
+            MapStyleRegistry.setConfigMapFile(customMaps);
+            MapStyleRegistry.loadFromConfigFile();
         }
 
         serverData.registerHandler(new LocalStorageHandler(ConfigHandler.serverFile));
@@ -250,7 +263,7 @@ public class ConfigHandler {
         attributeData.registerHandler(new LocalStorageHandler(ConfigHandler.attributeFile));
         serverGroups.registerHandler(new LocalStorageHandler(ConfigHandler.groupsFile));
 
-        if(useSql) {
+        if (useSql) {
             {
                 SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(
                         new Credentials(sqlHost, sqlPort, sqlUser, sqlPassword, sqlDb)), "Servers",
@@ -327,6 +340,7 @@ public class ConfigHandler {
 
     /**
      * Gets whether the authentication code is configured correctly
+     *
      * @return True if configured correctly, false if not
      */
     public boolean isAuthCodeConfigured() {
@@ -354,6 +368,7 @@ public class ConfigHandler {
 
     /**
      * Gets the file for the offline OSM database
+     *
      * @return {@link File}
      */
     public File getOfflineBin() {
@@ -367,7 +382,7 @@ public class ConfigHandler {
 
     private void cat(String category, String comment) {
         this.category = category;
-        if(!categories.containsKey(category)) {
+        if (!categories.containsKey(category)) {
             categories.put(category, new ArrayList<>());
         }
         config.addCustomCategoryComment(category, comment);

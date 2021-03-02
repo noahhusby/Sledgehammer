@@ -22,8 +22,8 @@ public class ChangeNameAnvil extends AnvilChild {
     @Override
     public void build(AnvilGUI.Builder builder) {
         builder.text(warp.getName())
-            .title("Rename Warp")
-            .plugin(Sledgehammer.getInstance());
+                .title("Rename Warp")
+                .plugin(Sledgehammer.getInstance());
 
         ItemStack warp = new ItemStack(Material.WOOL, 1, (byte) 4);
         builder.itemLeft(warp);
@@ -35,11 +35,12 @@ public class ChangeNameAnvil extends AnvilChild {
     }
 
     @Override
-    public void onRightItemClick() { }
+    public void onRightItemClick() {
+    }
 
     @Override
     public void onFinish(CloseMode mode) {
-        switch (mode)  {
+        switch (mode) {
             case EXIT:
                 break;
             case RIGHT:
@@ -47,7 +48,7 @@ public class ChangeNameAnvil extends AnvilChild {
                 GUIRegistry.register(new ManageWarpInventoryController(getController().getPlayer(), payload, warp));
                 break;
             case FINISH:
-                if(getText().equals("")) {
+                if (getText().equals("")) {
                     GUIRegistry.register(new ChangeNameController(getController().getPlayer(), payload, warp));
                 } else {
                     warp.setName(getText());

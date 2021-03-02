@@ -29,19 +29,19 @@ public class ServerOffsetFragment implements ICommandFragment {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(ServerHandler.getInstance().getServer(args[0]) == null) {
+        if (ServerHandler.getInstance().getServer(args[0]) == null) {
             sender.sendMessage(ChatUtil.notSledgehammerServer);
             return;
         }
 
-        if(args.length < 4) {
+        if (args.length < 4) {
             sender.sendMessage(ChatUtil.combine(ChatColor.RED, "Usage: /sha server <server name> setoffset <x/z> offset"));
             return;
         }
 
         SledgehammerServer s = ServerHandler.getInstance().getServer(args[0]);
         String axis = args[2];
-        if(!(axis.equalsIgnoreCase("x") || axis.equalsIgnoreCase("z"))) {
+        if (!(axis.equalsIgnoreCase("x") || axis.equalsIgnoreCase("z"))) {
             sender.sendMessage(ChatUtil.combine(ChatColor.RED, "Usage: /sha server <server name> setoffset <x/z> offset"));
             return;
         }
@@ -55,7 +55,7 @@ public class ServerOffsetFragment implements ICommandFragment {
             return;
         }
 
-        if(axis.equalsIgnoreCase("z")) {
+        if (axis.equalsIgnoreCase("z")) {
             s.setZOffset(value);
             sender.sendMessage(ChatUtil.getValueMessage("zOffset", valString, s.getName()));
         } else {
@@ -78,6 +78,6 @@ public class ServerOffsetFragment implements ICommandFragment {
 
     @Override
     public String[] getArguments() {
-        return new String[]{"<x|z> <offset>"};
+        return new String[]{ "<x|z> <offset>" };
     }
 }

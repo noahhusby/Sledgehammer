@@ -29,7 +29,7 @@ public class WarpListFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
         PermissionHandler.getInstance().check(SledgehammerPlayer.getPlayer(sender), "sledgehammer.warp.list", (code, global) -> {
-            if(code == PermissionRequest.PermissionCode.PERMISSION) {
+            if (code == PermissionRequest.PermissionCode.PERMISSION) {
                 SledgehammerPlayer player = SledgehammerPlayer.getPlayer(sender);
                 sender.sendMessage(WarpHandler.getInstance().getWarpList(player.getServer().getInfo().getName()));
                 return;

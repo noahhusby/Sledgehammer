@@ -22,7 +22,8 @@ import com.google.common.collect.Maps;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.*;
+import java.util.Map;
+import java.util.UUID;
 
 public class Attribute {
     @Expose

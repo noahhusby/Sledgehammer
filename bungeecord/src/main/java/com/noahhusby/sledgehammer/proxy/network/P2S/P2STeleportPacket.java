@@ -19,7 +19,6 @@
 package com.noahhusby.sledgehammer.proxy.network.P2S;
 
 import com.google.gson.JsonObject;
-import com.noahhusby.sledgehammer.common.CommonUtil;
 import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;

@@ -31,6 +31,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import org.apache.commons.lang3.Validate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -40,6 +41,7 @@ public class SledgehammerUtil extends CommonUtil {
 
     /**
      * Gets Bungeecord server by it's name
+     *
      * @param name The name of the BungeeCord server
      * @return The Bungeecord server. Result will be null if no matching server is found.
      */
@@ -49,62 +51,79 @@ public class SledgehammerUtil extends CommonUtil {
 
     /**
      * Gets the current Bungeecord server that a player is on
+     *
      * @param sender The sender
      * @return The Bungeecord server. Result will be null if no matching server is found.
      */
     public static ServerInfo getServerFromSender(CommandSender sender) {
-        if(!(sender instanceof ProxiedPlayer)) return null;
+        if (!(sender instanceof ProxiedPlayer)) {
+            return null;
+        }
         return ((ProxiedPlayer) sender).getServer().getInfo();
     }
 
     /**
      * Gets Bungeecord server from player name
+     *
      * @param name The name of the player
      * @return The Bungeecord server. Result will be null if no matching server is found.
      * @deprecated As of release 0.4, replaced by {@link #getServerNameByPlayer(ProxiedPlayer)}
      */
-    @Deprecated public static ServerInfo getServerFromPlayer(String name) {
+    @Deprecated
+    public static ServerInfo getServerFromPlayer(String name) {
         return ProxyServer.getInstance().getPlayer(name).getServer().getInfo();
     }
 
     /**
      * Gets name of Bungeecord server from player
+     *
      * @param player The name of the player
      * @return The name of the Bungeecord server. Result will be null if no matching server is found.
      * @deprecated As of release 0.4, replaced by {@link #getServerFromSender(CommandSender)}
      */
-    @Deprecated public static String getServerNameByPlayer(ProxiedPlayer player) {
+    @Deprecated
+    public static String getServerNameByPlayer(ProxiedPlayer player) {
         return player.getServer().getInfo().getName();
     }
 
     /**
      * Checks if a Bungeecord server is a sledgehammer server
+     *
      * @param server The Bungeecord server
      * @return True if the Bungeecord server is a Sledgehammer server, False if not
      */
     public static boolean isSledgehammerServer(ServerInfo server) {
-        for(SledgehammerServer s : ServerHandler.getInstance().getServers()) {
-            if(s.getServerInfo() == null) continue;
-            if(s.getServerInfo().equals(server)) return true;
+        for (SledgehammerServer s : ServerHandler.getInstance().getServers()) {
+            if (s.getServerInfo() == null) {
+                continue;
+            }
+            if (s.getServerInfo().equals(server)) {
+                return true;
+            }
         }
         return false;
     }
 
     /**
      * Checks if a Bungeecord server is a sledgehammer server
+     *
      * @param name The name of the Bungeecord server
      * @return True if the Bungeecord server is a Sledgehammer server, False if not
      * @deprecated As of release 0.4, replaced by {@link #isSledgehammerServer(ServerInfo)}
      */
-    @Deprecated public static boolean isSledgehammerServer(String name) {
-        for(SledgehammerServer s : ServerHandler.getInstance().getServers()) {
-            if(s.getName().equals(name)) return true;
+    @Deprecated
+    public static boolean isSledgehammerServer(String name) {
+        for (SledgehammerServer s : ServerHandler.getInstance().getServers()) {
+            if (s.getName().equals(name)) {
+                return true;
+            }
         }
         return false;
     }
 
     /**
      * Checks if player is within a build region
+     *
      * @param player The player
      * @return True if they are within the region, false if not
      */
@@ -115,6 +134,7 @@ public class SledgehammerUtil extends CommonUtil {
 
     /**
      * Checks if an incoming request matches the Sledgehammer authentication code
+     *
      * @param u The incoming authentication code
      * @return True if codes math, false if not
      */
@@ -129,37 +149,42 @@ public class SledgehammerUtil extends CommonUtil {
 
     /**
      * Gets all objects in a string array above a given index
-     * @param args Initial array
+     *
+     * @param args  Initial array
      * @param index Starting index
      * @return Selected array
      */
     public static String[] selectArray(String[] args, int index) {
-        List<String> array = new ArrayList<>();
-        for(int i = index; i < args.length; i++)
-            array.add(args[i]);
-
-        return array.toArray(array.toArray(new String[array.size()]));
+        List<String> array = new ArrayList<>(Arrays.asList(args).subList(index, args.length));
+        return array.toArray(array.toArray(new String[0]));
     }
 
     /**
      * Gets a space seperated string from an array
+     *
      * @param args A string array
      * @return The space seperated String
      */
     public static String getRawArguments(String[] args) {
-        if(args.length == 0) return "";
-        if(args.length == 1) return args[0];
+        if (args.length == 0) {
+            return "";
+        }
+        if (args.length == 1) {
+            return args[0];
+        }
 
         StringBuilder arguments = new StringBuilder(args[0]);
 
-        for(int x = 1; x < args.length; x++)
+        for (int x = 1; x < args.length; x++) {
             arguments.append(" ").append(args[x]);
+        }
 
         return arguments.toString();
     }
 
     /**
      * Generates a random 6-character string
+     *
      * @return Random string
      */
     public static String getSaltString() {
@@ -170,8 +195,7 @@ public class SledgehammerUtil extends CommonUtil {
             int index = (int) (rnd.nextFloat() * SALTCHARS.length());
             salt.append(SALTCHARS.charAt(index));
         }
-        String saltStr = salt.toString();
-        return saltStr;
+        return salt.toString();
     }
 
     public String getLastArgument(String[] a) {

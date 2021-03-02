@@ -36,7 +36,8 @@ public class P2SInitializationPacket extends P2SPacket {
     }
 
     @Override
-    public void getMessage(JsonObject data) { }
+    public void getMessage(JsonObject data) {
+    }
 
     @Override
     public PacketInfo getPacketInfo() {

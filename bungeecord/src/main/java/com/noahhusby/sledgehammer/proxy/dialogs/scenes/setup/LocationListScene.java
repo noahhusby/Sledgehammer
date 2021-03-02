@@ -19,9 +19,9 @@
 package com.noahhusby.sledgehammer.proxy.dialogs.scenes.setup;
 
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.dialogs.DialogHandler;
 import com.noahhusby.sledgehammer.proxy.dialogs.components.location.LocationListComponent;
 import com.noahhusby.sledgehammer.proxy.dialogs.scenes.DialogScene;
-import com.noahhusby.sledgehammer.proxy.dialogs.DialogHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -45,7 +45,7 @@ public class LocationListScene extends DialogScene {
     @Override
     public void onFinish() {
         DialogHandler.getInstance().discardDialog(this);
-        if(scene != null) {
+        if (scene != null) {
             DialogHandler.getInstance().startDialog(getCommandSender(), scene);
         }
     }

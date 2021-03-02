@@ -29,17 +29,19 @@ public class ServerSHSelectFragment implements ICommandFragment {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(args.length < 3) {
+        if (args.length < 3) {
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Usage: /sha server <server name> setsledgehammer <true/false>"));
         } else {
             String arg = args[2].toLowerCase();
-            if(arg.equals("true") || arg.equals("false")) {
+            if (arg.equals("true") || arg.equals("false")) {
                 SledgehammerServer s = ServerHandler.getInstance().getServer(args[0]);
 
-                if(!Boolean.parseBoolean(arg)) {
+                if (!Boolean.parseBoolean(arg)) {
                     ServerHandler.getInstance().removeServer(s);
                 } else {
-                    if(s == null) s = new SledgehammerServer(args[0]);
+                    if (s == null) {
+                        s = new SledgehammerServer(args[0]);
+                    }
                     ServerHandler.getInstance().pushServer(s);
                 }
 
@@ -62,6 +64,6 @@ public class ServerSHSelectFragment implements ICommandFragment {
 
     @Override
     public String[] getArguments() {
-        return new String[]{"<true/false>"};
+        return new String[]{ "<true/false>" };
     }
 }

@@ -37,7 +37,7 @@ public class ManageGroupInventoryController extends GUIController {
         init();
     }
 
-    public ManageGroupInventoryController(GUIController controller, WarpConfigPayload payload){
+    public ManageGroupInventoryController(GUIController controller, WarpConfigPayload payload) {
         super(controller);
         this.payload = payload;
         init();
@@ -48,8 +48,10 @@ public class ManageGroupInventoryController extends GUIController {
         List<WarpGroup> groups = payload.getGroups();
 
         int total_pages = (int) Math.ceil(groups.size() / 27.0);
-        if(total_pages == 0) total_pages = 1;
-        for(int x = 0; x < total_pages; x++) {
+        if (total_pages == 0) {
+            total_pages = 1;
+        }
+        for (int x = 0; x < total_pages; x++) {
             ManageGroupInventory w = new ManageGroupInventory(x, groups);
             w.initFromController(this, getPlayer(), getInventory());
             warpInventories.add(w);
@@ -59,8 +61,10 @@ public class ManageGroupInventoryController extends GUIController {
     }
 
     public GUIChild getChildByPage(int page) {
-        for(ManageGroupInventory w : warpInventories) {
-            if(w.getPage() == page) return w;
+        for (ManageGroupInventory w : warpInventories) {
+            if (w.getPage() == page) {
+                return w;
+            }
         }
 
         return null;

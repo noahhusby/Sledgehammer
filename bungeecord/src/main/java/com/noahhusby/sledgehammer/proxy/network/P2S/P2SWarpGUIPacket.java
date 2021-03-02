@@ -21,10 +21,10 @@ package com.noahhusby.sledgehammer.proxy.network.P2S;
 import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.gui.GUIHandler;
-import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
-import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 import com.noahhusby.sledgehammer.proxy.network.P2SPacket;
 import com.noahhusby.sledgehammer.proxy.network.PacketInfo;
+import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
+import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
@@ -45,7 +45,7 @@ public class P2SWarpGUIPacket extends P2SPacket {
     @Override
     public void getMessage(JsonObject data) {
         data = WarpHandler.getInstance().generateGUIPayload(SledgehammerPlayer.getPlayer(sender), editAccess);
-        if(group != null) {
+        if (group != null) {
             data.remove("requestGroup");
             data.addProperty("requestGroup", group);
             data.addProperty("defaultPage", "group");

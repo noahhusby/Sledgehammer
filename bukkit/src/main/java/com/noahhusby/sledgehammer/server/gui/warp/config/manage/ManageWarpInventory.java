@@ -11,8 +11,8 @@ import com.noahhusby.sledgehammer.server.gui.GUIChild;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.gui.warp.config.ManageGroupInventoryController;
 import com.noahhusby.sledgehammer.server.gui.warp.config.confirmation.ConfirmationController;
-import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpConfigPacket;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
+import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpConfigPacket;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -33,9 +33,11 @@ public class ManageWarpInventory extends GUIChild {
         fillInventory(createItem(Material.STAINED_GLASS_PANE, 1, (byte) 15, null));
         {
             String headId = cur.getHeadID();
-            if(headId.equals("")) headId = Constants.cyanWoolHead;
+            if (headId.equals("")) {
+                headId = Constants.cyanWoolHead;
+            }
             ItemStack item = SledgehammerUtil.getSkull(headId, ChatColor.BLUE
-                    + "" + ChatColor.BOLD + cur.getName());
+                                                               + "" + ChatColor.BOLD + cur.getName());
             List<String> lore = new ArrayList<>();
             lore.add(ChatColor.BLUE + "" + ChatColor.STRIKETHROUGH + "------------------");
             lore.add(ChatColor.DARK_GRAY + "Server: " + cur.getServer());
@@ -46,7 +48,7 @@ public class ManageWarpInventory extends GUIChild {
         }
 
         setItem(18, SledgehammerUtil.getSkull(Constants.arrowLeftHead, ChatColor.RED + ""
-            + ChatColor.BOLD + "Back"));
+                                                                       + ChatColor.BOLD + "Back"));
         setItem(26, SledgehammerUtil.getSkull(Constants.limeCheckmarkHead, ChatColor.GREEN + "" + ChatColor.BOLD + "Save"));
         setItem(11, createItem(Material.NAME_TAG, 1, ChatColor.RED + "" + ChatColor.BOLD + "Change Name"));
         inventory.setItem(12, SledgehammerUtil.getSkull(Constants.pocketPortalHead, ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Move Location"));
@@ -55,7 +57,7 @@ public class ManageWarpInventory extends GUIChild {
             byte pinnedColor = 7;
             String title = ChatColor.WHITE + "" + ChatColor.BOLD + "Not Pinned";
 
-            if(payload.isLocal()) {
+            if (payload.isLocal()) {
                 switch (cur.getPinned()) {
                     case LOCAL:
                         pinnedColor = 4;
@@ -67,7 +69,7 @@ public class ManageWarpInventory extends GUIChild {
                         break;
                 }
             } else {
-                if(cur.getPinned() == Warp.PinnedMode.LOCAL || cur.getPinned() == Warp.PinnedMode.GLOBAL) {
+                if (cur.getPinned() == Warp.PinnedMode.LOCAL || cur.getPinned() == Warp.PinnedMode.GLOBAL) {
                     pinnedColor = 4;
                     title = ChatColor.GOLD + "" + ChatColor.BOLD + "Pinned";
                 }
@@ -75,7 +77,7 @@ public class ManageWarpInventory extends GUIChild {
 
             ItemStack item = createItem(Material.WOOL, 1, pinnedColor, title);
             List<String> lore = new ArrayList<>();
-            if(payload.isLocal() && !payload.isAdmin() && cur.getPinned() == Warp.PinnedMode.GLOBAL) {
+            if (payload.isLocal() && !payload.isAdmin() && cur.getPinned() == Warp.PinnedMode.GLOBAL) {
                 lore.add(ChatColor.RED + "You don't have permission to change the mode!");
             } else {
                 lore.add(ChatColor.GREEN + "Click to change!");
@@ -91,20 +93,26 @@ public class ManageWarpInventory extends GUIChild {
     @Override
     public void onInventoryClick(InventoryClickEvent e) {
         e.setCancelled(true);
-        if(e.getCurrentItem() == null) return;
-        if(e.getCurrentItem().getItemMeta() == null) return;
-        if(e.getCurrentItem().getItemMeta().getDisplayName() == null) return;
-        if(e.getSlot() == 18) {
+        if (e.getCurrentItem() == null) {
+            return;
+        }
+        if (e.getCurrentItem().getItemMeta() == null) {
+            return;
+        }
+        if (e.getCurrentItem().getItemMeta().getDisplayName() == null) {
+            return;
+        }
+        if (e.getSlot() == 18) {
             GUIRegistry.register(new ManageGroupInventoryController(getPlayer(), payload));
             return;
         }
 
-        if(e.getSlot() == 11) {
+        if (e.getSlot() == 11) {
             GUIRegistry.register(new ChangeNameController(getPlayer(), payload, cur));
             return;
         }
 
-        if(e.getSlot() == 12) {
+        if (e.getSlot() == 12) {
             JsonObject data = new JsonObject();
             data.addProperty("warpId", cur.getId());
             Point point = new Point(String.valueOf(player.getLocation().getX()),
@@ -119,38 +127,38 @@ public class ManageWarpInventory extends GUIChild {
                     getPlayer(), payload.getSalt(), data));
         }
 
-        if(e.getSlot() == 13) {
-            if(e.getCurrentItem().getDurability() == 7) {
+        if (e.getSlot() == 13) {
+            if (e.getCurrentItem().getDurability() == 7) {
                 cur.setPinned(Warp.PinnedMode.LOCAL);
                 GUIRegistry.register(new ManageWarpInventoryController(getController(), payload, cur));
-            } else if(e.getCurrentItem().getDurability() == 4) {
-                if(payload.isLocal() && payload.isAdmin()) {
+            } else if (e.getCurrentItem().getDurability() == 4) {
+                if (payload.isLocal() && payload.isAdmin()) {
                     cur.setPinned(Warp.PinnedMode.GLOBAL);
                     GUIRegistry.register(new ManageWarpInventoryController(getController(), payload, cur));
-                } else if(!payload.isLocal()) {
+                } else if (!payload.isLocal()) {
                     cur.setPinned(Warp.PinnedMode.NONE);
                     GUIRegistry.register(new ManageWarpInventoryController(getController(), payload, cur));
                 }
-            } else if(e.getCurrentItem().getDurability() == 14) {
-                if(payload.isAdmin()) {
+            } else if (e.getCurrentItem().getDurability() == 14) {
+                if (payload.isAdmin()) {
                     cur.setPinned(Warp.PinnedMode.NONE);
                     GUIRegistry.register(new ManageWarpInventoryController(getController(), payload, cur));
                 }
             }
         }
 
-        if(e.getSlot() == 14) {
+        if (e.getSlot() == 14) {
             getController().close();
             ChatHandler.getInstance().startEntry(getPlayer(), ChatColor.BLUE + "Enter the Base64 head code from " +
-                    ChatColor.GOLD + "minecraft-heads.com", (success, text) -> {
-                        if(success) {
-                            cur.setHeadID(text);
-                        }
+                                                              ChatColor.GOLD + "minecraft-heads.com", (success, text) -> {
+                if (success) {
+                    cur.setHeadID(text);
+                }
                 GUIRegistry.register(new ManageWarpInventoryController(player, payload, cur));
             });
         }
 
-        if(e.getSlot() == 15) {
+        if (e.getSlot() == 15) {
             JsonObject data = new JsonObject();
             data.addProperty("warpId", cur.getId());
 
@@ -159,7 +167,7 @@ public class ManageWarpInventory extends GUIChild {
                     getPlayer(), payload.getSalt(), data));
         }
 
-        if(e.getSlot() == 26) {
+        if (e.getSlot() == 26) {
             NetworkHandler.getInstance().send(
                     new S2PWarpConfigPacket(S2PWarpConfigPacket.ProxyConfigAction.UPDATE_WARP, getPlayer(),
                             ((ManageWarpInventoryController) controller).getPayload().getSalt(), cur.toJson()));

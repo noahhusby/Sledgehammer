@@ -32,14 +32,23 @@ public class Location {
     @Expose
     public String country = "";
 
-    public Location() {}
+    public Location() {
+    }
 
     public Location(Detail detailType, String city, String county, String state, String country) {
         this.detailType = detailType;
-        if(city != null) this.city = city.toLowerCase();
-        if(county != null) this.county = county.toLowerCase();
-        if(state != null) this.state = state.toLowerCase();
-        if(country != null) this.country = country.toLowerCase();
+        if (city != null) {
+            this.city = city.toLowerCase();
+        }
+        if (county != null) {
+            this.county = county.toLowerCase();
+        }
+        if (state != null) {
+            this.state = state.toLowerCase();
+        }
+        if (country != null) {
+            this.country = country.toLowerCase();
+        }
     }
 
     public boolean compare(Location location, Detail detail) {

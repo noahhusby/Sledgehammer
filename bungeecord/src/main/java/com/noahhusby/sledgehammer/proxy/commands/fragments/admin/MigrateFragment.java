@@ -27,12 +27,12 @@ import net.md_5.bungee.api.CommandSender;
 public class MigrateFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(args.length < 1) {
+        if (args.length < 1) {
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Type ", ChatColor.YELLOW, "/sha migrate confirm ", ChatColor.GRAY, "to migrate local storage."));
             return;
         }
 
-        if(args[0].equalsIgnoreCase("confirm")) {
+        if (args[0].equalsIgnoreCase("confirm")) {
             ConfigHandler.getInstance().migrate();
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.BLUE, "Successfully migrated data!"));
         } else {

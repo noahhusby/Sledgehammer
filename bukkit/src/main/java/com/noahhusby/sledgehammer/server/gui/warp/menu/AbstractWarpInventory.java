@@ -13,7 +13,7 @@ public abstract class AbstractWarpInventory extends GUIChild {
         fillInventory(createItem(Material.STAINED_GLASS_PANE, 1, (byte) 15, null));
         setItem(49, GUIHelper.generateExit());
         setItem(45, GUIHelper.generateWarpSort());
-        if(getWarpController().getPayload().isEditAccess()) {
+        if (getWarpController().getPayload().isEditAccess()) {
             setItem(46, GUIHelper.generateWarpAnvil());
         }
     }

@@ -20,15 +20,15 @@ package com.noahhusby.sledgehammer.proxy.commands.fragments.admin.groups;
 
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.proxy.config.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.config.ServerGroup;
+import com.noahhusby.sledgehammer.proxy.config.ServerHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 
 public class GroupInfoFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(args.length < 1) {
+        if (args.length < 1) {
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Usage: /sha group info <id>"));
             return;
         }
@@ -36,10 +36,13 @@ public class GroupInfoFragment implements ICommandFragment {
         String gn = args[0];
         ServerGroup group = null;
 
-        for(ServerGroup g : ServerHandler.getInstance().getGroups())
-            if(g.getID().equalsIgnoreCase(gn)) group = g;
+        for (ServerGroup g : ServerHandler.getInstance().getGroups()) {
+            if (g.getID().equalsIgnoreCase(gn)) {
+                group = g;
+            }
+        }
 
-        if(group == null) {
+        if (group == null) {
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Group doesn't exist!"));
             return;
         }
@@ -62,6 +65,6 @@ public class GroupInfoFragment implements ICommandFragment {
 
     @Override
     public String[] getArguments() {
-        return new String[]{"<id>"};
+        return new String[]{ "<id>" };
     }
 }

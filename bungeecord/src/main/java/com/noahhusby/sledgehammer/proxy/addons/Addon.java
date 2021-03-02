@@ -24,9 +24,11 @@ public abstract class Addon {
 
     public abstract void onEnable();
 
-    public void onDisable() { }
+    public void onDisable() {
+    }
 
-    public void onPluginMessage(PluginMessageEvent e) { }
+    public void onPluginMessage(PluginMessageEvent e) {
+    }
 
     public String[] getMessageChannels() {
         return new String[]{};

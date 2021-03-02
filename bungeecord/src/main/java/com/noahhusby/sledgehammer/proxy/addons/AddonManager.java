@@ -32,7 +32,9 @@ public class AddonManager implements Listener {
     private static AddonManager mInstance = null;
 
     public static AddonManager getInstance() {
-        if(mInstance == null) mInstance = new AddonManager();
+        if (mInstance == null) {
+            mInstance = new AddonManager();
+        }
         return mInstance;
     }
 
@@ -58,13 +60,17 @@ public class AddonManager implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPluginMessage(PluginMessageEvent e) {
         Addon addon = getServerByChannel(e.getTag());
-        if(addon != null) addon.onPluginMessage(e);
+        if (addon != null) {
+            addon.onPluginMessage(e);
+        }
     }
 
     private Addon getServerByChannel(String channel) {
-        for(Addon a : addons) {
-            if(a.getMessageChannels() != null) {
-                if(Arrays.asList(a.getMessageChannels()).contains(channel)) return a;
+        for (Addon a : addons) {
+            if (a.getMessageChannels() != null) {
+                if (Arrays.asList(a.getMessageChannels()).contains(channel)) {
+                    return a;
+                }
             }
         }
 

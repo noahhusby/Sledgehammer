@@ -39,7 +39,7 @@ public class StateComponent extends DialogComponent {
 
     @Override
     public String[] getAcceptableResponses() {
-        return new String[]{"*"};
+        return new String[]{ "*" };
     }
 
     @Override

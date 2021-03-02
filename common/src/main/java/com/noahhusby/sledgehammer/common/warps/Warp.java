@@ -38,21 +38,33 @@ public class Warp {
     private PinnedMode pinned;
     @Expose
     @SerializedName("Server")
-    @Getter @Setter private String server;
+    @Getter
+    @Setter
+    private String server;
     @Expose
     @SerializedName("HeadId")
-    @Getter @Setter private String headID;
+    @Getter
+    @Setter
+    private String headID;
     @Expose
     @SerializedName("Point")
-    @Getter @Setter private Point point;
+    @Getter
+    @Setter
+    private Point point;
     @Expose
     @SerializedName("Name")
-    @Getter @Setter private String name;
+    @Getter
+    @Setter
+    private String name;
     @Expose
     @SerializedName("Id")
-    @Getter @Setter private int id;
+    @Getter
+    @Setter
+    private int id;
 
-    @Getter @Setter private BiConsumer<Boolean, Warp> response;
+    @Getter
+    @Setter
+    private BiConsumer<Boolean, Warp> response;
 
     public Warp() {
         this(-1, "", new Point(), "", PinnedMode.NONE, "");

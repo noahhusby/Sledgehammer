@@ -22,7 +22,9 @@ import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.proxy.config.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerServer;
-import net.md_5.bungee.api.*;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 
 public class ServerInfoFragment implements ICommandFragment {
@@ -33,7 +35,7 @@ public class ServerInfoFragment implements ICommandFragment {
         sender.sendMessage();
         sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Server Info - ", ChatColor.BLUE, info.getName()));
         sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Name: ", ChatColor.BLUE, info.getName()));
-        if(server == null) {
+        if (server == null) {
             sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Status: ", ChatColor.RED, "Unconfigured"));
         } else if (!server.isInitialized()) {
             sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Status: ", ChatColor.GREEN, "Configured",

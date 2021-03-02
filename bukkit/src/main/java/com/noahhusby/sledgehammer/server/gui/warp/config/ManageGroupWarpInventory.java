@@ -26,39 +26,29 @@ import com.noahhusby.sledgehammer.server.gui.GUIChild;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.gui.warp.config.manage.ManageWarpInventoryController;
 import com.noahhusby.sledgehammer.server.util.SkullUtil;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class ManageGroupWarpInventory extends GUIChild {
     private final int page;
     private final List<Warp> warps;
     private final WarpGroup group;
 
-    private Inventory inventory;
-
-    public ManageGroupWarpInventory(int page, List<Warp> warps, WarpGroup group) {
-        this.page = page;
-        this.warps = warps;
-        this.group = group;
-    }
-
     @Override
     public void init() {
-        this.inventory = getInventory();
-        int total_pages = (int) Math.ceil(warps.size() / 27.0);
-
-        for(int x = 0; x < 45; x++) {
+        for (int x = 0; x < 45; x++) {
             ItemStack glass = new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) 15);
 
             ItemMeta meta = glass.getItemMeta();
-            meta.setDisplayName(ChatColor.RESET+"");
+            meta.setDisplayName(ChatColor.RESET + "");
             meta.setDisplayName(null);
             glass.setItemMeta(meta);
 
@@ -71,39 +61,41 @@ public class ManageGroupWarpInventory extends GUIChild {
         }
 
         boolean paged = false;
-        if(page != 0) {
+        if (page != 0) {
             ItemStack head = SledgehammerUtil.getSkull(Constants.arrowLeftHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Previous Page");
             inventory.setItem(42, head);
             paged = true;
         }
 
-        if(warps.size() > (page + 1) * Constants.warpsPerPage) {
+        if (warps.size() > (page + 1) * Constants.warpsPerPage) {
             ItemStack head = SledgehammerUtil.getSkull(Constants.arrowRightHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Next Page");
             inventory.setItem(44, head);
             paged = true;
         }
 
-        if(paged) {
+        if (paged) {
             setItem(43, SledgehammerUtil.setItemDisplayName(SkullUtil.itemFromNumber(page + 1), ChatColor.GREEN
-                    + "" + ChatColor.BOLD + "Page " + (page + 1)));
+                                                                                                + "" + ChatColor.BOLD + "Page " + (page + 1)));
         }
 
         int min = page * 27;
         int max = min + 27;
 
-        if(max > warps.size()) {
+        if (max > warps.size()) {
             max = min + (warps.size() - (page * 27));
         }
 
         int current = 9;
-        for(int x = min; x < max; x++) {
+        for (int x = min; x < max; x++) {
             Warp warp = warps.get(x);
 
             String headId = warp.getHeadID();
-            if(headId.equals("")) headId = Constants.cyanWoolHead;
+            if (headId.equals("")) {
+                headId = Constants.cyanWoolHead;
+            }
             ItemStack item = SledgehammerUtil.getSkull(headId, ((warp.getPinned() == Warp.PinnedMode.GLOBAL
-                    || warp.getPinned() == Warp.PinnedMode.LOCAL) ? ChatColor.GOLD : ChatColor.BLUE)
-                    + "" + ChatColor.BOLD + warp.getName());
+                                                                 || warp.getPinned() == Warp.PinnedMode.LOCAL) ? ChatColor.GOLD : ChatColor.BLUE)
+                                                               + "" + ChatColor.BOLD + warp.getName());
 
             ItemMeta meta = item.getItemMeta();
 
@@ -124,36 +116,45 @@ public class ManageGroupWarpInventory extends GUIChild {
     @Override
     public void onInventoryClick(InventoryClickEvent e) {
         e.setCancelled(true);
-        if(e.getCurrentItem() == null) return;
-        if(e.getCurrentItem().getItemMeta() == null) return;
-        if(e.getCurrentItem().getItemMeta().getDisplayName() == null) return;
+        if (e.getCurrentItem() == null) {
+            return;
+        }
+        if (e.getCurrentItem().getItemMeta() == null) {
+            return;
+        }
+        if (e.getCurrentItem().getItemMeta().getDisplayName() == null) {
+            return;
+        }
 
         ManageGroupWarpInventoryController controller = (ManageGroupWarpInventoryController) getController();
 
-        if(e.getCurrentItem().getItemMeta().getDisplayName() == null) return;
-
-        if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Previous Page")) {
-            controller.openChild(controller.getChildByPage(page-1));
+        if (e.getCurrentItem().getItemMeta().getDisplayName() == null) {
             return;
         }
 
-        if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Next Page")) {
-            controller.openChild(controller.getChildByPage(page+1));
+        if (ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Previous Page")) {
+            controller.openChild(controller.getChildByPage(page - 1));
             return;
         }
 
-        if(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Close")) {
+        if (ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Next Page")) {
+            controller.openChild(controller.getChildByPage(page + 1));
+            return;
+        }
+
+        if (ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Close")) {
             controller.close();
             return;
         }
 
-        if(e.getSlot() > 8 && e.getSlot() < 36) {
+        if (e.getSlot() > 8 && e.getSlot() < 36) {
             ItemMeta meta = e.getCurrentItem().getItemMeta();
             int id = -1;
             List<String> lore = meta.getLore();
-            for(String s : lore) {
-                if(s.contains("ID:"))
-                    id = new Long(ChatColor.stripColor(s).replaceAll("[^\\d.]", "")).intValue();
+            for (String s : lore) {
+                if (s.contains("ID:")) {
+                    id = ((Long) Long.parseLong(ChatColor.stripColor(s).replaceAll("[^\\d.]", ""))).intValue();
+                }
             }
 
             controller.close();

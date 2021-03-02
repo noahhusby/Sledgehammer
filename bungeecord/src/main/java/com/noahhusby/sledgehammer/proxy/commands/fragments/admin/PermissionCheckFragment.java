@@ -30,21 +30,21 @@ public class PermissionCheckFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
         ProxiedPlayer p;
-        if(args.length == 0) {
+        if (args.length == 0) {
             p = ProxyServer.getInstance().getPlayer(sender.getName());
         } else {
             p = ProxyServer.getInstance().getPlayer(args[0]);
         }
 
-        if(p == null) {
+        if (p == null) {
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, args[0], ChatColor.DARK_RED, " could not be found on the network!"));
             return;
         }
 
         sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Permissions for ", ChatColor.BLUE, p.getName()));
 
-        for(String s : p.getPermissions()) {
-            if(s.contains("sledgehammer")) {
+        for (String s : p.getPermissions()) {
+            if (s.contains("sledgehammer")) {
                 sender.sendMessage(ChatUtil.combine(ChatColor.GOLD, s));
             }
         }
@@ -62,6 +62,6 @@ public class PermissionCheckFragment implements ICommandFragment {
 
     @Override
     public String[] getArguments() {
-        return new String[]{"[player]"};
+        return new String[]{ "[player]" };
     }
 }

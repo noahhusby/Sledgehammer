@@ -26,6 +26,7 @@ import java.util.Map;
 
 public class GUIHandler {
     private static GUIHandler instance = null;
+
     public static GUIHandler getInstance() {
         return instance == null ? instance = new GUIHandler() : instance;
     }
@@ -34,6 +35,7 @@ public class GUIHandler {
 
     /**
      * Track a new player with random code
+     *
      * @param player {@link SledgehammerPlayer}
      * @return Salt code
      */
@@ -45,18 +47,22 @@ public class GUIHandler {
 
     /**
      * Check whether an incoming request is valid
+     *
      * @param player {@link SledgehammerPlayer}
-     * @param salt Salt code
+     * @param salt   Salt code
      * @return True if valid, false if not
      */
     public boolean validateRequest(SledgehammerPlayer player, String salt) {
         String storedSalt = guiTrackers.get(player);
-        if(storedSalt == null) return false;
+        if (storedSalt == null) {
+            return false;
+        }
         return storedSalt.equals(salt);
     }
 
     /**
      * Removes all trackers from a player
+     *
      * @param player {@link SledgehammerPlayer}
      */
     public void invalidate(SledgehammerPlayer player) {

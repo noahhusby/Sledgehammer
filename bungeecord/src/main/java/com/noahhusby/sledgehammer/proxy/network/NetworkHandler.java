@@ -22,14 +22,24 @@ import com.google.gson.JsonObject;
 import com.noahhusby.lib.data.JsonUtils;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
-import com.noahhusby.sledgehammer.proxy.network.S2P.*;
+import com.noahhusby.sledgehammer.proxy.network.S2P.S2PInitializationPacket;
+import com.noahhusby.sledgehammer.proxy.network.S2P.S2PPermissionPacket;
+import com.noahhusby.sledgehammer.proxy.network.S2P.S2PPlayerUpdatePacket;
+import com.noahhusby.sledgehammer.proxy.network.S2P.S2PSetwarpPacket;
+import com.noahhusby.sledgehammer.proxy.network.S2P.S2PTestLocationPacket;
+import com.noahhusby.sledgehammer.proxy.network.S2P.S2PWarpConfigPacket;
+import com.noahhusby.sledgehammer.proxy.network.S2P.S2PWarpPacket;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.util.CaseInsensitiveMap;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Map;
 
 public class NetworkHandler implements Listener {
@@ -54,6 +64,7 @@ public class NetworkHandler implements Listener {
 
     /**
      * Register incoming packets
+     *
      * @param packet {@link S2PPacket}
      */
     private void register(S2PPacket packet) {
@@ -62,6 +73,7 @@ public class NetworkHandler implements Listener {
 
     /**
      * Send an outgoing packet
+     *
      * @param packet {@link P2SPacket}
      */
     public void send(P2SPacket packet) {
@@ -89,11 +101,14 @@ public class NetworkHandler implements Listener {
 
     /**
      * Checks for sledgehammer packets from incoming plugin messages
+     *
      * @param e {@link PluginMessageEvent}
      */
     @EventHandler
     public void onIncomingPacket(PluginMessageEvent e) {
-        if (!e.getTag().equalsIgnoreCase("sledgehammer:channel")) return;
+        if (!e.getTag().equalsIgnoreCase("sledgehammer:channel")) {
+            return;
+        }
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(e.getData()));
         JsonObject packetMessage = JsonUtils.parseString(getRawMessage(in)).getAsJsonObject();
 
@@ -105,24 +120,25 @@ public class NetworkHandler implements Listener {
         JsonObject data = packetMessage.getAsJsonObject("data");
 
         S2PPacket p = registeredPackets.get(command);
-        if(p != null) {
+        if (p != null) {
             p.onMessage(info, data);
         }
     }
 
     /**
      * Converts {@link DataInputStream} to raw text
-     * @param i  {@link DataInputStream}
+     *
+     * @param i {@link DataInputStream}
      * @return Raw Message
      */
     private String getRawMessage(DataInputStream i) {
         try {
             StringBuilder x = new StringBuilder();
-            while(i.available() != 0) {
+            while (i.available() != 0) {
                 char c = (char) i.readByte();
                 x.append(c);
             }
-            return x.substring(x.indexOf("<")+1).trim();
+            return x.substring(x.indexOf("<") + 1).trim();
         } catch (Exception e) {
             e.printStackTrace();
         }

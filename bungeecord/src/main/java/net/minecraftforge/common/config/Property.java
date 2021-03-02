@@ -23,20 +23,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
-public class Property
-{
-    public String getComment()
-    {
+public class Property {
+    public String getComment() {
         return comment;
     }
 
-    public void setComment(String comment)
-    {
+    public void setComment(String comment) {
         this.comment = comment;
     }
 
-    public enum Type
-    {
+    public enum Type {
         STRING,
         INTEGER,
         BOOLEAN,
@@ -44,12 +40,9 @@ public class Property
         COLOR,
         MOD_ID;
 
-        public static Type tryParse(char id)
-        {
-            for (int x = 0; x < values().length; x++)
-            {
-                if (values()[x].getID() == id)
-                {
+        public static Type tryParse(char id) {
+            for (int x = 0; x < values().length; x++) {
+                if (values()[x].getID() == id) {
                     return values()[x];
                 }
             }
@@ -57,8 +50,7 @@ public class Property
             return STRING;
         }
 
-        public char getID()
-        {
+        public char getID() {
             return name().charAt(0);
         }
     }
@@ -74,7 +66,9 @@ public class Property
     private String langKey;
     private String minValue;
     private String maxValue;
-    /** If true, will have a slider attached automatically in configuration UI */
+    /**
+     * If true, will have a slider attached automatically in configuration UI
+     */
     private boolean hasSlidingControl;
 
     private boolean requiresWorldRestart = false;
@@ -88,54 +82,45 @@ public class Property
     private final Type type;
     private boolean changed = false;
 
-    public Property(String name, String value, Type type)
-    {
+    public Property(String name, String value, Type type) {
         this(name, value, type, false, new String[0], new String[0], name);
     }
 
-    public Property(String name, String value, Type type, boolean read)
-    {
+    public Property(String name, String value, Type type, boolean read) {
         this(name, value, type, read, new String[0], new String[0], name);
     }
 
-    public Property(String name, String value, Type type, String[] validValues)
-    {
+    public Property(String name, String value, Type type, String[] validValues) {
         this(name, value, type, false, validValues, new String[0], name);
     }
 
-    public Property(String name, String value, Type type, String[] validValues, String[] validValuesDisplay)
-    {
+    public Property(String name, String value, Type type, String[] validValues, String[] validValuesDisplay) {
         this(name, value, type, false, validValues, validValuesDisplay, name);
     }
 
-    public Property(String name, String value, Type type, String langKey)
-    {
+    public Property(String name, String value, Type type, String langKey) {
         this(name, value, type, false, new String[0], new String[0], langKey);
     }
 
-    public Property(String name, String value, Type type, boolean read, String langKey)
-    {
+    public Property(String name, String value, Type type, boolean read, String langKey) {
         this(name, value, type, read, new String[0], new String[0], langKey);
     }
 
-    public Property(String name, String value, Type type, String[] validValues, String langKey)
-    {
+    public Property(String name, String value, Type type, String[] validValues, String langKey) {
         this(name, value, type, false, validValues, new String[0], langKey);
     }
 
-    public Property(String name, String value, Type type, String[] validValues, String[] validValuesDisplay, String langKey)
-    {
+    public Property(String name, String value, Type type, String[] validValues, String[] validValuesDisplay, String langKey) {
         this(name, value, type, false, validValues, validValuesDisplay, langKey);
     }
 
-    Property(String name, String value, Type type, boolean read, String[] validValues, String[] validValuesDisplay, String langKey)
-    {
+    Property(String name, String value, Type type, boolean read, String[] validValues, String[] validValuesDisplay, String langKey) {
         setName(name);
         this.value = value;
         this.values = new String[0];
-        this.type  = type;
-        wasRead    = read;
-        isList     = false;
+        this.type = type;
+        wasRead = read;
+        isList = false;
         this.defaultValue = value;
         this.defaultValues = new String[0];
         this.validValues = validValues;
@@ -148,42 +133,37 @@ public class Property
         this.setComment("");
     }
 
-    public Property(String name, String[] values, Type type)
-    {
+    public Property(String name, String[] values, Type type) {
         this(name, values, type, false);
     }
 
-    Property(String name, String[] values, Type type, boolean read)
-    {
+    Property(String name, String[] values, Type type, boolean read) {
         this(name, values, type, read, new String[0], name);
     }
 
-    public Property(String name, String[] values, Type type, String langKey)
-    {
+    public Property(String name, String[] values, Type type, String langKey) {
         this(name, values, type, false, langKey);
     }
 
-    Property(String name, String[] values, Type type, boolean read, String langKey)
-    {
+    Property(String name, String[] values, Type type, boolean read, String langKey) {
         this(name, values, type, read, new String[0], langKey);
     }
 
-    Property(String name, String[] values, Type type, boolean read, String[] validValues, String langKey)
-    {
+    Property(String name, String[] values, Type type, boolean read, String[] validValues, String langKey) {
         this(name, values, type, read, validValues, new String[0], langKey);
     }
 
-    Property(String name, String[] values, Type type, boolean read, String[] validValues, String[] validValuesDisplay, String langKey)
-    {
+    Property(String name, String[] values, Type type, boolean read, String[] validValues, String[] validValuesDisplay, String langKey) {
         setName(name);
-        this.type   = type;
+        this.type = type;
         this.values = Arrays.copyOf(values, values.length);
-        wasRead     = read;
-        isList      = true;
+        wasRead = read;
+        isList = true;
         this.value = "";
         this.defaultValue = "";
-        for (String s : values)
+        for (String s : values) {
             this.defaultValue += ", [" + s + "]";
+        }
         this.defaultValue = this.defaultValue.replaceFirst(", ", "");
         this.defaultValues = Arrays.copyOf(values, values.length);
         this.validValues = validValues;
@@ -201,72 +181,74 @@ public class Property
      *
      * @return true if the current value(s) is(are) deeply equal to the default value(s)
      */
-    public boolean isDefault()
-    {
-        if (this.isBooleanList())
-        {
-            if (values.length == defaultValues.length)
-            {
-                for (int i = 0; i < values.length; i++)
-                    if (Boolean.parseBoolean(values[i]) != Boolean.parseBoolean(defaultValues[i]))
+    public boolean isDefault() {
+        if (this.isBooleanList()) {
+            if (values.length == defaultValues.length) {
+                for (int i = 0; i < values.length; i++) {
+                    if (Boolean.parseBoolean(values[i]) != Boolean.parseBoolean(defaultValues[i])) {
                         return false;
+                    }
+                }
 
                 return true;
-            }
-            else
+            } else {
                 return false;
+            }
         }
 
-        if (this.isIntList())
-        {
-            if (values.length == defaultValues.length)
-            {
-                for (int i = 0; i < values.length; i++)
-                    if (Integer.parseInt(values[i]) != Integer.parseInt(defaultValues[i]))
+        if (this.isIntList()) {
+            if (values.length == defaultValues.length) {
+                for (int i = 0; i < values.length; i++) {
+                    if (Integer.parseInt(values[i]) != Integer.parseInt(defaultValues[i])) {
                         return false;
+                    }
+                }
 
                 return true;
-            }
-            else
+            } else {
                 return false;
+            }
         }
 
-        if (this.isDoubleList())
-        {
-            if (values.length == defaultValues.length)
-            {
-                for (int i = 0; i < values.length; i++)
-                    if (Double.parseDouble(values[i]) != Double.parseDouble(defaultValues[i]))
+        if (this.isDoubleList()) {
+            if (values.length == defaultValues.length) {
+                for (int i = 0; i < values.length; i++) {
+                    if (Double.parseDouble(values[i]) != Double.parseDouble(defaultValues[i])) {
                         return false;
+                    }
+                }
 
                 return true;
-            }
-            else
+            } else {
                 return false;
+            }
         }
 
-        if (this.isList())
-        {
-            if (values.length == defaultValues.length)
-            {
-                for (int i = 0; i < values.length; i++)
-                    if (!values[i].equals(defaultValues[i]))
+        if (this.isList()) {
+            if (values.length == defaultValues.length) {
+                for (int i = 0; i < values.length; i++) {
+                    if (!values[i].equals(defaultValues[i])) {
                         return false;
+                    }
+                }
 
                 return true;
-            }
-            else
+            } else {
                 return false;
+            }
         }
 
-        if (this.type == Type.BOOLEAN && this.isBooleanValue())
+        if (this.type == Type.BOOLEAN && this.isBooleanValue()) {
             return Boolean.parseBoolean(value) == Boolean.parseBoolean(defaultValue);
+        }
 
-        if (this.type == Type.INTEGER && this.isIntValue())
+        if (this.type == Type.INTEGER && this.isIntValue()) {
             return Integer.parseInt(value) == Integer.parseInt(defaultValue);
+        }
 
-        if (this.type == Type.DOUBLE && this.isDoubleValue())
+        if (this.type == Type.DOUBLE && this.isDoubleValue()) {
             return Double.parseDouble(value) == Double.parseDouble(defaultValue);
+        }
 
         return value.equals(defaultValue);
     }
@@ -274,8 +256,7 @@ public class Property
     /**
      * Sets the current value(s) of this Property to the default value(s).
      */
-    public Property setToDefault()
-    {
+    public Property setToDefault() {
         this.value = this.defaultValue;
         this.values = Arrays.copyOf(this.defaultValues, this.defaultValues.length);
         return this;
@@ -286,8 +267,7 @@ public class Property
      *
      * @return the default value String
      */
-    public String getDefault()
-    {
+    public String getDefault() {
         return defaultValue;
     }
 
@@ -296,8 +276,7 @@ public class Property
      *
      * @return the default values String[]
      */
-    public String[] getDefaults()
-    {
+    public String[] getDefaults() {
         return Arrays.copyOf(this.defaultValues, this.defaultValues.length);
     }
 
@@ -307,8 +286,7 @@ public class Property
      * editable from both the main menu Mods list config screen and the in-game Mod Options config screen. When set to true the Property
      * will only be editable from the main menu Mods list config screen.
      */
-    public Property setRequiresWorldRestart(boolean requiresWorldRestart)
-    {
+    public Property setRequiresWorldRestart(boolean requiresWorldRestart) {
         this.requiresWorldRestart = requiresWorldRestart;
         return this;
     }
@@ -318,8 +296,7 @@ public class Property
      * as well as the Mods list screen, or only from the Mods list screen. Setting this flag to true will disable editing of
      * this property while a world is running.
      */
-    public boolean requiresWorldRestart()
-    {
+    public boolean requiresWorldRestart() {
         return this.requiresWorldRestart;
     }
 
@@ -327,8 +304,7 @@ public class Property
      * Sets whether or not this Property should be allowed to show on config GUIs.
      * Defaults to true.
      */
-    public Property setShowInGui(boolean showInGui)
-    {
+    public Property setShowInGui(boolean showInGui) {
         this.showInGui = showInGui;
         return this;
     }
@@ -337,8 +313,7 @@ public class Property
      * Gets whether or not this Property should be allowed to show on config GUIs.
      * Defaults to true unless set to false.
      */
-    public boolean showInGui()
-    {
+    public boolean showInGui() {
         return showInGui;
     }
 
@@ -347,8 +322,7 @@ public class Property
      * Defaults to false. Setting this flag to true will also disable editing of
      * this property while a world is running.
      */
-    public Property setRequiresMcRestart(boolean requiresMcRestart)
-    {
+    public Property setRequiresMcRestart(boolean requiresMcRestart) {
         this.requiresMcRestart = this.requiresWorldRestart = requiresMcRestart;
         return this;
     }
@@ -357,8 +331,7 @@ public class Property
      * Gets whether or not this Property requires Minecraft to be restarted when changed.
      * Defaults to false unless set to true.
      */
-    public boolean requiresMcRestart()
-    {
+    public boolean requiresMcRestart() {
         return this.requiresMcRestart;
     }
 
@@ -367,18 +340,20 @@ public class Property
      * values array is longer than the new maximum it will be resized. If calling both this method and setIsListLengthFixed(true), this
      * method should be called afterwards (but is not required).
      */
-    public Property setMaxListLength(int max)
-    {
+    public Property setMaxListLength(int max) {
         this.maxListLength = max;
-        if (this.maxListLength != -1)
-        {
-            if (values != null && values.length != maxListLength)
-                if (this.isListLengthFixed || values.length > maxListLength)
+        if (this.maxListLength != -1) {
+            if (values != null && values.length != maxListLength) {
+                if (this.isListLengthFixed || values.length > maxListLength) {
                     values = Arrays.copyOf(values, maxListLength);
+                }
+            }
 
-            if (defaultValues != null && defaultValues.length != maxListLength)
-                if (this.isListLengthFixed || defaultValues.length > maxListLength)
+            if (defaultValues != null && defaultValues.length != maxListLength) {
+                if (this.isListLengthFixed || defaultValues.length > maxListLength) {
                     defaultValues = Arrays.copyOf(defaultValues, maxListLength);
+                }
+            }
         }
         return this;
     }
@@ -386,8 +361,7 @@ public class Property
     /**
      * Gets the maximum length of this list/array Property. Only important if isList() == true.
      */
-    public int getMaxListLength()
-    {
+    public int getMaxListLength() {
         return this.maxListLength;
     }
 
@@ -395,8 +369,7 @@ public class Property
      * Sets the flag for whether this list/array Property has a fixed length. Only important if isList() == true. If calling both this
      * method and setMaxListLength(), this method should be called first (but is not required).
      */
-    public Property setIsListLengthFixed(boolean isListLengthFixed)
-    {
+    public Property setIsListLengthFixed(boolean isListLengthFixed) {
         this.isListLengthFixed = isListLengthFixed;
         return this;
     }
@@ -404,8 +377,7 @@ public class Property
     /**
      * Returns whether or not this list/array has a fixed length. Only important if isList() == true.
      */
-    public boolean isListLengthFixed()
-    {
+    public boolean isListLengthFixed() {
         return this.isListLengthFixed;
     }
 
@@ -415,8 +387,7 @@ public class Property
      *
      * @param validationPattern
      */
-    public Property setValidationPattern(Pattern validationPattern)
-    {
+    public Property setValidationPattern(Pattern validationPattern) {
         this.validationPattern = validationPattern;
         return this;
     }
@@ -426,8 +397,7 @@ public class Property
      *
      * @return the user input validation Pattern object, or null if none is set
      */
-    public Pattern getValidationPattern()
-    {
+    public Pattern getValidationPattern() {
         return this.validationPattern;
     }
 
@@ -437,8 +407,7 @@ public class Property
      *
      * @param langKey a string language key such as myawesomemod.config.myPropName
      */
-    public Property setLanguageKey(String langKey)
-    {
+    public Property setLanguageKey(String langKey) {
         this.langKey = langKey;
         return this;
     }
@@ -448,8 +417,7 @@ public class Property
      *
      * @return the language key
      */
-    public String getLanguageKey()
-    {
+    public String getLanguageKey() {
         return this.langKey;
     }
 
@@ -458,8 +426,7 @@ public class Property
      *
      * @param defaultValue a String value
      */
-    public Property setDefaultValue(String defaultValue)
-    {
+    public Property setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
         return this;
     }
@@ -469,11 +436,11 @@ public class Property
      *
      * @param defaultValues an array of String values
      */
-    public Property setDefaultValues(String[] defaultValues)
-    {
+    public Property setDefaultValues(String[] defaultValues) {
         this.defaultValue = "";
-        for (String s : defaultValues)
+        for (String s : defaultValues) {
             this.defaultValue += ", [" + s + "]";
+        }
         this.defaultValue = this.defaultValue.replaceFirst(", ", "");
         this.defaultValues = Arrays.copyOf(defaultValues, defaultValues.length);
         return this;
@@ -484,8 +451,7 @@ public class Property
      *
      * @param defaultValue an int value
      */
-    public Property setDefaultValue(int defaultValue)
-    {
+    public Property setDefaultValue(int defaultValue) {
         setDefaultValue(Integer.toString(defaultValue));
         return this;
     }
@@ -495,11 +461,11 @@ public class Property
      *
      * @param defaultValues an array of int values
      */
-    public Property setDefaultValues(int[] defaultValues)
-    {
+    public Property setDefaultValues(int[] defaultValues) {
         String[] temp = new String[defaultValues.length];
-        for (int i = 0; i < defaultValues.length; i++)
+        for (int i = 0; i < defaultValues.length; i++) {
             temp[i] = Integer.toString(defaultValues[i]);
+        }
 
         setDefaultValues(temp);
         return this;
@@ -510,8 +476,7 @@ public class Property
      *
      * @param defaultValue a double value
      */
-    public Property setDefaultValue(double defaultValue)
-    {
+    public Property setDefaultValue(double defaultValue) {
         setDefaultValue(Double.toString(defaultValue));
         return this;
     }
@@ -521,11 +486,11 @@ public class Property
      *
      * @param defaultValues an array of double values
      */
-    public Property setDefaultValues(double[] defaultValues)
-    {
+    public Property setDefaultValues(double[] defaultValues) {
         String[] temp = new String[defaultValues.length];
-        for (int i = 0; i < defaultValues.length; i++)
+        for (int i = 0; i < defaultValues.length; i++) {
             temp[i] = Double.toString(defaultValues[i]);
+        }
 
         setDefaultValues(temp);
         return this;
@@ -536,8 +501,7 @@ public class Property
      *
      * @param defaultValue a boolean value
      */
-    public Property setDefaultValue(boolean defaultValue)
-    {
+    public Property setDefaultValue(boolean defaultValue) {
         setDefaultValue(Boolean.toString(defaultValue));
         return this;
     }
@@ -547,11 +511,11 @@ public class Property
      *
      * @param defaultValues an array of boolean values
      */
-    public Property setDefaultValues(boolean[] defaultValues)
-    {
+    public Property setDefaultValues(boolean[] defaultValues) {
         String[] temp = new String[defaultValues.length];
-        for (int i = 0; i < defaultValues.length; i++)
+        for (int i = 0; i < defaultValues.length; i++) {
             temp[i] = Boolean.toString(defaultValues[i]);
+        }
 
         setDefaultValues(temp);
         return this;
@@ -562,8 +526,7 @@ public class Property
      *
      * @param minValue an int value
      */
-    public Property setMinValue(int minValue)
-    {
+    public Property setMinValue(int minValue) {
         this.minValue = Integer.toString(minValue);
         return this;
     }
@@ -573,8 +536,7 @@ public class Property
      *
      * @param maxValue an int value
      */
-    public Property setMaxValue(int maxValue)
-    {
+    public Property setMaxValue(int maxValue) {
         this.maxValue = Integer.toString(maxValue);
         return this;
     }
@@ -584,8 +546,7 @@ public class Property
      *
      * @param minValue a double value
      */
-    public Property setMinValue(double minValue)
-    {
+    public Property setMinValue(double minValue) {
         this.minValue = Double.toString(minValue);
         return this;
     }
@@ -595,8 +556,7 @@ public class Property
      *
      * @param maxValue a double value
      */
-    public Property setMaxValue(double maxValue)
-    {
+    public Property setMaxValue(double maxValue) {
         this.maxValue = Double.toString(maxValue);
         return this;
     }
@@ -606,8 +566,7 @@ public class Property
      *
      * @return the minimum value bound
      */
-    public String getMinValue()
-    {
+    public String getMinValue() {
         return minValue;
     }
 
@@ -616,8 +575,7 @@ public class Property
      *
      * @return the maximum value bound
      */
-    public String getMaxValue()
-    {
+    public String getMaxValue() {
         return maxValue;
     }
 
@@ -626,8 +584,7 @@ public class Property
      *
      * @return current value
      */
-    public String getString()
-    {
+    public String getString() {
         return value;
     }
 
@@ -637,8 +594,7 @@ public class Property
      *
      * @param validValues a String array of valid values
      */
-    public Property setValidValues(String[] validValues)
-    {
+    public Property setValidValues(String[] validValues) {
         this.validValues = validValues;
         return this;
     }
@@ -648,18 +604,15 @@ public class Property
      *
      * @return a String array of valid values
      */
-    public String[] getValidValues()
-    {
+    public String[] getValidValues() {
         return this.validValues;
     }
 
     /**
      * Sets the array of the config GUI display versions of the valid values that this String Property can be set to.
      * When an array of valid values is defined for a Property the GUI control for that property will be a value cycle button.
-     *
      */
-    public Property setValidValuesDisplay(String[] validValuesDisplay)
-    {
+    public Property setValidValuesDisplay(String[] validValuesDisplay) {
         this.validValuesDisplay = validValuesDisplay;
         return this;
     }
@@ -669,8 +622,7 @@ public class Property
      *
      * @return a String array of the aliases of the valid values
      */
-    public String[] getValidValuesDisplay()
-    {
+    public String[] getValidValuesDisplay() {
         return this.validValuesDisplay;
     }
 
@@ -680,8 +632,7 @@ public class Property
      *
      * @return The value
      */
-    public int getInt()
-    {
+    public int getInt() {
         return getInt(Integer.parseInt(defaultValue));
     }
 
@@ -693,31 +644,24 @@ public class Property
      * @param _default The default to provide if the current value is not a valid integer
      * @return The value
      */
-    public int getInt(int _default)
-    {
-        try
-        {
+    public int getInt(int _default) {
+        try {
             return Integer.parseInt(value);
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             return _default;
         }
     }
 
     /**
      * Checks if the current value stored in this property can be converted to an integer.
+     *
      * @return True if the type of the Property is an Integer
      */
-    public boolean isIntValue()
-    {
-        try
-        {
+    public boolean isIntValue() {
+        try {
             Integer.parseInt(value);
             return true;
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             return false;
         }
     }
@@ -728,8 +672,7 @@ public class Property
      *
      * @return The value
      */
-    public long getLong()
-    {
+    public long getLong() {
         return getLong(Long.parseLong(defaultValue));
     }
 
@@ -741,31 +684,24 @@ public class Property
      * @param _default The default to provide if the current value is not a validlong
      * @return The value
      */
-    public long getLong(long _default)
-    {
-        try
-        {
+    public long getLong(long _default) {
+        try {
             return Long.parseLong(value);
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             return _default;
         }
     }
 
     /**
      * Checks if the current value stored in this property can be converted to a long.
+     *
      * @return True if the type of the Property is an Long
      */
-    public boolean isLongValue()
-    {
-        try
-        {
+    public boolean isLongValue() {
+        try {
             Long.parseLong(value);
             return true;
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             return false;
         }
     }
@@ -778,14 +714,10 @@ public class Property
      * @param _default The default to provide
      * @return The value as a boolean, or the default
      */
-    public boolean getBoolean(boolean _default)
-    {
-        if (isBooleanValue())
-        {
+    public boolean getBoolean(boolean _default) {
+        if (isBooleanValue()) {
             return Boolean.parseBoolean(value);
-        }
-        else
-        {
+        } else {
             return _default;
         }
     }
@@ -795,14 +727,10 @@ public class Property
      *
      * @return The value as a boolean, or the default
      */
-    public boolean getBoolean()
-    {
-        if (isBooleanValue())
-        {
+    public boolean getBoolean() {
+        if (isBooleanValue()) {
             return Boolean.parseBoolean(value);
-        }
-        else
-        {
+        } else {
             return Boolean.parseBoolean(defaultValue);
         }
     }
@@ -812,24 +740,20 @@ public class Property
      *
      * @return True if it is a boolean value
      */
-    public boolean isBooleanValue()
-    {
+    public boolean isBooleanValue() {
         return ("true".equals(value.toLowerCase()) || "false".equals(value.toLowerCase()));
     }
 
     /**
      * Checks if the current value held by this property is a valid double value.
+     *
      * @return True if the value can be converted to an double
      */
-    public boolean isDoubleValue()
-    {
-        try
-        {
+    public boolean isDoubleValue() {
+        try {
             Double.parseDouble(value);
             return true;
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             return false;
         }
     }
@@ -842,14 +766,10 @@ public class Property
      * @param _default The default to provide if the current value is not a valid double
      * @return The value
      */
-    public double getDouble(double _default)
-    {
-        try
-        {
+    public double getDouble(double _default) {
+        try {
             return Double.parseDouble(value);
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             return _default;
         }
     }
@@ -859,20 +779,15 @@ public class Property
      *
      * @return The value
      */
-    public double getDouble()
-    {
-        try
-        {
+    public double getDouble() {
+        try {
             return Double.parseDouble(value);
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             return Double.parseDouble(defaultValue);
         }
     }
 
-    public String[] getStringList()
-    {
+    public String[] getStringList() {
         return values;
     }
 
@@ -882,23 +797,19 @@ public class Property
      *
      * @return Array of length 0 if none of the values could be parsed.
      */
-    public int[] getIntList()
-    {
-        ArrayList<Integer> nums = new ArrayList<Integer>();
+    public int[] getIntList() {
+        ArrayList<Integer> nums = new ArrayList<>();
 
-        for (String value : values)
-        {
-            try
-            {
+        for (String value : values) {
+            try {
                 nums.add(Integer.parseInt(value));
+            } catch (NumberFormatException ignored) {
             }
-            catch (NumberFormatException e){}
         }
 
         int[] primitives = new int[nums.size()];
 
-        for (int i = 0; i < nums.size(); i++)
-        {
+        for (int i = 0; i < nums.size(); i++) {
             primitives[i] = nums.get(i);
         }
 
@@ -907,22 +818,19 @@ public class Property
 
     /**
      * Checks if all of the current values stored in this property can be converted to an integer.
+     *
      * @return True if the type of the Property is an Integer List
      */
-    public boolean isIntList()
-    {
-        if (isList && type == Type.INTEGER)
-            for (String value : values)
-            {
-                try
-                {
+    public boolean isIntList() {
+        if (isList && type == Type.INTEGER) {
+            for (String value : values) {
+                try {
                     Integer.parseInt(value);
-                }
-                catch (NumberFormatException e)
-                {
+                } catch (NumberFormatException e) {
                     return false;
                 }
             }
+        }
         return isList && type == Type.INTEGER;
     }
 
@@ -932,22 +840,18 @@ public class Property
      *
      * @return Array of length 0 if none of the values could be parsed.
      */
-    public boolean[] getBooleanList()
-    {
-        ArrayList<Boolean> tmp = new ArrayList<Boolean>();
-        for (String value : values)
-        {
-            try
-            {
+    public boolean[] getBooleanList() {
+        ArrayList<Boolean> tmp = new ArrayList<>();
+        for (String value : values) {
+            try {
                 tmp.add(Boolean.parseBoolean(value));
+            } catch (NumberFormatException ignored) {
             }
-            catch (NumberFormatException e){}
         }
 
         boolean[] primitives = new boolean[tmp.size()];
 
-        for (int i = 0; i < tmp.size(); i++)
-        {
+        for (int i = 0; i < tmp.size(); i++) {
             primitives[i] = tmp.get(i);
         }
 
@@ -956,18 +860,17 @@ public class Property
 
     /**
      * Checks if all of current values stored in this property can be converted to a boolean.
+     *
      * @return True if it is a boolean value
      */
-    public boolean isBooleanList()
-    {
-        if (isList && type == Type.BOOLEAN)
-            for (String value : values)
-            {
-                if (!"true".equalsIgnoreCase(value) && !"false".equalsIgnoreCase(value))
-                {
+    public boolean isBooleanList() {
+        if (isList && type == Type.BOOLEAN) {
+            for (String value : values) {
+                if (!"true".equalsIgnoreCase(value) && !"false".equalsIgnoreCase(value)) {
                     return false;
                 }
             }
+        }
 
         return isList && type == Type.BOOLEAN;
     }
@@ -978,22 +881,18 @@ public class Property
      *
      * @return Array of length 0 if none of the values could be parsed.
      */
-    public double[] getDoubleList()
-    {
-        ArrayList<Double> tmp = new ArrayList<Double>();
-        for (String value : values)
-        {
-            try
-            {
+    public double[] getDoubleList() {
+        ArrayList<Double> tmp = new ArrayList<>();
+        for (String value : values) {
+            try {
                 tmp.add(Double.parseDouble(value));
+            } catch (NumberFormatException ignored) {
             }
-            catch (NumberFormatException e) {}
         }
 
         double[] primitives = new double[tmp.size()];
 
-        for (int i = 0; i < tmp.size(); i++)
-        {
+        for (int i = 0; i < tmp.size(); i++) {
             primitives[i] = tmp.get(i);
         }
 
@@ -1002,22 +901,19 @@ public class Property
 
     /**
      * Checks if all of the current values stored in this property can be converted to a double.
+     *
      * @return True if the type of the Property is a double List
      */
-    public boolean isDoubleList()
-    {
-        if (isList && type == Type.DOUBLE)
-            for (String value : values)
-            {
-                try
-                {
+    public boolean isDoubleList() {
+        if (isList && type == Type.DOUBLE) {
+            for (String value : values) {
+                try {
                     Double.parseDouble(value);
-                }
-                catch (NumberFormatException e)
-                {
+                } catch (NumberFormatException e) {
                     return false;
                 }
             }
+        }
 
         return isList && type == Type.DOUBLE;
     }
@@ -1027,8 +923,7 @@ public class Property
      *
      * @return the Property name
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
@@ -1037,8 +932,7 @@ public class Property
      *
      * @param name a name
      */
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -1049,8 +943,7 @@ public class Property
      *
      * @return True if this property was loaded from the config file with a value
      */
-    public boolean wasRead()
-    {
+    public boolean wasRead() {
         return wasRead;
     }
 
@@ -1059,8 +952,7 @@ public class Property
      *
      * @return the Property's type
      */
-    public Type getType()
-    {
+    public Type getType() {
         return type;
     }
 
@@ -1069,8 +961,7 @@ public class Property
      *
      * @return true if this Property is a list/array, false otherwise
      */
-    public boolean isList()
-    {
+    public boolean isList() {
         return isList;
     }
 
@@ -1079,44 +970,44 @@ public class Property
      *
      * @return true if this Property has changed, false otherwise
      */
-    public boolean hasChanged(){ return changed; }
-    void resetChangedState(){ changed = false; }
+    public boolean hasChanged() {
+        return changed;
+    }
+
+    void resetChangedState() {
+        changed = false;
+    }
 
     /**
      * Sets the value of this Property to the provided String value.
      */
-    public Property setValue(String value)
-    {
+    public Property setValue(String value) {
         this.value = value;
         changed = true;
         return this;
     }
 
-    public void set(String value)
-    {
+    public void set(String value) {
         this.setValue(value);
     }
 
     /**
      * Sets the values of this Property to the provided String[] values.
      */
-    public Property setValues(String[] values)
-    {
+    public Property setValues(String[] values) {
         this.values = Arrays.copyOf(values, values.length);
         changed = true;
         return this;
     }
 
-    public void set(String[] values)
-    {
+    public void set(String[] values) {
         this.setValues(values);
     }
 
     /**
      * Sets the value of this Property to the provided int value.
      */
-    public Property setValue(int value)
-    {
+    public Property setValue(int value) {
         setValue(Integer.toString(value));
         return this;
     }
@@ -1124,8 +1015,7 @@ public class Property
     /**
      * Sets the value of this Property to the provided boolean value.
      */
-    public Property setValue(boolean value)
-    {
+    public Property setValue(boolean value) {
         setValue(Boolean.toString(value));
         return this;
     }
@@ -1133,8 +1023,7 @@ public class Property
     /**
      * Sets the value of this Property to the provided double value.
      */
-    public Property setValue(double value)
-    {
+    public Property setValue(double value) {
         setValue(Double.toString(value));
         return this;
     }
@@ -1142,65 +1031,72 @@ public class Property
     /**
      * Sets the values of this Property to the provided boolean[] values.
      */
-    public Property setValues(boolean[] values)
-    {
+    public Property setValues(boolean[] values) {
         this.values = new String[values.length];
-        for (int i = 0; i < values.length; i++)
+        for (int i = 0; i < values.length; i++) {
             this.values[i] = String.valueOf(values[i]);
+        }
         changed = true;
         return this;
     }
 
-    public void set(boolean[] values)
-    {
+    public void set(boolean[] values) {
         this.setValues(values);
     }
 
     /**
      * Sets the values of this Property to the provided int[] values.
      */
-    public Property setValues(int[] values)
-    {
+    public Property setValues(int[] values) {
         this.values = new String[values.length];
-        for (int i = 0; i < values.length; i++)
+        for (int i = 0; i < values.length; i++) {
             this.values[i] = String.valueOf(values[i]);
+        }
         changed = true;
         return this;
     }
 
-    public void set(int[] values)
-    {
+    public void set(int[] values) {
         this.setValues(values);
     }
 
     /**
      * Sets the values of this Property to the provided double[] values.
      */
-    public Property setValues(double[] values)
-    {
+    public Property setValues(double[] values) {
         this.values = new String[values.length];
-        for (int i = 0; i < values.length; i++)
+        for (int i = 0; i < values.length; i++) {
             this.values[i] = String.valueOf(values[i]);
+        }
         changed = true;
         return this;
     }
 
-    public void set(double[] values)
-    {
+    public void set(double[] values) {
         this.setValues(values);
     }
-    public void set(int     value){ set(Integer.toString(value)); }
-    public void set(long    value){ set(Long.toString(value));    }
-    public void set(boolean value){ set(Boolean.toString(value)); }
-    public void set(double  value){ set(Double.toString(value));  }
 
-    public boolean hasSlidingControl()
-    {
+    public void set(int value) {
+        set(Integer.toString(value));
+    }
+
+    public void set(long value) {
+        set(Long.toString(value));
+    }
+
+    public void set(boolean value) {
+        set(Boolean.toString(value));
+    }
+
+    public void set(double value) {
+        set(Double.toString(value));
+    }
+
+    public boolean hasSlidingControl() {
         return hasSlidingControl;
     }
 
-    public void setHasSlidingControl(boolean b)
-    {
-        hasSlidingControl=b;
+    public void setHasSlidingControl(boolean b) {
+        hasSlidingControl = b;
     }
 }

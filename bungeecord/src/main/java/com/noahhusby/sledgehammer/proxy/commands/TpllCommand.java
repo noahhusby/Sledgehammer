@@ -42,29 +42,30 @@ public class TpllCommand extends Command {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(!(sender instanceof ProxiedPlayer)) {
+        if (!(sender instanceof ProxiedPlayer)) {
             sender.sendMessage(ChatUtil.getNoPermission());
             return;
         }
 
-        if(!isAllowed(sender)) {
+        if (!isAllowed(sender)) {
             sender.sendMessage(ChatUtil.getNotAvailable());
             return;
         }
 
 
         PermissionHandler.getInstance().check(SledgehammerPlayer.getPlayer(sender), "sledgehammer.tpll", (code, global) -> {
-            if(code == PermissionRequest.PermissionCode.PERMISSION) {
-                if(args.length==0) {
-                    if(hasPerms(sender, "admin"))
+            if (code == PermissionRequest.PermissionCode.PERMISSION) {
+                if (args.length == 0) {
+                    if (hasPerms(sender, "admin")) {
                         adminUsage(sender);
-                    else
+                    } else {
                         regularUsage(sender);
+                    }
                     return;
                 }
 
                 SledgehammerPlayer recipient = SledgehammerPlayer.getPlayer(sender);
-                if(args[0].equalsIgnoreCase("help")) {
+                if (args[0].equalsIgnoreCase("help")) {
                     TextComponent text = ChatUtil.title();
 
                     TextComponent interaction = new TextComponent(ChatColor.YELLOW + "Click here");
@@ -73,35 +74,38 @@ public class TpllCommand extends Command {
 
                     text.addExtra(interaction);
                     text.addExtra(new TextComponent(ChatColor.GRAY + " to see how to use " + ChatColor.BLUE + "/tpll"
-                            + ChatColor.GRAY + "!"));
+                                                    + ChatColor.GRAY + "!"));
 
                     sender.sendMessage(text);
                     return;
                 }
                 String[] parseArgs = args;
 
-                if(args.length == 3 && hasPerms(sender, "admin")) {
-                    parseArgs = new String[]{args[1], args[2]};
+                if (args.length == 3 && hasPerms(sender, "admin")) {
+                    parseArgs = new String[]{ args[1], args[2] };
                     recipient = SledgehammerPlayer.getPlayer(args[0]);
-                    if(recipient == null) {
+                    if (recipient == null) {
                         sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, args[0], " could not be found on the network!"));
                         return;
                     }
                 }
 
                 String[] splitCoords = parseArgs[0].split(",");
-                if(splitCoords.length==2&&parseArgs.length<3) {
+                if (splitCoords.length == 2 && parseArgs.length < 3) {
                     parseArgs = splitCoords;
                 }
-                if(parseArgs[0].endsWith(","))
+                if (parseArgs[0].endsWith(",")) {
                     parseArgs[0] = parseArgs[0].substring(0, parseArgs[0].length() - 1);
-                if(parseArgs.length>1&&parseArgs[1].endsWith(","))
+                }
+                if (parseArgs.length > 1 && parseArgs[1].endsWith(",")) {
                     parseArgs[1] = parseArgs[1].substring(0, parseArgs[1].length() - 1);
-                if(parseArgs.length!=2&&parseArgs.length!=3) {
-                    if(hasPerms(sender, "admin"))
+                }
+                if (parseArgs.length != 2 && parseArgs.length != 3) {
+                    if (hasPerms(sender, "admin")) {
                         adminUsage(sender);
-                    else
+                    } else {
                         regularUsage(sender);
+                    }
                     return;
                 }
 
@@ -111,11 +115,12 @@ public class TpllCommand extends Command {
                 try {
                     lat = Double.parseDouble(parseArgs[0]);
                     lon = Double.parseDouble(parseArgs[1]);
-                } catch(Exception e) {
-                    if(hasPerms(sender, "admin"))
+                } catch (Exception e) {
+                    if (hasPerms(sender, "admin")) {
                         adminUsage(sender);
-                    else
+                    } else {
                         regularUsage(sender);
+                    }
                     return;
                 }
 
@@ -126,13 +131,13 @@ public class TpllCommand extends Command {
                     return;
                 }
 
-                if(!hasPerms(sender, "admin") && !(hasPerms(sender, server.getName()) || hasPerms(sender, "all"))) {
+                if (!hasPerms(sender, "admin") && !(hasPerms(sender, server.getName()) || hasPerms(sender, "all"))) {
                     sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "You don't have permission to tpll to ", ChatColor.DARK_RED, sender.getName()));
                     return;
                 }
 
                 if (SledgehammerUtil.getServerFromSender(recipient) != server) {
-                    if(!sender.getName().equals(recipient.getName())) {
+                    if (!sender.getName().equals(recipient.getName())) {
                         recipient.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "You were summoned to ",
                                 ChatColor.RED, server.getName(), ChatColor.GRAY, " by ", ChatColor.DARK_RED, sender.getName()));
                     } else {
@@ -141,12 +146,12 @@ public class TpllCommand extends Command {
                     recipient.connect(server);
                 }
 
-                if(!recipient.equals(sender)) {
+                if (!recipient.equals(sender)) {
                     recipient.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Teleporting to ", ChatColor.RED, String.format("%s, %s", lat, lon)));
                 } else {
                     sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Teleporting to ", ChatColor.RED, String.format("%s, %s", lat, lon)));
                 }
-                double[] geo = {lat, lon};
+                double[] geo = { lat, lon };
                 getNetworkManager().send(new P2SLocationPacket(recipient.getName(), server.getName(), geo));
                 SledgehammerPlayer.getPlayer(sender).getAttributes().put("TPLL_FAILS", 0);
                 return;
@@ -167,10 +172,10 @@ public class TpllCommand extends Command {
 
     private void tpllHelp(CommandSender sender) {
         SledgehammerPlayer player = SledgehammerPlayer.getPlayer(sender);
-        if(player != null) {
-            if(player.getAttributes().containsKey("TPLL_FAILS")) {
+        if (player != null) {
+            if (player.getAttributes().containsKey("TPLL_FAILS")) {
                 int x = ((Long) player.getAttributes().get("TPLL_FAILS")).intValue();
-                if(x == 3) {
+                if (x == 3) {
                     player.getAttributes().put("TPLL_FAILS", 0);
 
                     TextComponent text = new TextComponent(ChatColor.GRAY + "Having trouble? ");
@@ -181,7 +186,7 @@ public class TpllCommand extends Command {
 
                     text.addExtra(interaction);
                     text.addExtra(new TextComponent(ChatColor.GRAY + " to see how to use " + ChatColor.BLUE + "/tpll"
-                    + ChatColor.GRAY + "!"));
+                                                    + ChatColor.GRAY + "!"));
 
                     sender.sendMessage(text);
                 } else {

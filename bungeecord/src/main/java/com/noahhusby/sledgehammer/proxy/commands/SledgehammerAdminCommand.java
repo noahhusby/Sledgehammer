@@ -20,7 +20,13 @@ package com.noahhusby.sledgehammer.proxy.commands;
 
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.CommandFragmentManager;
-import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.*;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.GroupFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.MigrateFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.PermissionCheckFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.ReloadFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.ServerFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.SetupFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.TestLocationFragment;
 import net.md_5.bungee.api.CommandSender;
 
 public class SledgehammerAdminCommand extends CommandFragmentManager {
@@ -38,7 +44,7 @@ public class SledgehammerAdminCommand extends CommandFragmentManager {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(!hasPerms(sender)) {
+        if (!hasPerms(sender)) {
             sender.sendMessage(ChatUtil.getNotAvailable());
             return;
         }

@@ -18,7 +18,7 @@ public class ChatUtil {
             ChatColor.BLUE, " /sha server <server name> setearth true ", ChatColor.GRAY, "to enable it.");
 
     public static TextComponent title() {
-        return new TextComponent(ConfigHandler.messagePrefix.replace("&","\u00A7"));
+        return new TextComponent(ConfigHandler.messagePrefix.replace("&", "\u00A7"));
     }
 
     public static TextComponent adminTitle() {
@@ -41,28 +41,33 @@ public class ChatUtil {
         TextComponent textComponent = title == null ? new TextComponent() : title;
         StringBuilder builder = null;
         ChatColor lastFormat = null;
-        for(Object o : objects) {
-            if(o instanceof TextComponent) {
-                if(builder != null) {
+        for (Object o : objects) {
+            if (o instanceof TextComponent) {
+                if (builder != null) {
                     textComponent.addExtra(new TextComponent(builder.toString()));
                     builder = null;
                 }
 
                 TextComponent component = (TextComponent) o;
-                if(component.getColor() == null && lastFormat != null)
+                if (component.getColor() == null && lastFormat != null) {
                     component.setColor(lastFormat);
+                }
 
                 textComponent.addExtra(component);
             } else {
-                if(o instanceof ChatColor)
+                if (o instanceof ChatColor) {
                     lastFormat = (ChatColor) o;
-                if(builder == null) builder = new StringBuilder();
+                }
+                if (builder == null) {
+                    builder = new StringBuilder();
+                }
                 builder.append(o);
             }
         }
 
-        if(builder != null)
+        if (builder != null) {
             textComponent.addExtra(new TextComponent(builder.toString()));
+        }
         return textComponent;
     }
 
@@ -86,8 +91,8 @@ public class ChatUtil {
     public static void sendAuthCodeWarning(CommandSender sender) {
         sender.sendMessage(combine(ChatColor.DARK_RED, "----------------------------------------------"));
         sender.sendMessage();
-        sender.sendMessage(combine(ChatColor.RED," The sledgehammer authentication code is not properly configured. " +
-                "Please check the console for more details!"));
+        sender.sendMessage(combine(ChatColor.RED, " The sledgehammer authentication code is not properly configured. " +
+                                                  "Please check the console for more details!"));
         sender.sendMessage(combine(ChatColor.GRAY, "Most sledgehammer features will be disabled"));
         sender.sendMessage();
         sender.sendMessage(combine(ChatColor.DARK_RED, "----------------------------------------------"));

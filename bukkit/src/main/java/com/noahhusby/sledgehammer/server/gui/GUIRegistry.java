@@ -35,7 +35,9 @@ public class GUIRegistry implements Listener {
 
     public static void onInventoryClick(InventoryClickEvent e) {
         IController controller = controllers.get(e.getWhoClicked().getUniqueId());
-        if(controller instanceof AnvilController) return;
+        if (controller instanceof AnvilController) {
+            return;
+        }
         ((GUIController) controller).onInventoryClick(e);
     }
 

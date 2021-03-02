@@ -31,19 +31,27 @@ import java.util.List;
 public class ServerGroup {
     @Expose
     @SerializedName("Id")
-    @Getter @Setter private String ID;
+    @Getter
+    @Setter
+    private String ID;
     @Expose
     @SerializedName("HeadId")
-    @Getter @Setter private String headID;
+    @Getter
+    @Setter
+    private String headID;
     @Expose
     @SerializedName("Name")
-    @Getter @Setter private String name;
+    @Getter
+    @Setter
+    private String name;
     @Expose
     @SerializedName("Servers")
-    @Getter private List<String> servers;
+    @Getter
+    private List<String> servers;
     @Expose
     @SerializedName("Aliases")
-    @Getter private List<String> aliases;
+    @Getter
+    private List<String> aliases;
 
     public ServerGroup() {
         this("", "", "", new ArrayList<>(), new ArrayList<>());

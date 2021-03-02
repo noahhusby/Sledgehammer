@@ -20,8 +20,8 @@ package com.noahhusby.sledgehammer.proxy.dialogs.components.location;
 
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.config.ServerHandler;
-import com.noahhusby.sledgehammer.proxy.dialogs.components.DialogComponent;
 import com.noahhusby.sledgehammer.proxy.datasets.Location;
+import com.noahhusby.sledgehammer.proxy.dialogs.components.DialogComponent;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -44,7 +44,7 @@ public class LocationListComponent extends DialogComponent {
 
     @Override
     public String getPrompt() {
-        return "Locations - "+server.getName();
+        return "Locations - " + server.getName();
     }
 
     @Override
@@ -52,12 +52,20 @@ public class LocationListComponent extends DialogComponent {
         TextComponent explanation = ChatUtil.combine(ChatColor.GRAY, "Type anything to continue");
         locations = ServerHandler.getInstance().getLocationsFromServer(server.getName());
         int v = 0;
-        for(Location l : locations) {
+        for (Location l : locations) {
             String x = "";
-            if(!l.city.equals("")) x+= ChatUtil.capitalize(l.city)+", ";
-            if(!l.county.equals("")) x+= ChatUtil.capitalize(l.county)+", ";
-            if(!l.state.equals("")) x+= ChatUtil.capitalize(l.state)+", ";
-            if(!l.country.equals("")) x+= ChatUtil.capitalize(l.country);
+            if (!l.city.equals("")) {
+                x += ChatUtil.capitalize(l.city) + ", ";
+            }
+            if (!l.county.equals("")) {
+                x += ChatUtil.capitalize(l.county) + ", ";
+            }
+            if (!l.state.equals("")) {
+                x += ChatUtil.capitalize(l.state) + ", ";
+            }
+            if (!l.country.equals("")) {
+                x += ChatUtil.capitalize(l.country);
+            }
             explanation.addExtra(ChatUtil.combine(ChatColor.RED, "\n" + v + ". ", ChatColor.GOLD,
                     ChatUtil.capitalize(l.detailType.name()), " - ", ChatColor.RED, x));
             v++;
@@ -68,7 +76,7 @@ public class LocationListComponent extends DialogComponent {
 
     @Override
     public String[] getAcceptableResponses() {
-        return new String[]{"*"};
+        return new String[]{ "*" };
     }
 
     @Override

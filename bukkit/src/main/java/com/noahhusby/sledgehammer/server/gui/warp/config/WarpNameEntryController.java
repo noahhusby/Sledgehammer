@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 public class WarpNameEntryController extends AnvilController {
     private final WarpConfigPayload payload;
+
     public WarpNameEntryController(AnvilController controller, WarpConfigPayload payload) {
         super(controller);
         this.payload = payload;
