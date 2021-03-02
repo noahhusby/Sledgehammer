@@ -31,14 +31,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.plugin.messaging.PluginMessageListener;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.Map;
 
-public class NetworkHandler implements PluginMessageListener, Listener {
+public class NetworkHandler implements Listener {
     private static NetworkHandler instance = null;
 
     public static NetworkHandler getInstance() {
@@ -48,6 +44,8 @@ public class NetworkHandler implements PluginMessageListener, Listener {
     private NetworkHandler() {
         registeredPackets = Maps.newHashMap();
         cachedPackets = Maps.newHashMap();
+        channel = new MessageChannel(Sledgehammer.getInstance(), Constants.serverChannel);
+        channel.onMessage(m -> onMessage(SledgehammerUtil.parser.parse(m).getAsJsonObject()));
 
         register(new P2SCommandPacket());
         register(new P2SInitilizationPacket());
@@ -62,6 +60,7 @@ public class NetworkHandler implements PluginMessageListener, Listener {
 
     private final Map<String, P2SPacket> registeredPackets;
     private final Map<JsonObject, String> cachedPackets;
+    private MessageChannel channel;
 
     private void register(P2SPacket packet) {
         registeredPackets.put(packet.getPacketID(), packet);
@@ -77,11 +76,10 @@ public class NetworkHandler implements PluginMessageListener, Listener {
         JsonObject data = new JsonObject();
         packet.getMessage(data);
         payload.add("data", data);
-        //TODO: Burn the fucking "Response Prefix"
-        sendMessage(Constants.responsePrefix + SledgehammerUtil.GSON.toJson(payload), packet.getPacketInfo().getSender());
+        channel.send(Bukkit.getPlayer(packet.getPacketInfo().getSender()), SledgehammerUtil.GSON.toJson(payload));
     }
 
-    private void onPacketReceived(JsonObject message) {
+    private void onMessage(JsonObject message) {
         String command = message.get("command").getAsString();
         String sender = message.get("sender").getAsString();
         String server = message.get("server").getAsString();
@@ -98,34 +96,12 @@ public class NetworkHandler implements PluginMessageListener, Listener {
         }
     }
 
-    private void sendMessage(String message, String sender) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        DataOutputStream out = new DataOutputStream(stream);
-        try {
-            out.writeUTF(message);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        Bukkit.getPlayer(sender).sendPluginMessage(Sledgehammer.getInstance(), "sledgehammer:channel", stream.toByteArray());
-    }
-
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         for(Map.Entry<JsonObject, String> e : cachedPackets.entrySet()) {
             if(e.getValue().equalsIgnoreCase(event.getPlayer().getName())) {
-                onPacketReceived(e.getKey());
+                onMessage(e.getKey());
             }
         }
-    }
-
-    @Override
-    public void onPluginMessageReceived(String channel, Player player, byte[] message) {
-        if (!channel.equalsIgnoreCase( "sledgehammer:channel")) {
-            return;
-        }
-        ByteArrayDataInput in = ByteStreams.newDataInput(message);
-        String m = in.readUTF();
-        onPacketReceived(SledgehammerUtil.parser.parse(m).getAsJsonObject());
     }
 }

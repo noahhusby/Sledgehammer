@@ -7,6 +7,8 @@ public abstract class CommonConstants {
     public static final String VERSION = "0.4.3";
     public static final double SCALE = 7318261.522857145;
 
+    public static final String serverChannel = "sledgehammer:server";
+
     public static final String teleportID = "teleport";
     public static final String setwarpID = "warp_position";
     public static final String locationID = "location";

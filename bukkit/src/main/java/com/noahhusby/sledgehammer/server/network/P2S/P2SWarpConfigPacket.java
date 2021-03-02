@@ -38,7 +38,7 @@ public class P2SWarpConfigPacket extends P2SPacket {
                 JsonObject d = data.getAsJsonObject("data");
                 for(WarpGroup wg : payload.getGroups()) {
                     for(Warp w : wg.getWarps()) {
-                        if(w.getId() == SledgehammerUtil.JsonUtils.toInt(d.get("warpId"))) {
+                        if(w.getId() == d.get("warpId").getAsInt()) {
                             GUIRegistry.register(new ConfirmationController(Bukkit.getPlayer(info.getSender()),
                                     payload, ConfirmationController.Type.LOCATION_UPDATE, w));
                             return;

@@ -36,7 +36,7 @@ public class PlayerManager {
     private static PlayerManager instance = null;
 
     public static PlayerManager getInstance() {
-        return instance == null ? new PlayerManager() : instance;
+        return instance == null ? instance = new PlayerManager() : instance;
     }
 
     private PlayerManager() {

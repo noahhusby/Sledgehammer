@@ -33,29 +33,27 @@ public final class Sledgehammer extends JavaPlugin implements Listener {
 
     public boolean hasTerraPlusPlus = false;
 
-    public static Logger logger = Logger.getLogger("Sledgehammer Bootstrap");
+    public static Logger LOGGER = Logger.getLogger("Sledgehammer Bootstrap");
     @Getter private static Sledgehammer instance;
+
     public static String bungeecordName = "";
 
     @Override
     public void onEnable() {
         instance = this;
-        logger = getLogger();
+        LOGGER = getLogger();
 
         try {
             Class.forName("net.buildtheearth.terraplusplus.TerraMod");
             hasTerraPlusPlus = true;
-            Sledgehammer.logger.warning("TerraPlusPlus is installed! Using terra teleport mode.");
+            Sledgehammer.LOGGER.warning("TerraPlusPlus is installed! Using terra teleport mode.");
         } catch(ClassNotFoundException ignored) {
-            Sledgehammer.logger.warning("TerraPlusPlus is not installed! Using vanilla teleport mode.");
+            Sledgehammer.LOGGER.warning("TerraPlusPlus is not installed! Using vanilla teleport mode.");
         }
 
         Bukkit.getServer().getPluginManager().registerEvents(ChatHandler.getInstance(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new GUIRegistry(), this);
         Bukkit.getServer().getPluginManager().registerEvents(NetworkHandler.getInstance(), this);
-
-        getServer().getMessenger().registerOutgoingPluginChannel(this, "sledgehammer:channel");
-        getServer().getMessenger().registerIncomingPluginChannel( this, "sledgehammer:channel", NetworkHandler.getInstance());
 
         PlayerManager.getInstance();
     }

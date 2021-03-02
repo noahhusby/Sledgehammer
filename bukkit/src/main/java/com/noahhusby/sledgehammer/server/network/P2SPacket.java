@@ -27,7 +27,7 @@ public abstract class P2SPacket {
     }
 
     protected void throwNoSender() {
-        Sledgehammer.logger.warning("The task manager attempted to execute a task without an available sender.");
+        Sledgehammer.LOGGER.warning("The task manager attempted to execute a task without an available sender.");
     }
 
     public abstract String getPacketID();
