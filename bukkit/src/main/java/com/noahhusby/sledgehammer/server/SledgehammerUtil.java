@@ -20,13 +20,14 @@ package com.noahhusby.sledgehammer.server;
 
 import com.google.gson.JsonParser;
 import com.noahhusby.sledgehammer.common.CommonUtil;
-import dev.dbassett.skullcreator.SkullCreator;
+import com.noahhusby.sledgehammer.server.util.SkullUtil;
+import lombok.Getter;
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import net.buildtheearth.terraplusplus.generator.EarthGeneratorSettings;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 @UtilityClass
 public class SledgehammerUtil extends CommonUtil {
@@ -34,9 +35,7 @@ public class SledgehammerUtil extends CommonUtil {
     public static final JsonParser parser = new JsonParser();
     private static final EarthGeneratorSettings bteGeneratorSettings = EarthGeneratorSettings.parse(EarthGeneratorSettings.BTE_DEFAULT_SETTINGS);
 
-    public static boolean hasTerraPlusPlus() {
-        return Sledgehammer.getInstance().hasTerraPlusPlus;
-    }
+    public static boolean hasTerraPlusPlus = false;
 
     public static EarthGeneratorSettings getBTEDefaultSettings() {
         return bteGeneratorSettings;
@@ -46,16 +45,17 @@ public class SledgehammerUtil extends CommonUtil {
         return Bukkit.getServer().getPlayer(name);
     }
 
-    public static ItemStack getSkull(String h, String n) {
+    public static ItemStack getSkull(String base64, String name) {
         try {
-            ItemStack head = SkullCreator.itemFromBase64(h);
-            ItemMeta meta = head.getItemMeta();
-            meta.setDisplayName(n);
-            head.setItemMeta(meta);
-            return head;
+            return setItemDisplayName(SkullUtil.itemFromBase64(base64), name);
         } catch (StringIndexOutOfBoundsException | NullPointerException e){
-            return getSkull(Constants.steveHead, n);
+            return getSkull(Constants.steveHead, name);
         }
+    }
+
+    public static ItemStack setItemDisplayName(@NonNull ItemStack item, @NonNull String name) {
+        item.getItemMeta().setDisplayName(name);
+        return item;
     }
 
     public static boolean isPlayerAvailable(String p) {
@@ -67,77 +67,13 @@ public class SledgehammerUtil extends CommonUtil {
         return p.isOnline();
     }
 
-    public static class NumberHeads {
-        public static ItemStack getHead(int val, String display) {
-            String id = "";
-            switch (val) {
-                default:
-                case 1:
-                    id = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2E1MTZmYmFlMTYwNThmMjUxYWVmOWE2OGQzMDc4NTQ5ZjQ4ZjZkNWI2ODNmMTljZjVhMTc0NTIxN2Q3MmNjIn19fQ==";
-                    break;
-                case 2:
-                    id = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDY5OGFkZDM5Y2Y5ZTRlYTkyZDQyZmFkZWZkZWMzYmU4YTdkYWZhMTFmYjM1OWRlNzUyZTlmNTRhZWNlZGM5YSJ9fX0=";
-                    break;
-                case 3:
-                    id = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmQ5ZTRjZDVlMWI5ZjNjOGQ2Y2E1YTFiZjQ1ZDg2ZWRkMWQ1MWU1MzVkYmY4NTVmZTlkMmY1ZDRjZmZjZDIifX19";
-                    break;
-                case 4:
-                    id = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjJhM2Q1Mzg5ODE0MWM1OGQ1YWNiY2ZjODc0NjlhODdkNDhjNWMxZmM4MmZiNGU3MmY3MDE1YTM2NDgwNTgifX19";
-                    break;
-                case 5:
-                    id = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDFmZTM2YzQxMDQyNDdjODdlYmZkMzU4YWU2Y2E3ODA5YjYxYWZmZDYyNDVmYTk4NDA2OTI3NWQxY2JhNzYzIn19fQ==";
-                    break;
-                case 6:
-                    id = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2FiNGRhMjM1OGI3YjBlODk4MGQwM2JkYjY0Mzk5ZWZiNDQxODc2M2FhZjg5YWZiMDQzNDUzNTYzN2YwYTEifX19";
-                    break;
-                case 7:
-                    id = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjk3NzEyYmEzMjQ5NmM5ZTgyYjIwY2M3ZDE2ZTE2OGIwMzViNmY4OWYzZGYwMTQzMjRlNGQ3YzM2NWRiM2ZiIn19fQ==";
-                    break;
-                case 8:
-                    id = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWJjMGZkYTlmYTFkOTg0N2EzYjE0NjQ1NGFkNjczN2FkMWJlNDhiZGFhOTQzMjQ0MjZlY2EwOTE4NTEyZCJ9fX0=";
-                    break;
-                case 9:
-                    id = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDZhYmM2MWRjYWVmYmQ1MmQ5Njg5YzA2OTdjMjRjN2VjNGJjMWFmYjU2YjhiMzc1NWU2MTU0YjI0YTVkOGJhIn19fQ==";
-                    break;
-                case 10:
-                    id = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2FmM2ZkNDczYTY0OGI4NDdjY2RhMWQyMDc0NDc5YmI3NjcyNzcxZGM0MzUyMjM0NjhlZDlmZjdiNzZjYjMifX19";
-                    break;
-                case 11:
-                    id = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDhjYWI1M2IwMjA5OGU2ODFhNDZkMWQ3ZjVmZjY5MTc0NmFkZjRlMWZiM2FmZTM1MTZkZDJhZjk0NDU2OSJ9fX0=";
-                    break;
-                case 12:
-                    id = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmZkODNiNWJhYWU0Y2I4NTY5NGExNGQ2ZDEzMzQxZWY3MWFhM2Q5MmQzN2RlMDdiZWE3N2IyYzlkYzUzZSJ9fX0=";
-                    break;
-                case 13:
-                    id = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjFlNTk4NWJlNDg4NmY5ZjE2ZTI0NDdjM2Y0NjEwNTNiNDUxMzQyZDRmYjAxNjZmYjJmODhkZjc0MjIxMzZiNCJ9fX0=";
-                    break;
-                case 14:
-                    id = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTY4MTQ1NjQzOGFlOWIyZDRkMmJmYWI5Y2YzZmZhOTM1NGVlYmRiM2YwMmNlMjk1NzkyOTM0OGU1Yjg1ZmY5NSJ9fX0=";
-                    break;
-                case 15:
-                    id = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzE5YzRkYjczNjViMWI4OGIxMjllNzA0MTg0MjEzZmUwNzhkODhiYzNkNGFlM2Q1MjI5MGY2MWQ5NTVkNTEifX19";
-                    break;
-                case 16:
-                    id = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWY1ZGQwNzliOThmZGFjNDNhMTlhNzk1YmE0NmZkOTdmMjNlYTc3NTdkOTJhZDBhNjlhZGM5NzMyODllNWEifX19";
-                    break;
-                case 17:
-                    id = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmU1MWJmZThlYmZhYTU4NWE3ODdlMWNiNzcyYzdmZDdkOWE5Mjg2ZDk1ZWZhNTRkNjZmYTgyNzRmMTg4ZiJ9fX0=";
-                    break;
-                case 18:
-                    id = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjZkZTlhNWEyZDhhMjM3MDcwMTliOWVmNjFkMTY2Mjg2MGUwYjE2NTNkZjZjMjc2MTZiZTJjNzZmY2QxODc1In19fQ==";
-                    break;
-                case 19:
-                    id = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGJkNDU5MDRkMzRiNjM2YjJmNjQyNjFiM2Q4YmNlZDI1ODI4YzJiOGM0ODIzYjdlMTgzZWU4YTZmMWEyODRkIn19fQ==";
-                    break;
-                case 20:
-                    id = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzRiOTNjNzIxNTE5ZTE0OTY0OWI3ZTRhZmI2ZDc2Y2ZjODE0NjA4YWU5Yzk1ZTdjM2RiNGJmNGJkYWFjZjMxZSJ9fX0=";
-                    break;
-            }
-            ItemStack skull = SkullCreator.itemFromBase64(id);
-            ItemMeta meta = skull.getItemMeta();
-            meta.setDisplayName(display);
-            skull.setItemMeta(meta);
-            return skull;
+    protected static void checkForTerra() {
+        try {
+            Class.forName("net.buildtheearth.terraplusplus.TerraMod");
+            hasTerraPlusPlus = true;
+            Sledgehammer.LOGGER.info("TerraPlusPlus is installed. Using terra height mode.");
+        } catch(ClassNotFoundException ignored) {
+            Sledgehammer.LOGGER.info("TerraPlusPlus is not installed. Using vanilla height mode.");
         }
     }
 }

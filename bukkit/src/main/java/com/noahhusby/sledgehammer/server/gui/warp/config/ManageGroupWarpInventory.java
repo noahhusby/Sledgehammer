@@ -25,6 +25,7 @@ import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.gui.GUIChild;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.gui.warp.config.manage.ManageWarpInventoryController;
+import com.noahhusby.sledgehammer.server.util.SkullUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -83,8 +84,8 @@ public class ManageGroupWarpInventory extends GUIChild {
         }
 
         if(paged) {
-            inventory.setItem(43, SledgehammerUtil.NumberHeads.getHead((page + 1), ChatColor.GREEN +
-                    "" + ChatColor.BOLD + "Page " + (page + 1)));
+            setItem(43, SledgehammerUtil.setItemDisplayName(SkullUtil.itemFromNumber(page + 1), ChatColor.GREEN
+                    + "" + ChatColor.BOLD + "Page " + (page + 1)));
         }
 
         int min = page * 27;

@@ -25,6 +25,7 @@ import com.noahhusby.sledgehammer.server.gui.GUIHelper;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpConfigPacket;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
+import com.noahhusby.sledgehammer.server.util.SkullUtil;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -63,8 +64,8 @@ public class WarpMenuInventory extends AbstractWarpInventory {
         }
 
         if(paged) {
-            inventory.setItem(52, SledgehammerUtil.NumberHeads.getHead((page + 1), ChatColor.GREEN +
-                    "" + ChatColor.BOLD + "Page " + (page + 1)));
+            setItem(52, SledgehammerUtil.setItemDisplayName(SkullUtil.itemFromNumber(page + 1), ChatColor.GREEN
+                    + "" + ChatColor.BOLD + "Page " + (page + 1)));
         }
 
         int min = page * 27;

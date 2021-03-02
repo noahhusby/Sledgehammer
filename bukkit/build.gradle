@@ -1,7 +1,5 @@
 dependencies {
     compile group: 'net.wesjd', name: 'anvilgui', version: '1.4.0-SNAPSHOT'
-    compile 'dev.dbassett:skullcreator:3.0.0'
-    compileOnly group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
     compileOnly 'com.destroystokyo.paper:paper-api:1.12.2-R0.1-SNAPSHOT'
     compileOnly 'com.github.BuildTheEarth:terraplusplus:74449c4af349fd9b77b10e1041ed2c09f2d78518'
 }

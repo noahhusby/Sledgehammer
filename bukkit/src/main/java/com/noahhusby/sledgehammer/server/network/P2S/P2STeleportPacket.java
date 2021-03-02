@@ -19,9 +19,9 @@
 package com.noahhusby.sledgehammer.server.network.P2S;
 
 import com.google.gson.JsonObject;
+import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
-import com.noahhusby.sledgehammer.server.data.location.Point;
 import com.noahhusby.sledgehammer.server.network.P2SPacket;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
 import org.bukkit.Bukkit;

@@ -17,7 +17,9 @@ allprojects {
     apply plugin: "net.linguica.maven-settings"
 
     ext {
-        sledgehammerVersion = "0.4.3";
+        sledgehammerVersion = "0.4.3"
+
+        lombokVersion = "1.18.18"
     }
 
     group "com.noahhusby"
@@ -54,10 +56,6 @@ allprojects {
             url = 'https://repo.codemc.io/repository/maven-snapshots'
         }
         maven {
-            name = 'skullcreator-repo'
-            url = 'https://dl.bintray.com/deanveloper/SkullCreator'
-        }
-        maven {
             name = "DaPorkchop_"
             url = "https://maven.daporkchop.net/"
         }
@@ -68,8 +66,10 @@ allprojects {
             compile project(":common")
         }
 
-        compileOnly "org.projectlombok:lombok:1.18.16"
-        annotationProcessor "org.projectlombok:lombok:1.18.16"
+        compileOnly "org.projectlombok:lombok:$lombokVersion"
+        testCompileOnly "org.projectlombok:lombok:$lombokVersion"
+        annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+        testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
     }
 }
 
