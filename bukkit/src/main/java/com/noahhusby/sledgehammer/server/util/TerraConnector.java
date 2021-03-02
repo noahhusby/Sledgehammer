@@ -32,5 +32,4 @@ public class TerraConnector {
         }
         return altFuture;
     }
-
 }
