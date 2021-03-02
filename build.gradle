@@ -36,8 +36,8 @@ allprojects {
             url = "https://jitpack.io/"
         }
         maven {
-            name 'buildtheearth'
-            url 'https://maven.noahhusby.com/repository/buildtheearth'
+            name 'noahhusby'
+            url 'https://maven.noahhusby.com/repository/maven-public/'
         }
         maven {
             name = 'sonatype'
