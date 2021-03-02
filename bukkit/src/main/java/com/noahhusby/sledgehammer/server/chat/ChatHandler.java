@@ -10,7 +10,6 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.function.BiConsumer;
 
 public class ChatHandler implements Listener {

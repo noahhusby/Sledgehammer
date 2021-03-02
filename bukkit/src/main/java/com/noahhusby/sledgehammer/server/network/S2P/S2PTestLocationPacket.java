@@ -27,7 +27,6 @@ import com.noahhusby.sledgehammer.server.network.S2PPacket;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.json.simple.JSONObject;
 
 @RequiredArgsConstructor
 public class S2PTestLocationPacket extends S2PPacket {

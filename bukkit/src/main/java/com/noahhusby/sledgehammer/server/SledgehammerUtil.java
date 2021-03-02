@@ -22,19 +22,11 @@ import com.google.gson.JsonParser;
 import com.noahhusby.sledgehammer.common.CommonUtil;
 import dev.dbassett.skullcreator.SkullCreator;
 import lombok.experimental.UtilityClass;
-import net.buildtheearth.terraplusplus.dep.net.daporkchop.lib.binary.oio.StreamUtil;
 import net.buildtheearth.terraplusplus.generator.EarthGeneratorSettings;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 @UtilityClass
 public class SledgehammerUtil extends CommonUtil {
@@ -52,11 +44,6 @@ public class SledgehammerUtil extends CommonUtil {
 
     public static Player getPlayerFromName(String name) {
         return Bukkit.getServer().getPlayer(name);
-    }
-
-    public static boolean compare(String a, String b) {
-        if(a == null || b == null) return false;
-        return a.trim().toLowerCase().equals(b.trim().toLowerCase());
     }
 
     public static ItemStack getSkull(String h, String n) {

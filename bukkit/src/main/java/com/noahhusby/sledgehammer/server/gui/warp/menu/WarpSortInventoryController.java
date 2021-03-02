@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2020 Noah Husby
- * sledgehammer - S2PWarpPacket.java
+ * sledgehammer - WarpInventoryController.java
  *
  * Sledgehammer is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,35 +16,30 @@
  * along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
-package com.noahhusby.sledgehammer.server.network.S2P;
+package com.noahhusby.sledgehammer.server.gui.warp.menu;
 
-import com.google.gson.JsonObject;
-import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.data.warp.WarpPayload;
-import com.noahhusby.sledgehammer.server.network.PacketInfo;
-import com.noahhusby.sledgehammer.server.network.S2PPacket;
-import lombok.RequiredArgsConstructor;
+import com.noahhusby.sledgehammer.server.gui.GUIChild;
+import com.noahhusby.sledgehammer.server.gui.GUIController;
 import org.bukkit.entity.Player;
 
-@RequiredArgsConstructor
-public class S2PWarpPacket extends S2PPacket {
-    private final Player player;
+public class WarpSortInventoryController extends GUIController {
     private final WarpPayload payload;
-    private final int warpId;
 
-    @Override
-    public String getPacketID() {
-        return Constants.warpID;
+    public WarpSortInventoryController(Player p, WarpPayload payload) {
+        super(27, "Warp Sort", p);
+        this.payload = payload;
+        init();
     }
 
     @Override
-    public void getMessage(JsonObject data) {
-        data.addProperty("salt", payload.getSalt());
-        data.addProperty("warpId", warpId);
+    public void init() {
+        GUIChild inventory = new WarpSortInventory(payload);
+        inventory.initFromController(this, getPlayer(), getInventory());
+        openChild(inventory);
     }
 
-    @Override
-    public PacketInfo getPacketInfo() {
-        return PacketInfo.build(getPacketID(), player);
+    public WarpPayload getPayload() {
+        return payload;
     }
 }

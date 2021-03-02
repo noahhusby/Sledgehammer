@@ -26,7 +26,6 @@ import com.noahhusby.sledgehammer.server.network.PacketInfo;
 import com.noahhusby.sledgehammer.server.network.S2PPacket;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
-import org.json.simple.JSONObject;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;

@@ -19,7 +19,7 @@
 package com.noahhusby.sledgehammer.server;
 
 import com.noahhusby.sledgehammer.server.chat.ChatHandler;
-import com.noahhusby.sledgehammer.server.gui.inventories.general.GUIRegistry;
+import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
 import com.noahhusby.sledgehammer.server.players.PlayerManager;
 import lombok.Getter;
