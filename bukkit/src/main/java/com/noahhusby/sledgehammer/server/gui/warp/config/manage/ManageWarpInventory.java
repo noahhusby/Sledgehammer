@@ -3,19 +3,22 @@ package com.noahhusby.sledgehammer.server.gui.warp.config.manage;
 import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.common.warps.Warp;
+import com.noahhusby.sledgehammer.common.warps.WarpGroup;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.chat.ChatHandler;
 import com.noahhusby.sledgehammer.server.data.warp.WarpConfigPayload;
 import com.noahhusby.sledgehammer.server.gui.GUIChild;
+import com.noahhusby.sledgehammer.server.gui.GUIController;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
-import com.noahhusby.sledgehammer.server.gui.warp.config.ManageGroupInventoryController;
+import com.noahhusby.sledgehammer.server.gui.warp.config.ManageGroupInventory;
 import com.noahhusby.sledgehammer.server.gui.warp.config.confirmation.ConfirmationController;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
 import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpConfigPacket;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -103,12 +106,12 @@ public class ManageWarpInventory extends GUIChild {
             return;
         }
         if (e.getSlot() == 18) {
-            GUIRegistry.register(new ManageGroupInventoryController(getPlayer(), payload));
+            GUIRegistry.register(new ManageGroupInventory.ManageGroupInventoryController(getPlayer(), payload));
             return;
         }
 
         if (e.getSlot() == 11) {
-            GUIRegistry.register(new ChangeNameController(getPlayer(), payload, cur));
+            GUIRegistry.register(new ChangeNameAnvil.ChangeNameController(getPlayer(), payload, cur));
             return;
         }
 
@@ -175,5 +178,48 @@ public class ManageWarpInventory extends GUIChild {
         }
     }
 
+    public static class ManageWarpInventoryController extends GUIController {
 
+        private final WarpConfigPayload payload;
+        private Warp warp;
+
+        public ManageWarpInventoryController(Player p, WarpConfigPayload payload, int warpId) {
+            super(27, "Edit Warp Settings", p);
+            this.payload = payload;
+            for (WarpGroup wg : payload.getGroups()) {
+                for (Warp w : wg.getWarps()) {
+                    if (w.getId() == warpId) {
+                        this.warp = w;
+                    }
+                }
+            }
+            init();
+        }
+
+        public ManageWarpInventoryController(Player p, WarpConfigPayload payload, Warp warp) {
+            super(27, "Edit Warp Settings", p);
+            this.payload = payload;
+            this.warp = warp;
+            init();
+        }
+
+        public ManageWarpInventoryController(GUIController controller, WarpConfigPayload payload, Warp warp) {
+            super(controller);
+            this.payload = payload;
+            this.warp = warp;
+            init();
+        }
+
+
+        @Override
+        public void init() {
+            ManageWarpInventory warpConfig = new ManageWarpInventory(getPayload(), warp);
+            warpConfig.initFromController(this, getPlayer(), getInventory());
+            openChild(warpConfig);
+        }
+
+        public WarpConfigPayload getPayload() {
+            return payload;
+        }
+    }
 }

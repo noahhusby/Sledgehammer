@@ -6,7 +6,7 @@ import com.noahhusby.sledgehammer.common.warps.WarpGroup;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.data.warp.WarpConfigPayload;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
-import com.noahhusby.sledgehammer.server.gui.warp.config.ConfigMenuController;
+import com.noahhusby.sledgehammer.server.gui.warp.config.ConfigMenu;
 import com.noahhusby.sledgehammer.server.gui.warp.config.confirmation.ConfirmationController;
 import com.noahhusby.sledgehammer.server.network.P2SPacket;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
@@ -24,7 +24,7 @@ public class P2SWarpConfigPacket extends P2SPacket {
         WarpConfigPayload payload = WarpConfigPayload.fromPayload(data);
         switch (action) {
             case OPEN_CONFIG:
-                GUIRegistry.register(new ConfigMenuController(Bukkit.getPlayer(info.getSender()), payload));
+                GUIRegistry.register(new ConfigMenu.ConfigMenuController(Bukkit.getPlayer(info.getSender()), payload));
                 break;
             case ADD_FAILURE:
             case ADD_SUCCESSFUL:

@@ -19,16 +19,19 @@
 package com.noahhusby.sledgehammer.server.gui.warp.menu;
 
 import com.noahhusby.sledgehammer.common.warps.WarpGroup;
+import com.noahhusby.sledgehammer.common.warps.WarpPayload;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
-import com.noahhusby.sledgehammer.server.util.WarpGUIUtil;
+import com.noahhusby.sledgehammer.server.gui.GUIController;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
 import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpConfigPacket;
 import com.noahhusby.sledgehammer.server.util.SkullUtil;
+import com.noahhusby.sledgehammer.server.util.WarpGUIUtil;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -122,7 +125,7 @@ public class WarpMenuInventory extends AbstractWarpInventory {
 
         if (e.getSlot() == 45) {
             controller.close();
-            GUIRegistry.register(new WarpSortInventoryController(getPlayer(), controller.getPayload()));
+            GUIRegistry.register(new WarpSortInventory.WarpSortInventoryController(getPlayer(), controller.getPayload()));
             return;
         }
 
@@ -134,7 +137,7 @@ public class WarpMenuInventory extends AbstractWarpInventory {
         }
 
         if (e.getSlot() == 48) {
-            GUIRegistry.register(new PinnedWarpInventoryController(getController(), controller.getPayload()));
+            GUIRegistry.register(new PinnedWarpInventory.PinnedWarpInventoryController(getController(), controller.getPayload()));
             return;
         }
 
@@ -144,7 +147,7 @@ public class WarpMenuInventory extends AbstractWarpInventory {
         }
 
         if (e.getSlot() == 50) {
-            GUIRegistry.register(new AllWarpInventoryController(getController(), controller.getPayload()));
+            GUIRegistry.register(new AllWarpInventory.AllWarpInventoryController(getController(), controller.getPayload()));
             return;
         }
 
@@ -168,7 +171,7 @@ public class WarpMenuInventory extends AbstractWarpInventory {
                 }
             }
 
-            GUIRegistry.register(new GroupWarpInventoryController(getController(), controller.getPayload(), id));
+            GUIRegistry.register(new GroupWarpInventory.GroupWarpInventoryController(getController(), controller.getPayload(), id));
             return;
         }
     }
@@ -189,5 +192,33 @@ public class WarpMenuInventory extends AbstractWarpInventory {
 
     public int getPage() {
         return page;
+    }
+
+    public static class WarpMenuInventoryController extends AbstractWarpInventoryController<WarpMenuInventory> {
+
+        public WarpMenuInventoryController(Player player, WarpPayload payload) {
+            super("Warps", player, payload);
+            init();
+        }
+
+        public WarpMenuInventoryController(GUIController controller, WarpPayload payload) {
+            super(controller, payload);
+            init();
+        }
+
+        @Override
+        public void init() {
+            List<WarpGroup> groups = payload.getGroups();
+
+            int total_pages = (int) Math.ceil(groups.size() / 27.0);
+            if (total_pages == 0) {
+                total_pages = 1;
+            }
+            for (int x = 0; x < total_pages; x++) {
+                addPage(new WarpMenuInventory(x, groups));
+            }
+
+            openChild(getChildByPage(0));
+        }
     }
 }

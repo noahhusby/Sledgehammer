@@ -4,11 +4,13 @@ import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.server.Sledgehammer;
 import com.noahhusby.sledgehammer.server.data.warp.WarpConfigPayload;
 import com.noahhusby.sledgehammer.server.gui.AnvilChild;
+import com.noahhusby.sledgehammer.server.gui.AnvilController;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
 import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpConfigPacket;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class WarpNameEntryAnvil extends AnvilChild {
@@ -31,7 +33,7 @@ public class WarpNameEntryAnvil extends AnvilChild {
 
     @Override
     public void onLeftItemClick() {
-        GUIRegistry.register(new ConfigMenuController(getController().getPlayer(), payload));
+        GUIRegistry.register(new ConfigMenu.ConfigMenuController(getController().getPlayer(), payload));
     }
 
     @Override
@@ -46,7 +48,7 @@ public class WarpNameEntryAnvil extends AnvilChild {
                 break;
             case RIGHT:
             case LEFT:
-                GUIRegistry.register(new ConfigMenuController(getController().getPlayer(), payload));
+                GUIRegistry.register(new ConfigMenu.ConfigMenuController(getController().getPlayer(), payload));
                 break;
             case FINISH:
                 if (getText().equals("")) {
@@ -59,6 +61,27 @@ public class WarpNameEntryAnvil extends AnvilChild {
                             data));
                 }
                 break;
+        }
+    }
+
+    public static class WarpNameEntryController extends AnvilController {
+        private final WarpConfigPayload payload;
+
+        public WarpNameEntryController(AnvilController controller, WarpConfigPayload payload) {
+            super(controller);
+            this.payload = payload;
+            init();
+        }
+
+        public WarpNameEntryController(Player player, WarpConfigPayload payload) {
+            super(player);
+            this.payload = payload;
+            init();
+        }
+
+        @Override
+        public void init() {
+            openChild(new WarpNameEntryAnvil(payload));
         }
     }
 }

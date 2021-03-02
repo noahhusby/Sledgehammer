@@ -22,13 +22,16 @@ import com.noahhusby.sledgehammer.common.warps.Warp;
 import com.noahhusby.sledgehammer.common.warps.WarpGroup;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
+import com.noahhusby.sledgehammer.server.data.warp.WarpConfigPayload;
 import com.noahhusby.sledgehammer.server.gui.GUIChild;
+import com.noahhusby.sledgehammer.server.gui.GUIController;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
-import com.noahhusby.sledgehammer.server.gui.warp.config.manage.ManageWarpInventoryController;
+import com.noahhusby.sledgehammer.server.gui.warp.config.manage.ManageWarpInventory;
 import com.noahhusby.sledgehammer.server.util.SkullUtil;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -158,12 +161,70 @@ public class ManageGroupWarpInventory extends GUIChild {
             }
 
             controller.close();
-            GUIRegistry.register(new ManageWarpInventoryController(getPlayer(), controller.getPayload(), id));
+            GUIRegistry.register(new ManageWarpInventory.ManageWarpInventoryController(getPlayer(), controller.getPayload(), id));
             return;
         }
     }
 
     public int getPage() {
         return page;
+    }
+
+    public static class ManageGroupWarpInventoryController extends GUIController {
+        private final List<ManageGroupWarpInventory> warpInventories = new ArrayList<>();
+        private final WarpConfigPayload payload;
+        private final String groupId;
+
+        public ManageGroupWarpInventoryController(Player p, WarpConfigPayload payload, String groupId) {
+            super(45, "Select a warp to manage", p);
+            this.payload = payload;
+            this.groupId = groupId;
+            init();
+        }
+
+        public ManageGroupWarpInventoryController(GUIController controller, WarpConfigPayload payload, String groupId) {
+            super(controller);
+            this.payload = payload;
+            this.groupId = groupId;
+            init();
+        }
+
+        @Override
+        public void init() {
+            WarpGroup group = null;
+            for (WarpGroup g : payload.getGroups()) {
+                if (g.getId().equals(groupId)) {
+                    group = g;
+                }
+            }
+
+            List<Warp> warps = group.getWarps();
+
+            int total_pages = (int) Math.ceil(warps.size() / 27.0);
+            if (total_pages == 0) {
+                total_pages = 1;
+            }
+            for (int x = 0; x < total_pages; x++) {
+                ManageGroupWarpInventory w = new ManageGroupWarpInventory(x, warps, group);
+                w.initFromController(this, getPlayer(), getInventory());
+                warpInventories.add(w);
+            }
+
+            openChild(getChildByPage(0));
+        }
+
+        public GUIChild getChildByPage(int page) {
+            for (ManageGroupWarpInventory w : warpInventories) {
+                if (w.getPage() == page) {
+                    return w;
+                }
+            }
+
+            return null;
+        }
+
+        public WarpConfigPayload getPayload() {
+            return payload;
+        }
     }
 }

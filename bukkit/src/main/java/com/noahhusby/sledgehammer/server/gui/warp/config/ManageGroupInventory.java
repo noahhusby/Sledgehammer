@@ -21,12 +21,15 @@ package com.noahhusby.sledgehammer.server.gui.warp.config;
 import com.noahhusby.sledgehammer.common.warps.WarpGroup;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
+import com.noahhusby.sledgehammer.server.data.warp.WarpConfigPayload;
 import com.noahhusby.sledgehammer.server.gui.GUIChild;
+import com.noahhusby.sledgehammer.server.gui.GUIController;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.util.SkullUtil;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -144,12 +147,60 @@ public class ManageGroupInventory extends GUIChild {
                 }
             }
 
-            GUIRegistry.register(new ManageGroupWarpInventoryController(getController(), controller.getPayload(), id));
+            GUIRegistry.register(new ManageGroupWarpInventory.ManageGroupWarpInventoryController(getController(), controller.getPayload(), id));
             return;
         }
     }
 
     public int getPage() {
         return page;
+    }
+
+    public static class ManageGroupInventoryController extends GUIController {
+        private final List<ManageGroupInventory> warpInventories = new ArrayList<>();
+        private final WarpConfigPayload payload;
+
+        public ManageGroupInventoryController(Player p, WarpConfigPayload payload) {
+            super(45, "Select a group to manage", p);
+            this.payload = payload;
+            init();
+        }
+
+        public ManageGroupInventoryController(GUIController controller, WarpConfigPayload payload) {
+            super(controller);
+            this.payload = payload;
+            init();
+        }
+
+        @Override
+        public void init() {
+            List<WarpGroup> groups = payload.getGroups();
+
+            int total_pages = (int) Math.ceil(groups.size() / 27.0);
+            if (total_pages == 0) {
+                total_pages = 1;
+            }
+            for (int x = 0; x < total_pages; x++) {
+                ManageGroupInventory w = new ManageGroupInventory(x, groups);
+                w.initFromController(this, getPlayer(), getInventory());
+                warpInventories.add(w);
+            }
+
+            openChild(getChildByPage(0));
+        }
+
+        public GUIChild getChildByPage(int page) {
+            for (ManageGroupInventory w : warpInventories) {
+                if (w.getPage() == page) {
+                    return w;
+                }
+            }
+
+            return null;
+        }
+
+        public WarpConfigPayload getPayload() {
+            return payload;
+        }
     }
 }

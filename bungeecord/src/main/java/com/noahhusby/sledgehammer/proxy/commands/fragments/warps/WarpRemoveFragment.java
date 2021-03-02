@@ -95,7 +95,7 @@ public class WarpRemoveFragment implements ICommandFragment {
             }
             sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Use ", ChatColor.YELLOW,
                     String.format("/%s remove %s", ConfigHandler.warpCommand, args[0]), ChatColor.RED,
-                            " <id>", ChatColor.GRAY, " to remove a specific warp!"));
+                    " <id>", ChatColor.GRAY, " to remove a specific warp!"));
             return;
         }
 

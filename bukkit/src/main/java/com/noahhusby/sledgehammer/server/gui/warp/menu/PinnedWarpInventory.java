@@ -19,16 +19,20 @@
 package com.noahhusby.sledgehammer.server.gui.warp.menu;
 
 import com.noahhusby.sledgehammer.common.warps.Warp;
+import com.noahhusby.sledgehammer.common.warps.WarpGroup;
+import com.noahhusby.sledgehammer.common.warps.WarpPayload;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
-import com.noahhusby.sledgehammer.server.util.WarpGUIUtil;
+import com.noahhusby.sledgehammer.server.gui.GUIController;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
 import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpConfigPacket;
 import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpPacket;
 import com.noahhusby.sledgehammer.server.util.SkullUtil;
+import com.noahhusby.sledgehammer.server.util.WarpGUIUtil;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -121,13 +125,13 @@ public class PinnedWarpInventory extends AbstractWarpInventory {
         }
 
         if (e.getSlot() == 40) {
-            GUIRegistry.register(new WarpMenuInventoryController(getController(), controller.getPayload()));
+            GUIRegistry.register(new WarpMenuInventory.WarpMenuInventoryController(getController(), controller.getPayload()));
             return;
         }
 
         if (e.getSlot() == 45) {
             controller.close();
-            GUIRegistry.register(new WarpSortInventoryController(getPlayer(), controller.getPayload()));
+            GUIRegistry.register(new WarpSortInventory.WarpSortInventoryController(getPlayer(), controller.getPayload()));
             return;
         }
 
@@ -173,5 +177,40 @@ public class PinnedWarpInventory extends AbstractWarpInventory {
 
     public int getPage() {
         return page;
+    }
+
+    public static class PinnedWarpInventoryController extends AbstractWarpInventoryController<PinnedWarpInventory> {
+
+        public PinnedWarpInventoryController(Player p, WarpPayload payload) {
+            super("Warps", p, payload);
+            init();
+        }
+
+        public PinnedWarpInventoryController(GUIController controller, WarpPayload payload) {
+            super(controller, payload);
+            init();
+        }
+
+        @Override
+        public void init() {
+            List<Warp> warps = new ArrayList<>();
+            for (WarpGroup wg : payload.getGroups()) {
+                for (Warp w : wg.getWarps()) {
+                    if ((payload.isLocal() && w.getPinned() == Warp.PinnedMode.GLOBAL) ||
+                        (!payload.isLocal() && (w.getPinned() == Warp.PinnedMode.GLOBAL || w.getPinned() == Warp.PinnedMode.LOCAL))) {
+                        warps.add(w);
+                    }
+                }
+            }
+
+            int total_pages = (int) Math.ceil(warps.size() / 27.0);
+            if (total_pages == 0) {
+                total_pages = 1;
+            }
+            for (int x = 0; x < total_pages; x++) {
+                addPage(new PinnedWarpInventory(x, warps));
+            }
+            openChild(getChildByPage(0));
+        }
     }
 }

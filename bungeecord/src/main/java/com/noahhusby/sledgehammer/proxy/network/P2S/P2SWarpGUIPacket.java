@@ -20,7 +20,6 @@ package com.noahhusby.sledgehammer.proxy.network.P2S;
 
 import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.proxy.Constants;
-import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.network.P2SPacket;
 import com.noahhusby.sledgehammer.proxy.network.PacketInfo;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;

@@ -20,16 +20,19 @@ package com.noahhusby.sledgehammer.server.gui.warp.menu;
 
 import com.noahhusby.sledgehammer.common.warps.Warp;
 import com.noahhusby.sledgehammer.common.warps.WarpGroup;
+import com.noahhusby.sledgehammer.common.warps.WarpPayload;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
-import com.noahhusby.sledgehammer.server.util.WarpGUIUtil;
+import com.noahhusby.sledgehammer.server.gui.GUIController;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
 import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpConfigPacket;
 import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpPacket;
 import com.noahhusby.sledgehammer.server.util.SkullUtil;
+import com.noahhusby.sledgehammer.server.util.WarpGUIUtil;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -128,13 +131,13 @@ public class GroupWarpInventory extends AbstractWarpInventory {
         }
 
         if (e.getSlot() == 40) {
-            GUIRegistry.register(new WarpMenuInventoryController(getController(), controller.getPayload()));
+            GUIRegistry.register(new WarpMenuInventory.WarpMenuInventoryController(getController(), controller.getPayload()));
             return;
         }
 
         if (e.getSlot() == 45) {
             controller.close();
-            GUIRegistry.register(new WarpSortInventoryController(getPlayer(), controller.getPayload()));
+            GUIRegistry.register(new WarpSortInventory.WarpSortInventoryController(getPlayer(), controller.getPayload()));
             return;
         }
 
@@ -178,5 +181,47 @@ public class GroupWarpInventory extends AbstractWarpInventory {
     @Override
     public int getPage() {
         return page;
+    }
+
+    public static class GroupWarpInventoryController extends AbstractWarpInventoryController<GroupWarpInventory> {
+        private final String groupId;
+
+        public GroupWarpInventoryController(Player player, WarpPayload payload, String groupId) {
+            super("Warps", player, payload);
+            this.groupId = groupId;
+            init();
+        }
+
+        public GroupWarpInventoryController(GUIController controller, WarpPayload payload, String groupId) {
+            super(controller, payload);
+            this.groupId = groupId;
+            init();
+        }
+
+        @Override
+        public void init() {
+            WarpGroup group = null;
+            for (WarpGroup g : payload.getGroups()) {
+                if (g.getId().equals(groupId)) {
+                    group = g;
+                }
+            }
+
+            if (group == null) {
+                GUIRegistry.register(new AllWarpInventory.AllWarpInventoryController(getPlayer(), payload));
+                return;
+            }
+
+            List<Warp> warps = group.getWarps();
+
+            int total_pages = (int) Math.ceil(warps.size() / 27.0);
+            if (total_pages == 0) {
+                total_pages = 1;
+            }
+            for (int x = 0; x < total_pages; x++) {
+                addPage(new GroupWarpInventory(x, warps, group));
+            }
+            openChild(getChildByPage(0));
+        }
     }
 }

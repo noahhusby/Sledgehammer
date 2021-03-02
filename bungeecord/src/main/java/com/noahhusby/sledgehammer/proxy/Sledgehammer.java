@@ -208,7 +208,7 @@ public class Sledgehammer extends Plugin implements Listener {
 
         public void add(Consumer<ScheduledThreadPoolExecutor> thread) {
             runnableList.add(thread);
-            if(running) {
+            if (running) {
                 thread.accept(generalThreads);
             }
         }

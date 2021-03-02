@@ -24,6 +24,7 @@ Go to the [releases](https://github.com/noahhusby/Sledgehammer/releases) page an
 and bukkit plugin.
 
 ## Building
+
 * Clone this repo, or download as a zip
 * Open `sledgehammer` in your preferred IDE
 * Build using: `./gradlew shadowJar`

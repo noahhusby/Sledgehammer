@@ -6,7 +6,7 @@ import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.data.warp.WarpConfigPayload;
 import com.noahhusby.sledgehammer.server.gui.GUIChild;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
-import com.noahhusby.sledgehammer.server.gui.warp.config.ConfigMenuController;
+import com.noahhusby.sledgehammer.server.gui.warp.config.ConfigMenu;
 import org.bukkit.ChatColor;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -29,6 +29,6 @@ public class RemoveSuccessInventory extends GUIChild {
     @Override
     public void onInventoryClick(InventoryClickEvent e) {
         e.setCancelled(true);
-        GUIRegistry.register(new ConfigMenuController(getPlayer(), payload));
+        GUIRegistry.register(new ConfigMenu.ConfigMenuController(getPlayer(), payload));
     }
 }

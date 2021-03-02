@@ -40,6 +40,7 @@ public class SledgehammerUtil extends CommonUtil {
 
     /**
      * Checks whether a player is online or not
+     *
      * @param name Name of player
      * @return True if online, false if not
      */
@@ -49,6 +50,7 @@ public class SledgehammerUtil extends CommonUtil {
 
     /**
      * Checks whether a player is online or not
+     *
      * @param p {@link Player}
      * @return True if online, false if not
      */
@@ -61,8 +63,9 @@ public class SledgehammerUtil extends CommonUtil {
 
     /**
      * Gets a skull from a base64 texture
+     *
      * @param base64 Base64 Texture
-     * @param name Display Name of Skull
+     * @param name   Display Name of Skull
      * @return {@link ItemStack}
      */
     public static ItemStack getSkull(String base64, String name) {
@@ -75,6 +78,7 @@ public class SledgehammerUtil extends CommonUtil {
 
     /**
      * Sets the display name of an item
+     *
      * @param item {@link ItemStack}
      * @param name Display name of Item
      * @return {@link ItemStack}
@@ -88,6 +92,7 @@ public class SledgehammerUtil extends CommonUtil {
 
     /**
      * Gets whether TerraPlusPlus is installed
+     *
      * @return True if T++ is installed, false if not
      */
     public static boolean hasTerraPlusPlus() {

@@ -4,9 +4,11 @@ import com.noahhusby.sledgehammer.common.warps.Warp;
 import com.noahhusby.sledgehammer.server.Sledgehammer;
 import com.noahhusby.sledgehammer.server.data.warp.WarpConfigPayload;
 import com.noahhusby.sledgehammer.server.gui.AnvilChild;
+import com.noahhusby.sledgehammer.server.gui.AnvilController;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class ChangeNameAnvil extends AnvilChild {
@@ -31,7 +33,7 @@ public class ChangeNameAnvil extends AnvilChild {
 
     @Override
     public void onLeftItemClick() {
-        GUIRegistry.register(new ManageWarpInventoryController(getController().getPlayer(), payload, warp));
+        GUIRegistry.register(new ManageWarpInventory.ManageWarpInventoryController(getController().getPlayer(), payload, warp));
     }
 
     @Override
@@ -45,16 +47,40 @@ public class ChangeNameAnvil extends AnvilChild {
                 break;
             case RIGHT:
             case LEFT:
-                GUIRegistry.register(new ManageWarpInventoryController(getController().getPlayer(), payload, warp));
+                GUIRegistry.register(new ManageWarpInventory.ManageWarpInventoryController(getController().getPlayer(), payload, warp));
                 break;
             case FINISH:
                 if (getText().equals("")) {
                     GUIRegistry.register(new ChangeNameController(getController().getPlayer(), payload, warp));
                 } else {
                     warp.setName(getText());
-                    GUIRegistry.register(new ManageWarpInventoryController(getController().getPlayer(), payload, warp));
+                    GUIRegistry.register(new ManageWarpInventory.ManageWarpInventoryController(getController().getPlayer(), payload, warp));
                 }
                 break;
+        }
+    }
+
+    public static class ChangeNameController extends AnvilController {
+        private final WarpConfigPayload payload;
+        private final Warp warp;
+
+        public ChangeNameController(AnvilController controller, WarpConfigPayload payload, Warp warp) {
+            super(controller);
+            this.payload = payload;
+            this.warp = warp;
+            init();
+        }
+
+        public ChangeNameController(Player player, WarpConfigPayload payload, Warp warp) {
+            super(player);
+            this.payload = payload;
+            this.warp = warp;
+            init();
+        }
+
+        @Override
+        public void init() {
+            openChild(new ChangeNameAnvil(payload, warp));
         }
     }
 }

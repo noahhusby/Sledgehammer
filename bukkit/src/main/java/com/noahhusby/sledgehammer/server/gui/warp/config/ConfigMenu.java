@@ -2,10 +2,13 @@ package com.noahhusby.sledgehammer.server.gui.warp.config;
 
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
+import com.noahhusby.sledgehammer.server.data.warp.WarpConfigPayload;
 import com.noahhusby.sledgehammer.server.gui.GUIChild;
+import com.noahhusby.sledgehammer.server.gui.GUIController;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class ConfigMenu extends GUIChild {
@@ -33,12 +36,34 @@ public class ConfigMenu extends GUIChild {
             return;
         }
         if (e.getSlot() == 13) {
-            GUIRegistry.register(new WarpNameEntryController(getPlayer(), ((ConfigMenuController) controller).getPayload()));
+            GUIRegistry.register(new WarpNameEntryAnvil.WarpNameEntryController(getPlayer(), ((ConfigMenuController) controller).getPayload()));
             return;
         }
         if (e.getSlot() == 15) {
-            GUIRegistry.register(new ManageGroupInventoryController(getPlayer(), ((ConfigMenuController) controller).getPayload()));
+            GUIRegistry.register(new ManageGroupInventory.ManageGroupInventoryController(getPlayer(), ((ConfigMenuController) controller).getPayload()));
             return;
+        }
+    }
+
+    public static class ConfigMenuController extends GUIController {
+
+        private final WarpConfigPayload payload;
+
+        public ConfigMenuController(Player p, WarpConfigPayload payload) {
+            super(27, "Warp Config", p);
+            this.payload = payload;
+            init();
+        }
+
+        @Override
+        public void init() {
+            ConfigMenu warpConfig = new ConfigMenu();
+            warpConfig.initFromController(this, getPlayer(), getInventory());
+            openChild(warpConfig);
+        }
+
+        public WarpConfigPayload getPayload() {
+            return payload;
         }
     }
 }
