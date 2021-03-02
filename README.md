@@ -8,8 +8,8 @@ A set of tools for multi-server Build the Earth networks
 ## Features
 * Region Assigning - /tpll will automatically teleport between servers based upon region configuration
 * Global Warps - Set warps and teleport across the network
-* Warp Map - Online map vizualizer with warps. Check out [Sledgehammer Map](https://github.com/noahhusby/Sledgehammer-Map/releases)
-* Border Teleportation (WIP) - Teleport automatically between servers when passing through region borders
+* Border Teleportation - Teleport automatically between servers when passing through region borders
+* Terramap Integration - Players can be shown on Terramap across the entire network
 
 #### Future Plans
 * Border Duplication - Duplicate buildings on border for a seamless teleportation experience
@@ -18,13 +18,7 @@ A set of tools for multi-server Build the Earth networks
 Go to the [releases](https://github.com/noahhusby/Sledgehammer/releases) page and download the latest bungeecord plugin and bukkit plugin.
 
 ## Building
-### Bungeecord
 * Clone this repo, or download as a zip
-* Open the `Sledgehammer [Bungeecord]` in your preferred IDE
-* Build using: Maven Package
-
-### Bukkit
-* Clone this repo, or download as a zip
-* Open the `Sledgehammer [Bukkit]` folder in IntelliJ
-* Import it as a gradle project
-* Run `./gradlew build` to build
+* Open `sledgehammer` in your preferred IDE
+* Build using: `./gradlew shadowJar`
+* Individual Builds for Bungeecord and Bukkit will be found under `[module]/build`
