@@ -1,5 +1,6 @@
-package com.noahhusby.sledgehammer.server.gui;
+package com.noahhusby.sledgehammer.server.util;
 
+import lombok.experimental.UtilityClass;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -8,7 +9,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GUIHelper {
+@UtilityClass
+public class WarpGUIUtil {
     public static ItemStack generateExit() {
         ItemStack exit = new ItemStack(Material.BARRIER);
         ItemMeta m = exit.getItemMeta();

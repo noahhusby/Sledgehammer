@@ -36,8 +36,6 @@ public class S2PInitializationPacket extends S2PPacket {
     @Override
     public void onMessage(PacketInfo info, JsonObject data) {
         ServerInfo server = ProxyServer.getInstance().getServerInfo(info.getServer());
-
-        Sledgehammer.debug("Got initialization packet from " + server.getName());
         ServerHandler.getInstance().initialize(server, data.get("version").getAsString());
     }
 }

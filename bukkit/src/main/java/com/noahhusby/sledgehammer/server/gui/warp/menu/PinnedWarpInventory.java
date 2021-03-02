@@ -21,7 +21,7 @@ package com.noahhusby.sledgehammer.server.gui.warp.menu;
 import com.noahhusby.sledgehammer.common.warps.Warp;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
-import com.noahhusby.sledgehammer.server.gui.GUIHelper;
+import com.noahhusby.sledgehammer.server.util.WarpGUIUtil;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
 import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpConfigPacket;
@@ -45,8 +45,8 @@ public class PinnedWarpInventory extends AbstractWarpInventory {
     public void init() {
         super.init();
         inventory.setItem(4, SledgehammerUtil.getSkull(Constants.lampHead, ChatColor.YELLOW + "" + ChatColor.BOLD + "Pinned Warps"));
-        inventory.setItem(40, GUIHelper.generateCompass());
-        inventory.setItem(45, GUIHelper.generateWarpSort());
+        inventory.setItem(40, WarpGUIUtil.generateCompass());
+        inventory.setItem(45, WarpGUIUtil.generateWarpSort());
 
         boolean paged = false;
         if (page != 0) {

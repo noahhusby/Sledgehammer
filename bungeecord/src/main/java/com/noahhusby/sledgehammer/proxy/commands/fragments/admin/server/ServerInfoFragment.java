@@ -44,14 +44,14 @@ public class ServerInfoFragment implements ICommandFragment {
             sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Earth: ", (server.isEarthServer() ? ChatColor.GREEN + "Yes" : ChatColor.RED + "No")));
             sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Friendly Name: ", ChatColor.BLUE, server.getFriendlyName()));
             sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "X Offset: ", ChatColor.BLUE, server.getXOffset()));
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Z Offset: ", ChatColor.BLUE, server.getFriendlyName()));
+            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Z Offset: ", ChatColor.BLUE, server.getZOffset()));
         } else {
             sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Status: ", ChatColor.GREEN, "Configured"));
             sender.sendMessage();
             sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Earth: ", (server.isEarthServer() ? ChatColor.GREEN + "Yes" : ChatColor.RED + "No")));
             sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Friendly Name: ", ChatColor.BLUE, server.getFriendlyName()));
             sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "X Offset: ", ChatColor.BLUE, server.getXOffset()));
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Z Offset: ", ChatColor.BLUE, server.getFriendlyName()));
+            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Z Offset: ", ChatColor.BLUE, server.getZOffset()));
             sender.sendMessage();
             sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "SH Version: ", ChatColor.BLUE, server.getSledgehammerVersion()));
         }

@@ -63,7 +63,7 @@ public class NetworkHandler implements Listener {
         JsonObject payload = new JsonObject();
         payload.addProperty("command", info.getID());
         payload.addProperty("sender", info.getSender());
-        payload.addProperty("server", info.getSender());
+        payload.addProperty("server", info.getServer());
         payload.addProperty("time", System.currentTimeMillis());
         JsonObject data = new JsonObject();
         packet.getMessage(data);

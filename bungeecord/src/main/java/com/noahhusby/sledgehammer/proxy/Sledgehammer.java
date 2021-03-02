@@ -18,6 +18,7 @@
 
 package com.noahhusby.sledgehammer.proxy;
 
+import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.noahhusby.sledgehammer.proxy.addons.AddonManager;
 import com.noahhusby.sledgehammer.proxy.addons.terramap.TerramapAddon;
@@ -34,6 +35,7 @@ import com.noahhusby.sledgehammer.proxy.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.proxy.players.BorderCheckerThread;
 import com.noahhusby.sledgehammer.proxy.players.FlaggedBorderCheckerThread;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -41,25 +43,28 @@ import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 public class Sledgehammer extends Plugin implements Listener {
     public static Logger logger;
     public static Sledgehammer sledgehammer;
-    @Getter
-    private final ScheduledThreadPoolExecutor generalThreads = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(16, new ThreadFactoryBuilder().setNameFormat("sledgehammer-general-%d").build());
 
     @Getter
     private static AddonManager addonManager;
+
+    @Getter
+    private final ThreadHandler threadHandler = new ThreadHandler();
 
     @Override
     public void onEnable() {
         sledgehammer = this;
         logger = getLogger();
-        generalThreads.setRemoveOnCancelPolicy(true);
+        threadHandler.generalThreads.setRemoveOnCancelPolicy(true);
 
         addListener(this);
         ConfigHandler.getInstance().init(getDataFolder());
@@ -75,8 +80,7 @@ public class Sledgehammer extends Plugin implements Listener {
      * Called upon startup or reload. These are settings that can be changed without a restart
      */
     public void registerFromConfig() {
-        generalThreads.getQueue().removeIf(r -> true);
-
+        threadHandler.stop();
         ProxyServer.getInstance().getPluginManager().unregisterCommands(this);
 
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerCommand());
@@ -107,6 +111,8 @@ public class Sledgehammer extends Plugin implements Listener {
         }
 
         addonManager.onEnable();
+
+        threadHandler.start();
 
         if (!ConfigHandler.warpCommand.equals("")) {
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new WarpCommand(ConfigHandler.warpCommand));
@@ -147,12 +153,12 @@ public class Sledgehammer extends Plugin implements Listener {
             ConfigHandler.useOfflineMode = false;
         }
 
-        ProxyServer.getInstance().registerChannel("sledgehammer:channel");
+        ProxyServer.getInstance().registerChannel(Constants.serverChannel);
 
         if (ConfigHandler.borderTeleportation) {
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new BorderCommand());
-            generalThreads.scheduleAtFixedRate(new BorderCheckerThread(), 0, 10, TimeUnit.SECONDS);
-            generalThreads.scheduleAtFixedRate(new FlaggedBorderCheckerThread(), 0, 5, TimeUnit.SECONDS);
+            threadHandler.add(thread -> thread.scheduleAtFixedRate(new BorderCheckerThread(), 0, 10, TimeUnit.SECONDS));
+            threadHandler.add(thread -> thread.scheduleAtFixedRate(new FlaggedBorderCheckerThread(), 0, 5, TimeUnit.SECONDS));
         }
 
         OpenStreetMaps.getInstance().init();
@@ -191,5 +197,30 @@ public class Sledgehammer extends Plugin implements Listener {
      */
     public static void terminateListener(Listener l) {
         ProxyServer.getInstance().getPluginManager().unregisterListener(l);
+    }
+
+    @NoArgsConstructor
+    public static class ThreadHandler {
+        private final ScheduledThreadPoolExecutor generalThreads = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(16, new ThreadFactoryBuilder().setNameFormat("sledgehammer-general-%d").build());
+        private final List<Consumer<ScheduledThreadPoolExecutor>> runnableList = Lists.newArrayList();
+
+        private boolean running = false;
+
+        public void add(Consumer<ScheduledThreadPoolExecutor> thread) {
+            runnableList.add(thread);
+            if(running) {
+                thread.accept(generalThreads);
+            }
+        }
+
+        public void start() {
+            running = true;
+            runnableList.forEach(consumer -> consumer.accept(generalThreads));
+        }
+
+        public void stop() {
+            running = false;
+            generalThreads.getQueue().removeIf(r -> true);
+        }
     }
 }

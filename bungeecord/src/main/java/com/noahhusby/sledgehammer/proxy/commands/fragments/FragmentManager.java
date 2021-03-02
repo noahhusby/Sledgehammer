@@ -62,9 +62,7 @@ public class FragmentManager {
             } else {
                 ICommandFragment fragment = fragments.get(args[index].toLowerCase(Locale.ROOT));
                 if (fragment != null) {
-                    ArrayList<String> dataList = new ArrayList<>(Arrays.asList(args).subList(1, args.length));
-                    String[] data = dataList.toArray(new String[0]);
-                    fragment.execute(sender, data);
+                    fragment.execute(sender, args);
                     return;
                 }
             }

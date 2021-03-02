@@ -59,7 +59,7 @@ public class ServerFragment extends FragmentManager implements ICommandFragment 
     public void execute(CommandSender sender, String[] args) {
         if (args.length != 0) {
             for (Map.Entry<String, ServerInfo> s : getInstance().getServers().entrySet()) {
-                if (s.getValue().getName().toLowerCase().equals(args[0].toLowerCase())) {
+                if (s.getValue().getName().equalsIgnoreCase(args[0])) {
                     executeFragment(sender, args, 1);
                     return;
                 }

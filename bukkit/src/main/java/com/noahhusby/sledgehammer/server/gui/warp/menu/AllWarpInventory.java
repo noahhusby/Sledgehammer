@@ -21,7 +21,7 @@ package com.noahhusby.sledgehammer.server.gui.warp.menu;
 import com.noahhusby.sledgehammer.common.warps.Warp;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
-import com.noahhusby.sledgehammer.server.gui.GUIHelper;
+import com.noahhusby.sledgehammer.server.util.WarpGUIUtil;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
 import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpConfigPacket;
@@ -45,7 +45,7 @@ public class AllWarpInventory extends AbstractWarpInventory {
     public void init() {
         super.init();
         setItem(4, SledgehammerUtil.getSkull(Constants.globeHead, ChatColor.GREEN + "" + ChatColor.BOLD + "All Warps"));
-        setItem(40, GUIHelper.generateCompass());
+        setItem(40, WarpGUIUtil.generateCompass());
 
         boolean paged = false;
         if (page != 0) {

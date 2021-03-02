@@ -22,7 +22,7 @@ import com.noahhusby.sledgehammer.common.warps.Warp;
 import com.noahhusby.sledgehammer.common.warps.WarpGroup;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
-import com.noahhusby.sledgehammer.server.gui.GUIHelper;
+import com.noahhusby.sledgehammer.server.util.WarpGUIUtil;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
 import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpConfigPacket;
@@ -51,8 +51,8 @@ public class GroupWarpInventory extends AbstractWarpInventory {
             String headId = (group.getHeadId().equals("")) ? Constants.globeHead : group.getHeadId();
             setItem(4, SledgehammerUtil.getSkull(headId, ChatColor.RED + "" + ChatColor.BOLD + group.getName()));
         }
-        setItem(40, GUIHelper.generateCompass());
-        setItem(45, GUIHelper.generateWarpSort());
+        setItem(40, WarpGUIUtil.generateCompass());
+        setItem(45, WarpGUIUtil.generateWarpSort());
 
         boolean paged = false;
         if (page != 0) {

@@ -19,12 +19,14 @@
 package com.noahhusby.sledgehammer.proxy.config;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.noahhusby.lib.data.storage.StorageList;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.datasets.Location;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
 import com.noahhusby.sledgehammer.proxy.network.P2S.P2SInitializationPacket;
+import com.noahhusby.sledgehammer.proxy.players.FlaggedBorderCheckerThread;
 import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -57,7 +59,7 @@ public class ServerHandler implements Listener {
 
     private ServerHandler() {
         Sledgehammer.addListener(this);
-        Sledgehammer.sledgehammer.getGeneralThreads().scheduleAtFixedRate(this::updateCache, 0, 5, TimeUnit.SECONDS);
+        Sledgehammer.sledgehammer.getThreadHandler().add(thread -> thread.scheduleAtFixedRate(this::updateCache, 0, 5, TimeUnit.SECONDS));
     }
 
     /**
@@ -153,7 +155,7 @@ public class ServerHandler implements Listener {
 
     private void updateCache() {
         Map<String, SledgehammerServer> tempServerCache = Maps.newHashMap();
-        for (SledgehammerServer s : servers) {
+        for (SledgehammerServer s : Lists.newArrayList(servers)) {
             tempServerCache.put(s.getName(), s);
         }
         this.serverCache = ImmutableMap.copyOf(tempServerCache);

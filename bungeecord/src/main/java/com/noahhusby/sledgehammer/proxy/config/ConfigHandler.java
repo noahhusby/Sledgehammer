@@ -330,12 +330,12 @@ public class ConfigHandler {
         attributeData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
         serverGroups.setAutoLoad(autoLoad, TimeUnit.SECONDS);
 
-        Sledgehammer.sledgehammer.getGeneralThreads().schedule(() -> {
+        Sledgehammer.sledgehammer.getThreadHandler().add(thread -> thread.schedule(() -> {
             serverData.load(true);
             warpData.load(true);
             attributeData.load(true);
             serverGroups.load(true);
-        }, 5, TimeUnit.SECONDS);
+        }, 5, TimeUnit.SECONDS));
     }
 
     /**

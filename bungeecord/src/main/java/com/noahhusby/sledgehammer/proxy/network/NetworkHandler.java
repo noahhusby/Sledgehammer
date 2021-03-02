@@ -18,8 +18,11 @@
 
 package com.noahhusby.sledgehammer.proxy.network;
 
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteStreams;
 import com.google.gson.JsonObject;
 import com.noahhusby.lib.data.JsonUtils;
+import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.network.S2P.S2PInitializationPacket;
@@ -96,7 +99,7 @@ public class NetworkHandler implements Listener {
             e.printStackTrace();
         }
 
-        ProxyServer.getInstance().getServerInfo(packet.getPacketInfo().getServer()).sendData("sledgehammer:channel", stream.toByteArray(), true);
+        ProxyServer.getInstance().getServerInfo(packet.getPacketInfo().getServer()).sendData(Constants.serverChannel, stream.toByteArray(), true);
     }
 
     /**
@@ -106,11 +109,11 @@ public class NetworkHandler implements Listener {
      */
     @EventHandler
     public void onIncomingPacket(PluginMessageEvent e) {
-        if (!e.getTag().equalsIgnoreCase("sledgehammer:channel")) {
+        if (!e.getTag().equalsIgnoreCase(Constants.serverChannel)) {
             return;
         }
-        DataInputStream in = new DataInputStream(new ByteArrayInputStream(e.getData()));
-        JsonObject packetMessage = JsonUtils.parseString(getRawMessage(in)).getAsJsonObject();
+        ByteArrayDataInput in = ByteStreams.newDataInput(e.getData());
+        JsonObject packetMessage = JsonUtils.parseString(in.readUTF()).getAsJsonObject();
 
         String command = packetMessage.get("command").getAsString();
         String sender = packetMessage.get("sender").getAsString();
@@ -138,6 +141,7 @@ public class NetworkHandler implements Listener {
                 char c = (char) i.readByte();
                 x.append(c);
             }
+            System.out.println("Message" + x.toString());
             return x.substring(x.indexOf("<") + 1).trim();
         } catch (Exception e) {
             e.printStackTrace();
