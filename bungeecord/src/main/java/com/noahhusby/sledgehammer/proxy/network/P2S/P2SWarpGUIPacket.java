@@ -32,8 +32,8 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 public class P2SWarpGUIPacket extends P2SPacket {
 
-    private final String server;
     private final String sender;
+    private final String server;
     private final boolean editAccess;
     private String group = null;
 
