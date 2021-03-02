@@ -1,7 +1,7 @@
 package com.noahhusby.sledgehammer.server.gui.warp.menu;
 
 import com.google.common.collect.Lists;
-import com.noahhusby.sledgehammer.server.data.warp.WarpPayload;
+import com.noahhusby.sledgehammer.common.warps.WarpPayload;
 import com.noahhusby.sledgehammer.server.gui.GUIController;
 import lombok.Getter;
 import org.bukkit.entity.Player;

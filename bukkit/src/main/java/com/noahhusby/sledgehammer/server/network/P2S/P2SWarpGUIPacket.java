@@ -19,12 +19,15 @@
 package com.noahhusby.sledgehammer.server.network.P2S;
 
 import com.google.gson.JsonObject;
+import com.noahhusby.sledgehammer.common.warps.WarpGroup;
 import com.noahhusby.sledgehammer.server.Constants;
-import com.noahhusby.sledgehammer.server.data.warp.WarpPayload;
+import com.noahhusby.sledgehammer.common.warps.WarpPayload;
+import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.gui.warp.menu.AllWarpInventoryController;
 import com.noahhusby.sledgehammer.server.gui.warp.menu.GroupWarpInventoryController;
 import com.noahhusby.sledgehammer.server.gui.warp.menu.PinnedWarpInventoryController;
+import com.noahhusby.sledgehammer.server.gui.warp.menu.WarpMenuInventoryController;
 import com.noahhusby.sledgehammer.server.network.P2SPacket;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
 import org.bukkit.Bukkit;
@@ -38,32 +41,37 @@ public class P2SWarpGUIPacket extends P2SPacket {
 
     @Override
     public void onMessage(PacketInfo info, JsonObject data) {
-        Player p = Bukkit.getPlayer(info.getSender());
-        if (p == null) {
+        Player player = Bukkit.getPlayer(info.getSender());
+        if (player == null) {
             throwNoSender();
             return;
         }
 
-        if (!p.isOnline()) {
+        if (!player.isOnline()) {
             throwNoSender();
             return;
         }
 
-        WarpPayload payload = WarpPayload.fromPayload(data);
-        if (payload.getGroups().isEmpty()) {
-            payload.setDefaultPage("pinned");
+        WarpPayload payload = SledgehammerUtil.GSON.fromJson(data.get("payload"), WarpPayload.class);
+        if(payload.isOverride()) {
+            for(WarpGroup wg: payload.getGroups()) {
+                if(wg.getId().equalsIgnoreCase(payload.getLocalGroup())) {
+                    GUIRegistry.register(new GroupWarpInventoryController(player, payload, payload.getLocalGroup()));
+                    return;
+                }
+            }
         }
 
         switch (payload.getDefaultPage()) {
             default:
-            case "group":
-                GUIRegistry.register(new GroupWarpInventoryController(p, payload, payload.getRequestGroup()));
+            case ALL:
+                GUIRegistry.register(new AllWarpInventoryController(player, payload));
                 break;
-            case "all":
-                GUIRegistry.register(new AllWarpInventoryController(p, payload));
+            case PINNED:
+                GUIRegistry.register(new PinnedWarpInventoryController(player, payload));
                 break;
-            case "pinned":
-                GUIRegistry.register(new PinnedWarpInventoryController(p, payload));
+            case GROUPS:
+                GUIRegistry.register(new WarpMenuInventoryController(player, payload));
                 break;
         }
     }

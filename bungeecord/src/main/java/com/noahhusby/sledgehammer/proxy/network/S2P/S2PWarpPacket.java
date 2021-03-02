@@ -40,10 +40,13 @@ public class S2PWarpPacket extends S2PPacket {
 
     @Override
     public void onMessage(PacketInfo info, JsonObject data) {
+        System.out.println(SledgehammerUtil.GSON.toJson(data));
 
         if (!GUIHandler.getInstance().validateRequest(SledgehammerPlayer.getPlayer(info.getSender()), data.get("salt").getAsString())) {
             return;
         }
+
+        System.out.println("GOOD!");
 
         SledgehammerPlayer player = SledgehammerPlayer.getPlayer(info.getSender());
         if (player == null) {

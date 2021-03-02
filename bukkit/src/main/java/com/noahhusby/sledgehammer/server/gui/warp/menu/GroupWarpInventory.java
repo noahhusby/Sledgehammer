@@ -109,6 +109,7 @@ public class GroupWarpInventory extends AbstractWarpInventory {
 
     @Override
     public void onInventoryClick(InventoryClickEvent e) {
+        System.out.println(e.getSlot() + ", " + e.getCurrentItem().getItemMeta().getDisplayName());
         e.setCancelled(true);
         if (e.getCurrentItem() == null) {
             return;
@@ -171,7 +172,6 @@ public class GroupWarpInventory extends AbstractWarpInventory {
 
             NetworkHandler.getInstance().send(new S2PWarpPacket(player, controller.getPayload(), id));
             controller.close();
-            return;
         }
     }
 

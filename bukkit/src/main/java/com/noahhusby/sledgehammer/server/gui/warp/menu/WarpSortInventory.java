@@ -1,7 +1,7 @@
 package com.noahhusby.sledgehammer.server.gui.warp.menu;
 
 import com.google.gson.JsonObject;
-import com.noahhusby.sledgehammer.server.data.warp.WarpPayload;
+import com.noahhusby.sledgehammer.common.warps.WarpPayload;
 import com.noahhusby.sledgehammer.server.gui.GUIChild;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
@@ -24,9 +24,9 @@ public class WarpSortInventory extends GUIChild {
     public void init() {
         fillInventory(createItem(Material.STAINED_GLASS_PANE, 1, (byte) 15, null));
 
-        byte pinColor = payload.getDefaultPage().equalsIgnoreCase("pinned") ? (byte) 14 : (byte) 0;
-        byte allColor = payload.getDefaultPage().equalsIgnoreCase("all") ? (byte) 14 : (byte) 0;
-        byte groupColor = payload.getDefaultPage().equalsIgnoreCase("group") ? (byte) 14 : (byte) 0;
+        byte pinColor = payload.getDefaultPage() == WarpPayload.Page.PINNED ? (byte) 14: (byte) 0;
+        byte allColor = payload.getDefaultPage() == WarpPayload.Page.ALL ? (byte) 14 : (byte) 0;
+        byte groupColor = payload.getDefaultPage() == WarpPayload.Page.GROUPS ? (byte) 14 : (byte) 0;
 
         {
             ItemStack item = new ItemStack(Material.WOOL, 1, pinColor);
@@ -34,7 +34,7 @@ public class WarpSortInventory extends GUIChild {
             meta.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "Pinned Warps");
 
             List<String> lore = new ArrayList<>();
-            if (payload.getDefaultPage().equalsIgnoreCase("pinned")) {
+            if (payload.getDefaultPage() == WarpPayload.Page.PINNED) {
                 lore.add(ChatColor.RED + "Current Default");
             }
             lore.add(ChatColor.BLUE + "This will show pinned warps when opened.");
@@ -51,7 +51,7 @@ public class WarpSortInventory extends GUIChild {
             meta.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "All Warps");
 
             List<String> lore = new ArrayList<>();
-            if (payload.getDefaultPage().equalsIgnoreCase("all")) {
+            if (payload.getDefaultPage() == WarpPayload.Page.ALL) {
                 lore.add(ChatColor.RED + "Current Default");
             }
             lore.add(ChatColor.BLUE + "This will show all warps when opened.");
@@ -68,7 +68,7 @@ public class WarpSortInventory extends GUIChild {
             meta.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "Group Warps");
 
             List<String> lore = new ArrayList<>();
-            if (payload.getDefaultPage().equalsIgnoreCase("group")) {
+            if (payload.getDefaultPage() == WarpPayload.Page.GROUPS) {
                 lore.add(ChatColor.RED + "Current Default");
             }
             lore.add(ChatColor.BLUE + "This will show your local group when opened.");
@@ -100,17 +100,17 @@ public class WarpSortInventory extends GUIChild {
         JsonObject data = new JsonObject();
 
         if (e.getSlot() == 11) {
-            payload.setDefaultPage("pinned");
+            payload.setDefaultPage(WarpPayload.Page.PINNED);
             data.addProperty("sort", "pinned");
         }
 
         if (e.getSlot() == 13) {
-            payload.setDefaultPage("all");
+            payload.setDefaultPage(WarpPayload.Page.ALL);
             data.addProperty("sort", "all");
         }
 
         if (e.getSlot() == 15) {
-            payload.setDefaultPage("group");
+            payload.setDefaultPage(WarpPayload.Page.GROUPS);
             data.addProperty("sort", "group");
         }
 

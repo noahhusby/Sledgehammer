@@ -26,6 +26,7 @@ import com.noahhusby.lib.data.storage.StorageList;
 import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.common.warps.Warp;
 import com.noahhusby.sledgehammer.common.warps.WarpGroup;
+import com.noahhusby.sledgehammer.common.warps.WarpPayload;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
@@ -33,6 +34,7 @@ import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
 import com.noahhusby.sledgehammer.proxy.config.ServerGroup;
 import com.noahhusby.sledgehammer.proxy.config.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerServer;
+import com.noahhusby.sledgehammer.proxy.gui.GUIHandler;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
 import com.noahhusby.sledgehammer.proxy.network.P2S.P2SSetwarpPacket;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
@@ -278,68 +280,42 @@ public class WarpHandler {
             return new JsonObject();
         }
 
-        JsonObject data = new JsonObject();
-        data.addProperty("local", ConfigHandler.localWarp);
-        data.addProperty("editAccess", editAccess);
-        data.addProperty("requestGroup", s.getGroup().getID());
+        boolean local = ConfigHandler.localWarp;
+        String localGroup = s.getGroup().getID();
+        WarpPayload.Page page = WarpPayload.Page.GROUPS;
 
-
-        List<WarpGroup> groupsList = new ArrayList<>();
-
+        Map<String, WarpGroup> groups = Maps.newHashMap();
         for (Warp w : warps) {
             SledgehammerServer server = ServerHandler.getInstance().getServer(w.getServer());
             if (server == null) {
                 continue;
             }
 
-            WarpGroup wg = null;
-            for (WarpGroup g : groupsList) {
-                if (g.getId().equals(server.getGroup().getID())) {
-                    wg = g;
-                }
-            }
-
+            WarpGroup wg = groups.get(server.getGroup().getID());
             if (wg == null) {
                 ServerGroup sg = server.getGroup();
                 wg = new WarpGroup(sg.getID(), sg.getName(), sg.getHeadID());
                 wg.getWarps().add(w);
-                groupsList.add(wg);
+                groups.put(wg.getId(), wg);
             } else {
                 wg.getWarps().add(w);
             }
         }
 
-        String defaultPage = ConfigHandler.warpMenuPage;
-
-        if (ConfigHandler.showPinnedOnBlank) {
-            boolean found = false;
-            for (WarpGroup wg : groupsList) {
-                if (s.getGroup().getID().equals(wg.getId())) {
-                    found = true;
-                }
-            }
-
-            if (!found) {
-                defaultPage = "pinned";
-            }
+        if (!player.getAttributes().containsKey("WARP_OVERRIDE_LOCAL")) {
+            player.getAttributes().put("WARP_OVERRIDE_LOCAL", true);
         }
 
-        if (player.checkAttribute("WARP_SORT", "WARP_SORT_ALL")) {
-            defaultPage = "all";
-        } else if (player.checkAttribute("WARP_SORT", "WARP_SORT_GROUP")) {
-            defaultPage = "group";
-        } else if (player.checkAttribute("WARP_SORT", "WARP_SORT_PINNED")) {
-            defaultPage = "pinned";
-        }
+        boolean override = player.checkAttribute("WARP_OVERRIDE_LOCAL", true);
 
-        data.addProperty("defaultPage", defaultPage);
-
-        JsonArray groups = new JsonArray();
-        for (WarpGroup wg : groupsList) {
-            groups.add(wg.toJson());
+        if (player.checkAttribute("WARP_SORT", WarpPayload.Page.ALL.name())) {
+            page = WarpPayload.Page.ALL;
+        } else if (player.checkAttribute("WARP_SORT", WarpPayload.Page.GROUPS.name())) {
+            page = WarpPayload.Page.GROUPS;
+        } else if (player.checkAttribute("WARP_SORT", WarpPayload.Page.PINNED.name())) {
+            page = WarpPayload.Page.PINNED;
         }
-        data.add("groups", groups);
-        return data;
+        return SledgehammerUtil.GSON.toJsonTree(new WarpPayload(page, override, editAccess, local, localGroup, GUIHandler.getInstance().track(player), Lists.newArrayList(groups.values()))).getAsJsonObject();
     }
 
     /**

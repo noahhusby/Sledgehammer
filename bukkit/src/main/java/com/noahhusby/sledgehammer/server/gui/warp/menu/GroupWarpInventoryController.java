@@ -20,7 +20,7 @@ package com.noahhusby.sledgehammer.server.gui.warp.menu;
 
 import com.noahhusby.sledgehammer.common.warps.Warp;
 import com.noahhusby.sledgehammer.common.warps.WarpGroup;
-import com.noahhusby.sledgehammer.server.data.warp.WarpPayload;
+import com.noahhusby.sledgehammer.common.warps.WarpPayload;
 import com.noahhusby.sledgehammer.server.gui.GUIController;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import org.bukkit.entity.Player;

@@ -116,7 +116,7 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
                 if (g.getAliases().contains(args[0])) {
                     PermissionHandler.getInstance().check(SledgehammerPlayer.getPlayer(sender), "sledgehammer.warp.edit", (code, global) -> NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(),
                             SledgehammerUtil.getServerFromSender(sender).getName(),
-                            code == PermissionRequest.PermissionCode.PERMISSION, g.getID())));
+                            code == PermissionRequest.PermissionCode.PERMISSION)));
                     return;
                 }
             }

@@ -28,6 +28,7 @@ import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 @UtilityClass
 public class SledgehammerUtil extends CommonUtil {
@@ -79,7 +80,9 @@ public class SledgehammerUtil extends CommonUtil {
      * @return {@link ItemStack}
      */
     public static ItemStack setItemDisplayName(@NonNull ItemStack item, @NonNull String name) {
-        item.getItemMeta().setDisplayName(name);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(name);
+        item.setItemMeta(meta);
         return item;
     }
 

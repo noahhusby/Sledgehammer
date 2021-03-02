@@ -20,7 +20,7 @@ package com.noahhusby.sledgehammer.server.network.S2P;
 
 import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.server.Constants;
-import com.noahhusby.sledgehammer.server.data.warp.WarpPayload;
+import com.noahhusby.sledgehammer.common.warps.WarpPayload;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
 import com.noahhusby.sledgehammer.server.network.S2PPacket;
 import lombok.RequiredArgsConstructor;
