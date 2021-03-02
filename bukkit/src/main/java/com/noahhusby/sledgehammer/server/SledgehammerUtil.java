@@ -21,10 +21,10 @@ package com.noahhusby.sledgehammer.server;
 import com.google.gson.JsonParser;
 import com.noahhusby.sledgehammer.common.CommonUtil;
 import com.noahhusby.sledgehammer.server.util.SkullUtil;
+import com.noahhusby.sledgehammer.server.util.TerraConnector;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import net.buildtheearth.terraplusplus.generator.EarthGeneratorSettings;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -33,16 +33,21 @@ import org.bukkit.inventory.ItemStack;
 public class SledgehammerUtil extends CommonUtil {
 
     public static final JsonParser parser = new JsonParser();
-    private static final EarthGeneratorSettings bteGeneratorSettings = EarthGeneratorSettings.parse(EarthGeneratorSettings.BTE_DEFAULT_SETTINGS);
 
-    public static boolean hasTerraPlusPlus = false;
-
-    public static EarthGeneratorSettings getBTEDefaultSettings() {
-        return bteGeneratorSettings;
-    }
+    @Getter
+    private static TerraConnector terraConnector = null;
 
     public static Player getPlayerFromName(String name) {
         return Bukkit.getServer().getPlayer(name);
+    }
+
+    public static boolean isPlayerAvailable(String p) {
+        return isPlayerAvailable(getPlayerFromName(p));
+    }
+
+    public static boolean isPlayerAvailable(Player p) {
+        if(p == null) return false;
+        return p.isOnline();
     }
 
     public static ItemStack getSkull(String base64, String name) {
@@ -58,19 +63,18 @@ public class SledgehammerUtil extends CommonUtil {
         return item;
     }
 
-    public static boolean isPlayerAvailable(String p) {
-        return isPlayerAvailable(getPlayerFromName(p));
-    }
-
-    public static boolean isPlayerAvailable(Player p) {
-        if(p == null) return false;
-        return p.isOnline();
+    /**
+     * Gets whether TerraPlusPlus is installed
+     * @return True if T++ is installed, false if not
+     */
+    public static boolean hasTerraPlusPlus() {
+        return terraConnector != null;
     }
 
     protected static void checkForTerra() {
         try {
             Class.forName("net.buildtheearth.terraplusplus.TerraMod");
-            hasTerraPlusPlus = true;
+            terraConnector = new TerraConnector();
             Sledgehammer.LOGGER.info("TerraPlusPlus is installed. Using terra height mode.");
         } catch(ClassNotFoundException ignored) {
             Sledgehammer.LOGGER.info("TerraPlusPlus is not installed. Using vanilla height mode.");

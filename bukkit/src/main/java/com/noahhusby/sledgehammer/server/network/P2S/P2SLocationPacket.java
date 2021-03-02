@@ -23,16 +23,8 @@ import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.network.P2SPacket;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
-import lombok.NoArgsConstructor;
-import net.buildtheearth.terraplusplus.dataset.IScalarDataset;
-import net.buildtheearth.terraplusplus.generator.EarthGeneratorPipelines;
-import net.buildtheearth.terraplusplus.generator.GeneratorDatasets;
-import net.buildtheearth.terraplusplus.projection.OutOfProjectionBoundsException;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-
-import java.util.concurrent.CompletableFuture;
 
 public class P2SLocationPacket extends P2SPacket {
     @Override
@@ -59,14 +51,15 @@ public class P2SLocationPacket extends P2SPacket {
             zOffset = Integer.parseInt(data.get("zOffset").getAsString());
         } catch (Exception ignored) { }
 
-        double proj[] = SledgehammerUtil.fromGeo(Double.parseDouble(lon), Double.parseDouble(lat));
+        double[] proj = SledgehammerUtil.fromGeo(Double.parseDouble(lon), Double.parseDouble(lat));
 
         int x = (int) Math.floor(proj[0]) + xOffset;
         int z = (int) Math.floor(proj[1]) + zOffset;
 
         if(SledgehammerUtil.hasTerraPlusPlus()) {
-            new TPPHelper().teleport(player, x, z);
+            SledgehammerUtil.getTerraConnector().getHeight(x, z).thenAccept(y -> Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),String.format("minecraft:tp %s %s %s %s", player.getName(), x, y, z)));
         } else {
+            /*
             int y = Constants.scanHeight;
 
             while(player.getWorld().getBlockAt(x, y, z).getType() != Material.AIR) {
@@ -77,26 +70,9 @@ public class P2SLocationPacket extends P2SPacket {
                 y -= 1;
             }
 
+             */
+            int y = player.getWorld().getHighestBlockYAt(x, z);
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),String.format("minecraft:tp %s %s %s %s", player.getName(), x, y+1, z));
-        }
-    }
-
-    @NoArgsConstructor
-    private class TPPHelper {
-        public void teleport(Player player, double x, double z) {
-            double[] adjustedProj = SledgehammerUtil.toGeo(x, z);
-            double adjustedLon = adjustedProj[0];
-            double adjustedLat = adjustedProj[1];
-            GeneratorDatasets datasets = new GeneratorDatasets(SledgehammerUtil.getBTEDefaultSettings());
-            CompletableFuture<Double> altFuture;
-            try {
-                altFuture = datasets.<IScalarDataset>getCustom(EarthGeneratorPipelines.KEY_DATASET_HEIGHTS)
-                        .getAsync(adjustedLon, adjustedLat)
-                        .thenApply(a -> a + 1.0d);
-            } catch (OutOfProjectionBoundsException e) {
-                altFuture = CompletableFuture.completedFuture(0.0);
-            }
-            altFuture.thenAccept(a -> Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),String.format("minecraft:tp %s %s %s %s", player.getName(), x, a, z)));
         }
     }
 }
