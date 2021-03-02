@@ -1,10 +1,8 @@
 # Sledgehammer
-
+[![Build Status](https://jenkins.noahhusby.com/job/Sledgehammer/badge/icon)](https://jenkins.noahhusby.com/job/Sledgehammer/)
 A set of tools for multi-server Build the Earth networks
 
 ### Documentation has been moved to the [wiki](https://github.com/noahhusby/Sledgehammer/wiki)
-
-[![sledgehammer](https://github.com/noahhusby/Sledgehammer/workflows/sledgehammer/badge.svg)](https://github.com/noahhusby/sledgehammer/actions)
 
 ## Features
 
