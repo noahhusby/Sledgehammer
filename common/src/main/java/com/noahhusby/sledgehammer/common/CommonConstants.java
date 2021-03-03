@@ -1,10 +1,23 @@
 package com.noahhusby.sledgehammer.common;
 
+import java.io.IOException;
+import java.util.Properties;
+
 /**
  * @author Noah Husby
  */
 public abstract class CommonConstants {
-    public static final String VERSION = "0.4.3";
+    public static final String VERSION;
+
+    static {
+        Properties versionProperties = new Properties();
+        try {
+            versionProperties.load(CommonConstants.class.getResourceAsStream("/version.properties"));
+        } catch (IOException ignored) {}
+        String ver = versionProperties.getProperty("version");
+        VERSION = (ver == null ? "Development Build" : ver);
+    }
+
     public static final double SCALE = 7318261.522857145;
 
     public static final String serverChannel = "sledgehammer:server";

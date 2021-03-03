@@ -4,8 +4,7 @@ plugins {
     id 'net.linguica.maven-settings' version '0.5'
 }
 
-group 'com.noahhusby'
-version '1.0'
+def versionDir = "${buildDir}/generated-version"
 
 repositories {
     mavenCentral()
@@ -17,8 +16,9 @@ allprojects {
     apply plugin: "net.linguica.maven-settings"
 
     ext {
-        sledgehammerVersion = "0.4.3"
+        sledgehammerVersion = "0.4.3." + ('git rev-list --count HEAD'.execute().text.trim()) + "-1.12.2"
 
+        husbyVersion = "0.0.1"
         lombokVersion = "1.18.18"
     }
 
@@ -36,20 +36,12 @@ allprojects {
             url = "https://jitpack.io/"
         }
         maven {
-            name 'noahhusby'
-            url 'https://maven.noahhusby.com/repository/maven-public/'
-        }
-        maven {
-            name = 'sonatype'
-            url = 'https://oss.sonatype.org/service/local/repositories/snapshots/content'
+            name = 'noahhusby'
+            url = 'https://maven.noahhusby.com/repository/maven-public/'
         }
         maven {
             name = 'papermc-repo'
             url = 'https://papermc.io/repo/repository/maven-public/'
-        }
-        maven {
-            name = 'sonatype'
-            url = 'https://oss.sonatype.org/content/groups/public/'
         }
         maven {
             name = 'codemc-snapshots'
@@ -80,3 +72,22 @@ dependencies {
         }
     }
 }
+
+sourceSets {
+    main {
+        output.dir(versionDir, builtBy: 'generateVersionProperties')
+    }
+}
+
+task generateVersionProperties {
+    doLast {
+        def propertiesFile = file "$versionDir/version.properties"
+        propertiesFile.parentFile.mkdirs()
+        def properties = new Properties()
+        properties.setProperty("version", sledgehammerVersion.toString())
+        propertiesFile.withWriter { properties.store(it, null) }
+    }
+}
+
+build.dependsOn shadowJar
+processResources.dependsOn generateVersionProperties

@@ -23,7 +23,6 @@ import com.google.common.base.CharMatcher;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.primitives.Floats;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
-import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -966,8 +965,14 @@ public class Configuration {
             Sledgehammer.logger.severe("Error while loading config " + fileName + ".");
             e.printStackTrace();
         } finally {
-            IOUtils.closeQuietly(buffer);
-            IOUtils.closeQuietly(input);
+            try {
+                if(buffer != null) {
+                    buffer.close();
+                }
+                if(input != null) {
+                    input.close();
+                }
+            } catch (Exception ignored) { }
         }
 
         resetChangedState();

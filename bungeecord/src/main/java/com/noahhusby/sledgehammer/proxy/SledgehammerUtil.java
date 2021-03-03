@@ -23,12 +23,12 @@ import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
 import com.noahhusby.sledgehammer.proxy.config.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import org.apache.commons.lang3.Validate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -203,11 +203,7 @@ public class SledgehammerUtil extends CommonUtil {
     }
 
 
-    public static <T extends Collection<? super String>> T copyPartialMatches(final String token, final Iterable<String> originals, final T collection) throws UnsupportedOperationException, IllegalArgumentException {
-        Validate.notNull(token, "Search token cannot be null");
-        Validate.notNull(collection, "Collection cannot be null");
-        Validate.notNull(originals, "Originals cannot be null");
-
+    public static <T extends Collection<? super String>> T copyPartialMatches(@NonNull final String token, @NonNull final Iterable<String> originals, @NonNull final T collection) throws UnsupportedOperationException, IllegalArgumentException {
         for (String string : originals) {
             if (startsWithIgnoreCase(string, token)) {
                 collection.add(string);
@@ -217,8 +213,7 @@ public class SledgehammerUtil extends CommonUtil {
         return collection;
     }
 
-    public static boolean startsWithIgnoreCase(final String string, final String prefix) throws IllegalArgumentException, NullPointerException {
-        Validate.notNull(string, "Cannot check a null string for a match");
+    public static boolean startsWithIgnoreCase(@NonNull final String string, final String prefix) throws IllegalArgumentException, NullPointerException {
         if (string.length() < prefix.length()) {
             return false;
         }
