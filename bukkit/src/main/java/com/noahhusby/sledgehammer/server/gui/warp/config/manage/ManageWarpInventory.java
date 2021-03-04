@@ -120,7 +120,7 @@ public class ManageWarpInventory extends GUIChild {
             JsonObject data = new JsonObject();
             data.addProperty("warpId", cur.getId());
             Location loc = player.getLocation();
-            Point point =  new Point(loc.getX(), loc.getY(), loc.getZ(), loc.getY(), loc.getPitch()).limit();
+            Point point = new Point(loc.getX(), loc.getY(), loc.getZ(), loc.getY(), loc.getPitch()).limit();
             data.add("point", SledgehammerUtil.GSON.toJsonTree(point));
 
             NetworkHandler.getInstance().send(new S2PWarpConfigPacket(

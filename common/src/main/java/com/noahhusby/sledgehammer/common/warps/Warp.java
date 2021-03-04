@@ -20,18 +20,19 @@ package com.noahhusby.sledgehammer.common.warps;
 
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.noahhusby.lib.data.storage.Key;
 import com.noahhusby.sledgehammer.common.CommonUtil;
+import com.noahhusby.sledgehammer.common.WarpDeserializer;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.function.BiConsumer;
 
 /**
  * @author Noah Husby
  */
 @Key("Id")
+@JsonAdapter(WarpDeserializer.class)
 public class Warp {
     @Expose
     @SerializedName("Pinned")

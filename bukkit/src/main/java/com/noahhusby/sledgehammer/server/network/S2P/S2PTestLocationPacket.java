@@ -43,7 +43,7 @@ public class S2PTestLocationPacket extends S2PPacket {
     public void getMessage(JsonObject data) {
         Player p = Bukkit.getPlayer(info.getSender());
         Location loc = p.getLocation();
-        Point point =  new Point(loc.getX(), loc.getY(), loc.getZ(), loc.getY(), loc.getPitch());
+        Point point = new Point(loc.getX(), loc.getY(), loc.getZ(), loc.getY(), loc.getPitch());
         data.add("point", SledgehammerUtil.GSON.toJsonTree(point));
         data.addProperty("zoom", zoom);
     }

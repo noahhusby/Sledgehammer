@@ -34,8 +34,6 @@ import com.noahhusby.sledgehammer.proxy.permissions.PermissionRequest;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 
-import java.text.DecimalFormat;
-
 public class S2PWarpConfigPacket extends S2PPacket {
     @Override
     public String getPacketID() {

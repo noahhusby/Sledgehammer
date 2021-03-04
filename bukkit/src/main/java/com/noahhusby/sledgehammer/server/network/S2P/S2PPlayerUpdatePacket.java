@@ -28,9 +28,6 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-
 @RequiredArgsConstructor
 public class S2PPlayerUpdatePacket extends S2PPacket {
 
@@ -44,7 +41,7 @@ public class S2PPlayerUpdatePacket extends S2PPacket {
     @Override
     public void getMessage(JsonObject data) {
         Location loc = player.getLocation();
-        Point point =  new Point(loc.getX(), loc.getY(), loc.getZ(), loc.getY(), loc.getPitch()).limit();
+        Point point = new Point(loc.getX(), loc.getY(), loc.getZ(), loc.getY(), loc.getPitch()).limit();
         data.add("point", SledgehammerUtil.GSON.toJsonTree(point));
         data.addProperty("gameMode", player.getGameMode().name());
     }

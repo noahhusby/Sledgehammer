@@ -27,7 +27,7 @@ public class FragmentManager {
     }
 
     public void execute(CommandSender sender, String[] args) {
-        if(args.length != 0) {
+        if (args.length != 0) {
             ICommandFragment fragment = fragments.get(args[0].toLowerCase(Locale.ROOT));
             if (fragment != null) {
                 ArrayList<String> dataList = new ArrayList<>(Arrays.asList(args).subList(1, args.length));

@@ -49,7 +49,7 @@ public class S2PSetwarpPacket extends S2PPacket {
             return;
         }
         Location loc = p.getLocation();
-        Point point =  new Point(loc.getX(), loc.getY(), loc.getZ(), loc.getY(), loc.getPitch());
+        Point point = new Point(loc.getX(), loc.getY(), loc.getZ(), loc.getY(), loc.getPitch());
         data.add("point", SledgehammerUtil.GSON.toJsonTree(point));
     }
 
