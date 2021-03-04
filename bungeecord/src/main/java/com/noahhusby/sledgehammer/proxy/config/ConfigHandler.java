@@ -40,13 +40,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class ConfigHandler {
-    private static ConfigHandler mInstance = null;
+    private static ConfigHandler instance = null;
 
     public static ConfigHandler getInstance() {
-        if (mInstance == null) {
-            mInstance = new ConfigHandler();
-        }
-        return mInstance;
+        return instance == null ? instance = new ConfigHandler() : instance;
     }
 
     private File dataFolder;

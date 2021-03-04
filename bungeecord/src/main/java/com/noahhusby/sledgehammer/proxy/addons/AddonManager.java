@@ -29,20 +29,17 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AddonManager implements Listener {
-    private static AddonManager mInstance = null;
+    private static AddonManager instance = null;
 
     public static AddonManager getInstance() {
-        if (mInstance == null) {
-            mInstance = new AddonManager();
-        }
-        return mInstance;
+        return instance == null ? instance = new AddonManager() : instance;
     }
 
     private AddonManager() {
         Sledgehammer.addListener(this);
     }
 
-    List<Addon> addons = Lists.newArrayList();
+    private final List<Addon> addons = Lists.newArrayList();
 
     public void registerAddon(Addon addon) {
         addons.add(addon);

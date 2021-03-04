@@ -55,7 +55,7 @@ public class Sledgehammer extends Plugin implements Listener {
     public static Sledgehammer sledgehammer;
 
     @Getter
-    private static AddonManager addonManager;
+    private final AddonManager addonManager = AddonManager.getInstance();
 
     @Getter
     private final ThreadHandler threadHandler = new ThreadHandler();
@@ -103,7 +103,6 @@ public class Sledgehammer extends Plugin implements Listener {
             return;
         }
 
-        addonManager = AddonManager.getInstance();
         addonManager.onDisable();
 
         if (ConfigHandler.terramapEnabled) {
@@ -111,7 +110,6 @@ public class Sledgehammer extends Plugin implements Listener {
         }
 
         addonManager.onEnable();
-
         threadHandler.start();
 
         if (!ConfigHandler.warpCommand.equals("")) {

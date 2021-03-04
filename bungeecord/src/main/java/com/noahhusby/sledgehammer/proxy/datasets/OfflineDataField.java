@@ -18,14 +18,11 @@
 
 package com.noahhusby.sledgehammer.proxy.datasets;
 
-public class OfflineDataField {
-    public String data;
-    public String type;
-    public String admin;
+import lombok.AllArgsConstructor;
 
-    public OfflineDataField(String data, String type, String admin) {
-        this.data = data;
-        this.type = type;
-        this.admin = admin;
-    }
+@AllArgsConstructor
+public class OfflineDataField {
+    public final String data;
+    public final String type;
+    public final String admin;
 }
