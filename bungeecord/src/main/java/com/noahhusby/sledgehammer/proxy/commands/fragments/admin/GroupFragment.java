@@ -28,18 +28,20 @@ import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.groups.GroupRem
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.groups.GroupSetHeadFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.groups.GroupSetNameFragment;
 import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 
-public class GroupFragment extends FragmentManager implements ICommandFragment {
+public class GroupFragment implements ICommandFragment {
+
+    private final FragmentManager manager = new FragmentManager("/sha group", ChatColor.GREEN + "Groups");
 
     public GroupFragment() {
-        super("sha group");
-        register(new GroupInfoFragment());
-        register(new GroupListFragment());
-        register(new GroupCreateFragment());
-        register(new GroupRemoveFragment());
-        register(new GroupSetHeadFragment());
-        register(new GroupSetNameFragment());
+        manager.register(new GroupInfoFragment());
+        manager.register(new GroupListFragment());
+        manager.register(new GroupCreateFragment());
+        manager.register(new GroupRemoveFragment());
+        manager.register(new GroupSetHeadFragment());
+        manager.register(new GroupSetNameFragment());
     }
 
     @Override
@@ -48,8 +50,7 @@ public class GroupFragment extends FragmentManager implements ICommandFragment {
             sender.sendMessage(ChatUtil.getNoPermission());
             return;
         }
-
-        executeFragment(sender, args);
+        manager.execute(sender, args);
     }
 
     @Override

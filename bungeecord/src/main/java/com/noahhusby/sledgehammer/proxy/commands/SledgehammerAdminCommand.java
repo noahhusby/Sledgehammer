@@ -19,7 +19,7 @@
 package com.noahhusby.sledgehammer.proxy.commands;
 
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
-import com.noahhusby.sledgehammer.proxy.commands.fragments.CommandFragmentManager;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.FragmentManager;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.GroupFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.MigrateFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.PermissionCheckFragment;
@@ -27,19 +27,22 @@ import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.ReloadFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.ServerFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.SetupFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.TestLocationFragment;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 
-public class SledgehammerAdminCommand extends CommandFragmentManager {
+public class SledgehammerAdminCommand extends Command {
+
+    private final FragmentManager manager = new FragmentManager("/sha", ChatColor.BLUE + "Sledgehammer");
+
     public SledgehammerAdminCommand() {
         super("sha", "sledgehammer.admin");
-
-        register(new ReloadFragment());
-        register(new SetupFragment());
-        register(new ServerFragment());
-        register(new GroupFragment());
-        register(new PermissionCheckFragment());
-        register(new TestLocationFragment());
-        register(new MigrateFragment());
+        manager.register(new ReloadFragment());
+        manager.register(new SetupFragment());
+        manager.register(new ServerFragment());
+        manager.register(new GroupFragment());
+        manager.register(new PermissionCheckFragment());
+        manager.register(new TestLocationFragment());
+        manager.register(new MigrateFragment());
     }
 
     @Override
@@ -48,6 +51,6 @@ public class SledgehammerAdminCommand extends CommandFragmentManager {
             sender.sendMessage(ChatUtil.getNotAvailable());
             return;
         }
-        executeFragment(sender, args);
+        manager.execute(sender, args);
     }
 }

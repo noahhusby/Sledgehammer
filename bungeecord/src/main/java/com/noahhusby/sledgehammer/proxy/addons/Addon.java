@@ -24,8 +24,7 @@ public abstract class Addon {
 
     public abstract void onEnable();
 
-    public void onDisable() {
-    }
+    public abstract void onDisable();
 
     public void onPluginMessage(PluginMessageEvent e) {
     }

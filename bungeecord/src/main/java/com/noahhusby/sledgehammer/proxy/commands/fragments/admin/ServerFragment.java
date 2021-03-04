@@ -39,20 +39,21 @@ import java.util.Map;
 
 import static net.md_5.bungee.api.ProxyServer.*;
 
-public class ServerFragment extends FragmentManager implements ICommandFragment {
+public class ServerFragment implements ICommandFragment {
+
+    private final FragmentManager manager = new FragmentManager("/sha server <server name>", ChatColor.YELLOW + "Servers");
 
     public ServerFragment() {
-        super("sha server <server name>");
-        register(new ServerInfoFragment());
-        register(new ServerAddLocationFragment());
-        register(new ServerRemoveLocationFragment());
-        register(new ServerListLocationFragment());
-        register(new ServerEarthModeFragment());
-        register(new ServerSHSelectFragment());
-        register(new ServerStealthModeFragment());
-        register(new ServerGroupFragment());
-        register(new ServerSetFriendlyFragment());
-        register(new ServerOffsetFragment());
+        manager.register(new ServerInfoFragment());
+        manager.register(new ServerAddLocationFragment());
+        manager.register(new ServerRemoveLocationFragment());
+        manager.register(new ServerListLocationFragment());
+        manager.register(new ServerEarthModeFragment());
+        manager.register(new ServerSHSelectFragment());
+        manager.register(new ServerStealthModeFragment());
+        manager.register(new ServerGroupFragment());
+        manager.register(new ServerSetFriendlyFragment());
+        manager.register(new ServerOffsetFragment());
     }
 
     @Override
@@ -60,14 +61,14 @@ public class ServerFragment extends FragmentManager implements ICommandFragment 
         if (args.length != 0) {
             for (Map.Entry<String, ServerInfo> s : getInstance().getServers().entrySet()) {
                 if (s.getValue().getName().equalsIgnoreCase(args[0])) {
-                    executeFragment(sender, args, 1);
+                    manager.execute(sender, args, 1);
                     return;
                 }
             }
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.DARK_RED, args[0], ChatColor.RED, " is not a bungeecord server!"));
             return;
         }
-        executeFragment(sender, args, 1);
+        manager.execute(sender, args, 1);
     }
 
     @Override

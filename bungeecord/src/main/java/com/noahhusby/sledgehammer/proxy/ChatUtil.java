@@ -9,6 +9,9 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.util.Arrays;
+import java.util.function.Consumer;
+
 @UtilityClass
 public class ChatUtil {
 
@@ -110,6 +113,20 @@ public class ChatUtil {
 
     public static void sendActionBar(ProxiedPlayer player, BaseComponent message) {
         player.sendMessage(ChatMessageType.ACTION_BAR, message);
+    }
+
+    public static void sendMessageBox(CommandSender sender, String title, Runnable runnable) {
+        sender.sendMessage(combine(ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH, "==============", ChatColor.RESET, " " + title + " ", ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH, "=============="));
+        sender.sendMessage();
+
+        runnable.run();
+
+        int length = ChatColor.stripColor(title).length();
+        char[] array = new char[length];
+        Arrays.fill(array, '=');
+        String bottom = "==============================" + new String(array);
+        sender.sendMessage();
+        sender.sendMessage(combine(ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH, bottom));
     }
 
     public static String capitalize(final String str) {
