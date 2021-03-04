@@ -23,8 +23,6 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class Constants extends CommonConstants {
-    public static final String VERSION = "0.4.2";
-    public static final int scanHeight = 1024;
 
     public static final int warpsPerPage = 27;
     public static final String arrowRightHead = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTU2YTM2MTg0NTllNDNiMjg3YjIyYjdlMjM1ZWM2OTk1OTQ1NDZjNmZjZDZkYzg0YmZjYTRjZjMwYWI5MzExIn19fQ==";

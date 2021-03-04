@@ -20,13 +20,12 @@ package com.noahhusby.sledgehammer.server.network.P2S;
 
 import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.server.Constants;
-import com.noahhusby.sledgehammer.server.Sledgehammer;
 import com.noahhusby.sledgehammer.server.network.P2SPacket;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
 import com.noahhusby.sledgehammer.server.network.S2P.S2PInitializationPacket;
 import org.bukkit.Bukkit;
 
-public class P2SInitilizationPacket extends P2SPacket {
+public class P2SInitializationPacket extends P2SPacket {
     @Override
     public String getPacketID() {
         return Constants.initID;
@@ -34,7 +33,6 @@ public class P2SInitilizationPacket extends P2SPacket {
 
     @Override
     public void onMessage(PacketInfo info, JsonObject data) {
-        Sledgehammer.bungeecordName = info.getServer();
         getManager().send(new S2PInitializationPacket(Bukkit.getPlayer(info.getSender())));
     }
 }

@@ -18,40 +18,19 @@
 
 package com.noahhusby.sledgehammer.server.network;
 
-import com.noahhusby.sledgehammer.server.Sledgehammer;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.bukkit.entity.Player;
 
+@AllArgsConstructor
+@Getter
 public class PacketInfo {
-    private final double time;
     private final String id;
     private final String sender;
-    private final String server;
-
-    public PacketInfo(String id, String sender, String server, double time) {
-        this.id = id;
-        this.sender = sender;
-        this.server = server;
-        this.time = time;
-    }
-
-    public double getTime() {
-        return time;
-    }
-
-    public String getID() {
-        return id;
-    }
-
-    public String getSender() {
-        return sender;
-    }
-
-    public String getServer() {
-        return server;
-    }
+    private final double time;
 
     public static PacketInfo build(String id, String sender) {
-        return new PacketInfo(id, sender, Sledgehammer.bungeecordName, System.currentTimeMillis());
+        return new PacketInfo(id, sender, System.currentTimeMillis());
     }
 
     public static PacketInfo build(String id, Player player) {
@@ -59,6 +38,6 @@ public class PacketInfo {
     }
 
     public static PacketInfo renew(PacketInfo info) {
-        return new PacketInfo(info.id, info.sender, info.server, System.currentTimeMillis());
+        return new PacketInfo(info.id, info.sender, System.currentTimeMillis());
     }
 }

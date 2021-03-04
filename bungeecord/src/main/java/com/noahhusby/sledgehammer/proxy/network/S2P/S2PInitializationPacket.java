@@ -23,8 +23,6 @@ import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.config.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.network.PacketInfo;
 import com.noahhusby.sledgehammer.proxy.network.S2PPacket;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.config.ServerInfo;
 
 public class S2PInitializationPacket extends S2PPacket {
     @Override
@@ -34,7 +32,6 @@ public class S2PInitializationPacket extends S2PPacket {
 
     @Override
     public void onMessage(PacketInfo info, JsonObject data) {
-        ServerInfo server = ProxyServer.getInstance().getServerInfo(info.getServer());
-        ServerHandler.getInstance().initialize(server, data.get("version").getAsString());
+        ServerHandler.getInstance().initialize(info.getServer(), data.get("version").getAsString());
     }
 }

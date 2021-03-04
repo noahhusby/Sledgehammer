@@ -18,7 +18,7 @@ allprojects {
     ext {
         sledgehammerVersion = "0.4.3." + ('git rev-list --count HEAD'.execute().text.trim()) + "-1.12.2"
 
-        husbyVersion = "516611cc2f"
+        husbyVersion = "ff4ed66e44"
         lombokVersion = "1.18.18"
     }
 

@@ -18,56 +18,19 @@
 
 package com.noahhusby.sledgehammer.proxy.network;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.config.ServerInfo;
 
+@AllArgsConstructor
+@Getter
 public class PacketInfo {
-    private final double time;
     private final String id;
     private final String sender;
-    private final String server;
-
-    public PacketInfo(String id, String sender, String server, double time) {
-        this.id = id;
-        this.sender = sender;
-        this.server = server;
-        this.time = time;
-    }
-
-    /**
-     * Gets the packet creation time
-     *
-     * @return The packet creation time
-     */
-    public double getTime() {
-        return time;
-    }
-
-    /**
-     * Gets the packet ID
-     *
-     * @return The packet ID
-     */
-    public String getID() {
-        return id;
-    }
-
-    /**
-     * Gets the name sender
-     *
-     * @return Name of the sender
-     */
-    public String getSender() {
-        return sender;
-    }
-
-    /**
-     * Gets the name of the server
-     *
-     * @return Name of the server
-     */
-    public String getServer() {
-        return server;
-    }
+    private final ServerInfo server;
+    private final double time;
 
     /**
      * Creates new {@link PacketInfo}
@@ -78,7 +41,31 @@ public class PacketInfo {
      * @return {@link PacketInfo}
      */
     public static PacketInfo build(String id, String sender, String server) {
+        return build(id, sender, ProxyServer.getInstance().getServerInfo(server));
+    }
+
+    /**
+     * Creates new {@link PacketInfo}
+     *
+     * @param id     ID of the packet
+     * @param sender Name of sender
+     * @param server Name of server
+     * @return {@link PacketInfo}
+     */
+    public static PacketInfo build(String id, String sender, ServerInfo server) {
         return new PacketInfo(id, sender, server, System.currentTimeMillis());
+    }
+
+    /**
+     * Creates new {@link PacketInfo}
+     *
+     * @param id     ID of the packet
+     * @param sender {@link CommandSender}
+     * @param server Name of server
+     * @return {@link PacketInfo}
+     */
+    public static PacketInfo build(String id, CommandSender sender, ServerInfo server) {
+        return build(id, sender.getName(), server);
     }
 
     /**

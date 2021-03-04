@@ -22,7 +22,7 @@ import com.noahhusby.sledgehammer.server.chat.ChatHandler;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
 import com.noahhusby.sledgehammer.server.network.P2S.P2SCommandPacket;
-import com.noahhusby.sledgehammer.server.network.P2S.P2SInitilizationPacket;
+import com.noahhusby.sledgehammer.server.network.P2S.P2SInitializationPacket;
 import com.noahhusby.sledgehammer.server.network.P2S.P2SLocationPacket;
 import com.noahhusby.sledgehammer.server.network.P2S.P2SPermissionPacket;
 import com.noahhusby.sledgehammer.server.network.P2S.P2SSetwarpPacket;
@@ -44,8 +44,6 @@ public final class Sledgehammer extends JavaPlugin implements Listener {
     @Getter
     private static Sledgehammer instance;
 
-    public static String bungeecordName = "";
-
     @Override
     public void onEnable() {
         instance = this;
@@ -55,7 +53,7 @@ public final class Sledgehammer extends JavaPlugin implements Listener {
 
         NetworkHandler.getInstance().register(
                 new P2SCommandPacket(),
-                new P2SInitilizationPacket(),
+                new P2SInitializationPacket(),
                 new P2SLocationPacket(),
                 new P2SSetwarpPacket(),
                 new P2STeleportPacket(),
@@ -65,8 +63,8 @@ public final class Sledgehammer extends JavaPlugin implements Listener {
                 new P2SWarpConfigPacket()
         );
 
-        Bukkit.getServer().getPluginManager().registerEvents(ChatHandler.getInstance(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new GUIRegistry(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(ChatHandler.getInstance(), this);
         Bukkit.getServer().getPluginManager().registerEvents(NetworkHandler.getInstance(), this);
 
         PlayerManager.getInstance();

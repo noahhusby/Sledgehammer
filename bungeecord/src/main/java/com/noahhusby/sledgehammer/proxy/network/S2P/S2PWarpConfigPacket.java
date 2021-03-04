@@ -66,7 +66,7 @@ public class S2PWarpConfigPacket extends S2PPacket {
                 break;
             case CREATE_WARP:
                 String warpName = data.get("warpName").getAsString();
-                WarpHandler.WarpStatus warpStatus = WarpHandler.getInstance().getWarpStatus(warpName, info.getServer());
+                WarpHandler.WarpStatus warpStatus = WarpHandler.getInstance().getWarpStatus(warpName, info.getServer().getName());
 
                 switch (warpStatus) {
                     case EXISTS:
@@ -123,7 +123,7 @@ public class S2PWarpConfigPacket extends S2PPacket {
 
                 Warp w = WarpHandler.getInstance().getWarp(data.get("warpId").getAsInt());
                 w.setPoint(new Point(x, y, z, yaw, pitch));
-                w.setServer(info.getServer());
+                w.setServer(info.getServer().getName());
                 WarpHandler.getInstance().getWarps().saveAsync();
 
                 response.addProperty("warpId", w.getId());

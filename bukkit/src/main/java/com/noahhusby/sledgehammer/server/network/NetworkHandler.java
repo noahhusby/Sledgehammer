@@ -61,9 +61,8 @@ public class NetworkHandler implements Listener {
     public void send(S2PPacket packet) {
         PacketInfo info = packet.getPacketInfo();
         JsonObject payload = new JsonObject();
-        payload.addProperty("command", info.getID());
+        payload.addProperty("command", info.getId());
         payload.addProperty("sender", info.getSender());
-        payload.addProperty("server", info.getServer());
         payload.addProperty("time", System.currentTimeMillis());
         JsonObject data = new JsonObject();
         packet.getMessage(data);
@@ -74,15 +73,14 @@ public class NetworkHandler implements Listener {
     private void onMessage(JsonObject message) {
         String command = message.get("command").getAsString();
         String sender = message.get("sender").getAsString();
-        String server = message.get("server").getAsString();
         long time = message.get("time").getAsLong();
-        PacketInfo packetInfo = new PacketInfo(command, sender, server, time);
+        PacketInfo packetInfo = new PacketInfo(command, sender, time);
         if (!SledgehammerUtil.isPlayerAvailable(packetInfo.getSender())) {
             cachedPackets.put(message, sender);
             return;
         }
 
-        P2SPacket p = registeredPackets.get(packetInfo.getID());
+        P2SPacket p = registeredPackets.get(packetInfo.getId());
         if (p != null) {
             p.onMessage(packetInfo, message.getAsJsonObject("data"));
         }

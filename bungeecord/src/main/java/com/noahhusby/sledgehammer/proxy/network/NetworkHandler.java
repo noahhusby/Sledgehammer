@@ -32,14 +32,14 @@ import com.noahhusby.sledgehammer.proxy.network.S2P.S2PSetwarpPacket;
 import com.noahhusby.sledgehammer.proxy.network.S2P.S2PTestLocationPacket;
 import com.noahhusby.sledgehammer.proxy.network.S2P.S2PWarpConfigPacket;
 import com.noahhusby.sledgehammer.proxy.network.S2P.S2PWarpPacket;
-import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.util.CaseInsensitiveMap;
 
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Map;
@@ -81,9 +81,8 @@ public class NetworkHandler implements Listener {
     public void send(P2SPacket packet) {
         PacketInfo info = packet.getPacketInfo();
         JsonObject message = new JsonObject();
-        message.addProperty("command", info.getID());
+        message.addProperty("command", info.getId());
         message.addProperty("sender", info.getSender());
-        message.addProperty("server", info.getServer());
         message.addProperty("time", System.currentTimeMillis());
         JsonObject data = new JsonObject();
         packet.getMessage(data);
@@ -98,7 +97,7 @@ public class NetworkHandler implements Listener {
             e.printStackTrace();
         }
 
-        ProxyServer.getInstance().getServerInfo(packet.getPacketInfo().getServer()).sendData(Constants.serverChannel, stream.toByteArray(), true);
+        packet.getPacketInfo().getServer().sendData(Constants.serverChannel, stream.toByteArray(), true);
     }
 
     /**
@@ -116,7 +115,7 @@ public class NetworkHandler implements Listener {
 
         String command = packetMessage.get("command").getAsString();
         String sender = packetMessage.get("sender").getAsString();
-        String server = packetMessage.get("server").getAsString();
+        ServerInfo server = e.getSender() instanceof Server ? ((Server) e.getSender()).getInfo() : null;
         long time = packetMessage.get("time").getAsLong();
         PacketInfo info = new PacketInfo(command, sender, server, time);
         JsonObject data = packetMessage.getAsJsonObject("data");
@@ -125,26 +124,5 @@ public class NetworkHandler implements Listener {
         if (p != null) {
             p.onMessage(info, data);
         }
-    }
-
-    /**
-     * Converts {@link DataInputStream} to raw text
-     *
-     * @param i {@link DataInputStream}
-     * @return Raw Message
-     */
-    private String getRawMessage(DataInputStream i) {
-        try {
-            StringBuilder x = new StringBuilder();
-            while (i.available() != 0) {
-                char c = (char) i.readByte();
-                x.append(c);
-            }
-            System.out.println("Message" + x.toString());
-            return x.substring(x.indexOf("<") + 1).trim();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "";
     }
 }
