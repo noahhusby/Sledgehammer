@@ -126,7 +126,7 @@ public class WarpHandler {
         Warp warp = new Warp();
         warp.setName(warpName);
         requestedWarps.put(sender, new WarpRequest(warp, consumer));
-        NetworkHandler.getInstance().send(new P2SSetwarpPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName()));
+        NetworkHandler.getInstance().send(new P2SSetwarpPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender)));
     }
 
     public void removeWarp(int warpID, CommandSender sender) {

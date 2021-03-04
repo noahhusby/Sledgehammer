@@ -20,21 +20,35 @@ package com.noahhusby.sledgehammer.common.warps;
 
 import com.google.gson.annotations.Expose;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+@Getter
 @AllArgsConstructor
 public class Point {
     @Expose
-    public final String x;
+    private final double x;
     @Expose
-    public final String y;
+    private final double y;
     @Expose
-    public final String z;
+    private final double z;
     @Expose
-    public final String yaw;
+    private final double yaw;
     @Expose
-    public final String pitch;
+    private final double pitch;
+
+    public Point limit() {
+        double lX = new BigDecimal(x).setScale(3, RoundingMode.HALF_UP).doubleValue();
+        double lY = new BigDecimal(y).setScale(3, RoundingMode.HALF_UP).doubleValue();
+        double lZ = new BigDecimal(z).setScale(3, RoundingMode.HALF_UP).doubleValue();
+        double lYaw = new BigDecimal(yaw).setScale(3, RoundingMode.HALF_UP).doubleValue();
+        double lPitch = new BigDecimal(pitch).setScale(3, RoundingMode.HALF_UP).doubleValue();
+        return new Point(lX, lY, lZ, lYaw, lPitch);
+    }
 
     public Point() {
-        this("", "", "", "", "");
+        this(0,0,0,0,0);
     }
 }

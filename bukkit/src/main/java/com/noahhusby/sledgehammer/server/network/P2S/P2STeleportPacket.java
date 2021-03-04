@@ -47,7 +47,7 @@ public class P2STeleportPacket extends P2SPacket {
         }
 
         Point point = SledgehammerUtil.GSON.fromJson(data.get("point"), Point.class);
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), String.format("minecraft:tp %s %s %s %s %s %s", info.getSender(), point.x,
-                point.y, point.z, point.yaw, point.pitch));
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), String.format("minecraft:tp %s %s %s %s %s %s", info.getSender(), point.getX(),
+                point.getY(), point.getZ(), point.getYaw(), point.getPitch()));
     }
 }

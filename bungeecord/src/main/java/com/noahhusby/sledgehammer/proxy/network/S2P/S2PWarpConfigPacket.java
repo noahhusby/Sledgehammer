@@ -23,6 +23,7 @@ import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.common.warps.Warp;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.Constants;
+import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.gui.GUIHandler;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
 import com.noahhusby.sledgehammer.proxy.network.P2S.P2SWarpConfigPacket;
@@ -112,17 +113,10 @@ public class S2PWarpConfigPacket extends S2PPacket {
                 }
                 break;
             case WARP_UPDATE_LOCATION:
-                JsonObject point = data.getAsJsonObject("point");
-                DecimalFormat format = new DecimalFormat("###.###");
-
-                String x = format.format(Double.parseDouble(point.get("x").getAsString()));
-                String y = format.format(Double.parseDouble(point.get("y").getAsString()));
-                String z = format.format(Double.parseDouble(point.get("z").getAsString()));
-                String yaw = format.format(Double.parseDouble(point.get("yaw").getAsString()));
-                String pitch = format.format(Double.parseDouble(point.get("pitch").getAsString()));
-
+                JsonObject pointJson = data.getAsJsonObject("point");
+                Point point = SledgehammerUtil.GSON.fromJson(pointJson, Point.class);
                 Warp w = WarpHandler.getInstance().getWarp(data.get("warpId").getAsInt());
-                w.setPoint(new Point(x, y, z, yaw, pitch));
+                w.setPoint(point);
                 w.setServer(info.getServer().getName());
                 WarpHandler.getInstance().getWarps().saveAsync();
 

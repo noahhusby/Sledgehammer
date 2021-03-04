@@ -25,6 +25,7 @@ import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
 import com.noahhusby.sledgehammer.server.network.S2PPacket;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.math.RoundingMode;
@@ -42,12 +43,8 @@ public class S2PPlayerUpdatePacket extends S2PPacket {
 
     @Override
     public void getMessage(JsonObject data) {
-        DecimalFormat df = new DecimalFormat("#.###");
-        df.setRoundingMode(RoundingMode.DOWN);
-        Point point = new Point(df.format(player.getLocation().getX()),
-                df.format(player.getLocation().getY()), df.format(player.getLocation().getZ()),
-                df.format(player.getLocation().getPitch()), df.format(player.getLocation().getYaw()));
-
+        Location loc = player.getLocation();
+        Point point =  new Point(loc.getX(), loc.getY(), loc.getZ(), loc.getY(), loc.getPitch()).limit();
         data.add("point", SledgehammerUtil.GSON.toJsonTree(point));
         data.addProperty("gameMode", player.getGameMode().name());
     }

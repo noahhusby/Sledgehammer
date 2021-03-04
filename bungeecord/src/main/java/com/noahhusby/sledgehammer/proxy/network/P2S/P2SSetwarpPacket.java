@@ -23,12 +23,13 @@ import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.network.P2SPacket;
 import com.noahhusby.sledgehammer.proxy.network.PacketInfo;
 import lombok.AllArgsConstructor;
+import net.md_5.bungee.api.config.ServerInfo;
 
 @AllArgsConstructor
 public class P2SSetwarpPacket extends P2SPacket {
 
-    private final String server;
     private final String sender;
+    private final ServerInfo server;
 
     @Override
     public String getPacketID() {
@@ -36,8 +37,7 @@ public class P2SSetwarpPacket extends P2SPacket {
     }
 
     @Override
-    public void getMessage(JsonObject data) {
-    }
+    public void getMessage(JsonObject data) {}
 
     @Override
     public PacketInfo getPacketInfo() {

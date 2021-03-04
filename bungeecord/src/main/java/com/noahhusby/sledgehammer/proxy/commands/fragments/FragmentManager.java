@@ -59,7 +59,8 @@ public class FragmentManager {
             sender.sendMessage();
         }
         ChatUtil.sendMessageBox(sender, title, () -> {
-            for (ICommandFragment f : fragments.values()) {
+            for (Map.Entry<String, ICommandFragment> e : fragments.entrySet()) {
+                ICommandFragment f = e.getValue();
                 TextComponent message = ChatUtil.combine(ChatColor.YELLOW, base);
                 message.addExtra(ChatUtil.combine(ChatColor.GREEN, " ", f.getName(), " "));
                 if (f.getArguments() != null) {

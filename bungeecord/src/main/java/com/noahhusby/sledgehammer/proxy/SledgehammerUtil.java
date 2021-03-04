@@ -128,7 +128,7 @@ public class SledgehammerUtil extends CommonUtil {
      * @return True if they are within the region, false if not
      */
     public static boolean inEarthRegion(SledgehammerPlayer player) {
-        double[] geo = toGeo(Double.parseDouble(player.getLocation().x), Double.parseDouble(player.getLocation().z));
+        double[] geo = toGeo(player.getLocation().getX(), player.getLocation().getZ());
         return !(geo == null || geo.length < 1 || Double.isNaN(geo[0]) || Double.isNaN(geo[1]));
     }
 

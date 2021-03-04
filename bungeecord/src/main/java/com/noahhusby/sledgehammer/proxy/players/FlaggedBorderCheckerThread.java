@@ -53,7 +53,7 @@ public class FlaggedBorderCheckerThread implements Runnable {
 
             Point location = p.getLocation();
 
-            double[] proj = SledgehammerUtil.toGeo(Double.parseDouble(location.x), Double.parseDouble(location.z));
+            double[] proj = SledgehammerUtil.toGeo(location.getX(), location.getZ());
             ServerInfo info = OpenStreetMaps.getInstance().getServerFromLocation(proj[0], proj[1], true);
             if (info == null) {
                 return;

@@ -17,6 +17,7 @@ import com.noahhusby.sledgehammer.server.network.NetworkHandler;
 import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpConfigPacket;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -118,11 +119,8 @@ public class ManageWarpInventory extends GUIChild {
         if (e.getSlot() == 12) {
             JsonObject data = new JsonObject();
             data.addProperty("warpId", cur.getId());
-            Point point = new Point(String.valueOf(player.getLocation().getX()),
-                    String.valueOf(player.getLocation().getY()),
-                    String.valueOf(player.getLocation().getZ()),
-                    String.valueOf(player.getLocation().getPitch()),
-                    String.valueOf(player.getLocation().getYaw()));
+            Location loc = player.getLocation();
+            Point point =  new Point(loc.getX(), loc.getY(), loc.getZ(), loc.getY(), loc.getPitch()).limit();
             data.add("point", SledgehammerUtil.GSON.toJsonTree(point));
 
             NetworkHandler.getInstance().send(new S2PWarpConfigPacket(

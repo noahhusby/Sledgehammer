@@ -34,7 +34,6 @@ public class S2PSetwarpPacket extends S2PPacket {
 
     @Override
     public void onMessage(PacketInfo info, JsonObject data) {
-        //TODO: Points
         Point p = SledgehammerUtil.GSON.fromJson(data.get("point"), Point.class);
         WarpHandler.getInstance().incomingLocationResponse(info.getSender(), p);
     }

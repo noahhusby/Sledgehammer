@@ -35,14 +35,14 @@ public class P2CPlayerSyncPacket implements IForgePacket {
     public void encode(ByteBuf buf) {
         buf.writeInt(this.players.length);
         for (SledgehammerPlayer player : this.players) {
-            double playerX = Double.parseDouble(player.getLocation().x);
-            double playerZ = Double.parseDouble(player.getLocation().z);
+            double playerX = player.getLocation().getX();
+            double playerZ = player.getLocation().getZ();
             double[] coordinates = SledgehammerUtil.toGeo(playerX, playerZ);
 
             // This only works because the BTE projection is conformal
             double[] northVec = SledgehammerUtil.getBTEProjection().vector(playerX, playerZ, 0.0001, 0);
             float north = (float) Math.toDegrees(Math.atan2(northVec[0], northVec[1]));
-            float yaw = Float.parseFloat(player.getLocation().yaw);
+            float yaw = (float) player.getLocation().getYaw();
             float azimuth = north + yaw;
             if (azimuth < 0) {
                 azimuth += 360;

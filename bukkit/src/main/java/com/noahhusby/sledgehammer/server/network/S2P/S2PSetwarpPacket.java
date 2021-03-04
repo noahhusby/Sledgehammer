@@ -26,6 +26,7 @@ import com.noahhusby.sledgehammer.server.network.PacketInfo;
 import com.noahhusby.sledgehammer.server.network.S2PPacket;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 @RequiredArgsConstructor
@@ -47,7 +48,8 @@ public class S2PSetwarpPacket extends S2PPacket {
         if (!p.isOnline()) {
             return;
         }
-        Point point = new Point(String.valueOf(p.getLocation().getX()), String.valueOf(p.getLocation().getY()), String.valueOf(p.getLocation().getZ()), String.valueOf(p.getLocation().getPitch()), String.valueOf(p.getLocation().getYaw()));
+        Location loc = p.getLocation();
+        Point point =  new Point(loc.getX(), loc.getY(), loc.getZ(), loc.getY(), loc.getPitch());
         data.add("point", SledgehammerUtil.GSON.toJsonTree(point));
     }
 
