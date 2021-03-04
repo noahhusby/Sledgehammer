@@ -966,13 +966,14 @@ public class Configuration {
             e.printStackTrace();
         } finally {
             try {
-                if(buffer != null) {
+                if (buffer != null) {
                     buffer.close();
                 }
-                if(input != null) {
+                if (input != null) {
                     input.close();
                 }
-            } catch (Exception ignored) { }
+            } catch (Exception ignored) {
+            }
         }
 
         resetChangedState();

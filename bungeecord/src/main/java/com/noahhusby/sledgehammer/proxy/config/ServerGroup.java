@@ -20,6 +20,7 @@ package com.noahhusby.sledgehammer.proxy.config;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.noahhusby.lib.data.storage.Key;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +28,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+@Key("Id")
 @AllArgsConstructor
 public class ServerGroup {
     @Expose

@@ -53,7 +53,7 @@ public class GroupSetNameFragment implements ICommandFragment {
 
         sender.sendMessage(ChatUtil.getValueMessage("name", name.toString(), group.getID()));
         group.setName(name.toString());
-        ServerHandler.getInstance().getGroups().save(true);
+        ServerHandler.getInstance().getGroups().saveAsync();
 
     }
 

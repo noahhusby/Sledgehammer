@@ -51,7 +51,7 @@ public class ServerGroupFragment implements ICommandFragment {
                 sg.getServers().remove(s.getName());
             }
 
-            ServerHandler.getInstance().getGroups().save(true);
+            ServerHandler.getInstance().getGroups().saveAsync();
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GREEN, "Server has been removed from all groups!"));
             return;
         }
@@ -80,7 +80,7 @@ public class ServerGroupFragment implements ICommandFragment {
         }
 
         group.getServers().add(s.getName());
-        ServerHandler.getInstance().getGroups().save(true);
+        ServerHandler.getInstance().getGroups().saveAsync();
 
         sender.sendMessage(ChatUtil.getValueMessage("group", group.getID(), s.getName()));
     }

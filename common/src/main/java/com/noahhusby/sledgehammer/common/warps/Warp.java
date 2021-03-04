@@ -21,6 +21,7 @@ package com.noahhusby.sledgehammer.common.warps;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.noahhusby.lib.data.storage.Key;
 import com.noahhusby.sledgehammer.common.CommonUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,6 +31,7 @@ import java.util.function.BiConsumer;
 /**
  * @author Noah Husby
  */
+@Key("Id")
 public class Warp {
     @Expose
     @SerializedName("Pinned")

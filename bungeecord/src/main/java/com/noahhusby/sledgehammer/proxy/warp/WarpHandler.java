@@ -142,7 +142,7 @@ public class WarpHandler {
                 ChatColor.RED, warp.getName(), ChatColor.GRAY, " from ", ChatColor.BLUE, warp.getServer()));
 
         warps.remove(warp);
-        warps.save(true);
+        warps.saveAsync();
     }
 
     /**
@@ -153,7 +153,7 @@ public class WarpHandler {
     public void push(Warp warp) {
         warps.removeIf(w -> w.getId() == warp.getId());
         warps.add(warp);
-        warps.save(true);
+        warps.saveAsync();
     }
 
     /**
@@ -182,7 +182,7 @@ public class WarpHandler {
             warp.setServer(player.getServer().getInfo().getName());
 
             warps.add(warp);
-            warps.save(true);
+            warps.saveAsync();
 
             if (warp.getResponse() != null) {
                 warp.getResponse().accept(true, warp);

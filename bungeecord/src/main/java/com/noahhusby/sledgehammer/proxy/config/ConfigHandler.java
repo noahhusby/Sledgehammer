@@ -18,15 +18,12 @@
 
 package com.noahhusby.sledgehammer.proxy.config;
 
-
 import com.google.common.collect.Maps;
 import com.noahhusby.lib.data.sql.Credentials;
 import com.noahhusby.lib.data.sql.MySQL;
 import com.noahhusby.lib.data.sql.structure.Structure;
 import com.noahhusby.lib.data.sql.structure.Type;
 import com.noahhusby.lib.data.storage.Storage;
-import com.noahhusby.lib.data.storage.compare.CutComparator;
-import com.noahhusby.lib.data.storage.compare.ValueComparator;
 import com.noahhusby.lib.data.storage.handlers.LocalStorageHandler;
 import com.noahhusby.lib.data.storage.handlers.SQLStorageHandler;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
@@ -139,27 +136,15 @@ public class ConfigHandler {
     public void loadData() {
         Storage serverData = ServerHandler.getInstance().getServers();
         serverData.clearHandlers();
-        if (serverData.getComparator() instanceof CutComparator) {
-            serverData.setComparator(new ValueComparator("Name"));
-        }
 
         Storage warpData = WarpHandler.getInstance().getWarps();
         warpData.clearHandlers();
-        if (warpData.getComparator() instanceof CutComparator) {
-            warpData.setComparator(new ValueComparator("Id"));
-        }
 
         Storage attributeData = PlayerManager.getInstance().getAttributes();
         attributeData.clearHandlers();
-        if (attributeData.getComparator() instanceof CutComparator) {
-            attributeData.setComparator(new ValueComparator("UUID"));
-        }
 
         Storage serverGroups = ServerHandler.getInstance().getGroups();
         serverGroups.clearHandlers();
-        if (serverGroups.getComparator() instanceof CutComparator) {
-            serverGroups.setComparator(new ValueComparator("Id"));
-        }
 
         config.load();
         cat("General", "General options for sledgehammer");
@@ -331,10 +316,10 @@ public class ConfigHandler {
         serverGroups.setAutoLoad(autoLoad, TimeUnit.SECONDS);
 
         Sledgehammer.sledgehammer.getThreadHandler().add(thread -> thread.schedule(() -> {
-            serverData.load(true);
-            warpData.load(true);
-            attributeData.load(true);
-            serverGroups.load(true);
+            serverData.loadAsync();
+            warpData.loadAsync();
+            attributeData.loadAsync();
+            serverGroups.loadAsync();
         }, 5, TimeUnit.SECONDS));
     }
 

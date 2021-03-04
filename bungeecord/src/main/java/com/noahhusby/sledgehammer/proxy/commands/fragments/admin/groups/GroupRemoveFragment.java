@@ -48,7 +48,7 @@ public class GroupRemoveFragment implements ICommandFragment {
 
         sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Successfully removed group ", ChatColor.BLUE, group.getID()));
         ServerHandler.getInstance().getGroups().remove(group);
-        ServerHandler.getInstance().getGroups().save(true);
+        ServerHandler.getInstance().getGroups().saveAsync();
     }
 
     @Override

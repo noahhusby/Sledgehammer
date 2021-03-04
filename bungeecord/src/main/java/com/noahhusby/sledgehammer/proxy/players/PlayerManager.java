@@ -122,7 +122,7 @@ public class PlayerManager implements Listener {
             }
         }
 
-        attributes.save(true);
+        attributes.saveAsync();
         players.remove(player.getUniqueId());
     }
 

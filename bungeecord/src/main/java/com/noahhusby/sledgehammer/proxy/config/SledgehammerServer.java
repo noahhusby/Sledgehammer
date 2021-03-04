@@ -20,6 +20,7 @@ package com.noahhusby.sledgehammer.proxy.config;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.noahhusby.lib.data.storage.Key;
 import com.noahhusby.sledgehammer.proxy.datasets.Location;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Key("Name")
 public class SledgehammerServer {
     @Expose
     @SerializedName("Name")

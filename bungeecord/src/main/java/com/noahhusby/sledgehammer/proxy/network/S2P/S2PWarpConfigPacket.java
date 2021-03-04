@@ -99,7 +99,7 @@ public class S2PWarpConfigPacket extends S2PPacket {
                 warp.setName(name);
                 warp.setPinned(pin);
 
-                WarpHandler.getInstance().getWarps().save(true);
+                WarpHandler.getInstance().getWarps().saveAsync();
                 break;
             case UPDATE_PLAYER_DEFAULT:
                 String sort = data.get("sort").getAsString();
@@ -124,7 +124,7 @@ public class S2PWarpConfigPacket extends S2PPacket {
                 Warp w = WarpHandler.getInstance().getWarp(data.get("warpId").getAsInt());
                 w.setPoint(new Point(x, y, z, yaw, pitch));
                 w.setServer(info.getServer());
-                WarpHandler.getInstance().getWarps().save(true);
+                WarpHandler.getInstance().getWarps().saveAsync();
 
                 response.addProperty("warpId", w.getId());
                 NetworkHandler.getInstance().send(new P2SWarpConfigPacket(player,
@@ -133,7 +133,7 @@ public class S2PWarpConfigPacket extends S2PPacket {
                 break;
             case REMOVE_WARP:
                 WarpHandler.getInstance().getWarps().remove(WarpHandler.getInstance().getWarp(data.get("warpId").getAsInt()));
-                WarpHandler.getInstance().getWarps().save(true);
+                WarpHandler.getInstance().getWarps().saveAsync();
                 NetworkHandler.getInstance().send(new P2SWarpConfigPacket(player,
                         P2SWarpConfigPacket.ServerConfigAction.REMOVE_SUCCESSFUL, g));
                 break;

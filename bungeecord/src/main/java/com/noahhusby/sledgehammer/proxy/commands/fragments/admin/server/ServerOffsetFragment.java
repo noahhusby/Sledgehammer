@@ -63,7 +63,7 @@ public class ServerOffsetFragment implements ICommandFragment {
             sender.sendMessage(ChatUtil.getValueMessage("xOffset", valString, s.getName()));
         }
 
-        ServerHandler.getInstance().getServers().save(true);
+        ServerHandler.getInstance().getServers().saveAsync();
     }
 
     @Override

@@ -74,7 +74,7 @@ public class ServerHandler implements Listener {
         if (s == null) {
             s = new SledgehammerServer(name);
             servers.add(s);
-            servers.save(true);
+            servers.saveAsync();
         }
 
         if (s.isInitialized()) {

@@ -13,7 +13,8 @@ public abstract class CommonConstants {
         Properties versionProperties = new Properties();
         try {
             versionProperties.load(CommonConstants.class.getResourceAsStream("/version.properties"));
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
         String ver = versionProperties.getProperty("version");
         VERSION = (ver == null ? "Development Build" : ver);
     }

@@ -49,7 +49,7 @@ public class GroupSetHeadFragment implements ICommandFragment {
 
         sender.sendMessage(ChatUtil.getValueMessage("head", headTexture, group.getID()));
         group.setHeadID(headTexture);
-        ServerHandler.getInstance().getGroups().save(true);
+        ServerHandler.getInstance().getGroups().saveAsync();
 
     }
 

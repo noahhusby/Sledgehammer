@@ -21,10 +21,12 @@ package com.noahhusby.sledgehammer.proxy.players;
 import com.google.common.collect.Maps;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.noahhusby.lib.data.storage.Key;
 
 import java.util.Map;
 import java.util.UUID;
 
+@Key("UUID")
 public class Attribute {
     @Expose
     @SerializedName("UUID")

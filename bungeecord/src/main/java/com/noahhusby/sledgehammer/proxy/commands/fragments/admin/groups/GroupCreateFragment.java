@@ -47,7 +47,7 @@ public class GroupCreateFragment implements ICommandFragment {
             ServerGroup group = new ServerGroup();
             group.setID(ID);
             ServerHandler.getInstance().getGroups().add(group);
-            ServerHandler.getInstance().getGroups().save(true);
+            ServerHandler.getInstance().getGroups().saveAsync();
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Successfully created new group", ChatColor.BLUE, group.getID()));
             return;
         }
@@ -63,7 +63,7 @@ public class GroupCreateFragment implements ICommandFragment {
         sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Successfully created new group", ChatColor.BLUE, group.getID(),
                 ChatColor.GRAY, " with name ", ChatColor.RED, name.toString()));
         ServerHandler.getInstance().getGroups().add(group);
-        ServerHandler.getInstance().getGroups().save(true);
+        ServerHandler.getInstance().getGroups().saveAsync();
     }
 
     @Override
