@@ -18,6 +18,7 @@
 
 package com.noahhusby.sledgehammer.proxy.warp;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
@@ -38,6 +39,8 @@ import com.noahhusby.sledgehammer.proxy.gui.GUIHandler;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
 import com.noahhusby.sledgehammer.proxy.network.P2S.P2SSetwarpPacket;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -57,8 +60,8 @@ public class WarpHandler {
         return instance == null ? instance = new WarpHandler() : instance;
     }
 
-    public StorageList<Warp> warps = new StorageList<>(Warp.class);
-    public final Map<CommandSender, Warp> requestedWarps = Maps.newHashMap();
+    private final StorageList<Warp> warps = new StorageList<>(Warp.class);
+    private final Map<CommandSender, WarpRequest> requestedWarps = Maps.newHashMap();
 
     /**
      * Gets a list of warps
@@ -122,8 +125,7 @@ public class WarpHandler {
     public void requestNewWarp(String warpName, CommandSender sender, BiConsumer<Boolean, Warp> consumer) {
         Warp warp = new Warp();
         warp.setName(warpName);
-        warp.setResponse(consumer);
-        requestedWarps.put(sender, warp);
+        requestedWarps.put(sender, new WarpRequest(warp, consumer));
         NetworkHandler.getInstance().send(new P2SSetwarpPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName()));
     }
 
@@ -138,21 +140,10 @@ public class WarpHandler {
         if (warp == null) {
             return;
         }
-        sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Succesfully removed ",
+        sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Successfully removed ",
                 ChatColor.RED, warp.getName(), ChatColor.GRAY, " from ", ChatColor.BLUE, warp.getServer()));
 
         warps.remove(warp);
-        warps.saveAsync();
-    }
-
-    /**
-     * Saves a warp to the database
-     *
-     * @param warp {@link Warp}
-     */
-    public void push(Warp warp) {
-        warps.removeIf(w -> w.getId() == warp.getId());
-        warps.add(warp);
         warps.saveAsync();
     }
 
@@ -165,10 +156,12 @@ public class WarpHandler {
     public void incomingLocationResponse(String sender, Point point) {
         synchronized (requestedWarps) {
             Warp warp = null;
+            BiConsumer<Boolean, Warp> consumer = null;
             SledgehammerPlayer player = null;
-            for (Map.Entry<CommandSender, Warp> rw : requestedWarps.entrySet()) {
+            for (Map.Entry<CommandSender, WarpRequest> rw : requestedWarps.entrySet()) {
                 if (rw.getKey().getName().equalsIgnoreCase(sender)) {
-                    warp = rw.getValue();
+                    warp = rw.getValue().getWarp();
+                    consumer = rw.getValue().getConsumer();
                     player = SledgehammerPlayer.getPlayer(sender);
                 }
             }
@@ -184,21 +177,14 @@ public class WarpHandler {
             warps.add(warp);
             warps.saveAsync();
 
-            if (warp.getResponse() != null) {
-                warp.getResponse().accept(true, warp);
+            if (consumer != null) {
+                consumer.accept(true, warp);
             } else {
                 player.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Created warp ", ChatColor.RED, warp.getName(), " on ",
                         ChatColor.RED, warp.getServer()));
             }
 
-            List<CommandSender> removeSenders = Lists.newArrayList();
-            for (Map.Entry<CommandSender, Warp> r : requestedWarps.entrySet()) {
-                removeSenders.add(r.getKey());
-            }
-
-            for (CommandSender s : removeSenders) {
-                requestedWarps.remove(s);
-            }
+            requestedWarps.remove(player);
         }
     }
 
@@ -411,6 +397,13 @@ public class WarpHandler {
             min = i * Constants.warpIdBuffer;
             max = (min + Constants.warpIdBuffer) - 1;
         }
+    }
+
+    @AllArgsConstructor
+    @Getter
+    private static class WarpRequest {
+        private final Warp warp;
+        private final BiConsumer<Boolean, Warp> consumer;
     }
 
     public enum WarpStatus {

@@ -64,10 +64,6 @@ public class Warp {
     @Setter
     private int id;
 
-    @Getter
-    @Setter
-    private BiConsumer<Boolean, Warp> response;
-
     public Warp() {
         this(-1, "", new Point(), "", PinnedMode.NONE, "");
     }
