@@ -93,15 +93,7 @@ public class SledgehammerUtil extends CommonUtil {
      * @return True if the Bungeecord server is a Sledgehammer server, False if not
      */
     public static boolean isSledgehammerServer(ServerInfo server) {
-        for (SledgehammerServer s : ServerHandler.getInstance().getServers()) {
-            if (s.getServerInfo() == null) {
-                continue;
-            }
-            if (s.getServerInfo().equals(server)) {
-                return true;
-            }
-        }
-        return false;
+        return isSledgehammerServer(server.getName());
     }
 
     /**
@@ -113,12 +105,7 @@ public class SledgehammerUtil extends CommonUtil {
      */
     @Deprecated
     public static boolean isSledgehammerServer(String name) {
-        for (SledgehammerServer s : ServerHandler.getInstance().getServers()) {
-            if (s.getName().equals(name)) {
-                return true;
-            }
-        }
-        return false;
+        return ServerHandler.getInstance().getServers().containsKey(name);
     }
 
     /**

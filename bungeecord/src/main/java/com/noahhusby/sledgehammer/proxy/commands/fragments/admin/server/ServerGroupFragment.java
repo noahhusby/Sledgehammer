@@ -47,7 +47,7 @@ public class ServerGroupFragment implements ICommandFragment {
                 return;
             }
 
-            for (ServerGroup sg : ServerHandler.getInstance().getGroups()) {
+            for (ServerGroup sg : ServerHandler.getInstance().getGroups().values()) {
                 sg.getServers().remove(s.getName());
             }
 
@@ -56,7 +56,7 @@ public class ServerGroupFragment implements ICommandFragment {
             return;
         }
 
-        for (ServerGroup sg : ServerHandler.getInstance().getGroups()) {
+        for (ServerGroup sg : ServerHandler.getInstance().getGroups().values()) {
             if (sg.getServers().contains(s.getName())) {
                 sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "This server is assigned to another group!"));
                 sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Use ", ChatColor.BLUE,
@@ -66,13 +66,7 @@ public class ServerGroupFragment implements ICommandFragment {
         }
 
         String id = args[2];
-        ServerGroup group = null;
-
-        for (ServerGroup sg : ServerHandler.getInstance().getGroups()) {
-            if (sg.getID().equals(id)) {
-                group = sg;
-            }
-        }
+        ServerGroup group = ServerHandler.getInstance().getGroups().get(id);
 
         if (group == null) {
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "That group doesn't exist!"));

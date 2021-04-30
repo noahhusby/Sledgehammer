@@ -83,7 +83,7 @@ public class OpenStreetMaps {
         }
         Map<Location.Detail, ServerInfo> serverInfoMap = Maps.newHashMap();
 
-        for (SledgehammerServer s : ServerHandler.getInstance().getServers()) {
+        for (SledgehammerServer s : ServerHandler.getInstance().getServers().values()) {
             if (!s.isEarthServer()) {
                 continue;
             }

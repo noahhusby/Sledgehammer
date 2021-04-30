@@ -36,7 +36,7 @@ public class GroupInfoFragment implements ICommandFragment {
         String gn = args[0];
         ServerGroup group = null;
 
-        for (ServerGroup g : ServerHandler.getInstance().getGroups()) {
+        for (ServerGroup g : ServerHandler.getInstance().getGroups().values()) {
             if (g.getID().equalsIgnoreCase(gn)) {
                 group = g;
             }

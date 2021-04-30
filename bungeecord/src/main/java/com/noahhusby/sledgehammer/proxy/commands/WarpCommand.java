@@ -107,12 +107,12 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
         }
 
         List<String> aliases = new ArrayList<>();
-        for (ServerGroup group : ServerHandler.getInstance().getGroups()) {
+        for (ServerGroup group : ServerHandler.getInstance().getGroups().values()) {
             aliases.addAll(group.getAliases());
         }
 
         if (aliases.contains(args[0])) {
-            for (ServerGroup g : ServerHandler.getInstance().getGroups()) {
+            for (ServerGroup g : ServerHandler.getInstance().getGroups().values()) {
                 if (g.getAliases().contains(args[0])) {
                     PermissionHandler.getInstance().check(SledgehammerPlayer.getPlayer(sender), "sledgehammer.warp.edit", (code, global) -> NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(),
                             SledgehammerUtil.getServerFromSender(sender).getName(),
@@ -169,7 +169,7 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
                 }
             }
 
-            for (ServerGroup g : ServerHandler.getInstance().getGroups()) {
+            for (ServerGroup g : ServerHandler.getInstance().getGroups().values()) {
                 tabbedWarps.addAll(g.getAliases());
             }
 

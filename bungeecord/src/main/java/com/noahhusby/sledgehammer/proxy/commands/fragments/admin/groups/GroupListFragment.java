@@ -34,7 +34,7 @@ public class GroupListFragment implements ICommandFragment {
     public void execute(CommandSender sender, String[] args) {
         TextComponent list = ChatUtil.adminAndCombine(ChatColor.RED, "Groups: ");
         boolean first = true;
-        for (ServerGroup s : ServerHandler.getInstance().getGroups()) {
+        for (ServerGroup s : ServerHandler.getInstance().getGroups().values()) {
             if (first) {
                 TextComponent t = new TextComponent(s.getID());
                 t.setColor(ChatColor.BLUE);

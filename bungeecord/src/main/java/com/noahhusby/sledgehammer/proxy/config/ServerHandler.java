@@ -19,6 +19,7 @@
 package com.noahhusby.sledgehammer.proxy.config;
 
 import com.google.common.collect.Maps;
+import com.noahhusby.lib.data.storage.StorageHashMap;
 import com.noahhusby.lib.data.storage.StorageList;
 import com.noahhusby.lib.data.storage.StorageTreeMap;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
@@ -46,7 +47,8 @@ public class ServerHandler implements Listener {
     private final StorageTreeMap<String, SledgehammerServer> servers = new StorageTreeMap<>(String.class, SledgehammerServer.class, String.CASE_INSENSITIVE_ORDER);
 
     @Getter
-    private final StorageList<ServerGroup> groups = new StorageList<>(ServerGroup.class);
+    private final StorageHashMap<String, ServerGroup> groups = new StorageHashMap<>(String.class, ServerGroup.class);
+
     private final Map<String, String> initialized = Maps.newHashMap();
 
     private ServerHandler() {

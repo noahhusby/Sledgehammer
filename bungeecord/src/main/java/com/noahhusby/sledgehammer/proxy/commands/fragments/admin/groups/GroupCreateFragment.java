@@ -35,18 +35,16 @@ public class GroupCreateFragment implements ICommandFragment {
 
         String ID = args[0];
 
-        for (ServerGroup sg : ServerHandler.getInstance().getGroups()) {
-            if (sg.getID().equals(ID)) {
-                sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "A group with that name already exists!"));
-                return;
-            }
+        if(ServerHandler.getInstance().getGroups().containsKey(ID)) {
+            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "A group with that name already exists!"));
+            return;
         }
 
         if (args.length == 1) {
 
             ServerGroup group = new ServerGroup();
             group.setID(ID);
-            ServerHandler.getInstance().getGroups().add(group);
+            ServerHandler.getInstance().getGroups().put(group.getID(), group);
             ServerHandler.getInstance().getGroups().saveAsync();
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Successfully created new group", ChatColor.BLUE, group.getID()));
             return;
@@ -62,7 +60,7 @@ public class GroupCreateFragment implements ICommandFragment {
         group.setName(name.toString());
         sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Successfully created new group", ChatColor.BLUE, group.getID(),
                 ChatColor.GRAY, " with name ", ChatColor.RED, name.toString()));
-        ServerHandler.getInstance().getGroups().add(group);
+        ServerHandler.getInstance().getGroups().put(group.getID(), group);
         ServerHandler.getInstance().getGroups().saveAsync();
     }
 

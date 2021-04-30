@@ -35,12 +35,7 @@ public class GroupSetHeadFragment implements ICommandFragment {
 
         String ID = args[0];
         String headTexture = args[1];
-        ServerGroup group = null;
-        for (ServerGroup sg : ServerHandler.getInstance().getGroups()) {
-            if (sg.getID().equals(ID)) {
-                group = sg;
-            }
-        }
+        ServerGroup group = ServerHandler.getInstance().getGroups().get(ID);
 
         if (group == null) {
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "That group doesn't exist!"));

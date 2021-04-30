@@ -104,7 +104,7 @@ public class SledgehammerServer {
      * @return Returns the associated group, or a new group if none exists
      */
     public ServerGroup getGroup() {
-        for (ServerGroup g : ServerHandler.getInstance().getGroups()) {
+        for (ServerGroup g : ServerHandler.getInstance().getGroups().values()) {
             if (g.getServers().contains(name)) {
                 return g;
             }
