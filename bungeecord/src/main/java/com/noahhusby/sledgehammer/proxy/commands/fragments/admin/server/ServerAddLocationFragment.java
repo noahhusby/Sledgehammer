@@ -88,7 +88,7 @@ public class ServerAddLocationFragment implements ICommandFragment {
 
                 SledgehammerServer s = ServerHandler.getInstance().getServer(args[0]);
                 s.getLocations().add(l);
-                ServerHandler.getInstance().pushServer(s);
+                ServerHandler.getInstance().getServers().saveAsync();
 
                 String x = "";
                 if (!l.city.equals("")) {

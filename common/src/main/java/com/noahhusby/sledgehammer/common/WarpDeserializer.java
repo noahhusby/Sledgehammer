@@ -12,7 +12,7 @@ import java.lang.reflect.Type;
 
 /**
  * @author Noah Husby
- *
+ * <p>
  * A deserializer for converting legacy string locations to double
  */
 public class WarpDeserializer implements JsonDeserializer<Warp> {

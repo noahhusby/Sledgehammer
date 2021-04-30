@@ -18,10 +18,9 @@
 
 package com.noahhusby.sledgehammer.proxy.config;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.noahhusby.lib.data.storage.StorageList;
+import com.noahhusby.lib.data.storage.StorageTreeMap;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.datasets.Location;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
@@ -38,27 +37,20 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class ServerHandler implements Listener {
-    private static ServerHandler instance;
-
-    public static ServerHandler getInstance() {
-        return instance == null ? instance = new ServerHandler() : instance;
-    }
+    @Getter
+    private static final ServerHandler instance = new ServerHandler();
 
     @Getter
-    private Map<String, SledgehammerServer> serverCache = Maps.newHashMap();
+    private final StorageTreeMap<String, SledgehammerServer> servers = new StorageTreeMap<>(String.class, SledgehammerServer.class, String.CASE_INSENSITIVE_ORDER);
 
-    @Getter
-    private final StorageList<SledgehammerServer> servers = new StorageList<>(SledgehammerServer.class);
     @Getter
     private final StorageList<ServerGroup> groups = new StorageList<>(ServerGroup.class);
     private final Map<String, String> initialized = Maps.newHashMap();
 
     private ServerHandler() {
         Sledgehammer.addListener(this);
-        Sledgehammer.sledgehammer.getThreadHandler().add(thread -> thread.scheduleAtFixedRate(this::updateCache, 0, 5, TimeUnit.SECONDS));
     }
 
     /**
@@ -69,11 +61,10 @@ public class ServerHandler implements Listener {
      */
     public void initialize(ServerInfo serverInfo, String version) {
         String name = serverInfo.getName();
-
         SledgehammerServer s = getServer(name);
         if (s == null) {
             s = new SledgehammerServer(name);
-            servers.add(s);
+            servers.put(name, s);
             servers.saveAsync();
         }
 
@@ -102,14 +93,13 @@ public class ServerHandler implements Listener {
     }
 
     /**
-     * Updates and saves {@link SledgehammerServer} to storage
+     * Creates a server and saves it to storage
      *
      * @param server {@link SledgehammerServer}
      */
-    public void pushServer(SledgehammerServer server) {
-        servers.removeIf(s -> s.getName().equalsIgnoreCase(server.getName()));
-        servers.add(server);
-        servers.save();
+    public void addServer(SledgehammerServer server) {
+        servers.put(server.getName(), server);
+        servers.saveAsync();
     }
 
     /**
@@ -118,8 +108,8 @@ public class ServerHandler implements Listener {
      * @param server {@link SledgehammerServer}
      */
     public void removeServer(SledgehammerServer server) {
-        servers.remove(server);
-        servers.save();
+        servers.remove(server.getName());
+        servers.saveAsync();
     }
 
     /**
@@ -129,7 +119,7 @@ public class ServerHandler implements Listener {
      * @return {@link SledgehammerServer}
      */
     public SledgehammerServer getServer(String name) {
-        return serverCache.get(name);
+        return servers.get(name);
     }
 
     /**
@@ -139,7 +129,7 @@ public class ServerHandler implements Listener {
      * @return {@link ArrayList<Location>}
      */
     public List<Location> getLocationsFromServer(String server) {
-        SledgehammerServer sledgehammerServer = serverCache.get(server);
+        SledgehammerServer sledgehammerServer = getServer(server);
         return sledgehammerServer == null ? null : sledgehammerServer.getLocations();
     }
 
@@ -150,14 +140,6 @@ public class ServerHandler implements Listener {
      */
     public Map<String, String> getInitializedMap() {
         return initialized;
-    }
-
-    private void updateCache() {
-        Map<String, SledgehammerServer> tempServerCache = Maps.newHashMap();
-        for (SledgehammerServer s : Lists.newArrayList(servers)) {
-            tempServerCache.put(s.getName(), s);
-        }
-        this.serverCache = ImmutableMap.copyOf(tempServerCache);
     }
 
     /**

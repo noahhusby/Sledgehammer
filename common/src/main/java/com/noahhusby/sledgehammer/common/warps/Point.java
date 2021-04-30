@@ -19,7 +19,6 @@
 package com.noahhusby.sledgehammer.common.warps;
 
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.JsonAdapter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

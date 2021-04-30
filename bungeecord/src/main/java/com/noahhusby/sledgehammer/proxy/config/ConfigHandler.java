@@ -24,9 +24,10 @@ import com.noahhusby.lib.data.sql.MySQL;
 import com.noahhusby.lib.data.sql.structure.Structure;
 import com.noahhusby.lib.data.sql.structure.Type;
 import com.noahhusby.lib.data.storage.Storage;
+import com.noahhusby.lib.data.storage.compare.Comparator;
 import com.noahhusby.lib.data.storage.handlers.LocalStorageHandler;
 import com.noahhusby.lib.data.storage.handlers.SQLStorageHandler;
-import com.noahhusby.sledgehammer.common.warps.Warp;
+import com.noahhusby.lib.data.storage.handlers.StorageHandler;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.addons.terramap.MapStyleRegistry;
 import com.noahhusby.sledgehammer.proxy.players.PlayerManager;
@@ -38,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 public class ConfigHandler {
@@ -67,13 +69,11 @@ public class ConfigHandler {
     public static String messagePrefix = "";
     public static boolean globalTpll = false;
     public static boolean replaceNotAvailable = false;
-    public static boolean debug = false;
 
     public static String warpCommand = "";
     public static boolean localWarp = false;
     public static boolean warpMenuDefault = false;
     public static String warpMenuPage = "";
-    public static boolean showPinnedOnBlank = false;
 
     public static boolean useSql;
     public static String sqlHost;
@@ -100,8 +100,7 @@ public class ConfigHandler {
     public static String terramapProxyUUID;
 
     private String category;
-
-    Map<String, List<String>> categories = Maps.newHashMap();
+    private final Map<String, List<String>> categories = Maps.newHashMap();
 
     /**
      * Creates initial data structures upon startup
@@ -133,15 +132,19 @@ public class ConfigHandler {
      */
     public void loadData() {
         Storage serverData = ServerHandler.getInstance().getServers();
+        Map<StorageHandler, Comparator> serverComparators = Maps.newHashMap(serverData.getHandlers());
         serverData.clearHandlers();
 
         Storage warpData = WarpHandler.getInstance().getWarps();
+        Map<StorageHandler, Comparator> warpComparators = Maps.newHashMap(warpData.getHandlers());
         warpData.clearHandlers();
 
         Storage attributeData = PlayerManager.getInstance().getAttributes();
+        Map<StorageHandler, Comparator> attributeComparators = Maps.newHashMap(attributeData.getHandlers());
         attributeData.clearHandlers();
 
         Storage serverGroups = ServerHandler.getInstance().getGroups();
+        Map<StorageHandler, Comparator> groupComparators = Maps.newHashMap(serverGroups.getHandlers());
         serverGroups.clearHandlers();
 
         config.load();
@@ -164,7 +167,6 @@ public class ConfigHandler {
         globalTpll = config.getBoolean(prop("Global Tpll"), "General", true, "Set this to false to disable global tpll. [/tpll & /cs tpll]");
         replaceNotAvailable = config.getBoolean(prop("Replace Not Available Message"), category, false,
                 "When enabled, the default 'This command is not available!' is replaced with 'Unknown Command.'");
-        debug = config.getBoolean(prop("Debug"), category, false, "Enable to see advanced logging information.");
         order();
 
         cat("MySQL Database", "Settings for the MySQL Database");
@@ -192,8 +194,6 @@ public class ConfigHandler {
                 "Use `group` to show the warps on the current server (or groups of servers)\n" +
                 "Use `all` to show all the warps by default\n" +
                 "or Use `pinned` to show the pinned warps.");
-        showPinnedOnBlank = config.getBoolean(prop("Pinned on Blank"), category, false,
-                "If enabled, the warp GUI will show the pinned page if that server has no warps.");
         order();
 
 
@@ -241,13 +241,45 @@ public class ConfigHandler {
             MapStyleRegistry.loadFromConfigFile();
         }
 
-        serverData.registerHandler(new LocalStorageHandler(ConfigHandler.serverFile));
-        warpData.registerHandler(new LocalStorageHandler(ConfigHandler.warpFile));
-        attributeData.registerHandler(new LocalStorageHandler(ConfigHandler.attributeFile));
-        serverGroups.registerHandler(new LocalStorageHandler(ConfigHandler.groupsFile));
+        {
+            Comparator comparator = getFromType(serverComparators, h -> h instanceof LocalStorageHandler);
+            if (comparator == null) {
+                serverData.registerHandler(new LocalStorageHandler(ConfigHandler.serverFile));
+            } else {
+                serverData.registerHandler(new LocalStorageHandler(ConfigHandler.serverFile), comparator);
+            }
+        }
+
+        {
+            Comparator comparator = getFromType(warpComparators, h -> h instanceof LocalStorageHandler);
+            if (comparator == null) {
+                warpData.registerHandler(new LocalStorageHandler(ConfigHandler.warpFile));
+            } else {
+                warpData.registerHandler(new LocalStorageHandler(ConfigHandler.warpFile), comparator);
+            }
+        }
+
+        {
+            Comparator comparator = getFromType(attributeComparators, h -> h instanceof LocalStorageHandler);
+            if (comparator == null) {
+                attributeData.registerHandler(new LocalStorageHandler(ConfigHandler.attributeFile));
+            } else {
+                attributeData.registerHandler(new LocalStorageHandler(ConfigHandler.attributeFile), comparator);
+            }
+        }
+
+        {
+            Comparator comparator = getFromType(groupComparators, h -> h instanceof LocalStorageHandler);
+            if (comparator == null) {
+                serverGroups.registerHandler(new LocalStorageHandler(ConfigHandler.groupsFile));
+            } else {
+                serverGroups.registerHandler(new LocalStorageHandler(ConfigHandler.groupsFile), comparator);
+            }
+        }
 
         if (useSql) {
             {
+                Comparator comparator = getFromType(serverComparators, h -> h instanceof SQLStorageHandler);
                 SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(
                         new Credentials(sqlHost, sqlPort, sqlUser, sqlPassword, sqlDb)), "Servers",
                         Structure.builder()
@@ -261,10 +293,21 @@ public class ConfigHandler {
                                 .repair(true)
                                 .build());
                 sqlStorageHandler.setPriority(100);
-                serverData.registerHandler(sqlStorageHandler);
+                if (comparator == null) {
+                    serverData.registerHandler(sqlStorageHandler);
+                } else {
+                    serverData.registerHandler(sqlStorageHandler, comparator);
+                }
             }
 
             {
+                Comparator comparator = getFromType(warpComparators, h -> h instanceof SQLStorageHandler);
+                for (Map.Entry<StorageHandler, Comparator> e : warpData.getHandlers().entrySet()) {
+                    if (e.getKey() instanceof SQLStorageHandler) {
+                        comparator = e.getValue();
+                        break;
+                    }
+                }
                 SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(
                         new Credentials(sqlHost, sqlPort, sqlUser, sqlPassword, sqlDb)), "Warps",
                         Structure.builder()
@@ -277,10 +320,15 @@ public class ConfigHandler {
                                 .repair(true)
                                 .build());
                 sqlStorageHandler.setPriority(100);
-                warpData.registerHandler(sqlStorageHandler);
+                if (comparator == null) {
+                    warpData.registerHandler(sqlStorageHandler);
+                } else {
+                    warpData.registerHandler(sqlStorageHandler, comparator);
+                }
             }
 
             {
+                Comparator comparator = getFromType(attributeComparators, h -> h instanceof SQLStorageHandler);
                 SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(
                         new Credentials(sqlHost, sqlPort, sqlUser, sqlPassword, sqlDb)), "Attributes",
                         Structure.builder()
@@ -289,10 +337,15 @@ public class ConfigHandler {
                                 .repair(true)
                                 .build());
                 sqlStorageHandler.setPriority(100);
-                attributeData.registerHandler(sqlStorageHandler);
+                if (comparator == null) {
+                    attributeData.registerHandler(sqlStorageHandler);
+                } else {
+                    attributeData.registerHandler(sqlStorageHandler, comparator);
+                }
             }
 
             {
+                Comparator comparator = getFromType(groupComparators, h -> h instanceof SQLStorageHandler);
                 SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(
                         new Credentials(sqlHost, sqlPort, sqlUser, sqlPassword, sqlDb)), "ServerGroups",
                         Structure.builder()
@@ -304,7 +357,11 @@ public class ConfigHandler {
                                 .repair(true)
                                 .build());
                 sqlStorageHandler.setPriority(100);
-                serverGroups.registerHandler(sqlStorageHandler);
+                if (comparator == null) {
+                    serverGroups.registerHandler(sqlStorageHandler);
+                } else {
+                    serverGroups.registerHandler(sqlStorageHandler, comparator);
+                }
             }
         }
 
@@ -373,5 +430,14 @@ public class ConfigHandler {
 
     private void order() {
         config.setCategoryPropertyOrder(category, categories.get(category));
+    }
+
+    private Comparator getFromType(Map<StorageHandler, Comparator> map, Predicate<StorageHandler> predicate) {
+        for (Map.Entry<StorageHandler, Comparator> e : map.entrySet()) {
+            if (predicate.test(e.getKey())) {
+                return e.getValue();
+            }
+        }
+        return null;
     }
 }

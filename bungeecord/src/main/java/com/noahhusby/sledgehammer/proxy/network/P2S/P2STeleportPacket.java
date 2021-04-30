@@ -28,8 +28,8 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class P2STeleportPacket extends P2SPacket {
-    private final String server;
     private final String sender;
+    private final String server;
     private final Point point;
 
     @Override

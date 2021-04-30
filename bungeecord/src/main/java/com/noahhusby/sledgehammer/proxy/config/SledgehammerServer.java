@@ -32,42 +32,35 @@ import java.util.Collections;
 import java.util.List;
 
 @Key("Name")
+@Getter
 public class SledgehammerServer {
     @Expose
     @SerializedName("Name")
-    @Getter
     private String name;
     @Expose
     @SerializedName("Nick")
-    @Getter
     @Setter
     private String friendlyName;
     @Expose
     @SerializedName("EarthServer")
-    @Getter
     @Setter
     private boolean earthServer;
     @Expose
     @SerializedName("Locations")
-    @Getter
     @Setter
     private List<Location> locations = new ArrayList<>();
     @Expose
     @SerializedName("XOffset")
-    @Getter
     @Setter
     private int xOffset;
     @Expose
     @SerializedName("ZOffset")
-    @Getter
     @Setter
     private int zOffset;
     @Expose
     @SerializedName("StealthMode")
-    @Getter
     @Setter
     private boolean stealthMode;
-    @Getter
     private String sledgehammerVersion = null;
 
     public SledgehammerServer() {

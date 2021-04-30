@@ -91,13 +91,8 @@ public class ChatUtil {
     }
 
     public static void sendAuthCodeWarning(CommandSender sender) {
-        sender.sendMessage(combine(ChatColor.DARK_RED, "----------------------------------------------"));
-        sender.sendMessage();
-        sender.sendMessage(combine(ChatColor.RED, " The sledgehammer authentication code is not properly configured. " +
-                                                  "Please check the console for more details!"));
-        sender.sendMessage(combine(ChatColor.GRAY, "Most sledgehammer features will be disabled"));
-        sender.sendMessage();
-        sender.sendMessage(combine(ChatColor.DARK_RED, "----------------------------------------------"));
+        sendMessageBox(sender, ChatColor.DARK_RED + "Warning", combine(ChatColor.RED, "The sledgehammer authentication code is not properly configured. " +
+                                                                                      "Please check the console for more details!\n", ChatColor.GRAY, "Most sledgehammer features will be disabled"));
     }
 
     public static TextComponent getValueMessage(String key, String value, String where) {
@@ -114,8 +109,12 @@ public class ChatUtil {
         player.sendMessage(ChatMessageType.ACTION_BAR, message);
     }
 
+    public static void sendMessageBox(CommandSender sender, String title, TextComponent text) {
+        sendMessageBox(sender, title, () -> sender.sendMessage(text));
+    }
+
     public static void sendMessageBox(CommandSender sender, String title, Runnable runnable) {
-        sender.sendMessage(combine(ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH, "==============", ChatColor.RESET, " " + title + " ", ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH, "=============="));
+        sender.sendMessage(combine(ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH, "==============", ChatColor.RESET, " " + ChatColor.BOLD + title + " ", ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH, "=============="));
         sender.sendMessage();
 
         runnable.run();

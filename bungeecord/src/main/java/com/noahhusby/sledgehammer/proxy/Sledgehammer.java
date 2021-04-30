@@ -36,6 +36,7 @@ import com.noahhusby.sledgehammer.proxy.players.BorderCheckerThread;
 import com.noahhusby.sledgehammer.proxy.players.FlaggedBorderCheckerThread;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -88,22 +89,15 @@ public class Sledgehammer extends Plugin implements Listener {
 
         ServerHandler.getInstance();
 
+        addonManager.onDisable();
+
         if (!ConfigHandler.getInstance().isAuthCodeConfigured()) {
-            logger.severe("------------------------------");
-            for (int x = 0; x < 2; x++) {
-                logger.severe("");
-            }
-            logger.severe("The authentication code is not configured, or configured incorrectly.");
-            logger.severe("Please generate a valid authentication code using https://www.uuidgenerator.net/version4");
-            logger.severe("Most Sledgehammer features will now be disabled.");
-            for (int x = 0; x < 2; x++) {
-                logger.severe("");
-            }
-            logger.severe("------------------------------");
+            ChatUtil.sendMessageBox(ProxyServer.getInstance().getConsole(), ChatColor.DARK_RED + "WARNING", ChatUtil.combine(ChatColor.RED,
+                    "The sledgehammer authentication code is not configured, or is configured incorrectly.\n" +
+                    "Please generate a valid authentication code using https://www.uuidgenerator.net/version4\n"
+                    + "Most Sledgehammer features will now be disabled."));
             return;
         }
-
-        addonManager.onDisable();
 
         if (ConfigHandler.terramapEnabled) {
             addonManager.registerAddon(new TerramapAddon());
@@ -123,31 +117,17 @@ public class Sledgehammer extends Plugin implements Listener {
         }
 
         if (ConfigHandler.borderTeleportation && !ConfigHandler.doesOfflineExist) {
-            logger.warning("------------------------------");
-            for (int x = 0; x < 2; x++) {
-                logger.warning("");
-            }
-            logger.warning("Automatic border teleportation was enabled without an offline OSM database.");
-            logger.warning("This feature will now be disabled.");
-            for (int x = 0; x < 2; x++) {
-                logger.warning("");
-            }
-            logger.warning("------------------------------");
+            ChatUtil.sendMessageBox(ProxyServer.getInstance().getConsole(), ChatColor.DARK_RED + "WARNING", ChatUtil.combine(ChatColor.RED,
+                    "Automatic border teleportation was enabled without an offline OSM database.\n" +
+                    "This feature will now be disabled."));
             ConfigHandler.borderTeleportation = false;
         }
 
         if (ConfigHandler.useOfflineMode && !ConfigHandler.doesOfflineExist) {
-            logger.warning("------------------------------");
-            for (int x = 0; x < 2; x++) {
-                logger.warning("");
-            }
-            logger.warning("The offline OSM database was enabled without a proper database configured.");
-            logger.warning("Please follow the guide on https://github.com/noahhusby/Sledgehammer/wiki/Border-Offline-Database to configure an offline database.");
-            logger.warning("This feature will now be disabled.");
-            for (int x = 0; x < 2; x++) {
-                logger.warning("");
-            }
-            logger.warning("------------------------------");
+            ChatUtil.sendMessageBox(ProxyServer.getInstance().getConsole(), ChatColor.DARK_RED + "WARNING", ChatUtil.combine(ChatColor.RED,
+                    "The offline OSM database was enabled without a proper database configured.\n" +
+                    "Please follow the guide on https://github.com/noahhusby/Sledgehammer/wiki/Border-Offline-Database to configure an offline database.\n" +
+                    "This feature will now be disabled."));
             ConfigHandler.useOfflineMode = false;
         }
 
@@ -169,17 +149,6 @@ public class Sledgehammer extends Plugin implements Listener {
      */
     public static void addListener(Listener listener) {
         ProxyServer.getInstance().getPluginManager().registerListener(sledgehammer, listener);
-    }
-
-    /**
-     * Print a message on the debug logger. Only outputs with debug mode enabled
-     *
-     * @param m The debug message
-     */
-    public static void debug(String m) {
-        if (ConfigHandler.debug) {
-            logger.info(m);
-        }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -212,13 +181,17 @@ public class Sledgehammer extends Plugin implements Listener {
         }
 
         public void start() {
-            running = true;
-            runnableList.forEach(consumer -> consumer.accept(generalThreads));
+            if (!running) {
+                running = true;
+                runnableList.forEach(consumer -> consumer.accept(generalThreads));
+            }
         }
 
         public void stop() {
-            running = false;
-            generalThreads.getQueue().removeIf(r -> true);
+            if (running) {
+                running = false;
+                generalThreads.getQueue().removeIf(r -> true);
+            }
         }
     }
 }

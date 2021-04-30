@@ -44,7 +44,7 @@ public class ServerEarthModeFragment implements ICommandFragment {
         if (arg.equals("true") || arg.equals("false")) {
             SledgehammerServer s = ServerHandler.getInstance().getServer(args[0]);
             s.setEarthServer(Boolean.parseBoolean(arg));
-            ServerHandler.getInstance().pushServer(s);
+            ServerHandler.getInstance().getServers().saveAsync();
             sender.sendMessage(ChatUtil.getValueMessage("earth", arg, s.getName()));
         } else {
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Usage: /sha server <server name> setearth <true/false>"));

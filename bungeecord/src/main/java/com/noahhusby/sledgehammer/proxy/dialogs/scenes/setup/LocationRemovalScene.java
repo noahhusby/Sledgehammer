@@ -56,8 +56,9 @@ public class LocationRemovalScene extends DialogScene {
 
         SledgehammerServer s = ServerHandler.getInstance().getServer(server.getName());
         s.setLocations(newLocations);
+        ServerHandler.getInstance().getServers().put(server.getName(), s);
+        ServerHandler.getInstance().getServers().saveAsync();
 
-        ServerHandler.getInstance().pushServer(s);
         if (scene != null) {
             DialogHandler.getInstance().discardDialog(this);
             DialogHandler.getInstance().startDialog(getCommandSender(), scene);

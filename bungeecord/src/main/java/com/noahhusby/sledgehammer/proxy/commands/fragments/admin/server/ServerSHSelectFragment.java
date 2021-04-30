@@ -25,6 +25,8 @@ import com.noahhusby.sledgehammer.proxy.config.SledgehammerServer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 
+import java.util.Locale;
+
 public class ServerSHSelectFragment implements ICommandFragment {
 
     @Override
@@ -34,18 +36,17 @@ public class ServerSHSelectFragment implements ICommandFragment {
         } else {
             String arg = args[2].toLowerCase();
             if (arg.equals("true") || arg.equals("false")) {
-                SledgehammerServer s = ServerHandler.getInstance().getServer(args[0]);
 
                 if (!Boolean.parseBoolean(arg)) {
-                    ServerHandler.getInstance().removeServer(s);
+                    ServerHandler.getInstance().getServers().remove(args[0]);
                 } else {
-                    if (s == null) {
-                        s = new SledgehammerServer(args[0]);
+                    if (!ServerHandler.getInstance().getServers().containsKey(args[0])) {
+                        ServerHandler.getInstance().getServers().put(args[0], new SledgehammerServer(args[0]));
+                        ServerHandler.getInstance().getServers().saveAsync();
                     }
-                    ServerHandler.getInstance().pushServer(s);
                 }
 
-                sender.sendMessage(ChatUtil.getValueMessage("runs_sledgehammer", arg, s.getName()));
+                sender.sendMessage(ChatUtil.getValueMessage("runs_sledgehammer", arg, args[0].toLowerCase(Locale.ROOT)));
             } else {
                 sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Usage: /sha server <server name> setsledgehammer <true/false>"));
             }

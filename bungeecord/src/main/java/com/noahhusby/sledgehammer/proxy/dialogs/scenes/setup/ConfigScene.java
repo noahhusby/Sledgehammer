@@ -74,14 +74,10 @@ public class ConfigScene extends DialogScene {
 
     @Override
     public void onFinish() {
-        SledgehammerServer s = ServerHandler.getInstance().getServer(server.getName());
-
-        if (s == null) {
-            s = new SledgehammerServer(server.getName());
-        }
-
+        SledgehammerServer s = ServerHandler.getInstance().getServers().containsKey(server.getName()) ? ServerHandler.getInstance().getServer(server.getName()) : new SledgehammerServer(server.getName());
         s.setEarthServer(true);
-        ServerHandler.getInstance().pushServer(s);
+        ServerHandler.getInstance().getServers().put(server.getName(), s);
+        ServerHandler.getInstance().getServers().saveAsync();
 
         DialogHandler.getInstance().discardDialog(this);
         DialogHandler.getInstance().startDialog(getCommandSender(), new LocationConfigScene(server));
@@ -144,12 +140,10 @@ public class ConfigScene extends DialogScene {
             } else if (response.equals("no") || response.equals("n")) {
                 DialogHandler.getInstance().discardDialog(this);
 
-                SledgehammerServer s = ServerHandler.getInstance().getServer(server.getName());
-                if (s == null) {
-                    s = new SledgehammerServer(server.getName());
-                }
+                SledgehammerServer s = ServerHandler.getInstance().getServers().containsKey(server.getName()) ? ServerHandler.getInstance().getServer(server.getName()) : new SledgehammerServer(server.getName());
                 s.setEarthServer(false);
-                ServerHandler.getInstance().pushServer(s);
+                ServerHandler.getInstance().getServers().put(server.getName(), s);
+                ServerHandler.getInstance().getServers().saveAsync();
 
                 DialogHandler.getInstance().startDialog(sender, new ConfigScene(server, true));
             }
