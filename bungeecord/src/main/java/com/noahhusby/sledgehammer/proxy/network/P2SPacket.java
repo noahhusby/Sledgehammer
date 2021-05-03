@@ -26,8 +26,4 @@ public abstract class P2SPacket {
     public abstract void getMessage(JsonObject data);
 
     public abstract PacketInfo getPacketInfo();
-
-    public NetworkHandler getManager() {
-        return NetworkHandler.getInstance();
-    }
 }

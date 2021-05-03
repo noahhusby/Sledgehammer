@@ -18,8 +18,6 @@
 
 package com.noahhusby.sledgehammer.proxy;
 
-import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.proxy.terramap.TerramapAddon;
 import com.noahhusby.sledgehammer.proxy.commands.BorderCommand;
@@ -39,11 +37,8 @@ import com.noahhusby.sledgehammer.proxy.players.PlayerManager;
 import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.event.EventHandler;
-import net.md_5.bungee.event.EventPriority;
 
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -57,6 +52,9 @@ public class  Sledgehammer extends Plugin implements Listener {
     public void onEnable() {
         instance = this;
         logger = getLogger();
+
+        ProxyServer.getInstance().registerChannel(Constants.serverChannel);
+
         ConfigHandler.getInstance().init(getDataFolder());
         ModuleHandler.getInstance().registerModules(PlayerManager.getInstance(), NetworkHandler.getInstance(), OpenStreetMaps.getInstance(), PermissionHandler.getInstance());
         ConfigHandler.getInstance().load();
@@ -65,7 +63,6 @@ public class  Sledgehammer extends Plugin implements Listener {
 
     @Override
     public void onDisable() {
-        removeListener(this);
         ProxyServer.getInstance().getScheduler().cancel(this);
         ProxyServer.getInstance().getPluginManager().unregisterCommands(this);
         ModuleHandler.getInstance().disableAll();
@@ -80,7 +77,6 @@ public class  Sledgehammer extends Plugin implements Listener {
     }
 
     public void load() {
-        addListener(this);
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerCommand());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerAdminCommand());
 
@@ -92,6 +88,7 @@ public class  Sledgehammer extends Plugin implements Listener {
             return;
         }
 
+        // Manual module handling
         if (ConfigHandler.terramapEnabled && TerramapAddon.instance == null) {
             ModuleHandler.getInstance().registerModule(new TerramapAddon());
             ModuleHandler.getInstance().enable(TerramapAddon.instance);
@@ -111,23 +108,6 @@ public class  Sledgehammer extends Plugin implements Listener {
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new TplloCommand());
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new CsTpllCommand());
         }
-
-        if (ConfigHandler.borderTeleportation && !ConfigHandler.doesOfflineExist) {
-            ChatUtil.sendMessageBox(ProxyServer.getInstance().getConsole(), ChatColor.DARK_RED + "WARNING", ChatUtil.combine(ChatColor.RED,
-                    "Automatic border teleportation was enabled without an offline OSM database.\n" +
-                    "This feature will now be disabled."));
-            ConfigHandler.borderTeleportation = false;
-        }
-
-        if (ConfigHandler.useOfflineMode && !ConfigHandler.doesOfflineExist) {
-            ChatUtil.sendMessageBox(ProxyServer.getInstance().getConsole(), ChatColor.DARK_RED + "WARNING", ChatUtil.combine(ChatColor.RED,
-                    "The offline OSM database was enabled without a proper database configured.\n" +
-                    "Please follow the guide on https://github.com/noahhusby/Sledgehammer/wiki/Border-Offline-Database to configure an offline database.\n" +
-                    "This feature will now be disabled."));
-            ConfigHandler.useOfflineMode = false;
-        }
-
-        ProxyServer.getInstance().registerChannel(Constants.serverChannel);
 
         if (ConfigHandler.borderTeleportation) {
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new BorderCommand());
@@ -154,12 +134,5 @@ public class  Sledgehammer extends Plugin implements Listener {
      */
     public static void removeListener(Listener listener) {
         ProxyServer.getInstance().getPluginManager().unregisterListener(listener);
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerJoin(PostLoginEvent e) {
-        if (e.getPlayer().hasPermission("sledgehammer.admin") && !ConfigHandler.getInstance().isAuthCodeConfigured()) {
-            ChatUtil.sendAuthCodeWarning(e.getPlayer());
-        }
     }
 }

@@ -51,6 +51,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class WarpHandler {
     private static WarpHandler instance;
@@ -61,7 +62,9 @@ public class WarpHandler {
 
     @Getter
     private final StorageHashMap<Integer, Warp> warps = new StorageHashMap<>(Integer.class, Warp.class);
-    private final Map<CommandSender, WarpRequest> requestedWarps = Maps.newHashMap();
+
+    private final Map<CommandSender, Warp> warpRequests = Maps.newHashMap();
+    private final Map<Warp, Consumer<Warp>> warpConsumers = Maps.newHashMap();
 
     /**
      * Gets a warp by name
@@ -107,10 +110,13 @@ public class WarpHandler {
      * @param sender   The command sender
      * @param consumer The warp response
      */
-    public void requestNewWarp(String warpName, CommandSender sender, BiConsumer<Boolean, Warp> consumer) {
+    public void requestNewWarp(String warpName, CommandSender sender, Consumer<Warp> consumer) {
         Warp warp = new Warp();
         warp.setName(warpName);
-        requestedWarps.put(sender, new WarpRequest(warp, consumer));
+        warpRequests.put(sender, warp);
+        if (consumer != null) {
+            warpConsumers.put(warp, consumer);
+        }
         NetworkHandler.getInstance().send(new P2SSetwarpPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender)));
     }
 
@@ -131,17 +137,9 @@ public class WarpHandler {
      * @param point  Location of warp
      */
     public void incomingLocationResponse(String sender, Point point) {
-        synchronized (requestedWarps) {
-            Warp warp = null;
-            BiConsumer<Boolean, Warp> consumer = null;
-            SledgehammerPlayer player = null;
-            for (Map.Entry<CommandSender, WarpRequest> rw : requestedWarps.entrySet()) {
-                if (rw.getKey().getName().equalsIgnoreCase(sender)) {
-                    warp = rw.getValue().getWarp();
-                    consumer = rw.getValue().getConsumer();
-                    player = SledgehammerPlayer.getPlayer(sender);
-                }
-            }
+        synchronized (warpRequests) {
+            SledgehammerPlayer player = SledgehammerPlayer.getPlayer(sender);
+            Warp warp = warpRequests.remove(player);
 
             if (warp == null) {
                 return;
@@ -154,14 +152,12 @@ public class WarpHandler {
             warps.put(warp.getId(), warp);
             warps.saveAsync();
 
-            if (consumer != null) {
-                consumer.accept(true, warp);
+            if (warpConsumers.containsKey(warp)) {
+                warpConsumers.remove(warp).accept(warp);
             } else {
                 player.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Created warp ", ChatColor.RED, warp.getName(), " on ",
                         ChatColor.RED, warp.getServer()));
             }
-
-            requestedWarps.remove(player);
         }
     }
 
@@ -179,13 +175,13 @@ public class WarpHandler {
     public WarpStatus getWarpStatus(int warpId, String server) {
         boolean local = ConfigHandler.localWarp;
         Warp warp = warps.get(warpId);
-        if(warp == null) {
+        if (warp == null) {
             return WarpStatus.AVAILABLE;
         }
 
-        if(!local && warp.getPinned() == Warp.PinnedMode.GLOBAL) {
+        if (!local && warp.getPinned() == Warp.PinnedMode.GLOBAL) {
             return WarpStatus.RESERVED;
-        } else if(!local && ServerHandler.getInstance().getServer(server).getGroup().getServers().contains(warp.getServer())) {
+        } else if (!local && ServerHandler.getInstance().getServer(server).getGroup().getServers().contains(warp.getServer())) {
             return WarpStatus.EXISTS;
         }
 
@@ -374,13 +370,6 @@ public class WarpHandler {
             min = i * Constants.warpIdBuffer;
             max = (min + Constants.warpIdBuffer) - 1;
         }
-    }
-
-    @AllArgsConstructor
-    @Getter
-    private static class WarpRequest {
-        private final Warp warp;
-        private final BiConsumer<Boolean, Warp> consumer;
     }
 
     public enum WarpStatus {

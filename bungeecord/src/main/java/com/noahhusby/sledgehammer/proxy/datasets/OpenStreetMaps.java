@@ -269,7 +269,7 @@ public class OpenStreetMaps implements Module {
             try {
                 offlineGeocoder.close();
                 offlineGeocoder = null;
-            } catch (IOException e) {
+            } catch (IOException ignored) {
             }
         }
     }

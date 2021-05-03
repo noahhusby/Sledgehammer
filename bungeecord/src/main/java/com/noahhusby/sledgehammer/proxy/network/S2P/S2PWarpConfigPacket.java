@@ -73,7 +73,7 @@ public class S2PWarpConfigPacket extends S2PPacket {
                                 player, P2SWarpConfigPacket.ServerConfigAction.ADD_FAILURE, g, response));
                         break;
                     case AVAILABLE:
-                        WarpHandler.getInstance().requestNewWarp(warpName, player, (success, warp) -> {
+                        WarpHandler.getInstance().requestNewWarp(warpName, player, (warp) -> {
                             response.addProperty("warpName", warp.getName());
                             response.addProperty("warpId", warp.getId());
                             NetworkHandler.getInstance().send(new P2SWarpConfigPacket(

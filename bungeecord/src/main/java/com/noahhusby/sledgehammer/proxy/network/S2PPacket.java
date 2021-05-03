@@ -22,10 +22,6 @@ import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 
 public abstract class S2PPacket {
-    public NetworkHandler getManager() {
-        return NetworkHandler.getInstance();
-    }
-
     public abstract String getPacketID();
 
     public abstract void onMessage(PacketInfo info, JsonObject data);
