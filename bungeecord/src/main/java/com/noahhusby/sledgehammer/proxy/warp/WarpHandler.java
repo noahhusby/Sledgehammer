@@ -22,6 +22,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.noahhusby.lib.data.storage.StorageHashMap;
 import com.noahhusby.lib.data.storage.StorageList;
 import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.common.warps.Warp;
@@ -59,17 +60,9 @@ public class WarpHandler {
         return instance == null ? instance = new WarpHandler() : instance;
     }
 
-    private final StorageList<Warp> warps = new StorageList<>(Warp.class);
+    @Getter
+    private final StorageHashMap<Integer, Warp> warps = new StorageHashMap<>(Integer.class, Warp.class);
     private final Map<CommandSender, WarpRequest> requestedWarps = Maps.newHashMap();
-
-    /**
-     * Gets a list of warps
-     *
-     * @return List of warps
-     */
-    public StorageList<Warp> getWarps() {
-        return warps;
-    }
 
     /**
      * Gets a warp by name
@@ -79,7 +72,7 @@ public class WarpHandler {
      */
     public List<Warp> getWarps(String name) {
         List<Warp> lw = Lists.newArrayList();
-        for (Warp w : warps) {
+        for (Warp w : warps.values()) {
             if (w.getName().equalsIgnoreCase(name)) {
                 lw.add(w);
             }
@@ -95,13 +88,7 @@ public class WarpHandler {
      * @return {@link Warp} if exists, null if not.
      */
     public Warp getWarp(int id) {
-        for (Warp w : warps) {
-            if (w.getId() == id) {
-                return w;
-            }
-        }
-
-        return null;
+        return warps.get(id);
     }
 
     /**
@@ -129,20 +116,12 @@ public class WarpHandler {
     }
 
     public void removeWarp(int warpID, CommandSender sender) {
-        Warp warp = null;
-        for (Warp w : warps) {
-            if (w.getId() == warpID) {
-                warp = w;
-            }
-        }
-
+        Warp warp = warps.remove(warpID);
         if (warp == null) {
             return;
         }
         sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Successfully removed ",
                 ChatColor.RED, warp.getName(), ChatColor.GRAY, " from ", ChatColor.BLUE, warp.getServer()));
-
-        warps.remove(warp);
         warps.saveAsync();
     }
 
@@ -173,7 +152,7 @@ public class WarpHandler {
             warp.setPoint(point);
             warp.setServer(player.getServer().getInfo().getName());
 
-            warps.add(warp);
+            warps.put(warp.getId(), warp);
             warps.saveAsync();
 
             if (consumer != null) {
@@ -188,7 +167,7 @@ public class WarpHandler {
     }
 
     public WarpStatus getWarpStatus(String warpName, String server) {
-        for (Warp w : warps) {
+        for (Warp w : warps.values()) {
             if (w.getName().equalsIgnoreCase(warpName) && (!ConfigHandler.localWarp ||
                                                            ServerHandler.getInstance().getServer(server).getGroup().getServers().contains(w.getServer()))) {
                 return getWarpStatus(w.getId(), server);
@@ -200,16 +179,15 @@ public class WarpHandler {
 
     public WarpStatus getWarpStatus(int warpId, String server) {
         boolean local = ConfigHandler.localWarp;
-        for (Warp w : warps) {
-            if (w.getId() == warpId && !local && w.getPinned() == Warp.PinnedMode.GLOBAL) {
-                return WarpStatus.RESERVED;
-            }
+        Warp warp = warps.get(warpId);
+        if(warp == null) {
+            return WarpStatus.AVAILABLE;
         }
 
-        for (Warp w : warps) {
-            if (w.getId() == warpId && (!local || ServerHandler.getInstance().getServer(server).getGroup().getServers().contains(w.getServer()))) {
-                return WarpStatus.EXISTS;
-            }
+        if(!local && warp.getPinned() == Warp.PinnedMode.GLOBAL) {
+            return WarpStatus.RESERVED;
+        } else if(!local && ServerHandler.getInstance().getServer(server).getGroup().getServers().contains(warp.getServer())) {
+            return WarpStatus.EXISTS;
         }
 
         return WarpStatus.AVAILABLE;
@@ -223,7 +201,7 @@ public class WarpHandler {
     public TextComponent getWarpList(String server) {
         TextComponent list = ChatUtil.titleAndCombine(ChatColor.RED, "Warps: ");
         boolean first = true;
-        for (Warp w : warps) {
+        for (Warp w : warps.values()) {
             if (!(w.getServer().equalsIgnoreCase(server) || w.getPinned() == Warp.PinnedMode.GLOBAL ||
                   !ConfigHandler.localWarp)) {
                 continue;
@@ -270,7 +248,8 @@ public class WarpHandler {
         WarpPayload.Page page = WarpPayload.Page.GROUPS;
 
         Map<String, WarpGroup> groups = Maps.newHashMap();
-        for (Warp w : warps) {
+        for (Warp w : warps.values()
+        ) {
             SledgehammerServer server = ServerHandler.getInstance().getServer(w.getServer());
             if (server == null) {
                 continue;
@@ -323,7 +302,7 @@ public class WarpHandler {
 
         List<WarpGroup> groupsList = new ArrayList<>();
 
-        for (Warp w : warps) {
+        for (Warp w : warps.values()) {
             SledgehammerServer server = ServerHandler.getInstance().getServer(w.getServer());
             if (server == null) {
                 continue;
@@ -367,7 +346,7 @@ public class WarpHandler {
             return generateMultiWarpID();
         }
         int x = -1;
-        for (Warp w : warps) {
+        for (Warp w : warps.values()) {
             if (w.getId() > x) {
                 x = w.getId();
             }

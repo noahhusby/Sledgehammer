@@ -123,7 +123,7 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
         }
 
         List<Warp> warps = new ArrayList<>();
-        for (Warp w : WarpHandler.getInstance().getWarps()) {
+        for (Warp w : WarpHandler.getInstance().getWarps().values()) {
             if (w.getPinned() == Warp.PinnedMode.GLOBAL || !ConfigHandler.localWarp
                 || w.getServer().equalsIgnoreCase(SledgehammerUtil.getServerFromSender(sender).getName())) {
                 warps.add(w);
@@ -163,7 +163,7 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
             ServerGroup group = s.getGroup();
 
             List<String> tabbedWarps = new ArrayList<>();
-            for (Warp w : WarpHandler.getInstance().getWarps()) {
+            for (Warp w : WarpHandler.getInstance().getWarps().values()) {
                 if (group.getServers().contains(w.getServer())) {
                     tabbedWarps.add(w.getName());
                 }

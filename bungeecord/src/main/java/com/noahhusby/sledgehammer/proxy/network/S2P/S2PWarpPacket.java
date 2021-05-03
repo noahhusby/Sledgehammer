@@ -51,12 +51,7 @@ public class S2PWarpPacket extends S2PPacket {
         }
         int warpId = data.get("warpId").getAsInt();
 
-        Warp warp = null;
-        for (Warp w : WarpHandler.getInstance().getWarps()) {
-            if (w.getId() == warpId) {
-                warp = w;
-            }
-        }
+        Warp warp = WarpHandler.getInstance().getWarp(warpId);
 
         if (warp == null) {
             player.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "That warp does not exist!"));
