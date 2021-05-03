@@ -23,7 +23,6 @@ import com.noahhusby.sledgehammer.common.warps.Warp;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
-import com.noahhusby.sledgehammer.proxy.gui.GUIHandler;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
 import com.noahhusby.sledgehammer.proxy.network.P2S.P2STeleportPacket;
 import com.noahhusby.sledgehammer.proxy.network.PacketInfo;
@@ -40,13 +39,8 @@ public class S2PWarpPacket extends S2PPacket {
 
     @Override
     public void onMessage(PacketInfo info, JsonObject data) {
-        if (!GUIHandler.getInstance().validateRequest(SledgehammerPlayer.getPlayer(info.getSender()), data.get("salt").getAsString())) {
-            return;
-        }
-
-
         SledgehammerPlayer player = SledgehammerPlayer.getPlayer(info.getSender());
-        if (player == null) {
+        if (player == null || !player.validateAction(data.get("salt").getAsString())) {
             return;
         }
         int warpId = data.get("warpId").getAsInt();

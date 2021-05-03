@@ -24,7 +24,6 @@ import com.noahhusby.sledgehammer.common.warps.Warp;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
-import com.noahhusby.sledgehammer.proxy.gui.GUIHandler;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
 import com.noahhusby.sledgehammer.proxy.network.P2S.P2SWarpConfigPacket;
 import com.noahhusby.sledgehammer.proxy.network.PacketInfo;
@@ -42,12 +41,11 @@ public class S2PWarpConfigPacket extends S2PPacket {
 
     @Override
     public void onMessage(PacketInfo info, JsonObject packet) {
-        if (!GUIHandler.getInstance().validateRequest(SledgehammerPlayer.getPlayer(info.getSender()), packet.get("salt").getAsString())) {
-            return;
-        }
-
         JsonObject data = packet.getAsJsonObject("data");
         SledgehammerPlayer player = SledgehammerPlayer.getPlayer(info.getSender());
+        if(!player.validateAction(packet.get("salt").getAsString())) {
+            return;
+        }
         JsonObject response = new JsonObject();
         boolean g = PermissionHandler.getInstance().isAdmin(player) || player.hasPermission("sledgehammer.warp.edit");
 

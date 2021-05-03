@@ -62,6 +62,8 @@ public class SledgehammerPlayer implements ProxiedPlayer {
     private Point track;
     Map<String, Object> attributes = Maps.newHashMap();
 
+    private String trackSalt = null;
+
     public SledgehammerPlayer(ProxiedPlayer player) {
         this.player = player;
     }
@@ -475,6 +477,23 @@ public class SledgehammerPlayer implements ProxiedPlayer {
             return false;
         }
         return attributes.get(key).equals(object);
+    }
+
+    /**
+     * Creates a one time use tracking code
+     * @return Tracking Salt Code
+     */
+    public String trackAction() {
+        return trackSalt = SledgehammerUtil.getSaltString();
+    }
+
+    /**
+     * Validates a one time salt code
+     * @param salt Salt Code
+     * @return True if valid, false if not
+     */
+    public boolean validateAction(String salt) {
+        return this.trackSalt.equals(salt);
     }
 
     /**

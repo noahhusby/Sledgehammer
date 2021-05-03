@@ -32,7 +32,6 @@ import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
-import com.noahhusby.sledgehammer.proxy.gui.GUIHandler;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
 import com.noahhusby.sledgehammer.proxy.network.P2S.P2SSetwarpPacket;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
@@ -279,7 +278,7 @@ public class WarpHandler {
         } else if (player.checkAttribute("WARP_SORT", WarpPayload.Page.PINNED.name())) {
             page = WarpPayload.Page.PINNED;
         }
-        return SledgehammerUtil.GSON.toJsonTree(new WarpPayload(page, override, editAccess, local, localGroup, GUIHandler.getInstance().track(player), Lists.newArrayList(groups.values()))).getAsJsonObject();
+        return SledgehammerUtil.GSON.toJsonTree(new WarpPayload(page, override, editAccess, local, localGroup, player.trackAction(), Lists.newArrayList(groups.values()))).getAsJsonObject();
     }
 
     /**
