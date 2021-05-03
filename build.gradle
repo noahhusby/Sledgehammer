@@ -18,7 +18,7 @@ allprojects {
     ext {
         sledgehammerVersion = "0.4.3." + ('git rev-list --count HEAD'.execute().text.trim()) + "-1.12.2"
 
-        husbyVersion = "12d71f0dd4"
+        husbyVersion = "3c6ad811b2"
         lombokVersion = "1.18.18"
     }
 
@@ -54,8 +54,7 @@ allprojects {
             compile project(":common")
         }
 
-        // TODO: Remove SQL dependency from HusbyLib and move it to bungee only
-        compile "com.github.noahhusby:HusbyLib:$husbyVersion"
+        compile "com.github.noahhusby.HusbyLib:data:$husbyVersion"
 
         compileOnly "org.projectlombok:lombok:$lombokVersion"
         testCompileOnly "org.projectlombok:lombok:$lombokVersion"

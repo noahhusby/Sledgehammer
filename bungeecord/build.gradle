@@ -1,4 +1,4 @@
 dependencies {
     compileOnly "net.md-5:bungeecord-api:1.16-R0.5-SNAPSHOT"
-    compile "com.github.noahhusby:HusbyLib:$husbyVersion"
+    compile "com.zaxxer:HikariCP:4.0.3"
 }
