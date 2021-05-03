@@ -1,8 +1,8 @@
-package com.noahhusby.sledgehammer.proxy.addons.terramap.network.packets.mapsync;
+package com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync;
 
-import com.noahhusby.sledgehammer.proxy.addons.terramap.RemoteSynchronizer;
-import com.noahhusby.sledgehammer.proxy.addons.terramap.TerramapAddon;
-import com.noahhusby.sledgehammer.proxy.addons.terramap.network.packets.IForgePacket;
+import com.noahhusby.sledgehammer.proxy.terramap.RemoteSynchronizer;
+import com.noahhusby.sledgehammer.proxy.terramap.TerramapAddon;
+import com.noahhusby.sledgehammer.proxy.terramap.network.packets.IForgePacket;
 import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
 import com.noahhusby.sledgehammer.proxy.players.PlayerManager;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;

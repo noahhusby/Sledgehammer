@@ -1,7 +1,7 @@
-package com.noahhusby.sledgehammer.proxy.addons.terramap.commands;
+package com.noahhusby.sledgehammer.proxy.terramap.commands;
 
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
-import com.noahhusby.sledgehammer.proxy.addons.terramap.TerramapVersion;
+import com.noahhusby.sledgehammer.proxy.terramap.TerramapVersion;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.BaseComponent;

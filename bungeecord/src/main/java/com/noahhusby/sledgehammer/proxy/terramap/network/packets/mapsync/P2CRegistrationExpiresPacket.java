@@ -1,6 +1,6 @@
-package com.noahhusby.sledgehammer.proxy.addons.terramap.network.packets.mapsync;
+package com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync;
 
-import com.noahhusby.sledgehammer.proxy.addons.terramap.network.packets.IForgePacket;
+import com.noahhusby.sledgehammer.proxy.terramap.network.packets.IForgePacket;
 import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

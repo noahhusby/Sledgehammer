@@ -1,8 +1,8 @@
-package com.noahhusby.sledgehammer.proxy.addons.terramap;
+package com.noahhusby.sledgehammer.proxy.terramap;
 
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
-import com.noahhusby.sledgehammer.proxy.addons.terramap.network.packets.mapsync.P2CPlayerSyncPacket;
-import com.noahhusby.sledgehammer.proxy.addons.terramap.network.packets.mapsync.P2CRegistrationExpiresPacket;
+import com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync.P2CPlayerSyncPacket;
+import com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync.P2CRegistrationExpiresPacket;
 import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
 import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.proxy.players.PlayerManager;

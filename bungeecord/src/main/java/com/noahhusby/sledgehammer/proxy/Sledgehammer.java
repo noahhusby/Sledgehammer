@@ -20,8 +20,7 @@ package com.noahhusby.sledgehammer.proxy;
 
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.noahhusby.sledgehammer.proxy.addons.AddonManager;
-import com.noahhusby.sledgehammer.proxy.addons.terramap.TerramapAddon;
+import com.noahhusby.sledgehammer.proxy.terramap.TerramapAddon;
 import com.noahhusby.sledgehammer.proxy.commands.BorderCommand;
 import com.noahhusby.sledgehammer.proxy.commands.CsTpllCommand;
 import com.noahhusby.sledgehammer.proxy.commands.SledgehammerAdminCommand;
@@ -59,9 +58,6 @@ public class Sledgehammer extends Plugin implements Listener {
     private static Sledgehammer instance;
 
     @Getter
-    private final AddonManager addonManager = AddonManager.getInstance();
-
-    @Getter
     private final ThreadHandler threadHandler = new ThreadHandler();
 
     @Override
@@ -70,7 +66,7 @@ public class Sledgehammer extends Plugin implements Listener {
         logger = getLogger();
         threadHandler.generalThreads.setRemoveOnCancelPolicy(true);
         ConfigHandler.getInstance().init(getDataFolder());
-        ModuleHandler.getInstance().registerModules(PlayerManager.getInstance(), AddonManager.getInstance(), NetworkHandler.getInstance(), OpenStreetMaps.getInstance());
+        ModuleHandler.getInstance().registerModules(PlayerManager.getInstance(), NetworkHandler.getInstance(), OpenStreetMaps.getInstance());
         load();
     }
 
@@ -79,7 +75,6 @@ public class Sledgehammer extends Plugin implements Listener {
         removeListener(this);
         threadHandler.stop();
         ProxyServer.getInstance().getPluginManager().unregisterCommands(this);
-        addonManager.onDisable();
         ModuleHandler.getInstance().disableAll();
         ConfigHandler.getInstance().unload();
     }
@@ -99,7 +94,6 @@ public class Sledgehammer extends Plugin implements Listener {
         ConfigHandler.getInstance().load();
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerCommand());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerAdminCommand());
-        ModuleHandler.getInstance().enableAll();
         threadHandler.start();
 
         if (!ConfigHandler.getInstance().isAuthCodeConfigured()) {
@@ -110,8 +104,14 @@ public class Sledgehammer extends Plugin implements Listener {
             return;
         }
 
-        if (ConfigHandler.terramapEnabled) {
-            addonManager.registerAddon(new TerramapAddon());
+        if (ConfigHandler.terramapEnabled && TerramapAddon.instance == null) {
+            ModuleHandler.getInstance().registerModule(new TerramapAddon());
+            ModuleHandler.getInstance().enable(TerramapAddon.instance);
+        } else if(ConfigHandler.terramapEnabled) {
+            ModuleHandler.getInstance().enable(TerramapAddon.instance);
+        } else if(TerramapAddon.instance != null && ModuleHandler.getInstance().getModules().containsKey(TerramapAddon.instance)) {
+            ModuleHandler.getInstance().disable(TerramapAddon.instance);
+            ModuleHandler.getInstance().getModules().remove(TerramapAddon.instance);
         }
 
         if (!ConfigHandler.warpCommand.equals("")) {
@@ -146,6 +146,8 @@ public class Sledgehammer extends Plugin implements Listener {
             threadHandler.add(thread -> thread.scheduleAtFixedRate(new BorderCheckerThread(), 0, 10, TimeUnit.SECONDS));
             threadHandler.add(thread -> thread.scheduleAtFixedRate(new FlaggedBorderCheckerThread(), 0, 5, TimeUnit.SECONDS));
         }
+
+        ModuleHandler.getInstance().enableAll();
     }
 
     /**

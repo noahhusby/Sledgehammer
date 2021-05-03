@@ -1,4 +1,4 @@
-package com.noahhusby.sledgehammer.proxy.addons.terramap.network;
+package com.noahhusby.sledgehammer.proxy.terramap.network;
 
 /**
  * Thrown when failing to encode a packet

@@ -1,10 +1,10 @@
-package com.noahhusby.sledgehammer.proxy.addons.terramap;
+package com.noahhusby.sledgehammer.proxy.terramap;
 
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
-import com.noahhusby.sledgehammer.proxy.addons.terramap.network.packets.P2CMapStylePacket;
+import com.noahhusby.sledgehammer.proxy.terramap.network.packets.P2CMapStylePacket;
 
 import java.io.File;
 import java.io.IOException;

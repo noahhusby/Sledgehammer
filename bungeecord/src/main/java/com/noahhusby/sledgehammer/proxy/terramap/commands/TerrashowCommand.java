@@ -1,11 +1,10 @@
-package com.noahhusby.sledgehammer.proxy.addons.terramap.commands;
+package com.noahhusby.sledgehammer.proxy.terramap.commands;
 
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
-import com.noahhusby.sledgehammer.proxy.addons.terramap.PlayerDisplayPreferences;
-import com.noahhusby.sledgehammer.proxy.addons.terramap.TerramapAddon;
-import com.noahhusby.sledgehammer.proxy.addons.terramap.TerramapVersion;
-import com.noahhusby.sledgehammer.proxy.addons.terramap.TerramapVersion.ReleaseType;
-import com.noahhusby.sledgehammer.proxy.addons.terramap.commands.TranslationContextBuilder.TranslationContext;
+import com.noahhusby.sledgehammer.proxy.terramap.PlayerDisplayPreferences;
+import com.noahhusby.sledgehammer.proxy.terramap.TerramapAddon;
+import com.noahhusby.sledgehammer.proxy.terramap.TerramapVersion;
+import com.noahhusby.sledgehammer.proxy.terramap.TerramapVersion.ReleaseType;
 import com.noahhusby.sledgehammer.proxy.commands.Command;
 import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.proxy.players.PlayerManager;
@@ -53,7 +52,7 @@ public class TerrashowCommand extends Command implements TabExecutor {
     @Override
     public void execute(CommandSender sender, String[] args) {
 
-        TranslationContext context = this.translation.createContext(sender);
+        TranslationContextBuilder.TranslationContext context = this.translation.createContext(sender);
 
         ProxiedPlayer player;
         ProxiedPlayer senderPlayer = sender instanceof ProxiedPlayer ? (ProxiedPlayer) sender : null;

@@ -1,4 +1,4 @@
-package com.noahhusby.sledgehammer.proxy.addons.terramap.network.packets.mapsync;
+package com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync;
 
 /**
  * Indicates how a Terramap server or proxy supports player synchronization.

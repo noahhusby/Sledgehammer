@@ -16,21 +16,21 @@
  *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
-package com.noahhusby.sledgehammer.proxy.addons.terramap;
+package com.noahhusby.sledgehammer.proxy.terramap;
 
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
-import com.noahhusby.sledgehammer.proxy.addons.Addon;
-import com.noahhusby.sledgehammer.proxy.addons.terramap.TerramapVersion.ReleaseType;
-import com.noahhusby.sledgehammer.proxy.addons.terramap.commands.TerrashowCommand;
-import com.noahhusby.sledgehammer.proxy.addons.terramap.network.ForgeChannel;
-import com.noahhusby.sledgehammer.proxy.addons.terramap.network.packets.P2CMapStylePacket;
-import com.noahhusby.sledgehammer.proxy.addons.terramap.network.packets.P2CSledgehammerHelloPacket;
-import com.noahhusby.sledgehammer.proxy.addons.terramap.network.packets.mapsync.C2PRegisterForUpdatePacket;
-import com.noahhusby.sledgehammer.proxy.addons.terramap.network.packets.mapsync.P2CPlayerSyncPacket;
-import com.noahhusby.sledgehammer.proxy.addons.terramap.network.packets.mapsync.P2CRegistrationExpiresPacket;
+import com.noahhusby.sledgehammer.proxy.modules.Module;
+import com.noahhusby.sledgehammer.proxy.modules.ModuleHandler;
+import com.noahhusby.sledgehammer.proxy.terramap.TerramapVersion.ReleaseType;
+import com.noahhusby.sledgehammer.proxy.terramap.commands.TerrashowCommand;
+import com.noahhusby.sledgehammer.proxy.terramap.network.ForgeChannel;
+import com.noahhusby.sledgehammer.proxy.terramap.network.packets.P2CMapStylePacket;
+import com.noahhusby.sledgehammer.proxy.terramap.network.packets.P2CSledgehammerHelloPacket;
+import com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync.C2PRegisterForUpdatePacket;
+import com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync.P2CPlayerSyncPacket;
+import com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync.P2CRegistrationExpiresPacket;
 import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 
@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author SmylerMC
  */
-public class TerramapAddon extends Addon {
+public class TerramapAddon implements Module, Listener {
 
     public static TerramapAddon instance;
 
@@ -66,7 +66,6 @@ public class TerramapAddon extends Addon {
 
     private UUID proxyUUID = new UUID(0, 0);
 
-
     public TerramapAddon() {
         instance = this;
     }
@@ -89,16 +88,6 @@ public class TerramapAddon extends Addon {
             this.syncTask = Sledgehammer.getInstance().getProxy().getScheduler().schedule(Sledgehammer.getInstance(), this.synchronizer::syncPlayers, 0, ConfigHandler.terramapSyncInterval, TimeUnit.MILLISECONDS);
         }
         ProxyServer.getInstance().getPluginManager().registerCommand(Sledgehammer.getInstance(), new TerrashowCommand());
-        Sledgehammer.logger.info("Enabled Terramap integration addon");
-    }
-
-    @Override
-    public void onPluginMessage(PluginMessageEvent event) {
-        if (event.getTag().equals(MAPSYNC_CHANNEL_NAME)) {
-            mapSyncChannel.process(event);
-        } else if (event.getTag().equals(SLEDGEHAMMER_CHANNEL_NAME)) {
-            sledgehammerChannel.process(event);
-        }
     }
 
     @Override
@@ -111,17 +100,14 @@ public class TerramapAddon extends Addon {
         if (this.syncTask != null) {
             Sledgehammer.getInstance().getProxy().getScheduler().cancel(this.syncTask);
         }
-        // We don't need to unregister commands, Sledgehammer should be taking care of it already when the plugin gets enabled
-        Sledgehammer.logger.info("Disabled Terramap integration add-on");
     }
 
     @Override
-    public String[] getMessageChannels() {
-        return new String[]{ SLEDGEHAMMER_CHANNEL_NAME, MAPSYNC_CHANNEL_NAME };
+    public String getModuleName() {
+        return "TerraMap";
     }
 
     public UUID getProxyUUID() {
         return this.proxyUUID;
     }
-
 }

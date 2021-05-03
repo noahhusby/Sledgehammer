@@ -1,4 +1,4 @@
-package com.noahhusby.sledgehammer.proxy.addons.terramap;
+package com.noahhusby.sledgehammer.proxy.terramap;
 
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 
