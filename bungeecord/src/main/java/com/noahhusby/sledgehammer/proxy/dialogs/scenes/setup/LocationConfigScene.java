@@ -45,17 +45,13 @@ public class LocationConfigScene extends DialogScene {
     public void onFinish() {
         String v = getValue("location").trim().toLowerCase();
         if (v.equals("add")) {
-            DialogHandler.getInstance().discardDialog(this);
-            DialogHandler.getInstance().startDialog(getCommandSender(), new LocationSelectionScene(server, new LocationConfigScene(server)));
+            discardAndStart(new LocationSelectionScene(server, new LocationConfigScene(server)));
         } else if (v.equals("finish")) {
-            DialogHandler.getInstance().discardDialog(this);
-            DialogHandler.getInstance().startDialog(getCommandSender(), new ConfigScene(server, true));
+            discardAndStart(new ConfigScene(server, true));
         } else if (v.equals("remove")) {
-            DialogHandler.getInstance().discardDialog(this);
-            DialogHandler.getInstance().startDialog(getCommandSender(), new LocationRemovalScene(server, new LocationConfigScene(server)));
+            discardAndStart(new LocationRemovalScene(server, new LocationConfigScene(server)));
         } else if (v.equals("list")) {
-            DialogHandler.getInstance().discardDialog(this);
-            DialogHandler.getInstance().startDialog(getCommandSender(), new LocationListScene(server, new LocationConfigScene(server)));
+            discardAndStart(new LocationListScene(server, new LocationConfigScene(server)));
         }
     }
 

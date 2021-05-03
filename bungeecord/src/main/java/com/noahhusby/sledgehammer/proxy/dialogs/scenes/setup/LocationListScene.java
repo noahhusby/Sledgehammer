@@ -44,9 +44,9 @@ public class LocationListScene extends DialogScene {
 
     @Override
     public void onFinish() {
-        DialogHandler.getInstance().discardDialog(this);
+        discard();
         if (scene != null) {
-            DialogHandler.getInstance().startDialog(getCommandSender(), scene);
+            start(scene);
         }
     }
 

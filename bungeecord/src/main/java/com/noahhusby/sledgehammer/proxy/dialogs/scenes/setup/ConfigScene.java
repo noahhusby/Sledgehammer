@@ -92,7 +92,7 @@ public class ConfigScene extends DialogScene {
     public void onToolbarAction(String m) {
         if (m.equals("exit")) {
             getCommandSender().sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Finished the setup dialog!"));
-            DialogHandler.getInstance().discardDialog(this);
+            discard();
         } else if (m.equals("@")) {
             progressDialog("");
         }
@@ -120,25 +120,25 @@ public class ConfigScene extends DialogScene {
             if (response.equals("yes") || response.equals("y")) {
                 progressDialog(response, true);
             } else if (response.equals("no") || response.equals("n")) {
-                DialogHandler.getInstance().discardDialog(this);
+                discard();
 
                 List<ServerInfo> servers = ServerHandler.getInstance().getBungeeServers();
                 ServerInfo currentServer = this.server;
 
                 if (indexOf(currentServer) + 2 > servers.size()) {
                     getCommandSender().sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Finished the setup dialog!"));
-                    DialogHandler.getInstance().discardDialog(this);
+                    discard();
                     return;
                 }
 
-                DialogHandler.getInstance().startDialog(sender, new ConfigScene(server, true));
+                start(new ConfigScene(server, true));
             }
         } else if (getCurrentComponent() instanceof EarthServerComponent) {
             String response = getValue("earth").trim().toLowerCase();
             if (response.equals("yes") || response.equals("y")) {
                 progressDialog(response, true);
             } else if (response.equals("no") || response.equals("n")) {
-                DialogHandler.getInstance().discardDialog(this);
+                discard();
 
                 SledgehammerServer s = ServerHandler.getInstance().getServers().containsKey(server.getName()) ? ServerHandler.getInstance().getServer(server.getName()) : new SledgehammerServer(server.getName());
                 s.setEarthServer(false);

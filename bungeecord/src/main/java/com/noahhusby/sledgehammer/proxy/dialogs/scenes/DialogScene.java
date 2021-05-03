@@ -145,4 +145,17 @@ public abstract class DialogScene implements IDialogScene {
 
         return "";
     }
+
+    protected void discard() {
+        DialogHandler.getInstance().discardDialog(this);
+    }
+
+    protected void start(DialogScene scene) {
+        DialogHandler.getInstance().startDialog(getCommandSender(), scene);
+    }
+
+    protected void discardAndStart(DialogScene scene) {
+        discard();
+        start(scene);
+    }
 }

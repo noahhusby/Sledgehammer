@@ -60,8 +60,7 @@ public class LocationRemovalScene extends DialogScene {
         ServerHandler.getInstance().getServers().saveAsync();
 
         if (scene != null) {
-            DialogHandler.getInstance().discardDialog(this);
-            DialogHandler.getInstance().startDialog(getCommandSender(), scene);
+            discardAndStart(scene);
             return;
         }
 
