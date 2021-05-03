@@ -24,13 +24,12 @@ import com.noahhusby.lib.data.sql.MySQL;
 import com.noahhusby.lib.data.sql.structure.Structure;
 import com.noahhusby.lib.data.sql.structure.Type;
 import com.noahhusby.lib.data.storage.Storage;
-import com.noahhusby.lib.data.storage.compare.Comparator;
 import com.noahhusby.lib.data.storage.handlers.LocalStorageHandler;
 import com.noahhusby.lib.data.storage.handlers.SQLStorageHandler;
-import com.noahhusby.lib.data.storage.handlers.StorageHandler;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.addons.terramap.MapStyleRegistry;
 import com.noahhusby.sledgehammer.proxy.players.PlayerManager;
+import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 
 import java.io.File;
@@ -39,10 +38,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-public class ConfigHandler {
+public class ConfigHandler extends Config {
     private static ConfigHandler instance = null;
 
     public static ConfigHandler getInstance() {
@@ -107,6 +105,7 @@ public class ConfigHandler {
      *
      * @param dataFolder Sledgehammer plugin folder
      */
+    @Override
     public void init(File dataFolder) {
         this.dataFolder = dataFolder;
         localStorage = new File(dataFolder, "local");
@@ -124,27 +123,22 @@ public class ConfigHandler {
 
         config = new net.minecraftforge.common.config.Configuration(new File(dataFolder, "sledgehammer.cfg"));
 
-        loadData();
+        load();
     }
 
-    /**
-     * Reloads all data/data fields. Called upon startup or reload
-     */
-    public void loadData() {
+    @Override
+    public void load() {
+        onPreLoad();
         Storage serverData = ServerHandler.getInstance().getServers();
-        Map<StorageHandler, Comparator> serverComparators = Maps.newHashMap(serverData.getHandlers());
         serverData.clearHandlers();
 
         Storage warpData = WarpHandler.getInstance().getWarps();
-        Map<StorageHandler, Comparator> warpComparators = Maps.newHashMap(warpData.getHandlers());
         warpData.clearHandlers();
 
         Storage attributeData = PlayerManager.getInstance().getAttributes();
-        Map<StorageHandler, Comparator> attributeComparators = Maps.newHashMap(attributeData.getHandlers());
         attributeData.clearHandlers();
 
         Storage serverGroups = ServerHandler.getInstance().getGroups();
-        Map<StorageHandler, Comparator> groupComparators = Maps.newHashMap(serverGroups.getHandlers());
         serverGroups.clearHandlers();
 
         config.load();
@@ -241,45 +235,13 @@ public class ConfigHandler {
             MapStyleRegistry.loadFromConfigFile();
         }
 
-        {
-            Comparator comparator = getFromType(serverComparators, h -> h instanceof LocalStorageHandler);
-            if (comparator == null) {
-                serverData.registerHandler(new LocalStorageHandler(ConfigHandler.serverFile));
-            } else {
-                serverData.registerHandler(new LocalStorageHandler(ConfigHandler.serverFile), comparator);
-            }
-        }
-
-        {
-            Comparator comparator = getFromType(warpComparators, h -> h instanceof LocalStorageHandler);
-            if (comparator == null) {
-                warpData.registerHandler(new LocalStorageHandler(ConfigHandler.warpFile));
-            } else {
-                warpData.registerHandler(new LocalStorageHandler(ConfigHandler.warpFile), comparator);
-            }
-        }
-
-        {
-            Comparator comparator = getFromType(attributeComparators, h -> h instanceof LocalStorageHandler);
-            if (comparator == null) {
-                attributeData.registerHandler(new LocalStorageHandler(ConfigHandler.attributeFile));
-            } else {
-                attributeData.registerHandler(new LocalStorageHandler(ConfigHandler.attributeFile), comparator);
-            }
-        }
-
-        {
-            Comparator comparator = getFromType(groupComparators, h -> h instanceof LocalStorageHandler);
-            if (comparator == null) {
-                serverGroups.registerHandler(new LocalStorageHandler(ConfigHandler.groupsFile));
-            } else {
-                serverGroups.registerHandler(new LocalStorageHandler(ConfigHandler.groupsFile), comparator);
-            }
-        }
+        serverData.registerHandler(new LocalStorageHandler(ConfigHandler.serverFile));
+        warpData.registerHandler(new LocalStorageHandler(ConfigHandler.warpFile));
+        attributeData.registerHandler(new LocalStorageHandler(ConfigHandler.attributeFile));
+        serverGroups.registerHandler(new LocalStorageHandler(ConfigHandler.groupsFile));
 
         if (useSql) {
             {
-                Comparator comparator = getFromType(serverComparators, h -> h instanceof SQLStorageHandler);
                 SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(
                         new Credentials(sqlHost, sqlPort, sqlUser, sqlPassword, sqlDb)), "Servers",
                         Structure.builder()
@@ -293,21 +255,10 @@ public class ConfigHandler {
                                 .repair(true)
                                 .build());
                 sqlStorageHandler.setPriority(100);
-                if (comparator == null) {
-                    serverData.registerHandler(sqlStorageHandler);
-                } else {
-                    serverData.registerHandler(sqlStorageHandler, comparator);
-                }
+                serverData.registerHandler(sqlStorageHandler);
             }
 
             {
-                Comparator comparator = getFromType(warpComparators, h -> h instanceof SQLStorageHandler);
-                for (Map.Entry<StorageHandler, Comparator> e : warpData.getHandlers().entrySet()) {
-                    if (e.getKey() instanceof SQLStorageHandler) {
-                        comparator = e.getValue();
-                        break;
-                    }
-                }
                 SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(
                         new Credentials(sqlHost, sqlPort, sqlUser, sqlPassword, sqlDb)), "Warps",
                         Structure.builder()
@@ -320,15 +271,10 @@ public class ConfigHandler {
                                 .repair(true)
                                 .build());
                 sqlStorageHandler.setPriority(100);
-                if (comparator == null) {
-                    warpData.registerHandler(sqlStorageHandler);
-                } else {
-                    warpData.registerHandler(sqlStorageHandler, comparator);
-                }
+                warpData.registerHandler(sqlStorageHandler);
             }
 
             {
-                Comparator comparator = getFromType(attributeComparators, h -> h instanceof SQLStorageHandler);
                 SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(
                         new Credentials(sqlHost, sqlPort, sqlUser, sqlPassword, sqlDb)), "Attributes",
                         Structure.builder()
@@ -337,15 +283,10 @@ public class ConfigHandler {
                                 .repair(true)
                                 .build());
                 sqlStorageHandler.setPriority(100);
-                if (comparator == null) {
-                    attributeData.registerHandler(sqlStorageHandler);
-                } else {
-                    attributeData.registerHandler(sqlStorageHandler, comparator);
-                }
+                attributeData.registerHandler(sqlStorageHandler);
             }
 
             {
-                Comparator comparator = getFromType(groupComparators, h -> h instanceof SQLStorageHandler);
                 SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(
                         new Credentials(sqlHost, sqlPort, sqlUser, sqlPassword, sqlDb)), "ServerGroups",
                         Structure.builder()
@@ -357,13 +298,11 @@ public class ConfigHandler {
                                 .repair(true)
                                 .build());
                 sqlStorageHandler.setPriority(100);
-                if (comparator == null) {
-                    serverGroups.registerHandler(sqlStorageHandler);
-                } else {
-                    serverGroups.registerHandler(sqlStorageHandler, comparator);
-                }
+                serverGroups.registerHandler(sqlStorageHandler);
             }
         }
+
+        onPostLoad();
 
         serverData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
         warpData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
@@ -375,7 +314,12 @@ public class ConfigHandler {
             warpData.loadAsync();
             attributeData.loadAsync();
             serverGroups.loadAsync();
-        }, 5, TimeUnit.SECONDS));
+        }, 10, TimeUnit.SECONDS));
+    }
+
+    @Override
+    public void unload() {
+
     }
 
     /**
@@ -392,8 +336,8 @@ public class ConfigHandler {
      */
     public void reload() {
         Sledgehammer.logger.info("Reloaded the config");
-        loadData();
-        Sledgehammer.sledgehammer.registerFromConfig();
+        unload();
+        load();
     }
 
     /**
@@ -430,14 +374,5 @@ public class ConfigHandler {
 
     private void order() {
         config.setCategoryPropertyOrder(category, categories.get(category));
-    }
-
-    private Comparator getFromType(Map<StorageHandler, Comparator> map, Predicate<StorageHandler> predicate) {
-        for (Map.Entry<StorageHandler, Comparator> e : map.entrySet()) {
-            if (predicate.test(e.getKey())) {
-                return e.getValue();
-            }
-        }
-        return null;
     }
 }

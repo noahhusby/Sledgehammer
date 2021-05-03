@@ -20,9 +20,8 @@ package com.noahhusby.sledgehammer.proxy;
 
 import com.noahhusby.sledgehammer.common.CommonUtil;
 import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
-import com.noahhusby.sledgehammer.proxy.config.ServerHandler;
-import com.noahhusby.sledgehammer.proxy.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
+import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.CommandSender;

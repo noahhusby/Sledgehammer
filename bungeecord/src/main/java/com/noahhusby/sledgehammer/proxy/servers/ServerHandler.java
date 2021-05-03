@@ -16,11 +16,10 @@
  *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
-package com.noahhusby.sledgehammer.proxy.config;
+package com.noahhusby.sledgehammer.proxy.servers;
 
 import com.google.common.collect.Maps;
 import com.noahhusby.lib.data.storage.StorageHashMap;
-import com.noahhusby.lib.data.storage.StorageList;
 import com.noahhusby.lib.data.storage.StorageTreeMap;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.datasets.Location;

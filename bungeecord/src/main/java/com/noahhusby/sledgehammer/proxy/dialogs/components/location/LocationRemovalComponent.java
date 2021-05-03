@@ -19,9 +19,9 @@
 package com.noahhusby.sledgehammer.proxy.dialogs.components.location;
 
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
-import com.noahhusby.sledgehammer.proxy.config.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.datasets.Location;
 import com.noahhusby.sledgehammer.proxy.dialogs.components.DialogComponent;
+import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;

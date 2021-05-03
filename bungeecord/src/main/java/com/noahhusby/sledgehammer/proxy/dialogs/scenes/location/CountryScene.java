@@ -19,12 +19,12 @@
 package com.noahhusby.sledgehammer.proxy.dialogs.scenes.location;
 
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
-import com.noahhusby.sledgehammer.proxy.config.ServerHandler;
-import com.noahhusby.sledgehammer.proxy.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.proxy.datasets.Location;
 import com.noahhusby.sledgehammer.proxy.dialogs.DialogHandler;
 import com.noahhusby.sledgehammer.proxy.dialogs.components.location.CountryComponent;
 import com.noahhusby.sledgehammer.proxy.dialogs.scenes.DialogScene;
+import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
+import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.config.ServerInfo;
 

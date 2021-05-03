@@ -20,9 +20,9 @@ package com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server;
 
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.proxy.config.ServerGroup;
-import com.noahhusby.sledgehammer.proxy.config.ServerHandler;
-import com.noahhusby.sledgehammer.proxy.config.SledgehammerServer;
+import com.noahhusby.sledgehammer.proxy.servers.ServerGroup;
+import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
+import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 

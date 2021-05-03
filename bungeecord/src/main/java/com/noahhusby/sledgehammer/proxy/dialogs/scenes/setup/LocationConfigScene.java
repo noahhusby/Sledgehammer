@@ -19,7 +19,6 @@
 package com.noahhusby.sledgehammer.proxy.dialogs.scenes.setup;
 
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
-import com.noahhusby.sledgehammer.proxy.dialogs.DialogHandler;
 import com.noahhusby.sledgehammer.proxy.dialogs.components.setup.LocationMenuComponent;
 import com.noahhusby.sledgehammer.proxy.dialogs.scenes.DialogScene;
 import com.noahhusby.sledgehammer.proxy.dialogs.scenes.location.LocationSelectionScene;

@@ -20,9 +20,9 @@ package com.noahhusby.sledgehammer.proxy.network.S2P;
 
 import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.proxy.Constants;
-import com.noahhusby.sledgehammer.proxy.config.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.network.PacketInfo;
 import com.noahhusby.sledgehammer.proxy.network.S2PPacket;
+import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 
 public class S2PInitializationPacket extends S2PPacket {
     @Override

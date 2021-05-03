@@ -23,8 +23,8 @@ import com.google.gson.JsonObject;
 import com.noahhusby.lib.data.JsonUtils;
 import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
-import com.noahhusby.sledgehammer.proxy.config.ServerHandler;
-import com.noahhusby.sledgehammer.proxy.config.SledgehammerServer;
+import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
+import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
 import net.md_5.bungee.api.config.ServerInfo;
 
 import java.io.BufferedReader;

@@ -16,7 +16,7 @@
  *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
-package com.noahhusby.sledgehammer.proxy.config;
+package com.noahhusby.sledgehammer.proxy.servers;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

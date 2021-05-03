@@ -21,12 +21,12 @@ package com.noahhusby.sledgehammer.proxy.commands.fragments.warps;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.commands.WarpCommand;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.proxy.config.SledgehammerServer;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
 import com.noahhusby.sledgehammer.proxy.network.P2S.P2SWarpGUIPacket;
 import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.proxy.permissions.PermissionRequest;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
+import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
 import net.md_5.bungee.api.CommandSender;
 
 public class WarpMenuFragment implements ICommandFragment {

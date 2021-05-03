@@ -29,11 +29,12 @@ import com.noahhusby.sledgehammer.proxy.commands.SledgehammerCommand;
 import com.noahhusby.sledgehammer.proxy.commands.TpllCommand;
 import com.noahhusby.sledgehammer.proxy.commands.TplloCommand;
 import com.noahhusby.sledgehammer.proxy.commands.WarpCommand;
+import com.noahhusby.sledgehammer.proxy.config.ConfigChild;
 import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
-import com.noahhusby.sledgehammer.proxy.config.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.proxy.players.BorderCheckerThread;
 import com.noahhusby.sledgehammer.proxy.players.FlaggedBorderCheckerThread;
+import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.md_5.bungee.api.ChatColor;
@@ -51,7 +52,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
-public class Sledgehammer extends Plugin implements Listener {
+public class Sledgehammer extends Plugin implements Listener, ConfigChild {
     public static Logger logger;
     public static Sledgehammer sledgehammer;
 
@@ -68,8 +69,8 @@ public class Sledgehammer extends Plugin implements Listener {
         threadHandler.generalThreads.setRemoveOnCancelPolicy(true);
 
         addListener(this);
+        ConfigHandler.getInstance().addChild(this);
         ConfigHandler.getInstance().init(getDataFolder());
-        registerFromConfig();
     }
 
     @Override
@@ -78,12 +79,37 @@ public class Sledgehammer extends Plugin implements Listener {
     }
 
     /**
-     * Called upon startup or reload. These are settings that can be changed without a restart
+     * Add a new listener to the Sledgehammer plugin
+     *
+     * @param listener The Bungeecord listener
      */
-    public void registerFromConfig() {
+    public static void addListener(Listener listener) {
+        ProxyServer.getInstance().getPluginManager().registerListener(sledgehammer, listener);
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPlayerJoin(PostLoginEvent e) {
+        if (e.getPlayer().hasPermission("sledgehammer.admin") && !ConfigHandler.getInstance().isAuthCodeConfigured()) {
+            ChatUtil.sendAuthCodeWarning(e.getPlayer());
+        }
+    }
+
+    /**
+     * @param l
+     * @author SmylerMC
+     */
+    public static void terminateListener(Listener l) {
+        ProxyServer.getInstance().getPluginManager().unregisterListener(l);
+    }
+
+    @Override
+    public void onPreLoad() {
         threadHandler.stop();
         ProxyServer.getInstance().getPluginManager().unregisterCommands(this);
+    }
 
+    @Override
+    public void onPostLoad() {
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerCommand());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerAdminCommand());
 
@@ -140,30 +166,6 @@ public class Sledgehammer extends Plugin implements Listener {
         }
 
         OpenStreetMaps.getInstance().init();
-    }
-
-    /**
-     * Add a new listener to the Sledgehammer plugin
-     *
-     * @param listener The Bungeecord listener
-     */
-    public static void addListener(Listener listener) {
-        ProxyServer.getInstance().getPluginManager().registerListener(sledgehammer, listener);
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerJoin(PostLoginEvent e) {
-        if (e.getPlayer().hasPermission("sledgehammer.admin") && !ConfigHandler.getInstance().isAuthCodeConfigured()) {
-            ChatUtil.sendAuthCodeWarning(e.getPlayer());
-        }
-    }
-
-    /**
-     * @param l
-     * @author SmylerMC
-     */
-    public static void terminateListener(Listener l) {
-        ProxyServer.getInstance().getPluginManager().unregisterListener(l);
     }
 
     @NoArgsConstructor
