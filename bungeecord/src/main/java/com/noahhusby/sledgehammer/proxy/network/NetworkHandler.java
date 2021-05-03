@@ -25,6 +25,7 @@ import com.noahhusby.lib.data.JsonUtils;
 import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
+import com.noahhusby.sledgehammer.proxy.modules.Module;
 import com.noahhusby.sledgehammer.proxy.network.S2P.S2PInitializationPacket;
 import com.noahhusby.sledgehammer.proxy.network.S2P.S2PPermissionPacket;
 import com.noahhusby.sledgehammer.proxy.network.S2P.S2PPlayerUpdatePacket;
@@ -44,7 +45,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Map;
 
-public class NetworkHandler implements Listener {
+public class NetworkHandler implements Listener, Module {
     private static NetworkHandler instance = null;
 
     public static NetworkHandler getInstance() {
@@ -52,14 +53,6 @@ public class NetworkHandler implements Listener {
     }
 
     private NetworkHandler() {
-        Sledgehammer.addListener(this);
-        register(new S2PInitializationPacket());
-        register(new S2PSetwarpPacket());
-        register(new S2PTestLocationPacket());
-        register(new S2PWarpPacket());
-        register(new S2PPlayerUpdatePacket());
-        register(new S2PPermissionPacket());
-        register(new S2PWarpConfigPacket());
     }
 
     private final Map<String, S2PPacket> registeredPackets = new CaseInsensitiveMap<>();
@@ -124,5 +117,28 @@ public class NetworkHandler implements Listener {
         if (p != null) {
             p.onMessage(info, data);
         }
+    }
+
+    @Override
+    public void onEnable() {
+        Sledgehammer.addListener(this);
+        register(new S2PInitializationPacket());
+        register(new S2PSetwarpPacket());
+        register(new S2PTestLocationPacket());
+        register(new S2PWarpPacket());
+        register(new S2PPlayerUpdatePacket());
+        register(new S2PPermissionPacket());
+        register(new S2PWarpConfigPacket());
+    }
+
+    @Override
+    public void onDisable() {
+        Sledgehammer.removeListener(this);
+        registeredPackets.clear();
+    }
+
+    @Override
+    public String getModuleName() {
+        return "Network";
     }
 }

@@ -29,12 +29,13 @@ import com.noahhusby.sledgehammer.proxy.commands.SledgehammerCommand;
 import com.noahhusby.sledgehammer.proxy.commands.TpllCommand;
 import com.noahhusby.sledgehammer.proxy.commands.TplloCommand;
 import com.noahhusby.sledgehammer.proxy.commands.WarpCommand;
-import com.noahhusby.sledgehammer.proxy.config.ConfigChild;
 import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
 import com.noahhusby.sledgehammer.proxy.datasets.OpenStreetMaps;
+import com.noahhusby.sledgehammer.proxy.modules.ModuleHandler;
+import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
 import com.noahhusby.sledgehammer.proxy.players.BorderCheckerThread;
 import com.noahhusby.sledgehammer.proxy.players.FlaggedBorderCheckerThread;
-import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
+import com.noahhusby.sledgehammer.proxy.players.PlayerManager;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.md_5.bungee.api.ChatColor;
@@ -52,9 +53,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
-public class Sledgehammer extends Plugin implements Listener, ConfigChild {
+public class Sledgehammer extends Plugin implements Listener {
     public static Logger logger;
-    public static Sledgehammer sledgehammer;
+    @Getter
+    private static Sledgehammer instance;
 
     @Getter
     private final AddonManager addonManager = AddonManager.getInstance();
@@ -64,58 +66,41 @@ public class Sledgehammer extends Plugin implements Listener, ConfigChild {
 
     @Override
     public void onEnable() {
-        sledgehammer = this;
+        instance = this;
         logger = getLogger();
         threadHandler.generalThreads.setRemoveOnCancelPolicy(true);
-
-        addListener(this);
-        ConfigHandler.getInstance().addChild(this);
         ConfigHandler.getInstance().init(getDataFolder());
+        ModuleHandler.getInstance().registerModules(PlayerManager.getInstance(), AddonManager.getInstance(), NetworkHandler.getInstance(), OpenStreetMaps.getInstance());
+        load();
     }
 
     @Override
     public void onDisable() {
-        addonManager.onDisable();
-    }
-
-    /**
-     * Add a new listener to the Sledgehammer plugin
-     *
-     * @param listener The Bungeecord listener
-     */
-    public static void addListener(Listener listener) {
-        ProxyServer.getInstance().getPluginManager().registerListener(sledgehammer, listener);
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerJoin(PostLoginEvent e) {
-        if (e.getPlayer().hasPermission("sledgehammer.admin") && !ConfigHandler.getInstance().isAuthCodeConfigured()) {
-            ChatUtil.sendAuthCodeWarning(e.getPlayer());
-        }
-    }
-
-    /**
-     * @param l
-     * @author SmylerMC
-     */
-    public static void terminateListener(Listener l) {
-        ProxyServer.getInstance().getPluginManager().unregisterListener(l);
-    }
-
-    @Override
-    public void onPreLoad() {
+        removeListener(this);
         threadHandler.stop();
         ProxyServer.getInstance().getPluginManager().unregisterCommands(this);
+        addonManager.onDisable();
+        ModuleHandler.getInstance().disableAll();
+        ConfigHandler.getInstance().unload();
     }
 
-    @Override
-    public void onPostLoad() {
+    public void reload() {
+        Sledgehammer.logger.warning("Reloading Sledgehammer!");
+        Sledgehammer.logger.info("");
+        onDisable();
+        ConfigHandler.getInstance().reload();
+        load();
+        Sledgehammer.logger.info("");
+        Sledgehammer.logger.warning("Reloaded Sledgehammer!");
+    }
+
+    public void load() {
+        addListener(this);
+        ConfigHandler.getInstance().load();
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerCommand());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerAdminCommand());
-
-        ServerHandler.getInstance();
-
-        addonManager.onDisable();
+        ModuleHandler.getInstance().enableAll();
+        threadHandler.start();
 
         if (!ConfigHandler.getInstance().isAuthCodeConfigured()) {
             ChatUtil.sendMessageBox(ProxyServer.getInstance().getConsole(), ChatColor.DARK_RED + "WARNING", ChatUtil.combine(ChatColor.RED,
@@ -128,9 +113,6 @@ public class Sledgehammer extends Plugin implements Listener, ConfigChild {
         if (ConfigHandler.terramapEnabled) {
             addonManager.registerAddon(new TerramapAddon());
         }
-
-        addonManager.onEnable();
-        threadHandler.start();
 
         if (!ConfigHandler.warpCommand.equals("")) {
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new WarpCommand(ConfigHandler.warpCommand));
@@ -164,8 +146,31 @@ public class Sledgehammer extends Plugin implements Listener, ConfigChild {
             threadHandler.add(thread -> thread.scheduleAtFixedRate(new BorderCheckerThread(), 0, 10, TimeUnit.SECONDS));
             threadHandler.add(thread -> thread.scheduleAtFixedRate(new FlaggedBorderCheckerThread(), 0, 5, TimeUnit.SECONDS));
         }
+    }
 
-        OpenStreetMaps.getInstance().init();
+    /**
+     * Add a new listener to the Sledgehammer plugin
+     *
+     * @param listener {@link Listener}
+     */
+    public static void addListener(Listener listener) {
+        ProxyServer.getInstance().getPluginManager().registerListener(instance, listener);
+    }
+
+    /**
+     * Removes a listener
+     *
+     * @param listener {@link Listener}
+     */
+    public static void removeListener(Listener listener) {
+        ProxyServer.getInstance().getPluginManager().unregisterListener(listener);
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPlayerJoin(PostLoginEvent e) {
+        if (e.getPlayer().hasPermission("sledgehammer.admin") && !ConfigHandler.getInstance().isAuthCodeConfigured()) {
+            ChatUtil.sendAuthCodeWarning(e.getPlayer());
+        }
     }
 
     @NoArgsConstructor

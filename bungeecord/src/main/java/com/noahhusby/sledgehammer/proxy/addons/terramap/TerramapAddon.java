@@ -86,9 +86,9 @@ public class TerramapAddon extends Addon {
         this.listener = new TerramapAddonEventHandler();
         Sledgehammer.addListener(this.listener);
         if (ConfigHandler.terramapSyncPlayers) {
-            this.syncTask = Sledgehammer.sledgehammer.getProxy().getScheduler().schedule(Sledgehammer.sledgehammer, this.synchronizer::syncPlayers, 0, ConfigHandler.terramapSyncInterval, TimeUnit.MILLISECONDS);
+            this.syncTask = Sledgehammer.getInstance().getProxy().getScheduler().schedule(Sledgehammer.getInstance(), this.synchronizer::syncPlayers, 0, ConfigHandler.terramapSyncInterval, TimeUnit.MILLISECONDS);
         }
-        ProxyServer.getInstance().getPluginManager().registerCommand(Sledgehammer.sledgehammer, new TerrashowCommand());
+        ProxyServer.getInstance().getPluginManager().registerCommand(Sledgehammer.getInstance(), new TerrashowCommand());
         Sledgehammer.logger.info("Enabled Terramap integration addon");
     }
 
@@ -107,9 +107,9 @@ public class TerramapAddon extends Addon {
         this.sledgehammerChannel.resetPacketRegistration();
         this.proxyUUID = new UUID(0, 0);
         this.synchronizer.unregisterAllPlayers();
-        Sledgehammer.terminateListener(this.listener);
+        Sledgehammer.removeListener(this.listener);
         if (this.syncTask != null) {
-            Sledgehammer.sledgehammer.getProxy().getScheduler().cancel(this.syncTask);
+            Sledgehammer.getInstance().getProxy().getScheduler().cancel(this.syncTask);
         }
         // We don't need to unregister commands, Sledgehammer should be taking care of it already when the plugin gets enabled
         Sledgehammer.logger.info("Disabled Terramap integration add-on");

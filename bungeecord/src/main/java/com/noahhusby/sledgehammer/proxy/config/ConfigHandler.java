@@ -40,7 +40,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
-public class ConfigHandler extends Config {
+public class ConfigHandler {
     private static ConfigHandler instance = null;
 
     public static ConfigHandler getInstance() {
@@ -105,7 +105,6 @@ public class ConfigHandler extends Config {
      *
      * @param dataFolder Sledgehammer plugin folder
      */
-    @Override
     public void init(File dataFolder) {
         this.dataFolder = dataFolder;
         localStorage = new File(dataFolder, "local");
@@ -122,25 +121,29 @@ public class ConfigHandler extends Config {
         }
 
         config = new net.minecraftforge.common.config.Configuration(new File(dataFolder, "sledgehammer.cfg"));
-
-        load();
     }
 
-    @Override
     public void load() {
-        onPreLoad();
-        Storage serverData = ServerHandler.getInstance().getServers();
-        serverData.clearHandlers();
+        loadConfig();
+        File f = new File(localStorage, "offline.bin");
+        doesOfflineExist = f.exists();
 
-        Storage warpData = WarpHandler.getInstance().getWarps();
-        warpData.clearHandlers();
+        if (terramapEnabled) {
+            File customMaps = new File(dataFolder + "/" + MapStyleRegistry.FILENAME);
+            MapStyleRegistry.setConfigMapFile(customMaps);
+            MapStyleRegistry.loadFromConfigFile();
+        }
+        loadHandlers();
+    }
 
-        Storage attributeData = PlayerManager.getInstance().getAttributes();
-        attributeData.clearHandlers();
+    public void unload() {
+        ServerHandler.getInstance().getServers().destroy();
+        WarpHandler.getInstance().getWarps().destroy();
+        PlayerManager.getInstance().getAttributes().destroy();
+        ServerHandler.getInstance().getGroups().destroy();
+    }
 
-        Storage serverGroups = ServerHandler.getInstance().getGroups();
-        serverGroups.clearHandlers();
-
+    private void loadConfig() {
         config.load();
         cat("General", "General options for sledgehammer");
         authenticationCode = config.getString(prop("Network Authentication Code"), "General", "",
@@ -225,20 +228,24 @@ public class ConfigHandler extends Config {
         if (config.hasChanged()) {
             config.save();
         }
+    }
 
-        File f = new File(localStorage, "offline.bin");
-        doesOfflineExist = f.exists();
-
-        if (terramapEnabled) {
-            File customMaps = new File(dataFolder + "/" + MapStyleRegistry.FILENAME);
-            MapStyleRegistry.setConfigMapFile(customMaps);
-            MapStyleRegistry.loadFromConfigFile();
-        }
-
+    private void loadHandlers() {
+        Storage serverData = ServerHandler.getInstance().getServers();
         serverData.registerHandler(new LocalStorageHandler(ConfigHandler.serverFile));
+        serverData.clearHandlers();
+
+        Storage warpData = WarpHandler.getInstance().getWarps();
         warpData.registerHandler(new LocalStorageHandler(ConfigHandler.warpFile));
+        warpData.clearHandlers();
+
+        Storage attributeData = PlayerManager.getInstance().getAttributes();
         attributeData.registerHandler(new LocalStorageHandler(ConfigHandler.attributeFile));
+        attributeData.clearHandlers();
+
+        Storage serverGroups = ServerHandler.getInstance().getGroups();
         serverGroups.registerHandler(new LocalStorageHandler(ConfigHandler.groupsFile));
+        serverGroups.clearHandlers();
 
         if (useSql) {
             {
@@ -302,24 +309,17 @@ public class ConfigHandler extends Config {
             }
         }
 
-        onPostLoad();
-
         serverData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
         warpData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
         attributeData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
         serverGroups.setAutoLoad(autoLoad, TimeUnit.SECONDS);
 
-        Sledgehammer.sledgehammer.getThreadHandler().add(thread -> thread.schedule(() -> {
+        Sledgehammer.getInstance().getThreadHandler().add(thread -> thread.schedule(() -> {
             serverData.loadAsync();
             warpData.loadAsync();
             attributeData.loadAsync();
             serverGroups.loadAsync();
         }, 10, TimeUnit.SECONDS));
-    }
-
-    @Override
-    public void unload() {
-
     }
 
     /**
@@ -335,7 +335,6 @@ public class ConfigHandler extends Config {
      * Reloads the config
      */
     public void reload() {
-        Sledgehammer.logger.info("Reloaded the config");
         unload();
         load();
     }

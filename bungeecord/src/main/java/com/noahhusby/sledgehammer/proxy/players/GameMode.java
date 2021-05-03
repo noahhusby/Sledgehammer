@@ -18,6 +18,9 @@
 
 package com.noahhusby.sledgehammer.proxy.players;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public enum GameMode {
 
     NONE(-1, ""),
@@ -33,11 +36,6 @@ public enum GameMode {
     private final int value;
     private final String name;
 
-    GameMode(final int value, final String name) {
-        this.value = value;
-        this.name = name;
-    }
-
     @Override
     public String toString() {
         return this.name;
@@ -46,5 +44,4 @@ public enum GameMode {
     public int getId() {
         return this.value;
     }
-
 }

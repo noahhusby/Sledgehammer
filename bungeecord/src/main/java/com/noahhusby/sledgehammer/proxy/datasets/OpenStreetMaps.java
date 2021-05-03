@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.noahhusby.lib.data.JsonUtils;
 import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
+import com.noahhusby.sledgehammer.proxy.modules.Module;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -35,7 +36,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-public class OpenStreetMaps {
+public class OpenStreetMaps implements Module {
     private static OpenStreetMaps instance = null;
 
     public static OpenStreetMaps getInstance() {
@@ -43,16 +44,6 @@ public class OpenStreetMaps {
     }
 
     private OpenStreetMaps() {
-    }
-
-    public void init() {
-        try {
-            if (ConfigHandler.useOfflineMode && ConfigHandler.getInstance().getOfflineBin().exists()) {
-                offlineGeocoder = new ReverseGeocoder(ConfigHandler.getInstance().getOfflineBin());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private ReverseGeocoder offlineGeocoder;
@@ -259,5 +250,32 @@ public class OpenStreetMaps {
         String c = data[data.length - 1].trim();
 
         return new OfflineDataField(a, b, c);
+    }
+
+    @Override
+    public void onEnable() {
+        try {
+            if (ConfigHandler.useOfflineMode && ConfigHandler.getInstance().getOfflineBin().exists()) {
+                offlineGeocoder = new ReverseGeocoder(ConfigHandler.getInstance().getOfflineBin());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onDisable() {
+        if(offlineGeocoder != null) {
+            try {
+                offlineGeocoder.close();
+                offlineGeocoder = null;
+            } catch (IOException e) {
+            }
+        }
+    }
+
+    @Override
+    public String getModuleName() {
+        return "OpenStreetMaps";
     }
 }

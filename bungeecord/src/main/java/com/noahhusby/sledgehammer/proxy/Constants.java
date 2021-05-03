@@ -30,5 +30,4 @@ public class Constants extends CommonConstants {
 
     public static final int borderZone = 500;
     public static final int warpIdBuffer = 45;
-
 }

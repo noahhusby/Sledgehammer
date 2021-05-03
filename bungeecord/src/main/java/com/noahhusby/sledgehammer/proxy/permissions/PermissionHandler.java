@@ -41,7 +41,7 @@ public class PermissionHandler {
     }
 
     private PermissionHandler() {
-        Sledgehammer.sledgehammer.getThreadHandler().add(thread -> thread.scheduleAtFixedRate(this::checkPermissionRequests, 0, 500, TimeUnit.MILLISECONDS));
+        Sledgehammer.getInstance().getThreadHandler().add(thread -> thread.scheduleAtFixedRate(this::checkPermissionRequests, 0, 500, TimeUnit.MILLISECONDS));
     }
 
     private final List<PermissionRequest> requests = new ArrayList<>();

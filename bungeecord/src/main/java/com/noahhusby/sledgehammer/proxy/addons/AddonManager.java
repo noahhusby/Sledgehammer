@@ -20,6 +20,7 @@ package com.noahhusby.sledgehammer.proxy.addons;
 
 import com.google.common.collect.Lists;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
+import com.noahhusby.sledgehammer.proxy.modules.Module;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -28,7 +29,7 @@ import net.md_5.bungee.event.EventPriority;
 import java.util.Arrays;
 import java.util.List;
 
-public class AddonManager implements Listener {
+public class AddonManager implements Listener, Module {
     private static AddonManager instance = null;
 
     public static AddonManager getInstance() {
@@ -36,7 +37,6 @@ public class AddonManager implements Listener {
     }
 
     private AddonManager() {
-        Sledgehammer.addListener(this);
     }
 
     private final List<Addon> addons = Lists.newArrayList();
@@ -45,13 +45,22 @@ public class AddonManager implements Listener {
         addons.add(addon);
     }
 
+    @Override
     public void onEnable() {
+        Sledgehammer.addListener(this);
         addons.forEach(Addon::onEnable);
     }
 
+    @Override
     public void onDisable() {
+        Sledgehammer.removeListener(this);
         addons.forEach(Addon::onDisable);
         addons.clear(); // If the plugin is reloading, new instances of the add-ons will be registered again
+    }
+
+    @Override
+    public String getModuleName() {
+        return "Addons";
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

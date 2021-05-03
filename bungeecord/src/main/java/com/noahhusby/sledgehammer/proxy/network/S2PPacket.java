@@ -29,8 +29,4 @@ public abstract class S2PPacket {
     public abstract String getPacketID();
 
     public abstract void onMessage(PacketInfo info, JsonObject data);
-
-    protected void throwNoSender() {
-        Sledgehammer.logger.warning("The task manager attempted to execute a task without an available sender.");
-    }
 }

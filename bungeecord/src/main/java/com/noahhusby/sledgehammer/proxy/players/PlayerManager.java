@@ -19,8 +19,10 @@
 package com.noahhusby.sledgehammer.proxy.players;
 
 import com.google.common.collect.Maps;
+import com.noahhusby.lib.data.storage.StorageHashMap;
 import com.noahhusby.lib.data.storage.StorageList;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
+import com.noahhusby.sledgehammer.proxy.modules.Module;
 import lombok.Getter;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -34,7 +36,7 @@ import net.md_5.bungee.event.EventPriority;
 import java.util.Map;
 import java.util.UUID;
 
-public class PlayerManager implements Listener {
+public class PlayerManager implements Listener, Module {
     private static PlayerManager instance = null;
 
     public static PlayerManager getInstance() {
@@ -44,11 +46,7 @@ public class PlayerManager implements Listener {
     @Getter
     private final Map<UUID, SledgehammerPlayer> players = Maps.newHashMap();
     @Getter
-    private final StorageList<Attribute> attributes = new StorageList<>(Attribute.class);
-
-    private PlayerManager() {
-        Sledgehammer.addListener(this);
-    }
+    private final StorageHashMap<UUID, Attribute> attributes = new StorageHashMap<>(UUID.class, Attribute.class);
 
     /**
      * Creates a new SledgehammerPlayer and sets attributes from storage upon player joining
@@ -68,13 +66,7 @@ public class PlayerManager implements Listener {
     private SledgehammerPlayer onPlayerJoin(ProxiedPlayer p) {
         SledgehammerPlayer newPlayer = new SledgehammerPlayer(p);
 
-        Attribute attribute = null;
-        for (Attribute a : attributes) {
-            if (a.getUuid().equals(p.getUniqueId())) {
-                attribute = a;
-            }
-        }
-
+        Attribute attribute = attributes.get(p.getUniqueId());
         if (attribute != null) {
             newPlayer.setAttributes(attribute.getAttributes());
         }
@@ -105,20 +97,15 @@ public class PlayerManager implements Listener {
             return;
         }
 
-        Attribute attribute = null;
-        for (Attribute a : attributes) {
-            if (a.getUuid().equals(player.getUniqueId())) {
-                attribute = a;
-            }
-        }
+        Attribute attribute = attributes.get(player.getUniqueId());
 
         if (attribute == null) {
             if (!p.getAttributes().isEmpty()) {
-                attributes.add(new Attribute(p.getUniqueId(), p.getAttributes()));
+                attributes.put(p.getUniqueId(), new Attribute(p.getUniqueId(), p.getAttributes()));
             }
         } else {
             if (p.getAttributes().isEmpty()) {
-                attributes.remove(attribute);
+                attributes.remove(player.getUniqueId());
             }
         }
 
@@ -157,5 +144,20 @@ public class PlayerManager implements Listener {
         ProxiedPlayer proxiedPlayer = (ProxiedPlayer) s;
         SledgehammerPlayer player = players.get(proxiedPlayer.getUniqueId());
         return player == null ? onPlayerJoin(proxiedPlayer) : player;
+    }
+
+    @Override
+    public void onEnable() {
+        Sledgehammer.addListener(this);
+    }
+
+    @Override
+    public void onDisable() {
+        Sledgehammer.removeListener(this);
+    }
+
+    @Override
+    public String getModuleName() {
+        return "Players";
     }
 }
