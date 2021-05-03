@@ -104,7 +104,7 @@ public class TerramapAddon implements Module, Listener {
 
     @Override
     public String getModuleName() {
-        return "TerraMap";
+        return "Terramap";
     }
 
     public UUID getProxyUUID() {

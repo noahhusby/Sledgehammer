@@ -21,6 +21,7 @@ package com.noahhusby.sledgehammer.proxy.players;
 import com.google.common.collect.ImmutableMap;
 import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
@@ -78,7 +79,7 @@ public class FlaggedBorderCheckerThread implements Runnable {
 
                 p.setFlagged(false);
 
-                Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+                ProxyServer.getInstance().getScheduler().schedule(Sledgehammer.getInstance(), () -> {
                     p.sendTitle(title);
                     if (!p.checkAttribute("PASSED_BORDER", true)) {
                         p.sendMessage(ChatUtil.combine(ChatColor.RED + "" + ChatColor.BOLD, "Reminder: ",
@@ -88,7 +89,6 @@ public class FlaggedBorderCheckerThread implements Runnable {
                     }
                 }, 2, TimeUnit.SECONDS);
             }
-
         });
     }
 }

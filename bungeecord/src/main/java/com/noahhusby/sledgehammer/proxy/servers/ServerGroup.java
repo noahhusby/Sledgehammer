@@ -22,6 +22,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.noahhusby.lib.data.storage.Key;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,29 +31,22 @@ import java.util.List;
 
 @Key("Id")
 @AllArgsConstructor
+@Data
 public class ServerGroup {
     @Expose
     @SerializedName("Id")
-    @Getter
-    @Setter
     private String ID;
     @Expose
     @SerializedName("HeadId")
-    @Getter
-    @Setter
     private String headID;
     @Expose
     @SerializedName("Name")
-    @Getter
-    @Setter
     private String name;
     @Expose
     @SerializedName("Servers")
-    @Getter
     private List<String> servers;
     @Expose
     @SerializedName("Aliases")
-    @Getter
     private List<String> aliases;
 
     public ServerGroup() {

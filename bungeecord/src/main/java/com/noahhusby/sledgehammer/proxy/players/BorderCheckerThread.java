@@ -67,47 +67,35 @@ public class BorderCheckerThread implements Runnable {
             if (checkLocation) {
                 Point track = p.getTrackingPoint();
 
-                double[] proj = SledgehammerUtil.toGeo(track.getX(), track.getZ());
-                ServerInfo info = OpenStreetMaps.getInstance().getServerFromLocation(proj[0], proj[1], true);
-
-                if (info != null && !info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
-                    p.setFlagged(true);
+                if(check(p, track.getX(), track.getZ())) {
                     return;
                 }
 
-                proj = SledgehammerUtil.toGeo(track.getX() + Constants.borderZone, track.getZ() + Constants.borderZone);
-                info = OpenStreetMaps.getInstance().getServerFromLocation(proj[0], proj[1], true);
-
-                if (info != null && !info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
-                    p.setFlagged(true);
+                if(check(p, track.getX() + Constants.borderZone, track.getZ() + Constants.borderZone)) {
                     return;
                 }
 
-                proj = SledgehammerUtil.toGeo(track.getX() + Constants.borderZone, track.getZ() - Constants.borderZone);
-                info = OpenStreetMaps.getInstance().getServerFromLocation(proj[0], proj[1], true);
-
-                if (info != null && !info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
-                    p.setFlagged(true);
+                if(check(p, track.getX() + Constants.borderZone, track.getZ() - Constants.borderZone)) {
                     return;
                 }
 
-                proj = SledgehammerUtil.toGeo(track.getX() - Constants.borderZone, track.getZ() + Constants.borderZone);
-                info = OpenStreetMaps.getInstance().getServerFromLocation(proj[0], proj[1], true);
-
-                if (info != null && !info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
-                    p.setFlagged(true);
+                if(check(p, track.getX() - Constants.borderZone, track.getZ() + Constants.borderZone)) {
                     return;
                 }
 
-                proj = SledgehammerUtil.toGeo(track.getX() - Constants.borderZone, track.getZ() - Constants.borderZone);
-                info = OpenStreetMaps.getInstance().getServerFromLocation(proj[0], proj[1], true);
-
-                if (info != null && !info.getName().equalsIgnoreCase(p.getServer().getInfo().getName())) {
-                    p.setFlagged(true);
-                }
+                check(p, track.getX() - Constants.borderZone, track.getZ() - Constants.borderZone);
             }
         });
+    }
 
+    private boolean check(SledgehammerPlayer player, double x, double z) {
+        double[] proj = SledgehammerUtil.toGeo(x, z);
+        ServerInfo info = OpenStreetMaps.getInstance().getServerFromLocation(proj[0], proj[1], true);
 
+        if (info != null && !info.getName().equalsIgnoreCase(player.getServer().getInfo().getName())) {
+            player.setFlagged(true);
+            return true;
+        }
+        return false;
     }
 }

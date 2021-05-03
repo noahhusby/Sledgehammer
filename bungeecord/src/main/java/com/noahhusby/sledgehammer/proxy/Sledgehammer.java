@@ -37,7 +37,6 @@ import com.noahhusby.sledgehammer.proxy.players.BorderCheckerThread;
 import com.noahhusby.sledgehammer.proxy.players.FlaggedBorderCheckerThread;
 import com.noahhusby.sledgehammer.proxy.players.PlayerManager;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PostLoginEvent;
@@ -46,11 +45,7 @@ import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 
-import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 public class  Sledgehammer extends Plugin implements Listener {
@@ -64,6 +59,7 @@ public class  Sledgehammer extends Plugin implements Listener {
         logger = getLogger();
         ConfigHandler.getInstance().init(getDataFolder());
         ModuleHandler.getInstance().registerModules(PlayerManager.getInstance(), NetworkHandler.getInstance(), OpenStreetMaps.getInstance(), PermissionHandler.getInstance());
+        ConfigHandler.getInstance().load();
         load();
     }
 
@@ -77,18 +73,14 @@ public class  Sledgehammer extends Plugin implements Listener {
     }
 
     public void reload() {
-        Sledgehammer.logger.warning("Reloading Sledgehammer!");
-        Sledgehammer.logger.info("");
         onDisable();
         ConfigHandler.getInstance().reload();
         load();
-        Sledgehammer.logger.info("");
         Sledgehammer.logger.warning("Reloaded Sledgehammer!");
     }
 
     public void load() {
         addListener(this);
-        ConfigHandler.getInstance().load();
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerCommand());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerAdminCommand());
 

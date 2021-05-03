@@ -18,6 +18,7 @@
 
 package com.noahhusby.sledgehammer.proxy.players;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -33,15 +34,12 @@ public enum GameMode {
 
     SPECTATOR(3, "spectator");
 
-    private final int value;
+    @Getter
+    private final int id;
     private final String name;
 
     @Override
     public String toString() {
         return this.name;
-    }
-
-    public int getId() {
-        return this.value;
     }
 }

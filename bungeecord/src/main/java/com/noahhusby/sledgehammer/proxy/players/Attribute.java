@@ -18,37 +18,23 @@
 
 package com.noahhusby.sledgehammer.proxy.players;
 
-import com.google.common.collect.Maps;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.noahhusby.lib.data.storage.Key;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.Map;
 import java.util.UUID;
 
 @Key("UUID")
+@AllArgsConstructor
+@Getter
 public class Attribute {
     @Expose
     @SerializedName("UUID")
-    private UUID uuid;
+    private final UUID uuid;
     @Expose
     @SerializedName("Attributes")
-    private Map<String, Object> attributes;
-
-    public Attribute() {
-        this(UUID.randomUUID(), Maps.newHashMap());
-    }
-
-    public Attribute(UUID uuid, Map<String, Object> attributes) {
-        this.uuid = uuid;
-        this.attributes = attributes;
-    }
-
-    public Map<String, Object> getAttributes() {
-        return attributes;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
+    private final Map<String, Object> attributes;
 }
