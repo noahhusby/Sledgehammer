@@ -31,6 +31,7 @@ import com.noahhusby.sledgehammer.proxy.terramap.MapStyleRegistry;
 import com.noahhusby.sledgehammer.proxy.players.PlayerManager;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
+import net.md_5.bungee.api.ProxyServer;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -314,12 +315,12 @@ public class ConfigHandler {
         attributeData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
         serverGroups.setAutoLoad(autoLoad, TimeUnit.SECONDS);
 
-        Sledgehammer.getInstance().getThreadHandler().add(thread -> thread.schedule(() -> {
+        ProxyServer.getInstance().getScheduler().schedule(Sledgehammer.getInstance(), () -> {
             serverData.loadAsync();
             warpData.loadAsync();
             attributeData.loadAsync();
             serverGroups.loadAsync();
-        }, 10, TimeUnit.SECONDS));
+        }, 10, TimeUnit.SECONDS);
     }
 
     /**

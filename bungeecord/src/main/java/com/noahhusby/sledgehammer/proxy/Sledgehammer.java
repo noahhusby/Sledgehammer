@@ -20,6 +20,7 @@ package com.noahhusby.sledgehammer.proxy;
 
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.proxy.terramap.TerramapAddon;
 import com.noahhusby.sledgehammer.proxy.commands.BorderCommand;
 import com.noahhusby.sledgehammer.proxy.commands.CsTpllCommand;
@@ -52,28 +53,24 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
-public class Sledgehammer extends Plugin implements Listener {
+public class  Sledgehammer extends Plugin implements Listener {
     public static Logger logger;
     @Getter
     private static Sledgehammer instance;
-
-    @Getter
-    private final ThreadHandler threadHandler = new ThreadHandler();
 
     @Override
     public void onEnable() {
         instance = this;
         logger = getLogger();
-        threadHandler.generalThreads.setRemoveOnCancelPolicy(true);
         ConfigHandler.getInstance().init(getDataFolder());
-        ModuleHandler.getInstance().registerModules(PlayerManager.getInstance(), NetworkHandler.getInstance(), OpenStreetMaps.getInstance());
+        ModuleHandler.getInstance().registerModules(PlayerManager.getInstance(), NetworkHandler.getInstance(), OpenStreetMaps.getInstance(), PermissionHandler.getInstance());
         load();
     }
 
     @Override
     public void onDisable() {
         removeListener(this);
-        threadHandler.stop();
+        ProxyServer.getInstance().getScheduler().cancel(this);
         ProxyServer.getInstance().getPluginManager().unregisterCommands(this);
         ModuleHandler.getInstance().disableAll();
         ConfigHandler.getInstance().unload();
@@ -94,7 +91,6 @@ public class Sledgehammer extends Plugin implements Listener {
         ConfigHandler.getInstance().load();
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerCommand());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerAdminCommand());
-        threadHandler.start();
 
         if (!ConfigHandler.getInstance().isAuthCodeConfigured()) {
             ChatUtil.sendMessageBox(ProxyServer.getInstance().getConsole(), ChatColor.DARK_RED + "WARNING", ChatUtil.combine(ChatColor.RED,
@@ -143,8 +139,8 @@ public class Sledgehammer extends Plugin implements Listener {
 
         if (ConfigHandler.borderTeleportation) {
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new BorderCommand());
-            threadHandler.add(thread -> thread.scheduleAtFixedRate(new BorderCheckerThread(), 0, 10, TimeUnit.SECONDS));
-            threadHandler.add(thread -> thread.scheduleAtFixedRate(new FlaggedBorderCheckerThread(), 0, 5, TimeUnit.SECONDS));
+            ProxyServer.getInstance().getScheduler().schedule(this, new BorderCheckerThread(), 0, 10, TimeUnit.SECONDS);
+            ProxyServer.getInstance().getScheduler().schedule(this, new FlaggedBorderCheckerThread(), 0, 10, TimeUnit.SECONDS);
         }
 
         ModuleHandler.getInstance().enableAll();
@@ -172,35 +168,6 @@ public class Sledgehammer extends Plugin implements Listener {
     public void onPlayerJoin(PostLoginEvent e) {
         if (e.getPlayer().hasPermission("sledgehammer.admin") && !ConfigHandler.getInstance().isAuthCodeConfigured()) {
             ChatUtil.sendAuthCodeWarning(e.getPlayer());
-        }
-    }
-
-    @NoArgsConstructor
-    public static class ThreadHandler {
-        private final ScheduledThreadPoolExecutor generalThreads = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(16, new ThreadFactoryBuilder().setNameFormat("sledgehammer-general-%d").build());
-        private final List<Consumer<ScheduledThreadPoolExecutor>> runnableList = Lists.newArrayList();
-
-        private boolean running = false;
-
-        public void add(Consumer<ScheduledThreadPoolExecutor> thread) {
-            runnableList.add(thread);
-            if (running) {
-                thread.accept(generalThreads);
-            }
-        }
-
-        public void start() {
-            if (!running) {
-                running = true;
-                runnableList.forEach(consumer -> consumer.accept(generalThreads));
-            }
-        }
-
-        public void stop() {
-            if (running) {
-                running = false;
-                generalThreads.getQueue().removeIf(r -> true);
-            }
         }
     }
 }

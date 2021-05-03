@@ -20,10 +20,12 @@ package com.noahhusby.sledgehammer.proxy.permissions;
 
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
+import com.noahhusby.sledgehammer.proxy.modules.Module;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
 import com.noahhusby.sledgehammer.proxy.network.P2S.P2SPermissionPacket;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.ArrayList;
@@ -32,7 +34,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
-public class PermissionHandler {
+public class PermissionHandler implements Module {
 
     private static PermissionHandler instance = null;
 
@@ -41,7 +43,6 @@ public class PermissionHandler {
     }
 
     private PermissionHandler() {
-        Sledgehammer.getInstance().getThreadHandler().add(thread -> thread.scheduleAtFixedRate(this::checkPermissionRequests, 0, 500, TimeUnit.MILLISECONDS));
     }
 
     private final List<PermissionRequest> requests = new ArrayList<>();
@@ -120,5 +121,20 @@ public class PermissionHandler {
             }
             return false;
         });
+    }
+
+    @Override
+    public void onEnable() {
+        ProxyServer.getInstance().getScheduler().schedule(Sledgehammer.getInstance(), this::checkPermissionRequests, 0, 500, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public void onDisable() {
+
+    }
+
+    @Override
+    public String getModuleName() {
+        return "Permissions";
     }
 }
