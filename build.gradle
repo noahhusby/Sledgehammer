@@ -20,7 +20,7 @@ allprojects {
 
         husbyVersion = "3c6ad811b2"
         guavaVersion = "30.1-jre"
-        lombokVersion = "1.18.18"
+        lombokVersion = "1.18.20"
     }
 
     group "com.noahhusby"
