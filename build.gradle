@@ -11,8 +11,8 @@ repositories {
 }
 
 allprojects {
-    apply plugin: "com.github.johnrengelman.shadow"
     apply plugin: "java"
+    apply plugin: "com.github.johnrengelman.shadow"
     apply plugin: "net.linguica.maven-settings"
 
     ext {
