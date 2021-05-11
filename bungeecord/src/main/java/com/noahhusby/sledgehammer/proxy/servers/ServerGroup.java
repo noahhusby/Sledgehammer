@@ -23,8 +23,6 @@ import com.google.gson.annotations.SerializedName;
 import com.noahhusby.lib.data.storage.Key;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;

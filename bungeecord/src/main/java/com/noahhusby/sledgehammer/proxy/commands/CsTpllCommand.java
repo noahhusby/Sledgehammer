@@ -20,7 +20,6 @@ package com.noahhusby.sledgehammer.proxy.commands;
 
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
-import com.noahhusby.sledgehammer.proxy.network.P2S.P2SCommandPacket;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -37,14 +36,14 @@ public class CsTpllCommand extends Command {
     public void execute(CommandSender sender, String[] args) {
         if (!(sender instanceof ProxiedPlayer)) {
             sender.sendMessage(ChatUtil.getPlayerOnly());
+            return;
         }
 
         if (args.length == 0) {
-            getNetworkManager().send(new P2SCommandPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName(), "cs"));
+            ((ProxiedPlayer) sender).chat("/cs");
             return;
         } else if (!args[0].equals("tpll")) {
-            getNetworkManager().send(new P2SCommandPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName(), "cs",
-                    SledgehammerUtil.getRawArguments(args)));
+            ((ProxiedPlayer) sender).chat("/cs " + SledgehammerUtil.getRawArguments(args));
             return;
         }
 

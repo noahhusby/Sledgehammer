@@ -67,19 +67,19 @@ public class BorderCheckerThread implements Runnable {
             if (checkLocation) {
                 Point track = p.getTrackingPoint();
 
-                if(check(p, track.getX(), track.getZ())) {
+                if (check(p, track.getX(), track.getZ())) {
                     return;
                 }
 
-                if(check(p, track.getX() + Constants.borderZone, track.getZ() + Constants.borderZone)) {
+                if (check(p, track.getX() + Constants.borderZone, track.getZ() + Constants.borderZone)) {
                     return;
                 }
 
-                if(check(p, track.getX() + Constants.borderZone, track.getZ() - Constants.borderZone)) {
+                if (check(p, track.getX() + Constants.borderZone, track.getZ() - Constants.borderZone)) {
                     return;
                 }
 
-                if(check(p, track.getX() - Constants.borderZone, track.getZ() + Constants.borderZone)) {
+                if (check(p, track.getX() - Constants.borderZone, track.getZ() + Constants.borderZone)) {
                     return;
                 }
 

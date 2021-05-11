@@ -19,7 +19,6 @@
 package com.noahhusby.sledgehammer.proxy.network;
 
 import com.google.gson.JsonObject;
-import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 
 public abstract class S2PPacket {
     public abstract String getPacketID();

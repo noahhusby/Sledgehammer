@@ -18,8 +18,6 @@
 
 package com.noahhusby.sledgehammer.proxy;
 
-import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
-import com.noahhusby.sledgehammer.proxy.terramap.TerramapAddon;
 import com.noahhusby.sledgehammer.proxy.commands.BorderCommand;
 import com.noahhusby.sledgehammer.proxy.commands.CsTpllCommand;
 import com.noahhusby.sledgehammer.proxy.commands.SledgehammerAdminCommand;
@@ -31,9 +29,11 @@ import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
 import com.noahhusby.sledgehammer.proxy.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.proxy.modules.ModuleHandler;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
+import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.proxy.players.BorderCheckerThread;
 import com.noahhusby.sledgehammer.proxy.players.FlaggedBorderCheckerThread;
 import com.noahhusby.sledgehammer.proxy.players.PlayerManager;
+import com.noahhusby.sledgehammer.proxy.terramap.TerramapAddon;
 import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
@@ -43,7 +43,7 @@ import net.md_5.bungee.api.plugin.Plugin;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-public class  Sledgehammer extends Plugin implements Listener {
+public class Sledgehammer extends Plugin implements Listener {
     public static Logger logger;
     @Getter
     private static Sledgehammer instance;
@@ -92,9 +92,9 @@ public class  Sledgehammer extends Plugin implements Listener {
         if (ConfigHandler.terramapEnabled && TerramapAddon.instance == null) {
             ModuleHandler.getInstance().registerModule(new TerramapAddon());
             ModuleHandler.getInstance().enable(TerramapAddon.instance);
-        } else if(ConfigHandler.terramapEnabled) {
+        } else if (ConfigHandler.terramapEnabled) {
             ModuleHandler.getInstance().enable(TerramapAddon.instance);
-        } else if(TerramapAddon.instance != null && ModuleHandler.getInstance().getModules().containsKey(TerramapAddon.instance)) {
+        } else if (TerramapAddon.instance != null && ModuleHandler.getInstance().getModules().containsKey(TerramapAddon.instance)) {
             ModuleHandler.getInstance().disable(TerramapAddon.instance);
             ModuleHandler.getInstance().getModules().remove(TerramapAddon.instance);
         }

@@ -33,7 +33,6 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.Title;
 import net.md_5.bungee.api.config.ServerInfo;
 
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**

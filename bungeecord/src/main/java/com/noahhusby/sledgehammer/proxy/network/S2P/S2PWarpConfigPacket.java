@@ -43,7 +43,7 @@ public class S2PWarpConfigPacket extends S2PPacket {
     public void onMessage(PacketInfo info, JsonObject packet) {
         JsonObject data = packet.getAsJsonObject("data");
         SledgehammerPlayer player = SledgehammerPlayer.getPlayer(info.getSender());
-        if(!player.validateAction(packet.get("salt").getAsString())) {
+        if (!player.validateAction(packet.get("salt").getAsString())) {
             return;
         }
         JsonObject response = new JsonObject();

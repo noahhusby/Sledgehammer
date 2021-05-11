@@ -22,10 +22,10 @@ package com.noahhusby.sledgehammer.proxy.players;
 import com.google.common.collect.Maps;
 import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
-import com.noahhusby.sledgehammer.proxy.terramap.TerramapAddon;
-import com.noahhusby.sledgehammer.proxy.terramap.TerramapVersion;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
+import com.noahhusby.sledgehammer.proxy.terramap.TerramapAddon;
+import com.noahhusby.sledgehammer.proxy.terramap.TerramapVersion;
 import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.CommandSender;
@@ -481,6 +481,7 @@ public class SledgehammerPlayer implements ProxiedPlayer {
 
     /**
      * Creates a one time use tracking code
+     *
      * @return Tracking Salt Code
      */
     public String trackAction() {
@@ -489,6 +490,7 @@ public class SledgehammerPlayer implements ProxiedPlayer {
 
     /**
      * Validates a one time salt code
+     *
      * @param salt Salt Code
      * @return True if valid, false if not
      */

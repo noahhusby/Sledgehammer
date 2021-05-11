@@ -21,7 +21,6 @@ package com.noahhusby.sledgehammer.server;
 import com.noahhusby.sledgehammer.server.chat.ChatHandler;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
-import com.noahhusby.sledgehammer.server.network.P2S.P2SCommandPacket;
 import com.noahhusby.sledgehammer.server.network.P2S.P2SInitializationPacket;
 import com.noahhusby.sledgehammer.server.network.P2S.P2SLocationPacket;
 import com.noahhusby.sledgehammer.server.network.P2S.P2SPermissionPacket;
@@ -52,7 +51,6 @@ public final class Sledgehammer extends JavaPlugin implements Listener {
         SledgehammerUtil.checkForTerra();
 
         NetworkHandler.getInstance().register(
-                new P2SCommandPacket(),
                 new P2SInitializationPacket(),
                 new P2SLocationPacket(),
                 new P2SSetwarpPacket(),

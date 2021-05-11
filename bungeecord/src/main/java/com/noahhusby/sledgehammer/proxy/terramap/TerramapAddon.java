@@ -19,8 +19,8 @@
 package com.noahhusby.sledgehammer.proxy.terramap;
 
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
+import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
 import com.noahhusby.sledgehammer.proxy.modules.Module;
-import com.noahhusby.sledgehammer.proxy.modules.ModuleHandler;
 import com.noahhusby.sledgehammer.proxy.terramap.TerramapVersion.ReleaseType;
 import com.noahhusby.sledgehammer.proxy.terramap.commands.TerrashowCommand;
 import com.noahhusby.sledgehammer.proxy.terramap.network.ForgeChannel;
@@ -29,7 +29,6 @@ import com.noahhusby.sledgehammer.proxy.terramap.network.packets.P2CSledgehammer
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync.C2PRegisterForUpdatePacket;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync.P2CPlayerSyncPacket;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync.P2CRegistrationExpiresPacket;
-import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.scheduler.ScheduledTask;

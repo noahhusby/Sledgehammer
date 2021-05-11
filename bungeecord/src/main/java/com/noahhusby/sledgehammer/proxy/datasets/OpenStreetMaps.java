@@ -265,7 +265,7 @@ public class OpenStreetMaps implements Module {
 
     @Override
     public void onDisable() {
-        if(offlineGeocoder != null) {
+        if (offlineGeocoder != null) {
             try {
                 offlineGeocoder.close();
                 offlineGeocoder = null;

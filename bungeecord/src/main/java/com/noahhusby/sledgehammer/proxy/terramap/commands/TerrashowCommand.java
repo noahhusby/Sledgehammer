@@ -1,14 +1,14 @@
 package com.noahhusby.sledgehammer.proxy.terramap.commands;
 
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
-import com.noahhusby.sledgehammer.proxy.terramap.PlayerDisplayPreferences;
-import com.noahhusby.sledgehammer.proxy.terramap.TerramapAddon;
-import com.noahhusby.sledgehammer.proxy.terramap.TerramapVersion;
-import com.noahhusby.sledgehammer.proxy.terramap.TerramapVersion.ReleaseType;
 import com.noahhusby.sledgehammer.proxy.commands.Command;
 import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.proxy.players.PlayerManager;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
+import com.noahhusby.sledgehammer.proxy.terramap.PlayerDisplayPreferences;
+import com.noahhusby.sledgehammer.proxy.terramap.TerramapAddon;
+import com.noahhusby.sledgehammer.proxy.terramap.TerramapVersion;
+import com.noahhusby.sledgehammer.proxy.terramap.TerramapVersion.ReleaseType;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
