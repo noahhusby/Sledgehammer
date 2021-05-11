@@ -1,19 +1,12 @@
 plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '7.0.0'
-    id 'net.linguica.maven-settings' version '0.5'
 }
 
 def versionDir = "${buildDir}/generated-version"
 
-repositories {
-    mavenCentral()
-}
-
 allprojects {
     apply plugin: "java"
-    apply plugin: "com.github.johnrengelman.shadow"
-    apply plugin: "net.linguica.maven-settings"
 
     ext {
         sledgehammerVersion = "0.5.0." + ('git rev-list --count HEAD'.execute().text.trim()) + "-1.12.2"
@@ -32,30 +25,18 @@ allprojects {
 
     repositories {
         mavenCentral()
-        maven {
-            name = "JitPack"
-            url = "https://jitpack.io/"
-        }
-        maven {
-            name = 'papermc-repo'
-            url = 'https://papermc.io/repo/repository/maven-public/'
-        }
-        maven {
-            name = 'codemc-snapshots'
-            url = 'https://repo.codemc.io/repository/maven-snapshots'
-        }
-        maven {
-            name = "DaPorkchop_"
-            url = "https://maven.daporkchop.net/"
-        }
+        maven { url 'https://papermc.io/repo/repository/maven-public/' }
+        maven { url 'https://repo.codemc.io/repository/maven-snapshots' }
+        maven { url 'https://jitpack.io/' }
+        maven { url 'https://maven.daporkchop.net/'}
     }
 
     dependencies {
         if (!("common".equalsIgnoreCase(project.name))) {
-            compile project(":common")
+            implementation project(":common")
         }
 
-        compile "com.github.noahhusby.HusbyLib:data:$husbyVersion"
+        implementation "com.github.noahhusby.HusbyLib:data:$husbyVersion"
 
         compileOnly "org.projectlombok:lombok:$lombokVersion"
         testCompileOnly "org.projectlombok:lombok:$lombokVersion"
@@ -67,7 +48,7 @@ allprojects {
 dependencies {
     for (Project prj : project.allprojects) {
         if (!"sledgehammer".equalsIgnoreCase(prj.name) && prj.parent.name.equalsIgnoreCase("sledgehammer")) {
-            compile project(":" + prj.name)
+            implementation project(":" + prj.name)
         }
     }
 }
