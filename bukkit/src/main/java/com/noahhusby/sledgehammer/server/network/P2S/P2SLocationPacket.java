@@ -60,20 +60,7 @@ public class P2SLocationPacket extends P2SPacket {
         if (SledgehammerUtil.hasTerraPlusPlus()) {
             SledgehammerUtil.getTerraConnector().getHeight(x, z).thenAccept(y -> Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), String.format("minecraft:tp %s %s %s %s", player.getName(), x, y, z)));
         } else {
-            /*
-            int y = Constants.scanHeight;
-
-            while(player.getWorld().getBlockAt(x, y, z).getType() != Material.AIR) {
-                y += Constants.scanHeight;
-            }
-
-            while(player.getWorld().getBlockAt(x, y, z).getType() == Material.AIR) {
-                y -= 1;
-            }
-
-             */
-            int y = player.getWorld().getHighestBlockYAt(x, z);
-            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), String.format("minecraft:tp %s %s %s %s", player.getName(), x, y + 1, z));
+            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), String.format("minecraft:tp %s %s %s %s", player.getName(), x, player.getWorld().getHighestBlockYAt(x, z) + 1, z));
         }
     }
 }

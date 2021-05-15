@@ -29,7 +29,7 @@ import com.noahhusby.sledgehammer.server.network.P2S.P2STeleportPacket;
 import com.noahhusby.sledgehammer.server.network.P2S.P2STestLocationPacket;
 import com.noahhusby.sledgehammer.server.network.P2S.P2SWarpConfigPacket;
 import com.noahhusby.sledgehammer.server.network.P2S.P2SWarpGUIPacket;
-import com.noahhusby.sledgehammer.server.players.PlayerManager;
+import com.noahhusby.sledgehammer.server.players.PlayerLocationTask;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
@@ -39,7 +39,7 @@ import java.util.logging.Logger;
 
 public final class Sledgehammer extends JavaPlugin implements Listener {
 
-    public static Logger LOGGER = Logger.getLogger("Sledgehammer Bootstrap");
+    public static Logger LOGGER;
     @Getter
     private static Sledgehammer instance;
 
@@ -61,15 +61,16 @@ public final class Sledgehammer extends JavaPlugin implements Listener {
                 new P2SWarpConfigPacket()
         );
 
-        Bukkit.getServer().getPluginManager().registerEvents(new GUIRegistry(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(ChatHandler.getInstance(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(NetworkHandler.getInstance(), this);
+        Bukkit.getPluginManager().registerEvents(new GUIRegistry(), this);
+        Bukkit.getPluginManager().registerEvents(ChatHandler.getInstance(), this);
+        Bukkit.getPluginManager().registerEvents(NetworkHandler.getInstance(), this);
 
-        PlayerManager.getInstance();
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, new PlayerLocationTask(), 0, 250);
     }
 
     @Override
     public void onDisable() {
         instance = null;
+        Bukkit.getScheduler().cancelTasks(this);
     }
 }
