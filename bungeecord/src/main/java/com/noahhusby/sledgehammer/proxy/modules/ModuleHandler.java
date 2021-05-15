@@ -18,7 +18,7 @@ public class ModuleHandler {
     }
 
     @Getter
-    private final Map<Module, Boolean> modules = Maps.newHashMap();
+    private final Map<Module, Boolean> modules = Maps.newLinkedHashMap();
 
     /**
      * Register a new module
@@ -38,6 +38,22 @@ public class ModuleHandler {
         for (Module m : modules) {
             registerModule(m);
         }
+    }
+
+    /**
+     * Unregisters a specific module
+     *
+     * @param module
+     */
+    public void unregisterModule(Module module) {
+        modules.remove(module);
+    }
+
+    /**
+     * Unregisters all modules
+     */
+    public void unregisterModules() {
+        modules.clear();
     }
 
     /**

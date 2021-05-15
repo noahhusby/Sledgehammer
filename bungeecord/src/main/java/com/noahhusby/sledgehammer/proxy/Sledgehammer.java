@@ -55,30 +55,12 @@ public class Sledgehammer extends Plugin implements Listener {
 
         ProxyServer.getInstance().registerChannel(Constants.serverChannel);
 
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerCommand());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerAdminCommand());
+
         ConfigHandler.getInstance().init(getDataFolder());
         ModuleHandler.getInstance().registerModules(PlayerManager.getInstance(), NetworkHandler.getInstance(), OpenStreetMaps.getInstance(), PermissionHandler.getInstance());
         ConfigHandler.getInstance().load();
-        load();
-    }
-
-    @Override
-    public void onDisable() {
-        ProxyServer.getInstance().getScheduler().cancel(this);
-        ProxyServer.getInstance().getPluginManager().unregisterCommands(this);
-        ModuleHandler.getInstance().disableAll();
-        ConfigHandler.getInstance().unload();
-    }
-
-    public void reload() {
-        onDisable();
-        ConfigHandler.getInstance().reload();
-        load();
-        Sledgehammer.logger.warning("Reloaded Sledgehammer!");
-    }
-
-    public void load() {
-        ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerCommand());
-        ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerAdminCommand());
 
         if (!ConfigHandler.getInstance().isAuthCodeConfigured()) {
             ChatUtil.sendMessageBox(ProxyServer.getInstance().getConsole(), ChatColor.DARK_RED + "WARNING", ChatUtil.combine(ChatColor.RED,
@@ -96,7 +78,7 @@ public class Sledgehammer extends Plugin implements Listener {
             ModuleHandler.getInstance().enable(TerramapAddon.instance);
         } else if (TerramapAddon.instance != null && ModuleHandler.getInstance().getModules().containsKey(TerramapAddon.instance)) {
             ModuleHandler.getInstance().disable(TerramapAddon.instance);
-            ModuleHandler.getInstance().getModules().remove(TerramapAddon.instance);
+            ModuleHandler.getInstance().unregisterModule(TerramapAddon.instance);
         }
 
         if (!ConfigHandler.warpCommand.equals("")) {
@@ -116,6 +98,25 @@ public class Sledgehammer extends Plugin implements Listener {
         }
 
         ModuleHandler.getInstance().enableAll();
+    }
+
+    @Override
+    public void onDisable() {
+        ProxyServer.getInstance().getScheduler().cancel(this);
+
+        ProxyServer.getInstance().unregisterChannel(Constants.serverChannel);
+        ProxyServer.getInstance().getPluginManager().unregisterCommands(this);
+
+        ModuleHandler.getInstance().disableAll();
+        ModuleHandler.getInstance().unregisterModules();
+        ConfigHandler.getInstance().unload();
+    }
+
+    public void reload() {
+        onDisable();
+        ConfigHandler.getInstance().reload();
+        onEnable();
+        Sledgehammer.logger.warning("Reloaded Sledgehammer!");
     }
 
     /**
