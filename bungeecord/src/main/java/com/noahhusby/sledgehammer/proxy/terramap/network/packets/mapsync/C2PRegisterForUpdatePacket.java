@@ -4,7 +4,7 @@ import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
 import com.noahhusby.sledgehammer.proxy.players.PlayerManager;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.terramap.RemoteSynchronizer;
-import com.noahhusby.sledgehammer.proxy.terramap.TerramapAddon;
+import com.noahhusby.sledgehammer.proxy.terramap.TerramapModule;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.IForgePacket;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -44,10 +44,10 @@ public class C2PRegisterForUpdatePacket implements IForgePacket {
         SledgehammerPlayer player = PlayerManager.getInstance().getPlayer(fromPlayer.getName());
         if (this.register) {
             if (RemoteSynchronizer.hasSyncPermission(player)) {
-                TerramapAddon.instance.synchronizer.registerPlayer(player);
+                TerramapModule.instance.synchronizer.registerPlayer(player);
             }
         } else {
-            TerramapAddon.instance.synchronizer.unregisterPlayer(player);
+            TerramapModule.instance.synchronizer.unregisterPlayer(player);
         }
         return true; // Do not send to server
     }

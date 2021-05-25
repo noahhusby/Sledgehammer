@@ -33,33 +33,33 @@ public class TerramapAddonEventHandler implements Listener {
         String version = ProxyServer.getInstance().getPluginManager().getPlugin("Sledgehammer").getDescription().getVersion();
         boolean playerSync = ConfigHandler.terramapSyncPlayers && RemoteSynchronizer.hasSyncPermission(event.getPlayer());
         PlayerSyncStatus syncStatus = PlayerSyncStatus.getFromBoolean(playerSync);
-        TerramapAddon.instance.sledgehammerChannel.send(new P2CSledgehammerHelloPacket(
+        TerramapModule.instance.sledgehammerChannel.send(new P2CSledgehammerHelloPacket(
                 version,
                 syncStatus,
                 syncStatus,
                 ConfigHandler.terramapGlobalMap,
                 ConfigHandler.terramapGlobalSettings,
                 false, // We do not have warp support yet
-                TerramapAddon.instance.getProxyUUID()
+                TerramapModule.instance.getProxyUUID()
         ), event.getPlayer());
         if (ConfigHandler.terramapSendCustomMapsToClient) {
             for (P2CMapStylePacket packet : MapStyleRegistry.getMaps().values()) {
-                TerramapAddon.instance.sledgehammerChannel.send(packet, event.getPlayer());
+                TerramapModule.instance.sledgehammerChannel.send(packet, event.getPlayer());
             }
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerLeave(PlayerDisconnectEvent event) {
-        TerramapAddon.instance.synchronizer.unregisterPlayer(event.getPlayer());
+        TerramapModule.instance.synchronizer.unregisterPlayer(event.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPluginMessage(PluginMessageEvent event) {
-        if (event.getTag().equals(TerramapAddon.MAPSYNC_CHANNEL_NAME)) {
-            TerramapAddon.instance.mapSyncChannel.process(event);
-        } else if (event.getTag().equals(TerramapAddon.SLEDGEHAMMER_CHANNEL_NAME)) {
-            TerramapAddon.instance.sledgehammerChannel.process(event);
+        if (event.getTag().equals(TerramapModule.MAPSYNC_CHANNEL_NAME)) {
+            TerramapModule.instance.mapSyncChannel.process(event);
+        } else if (event.getTag().equals(TerramapModule.SLEDGEHAMMER_CHANNEL_NAME)) {
+            TerramapModule.instance.sledgehammerChannel.process(event);
         }
     }
 }

@@ -350,7 +350,7 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
      * @return
      */
     public TerraDependency getTerraDependency() {
-        if(this.isNewer(TerramapAddon.OLDEST_TERRA121_TERRAMAP_VERSION)) {
+        if(this.isNewer(TerramapModule.OLDEST_TERRA121_TERRAMAP_VERSION)) {
             return TerraDependency.TERRAPLUSPLUS;
         } else {
             return TerraDependency.TERRA121;
@@ -367,7 +367,7 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
     public static TerramapVersion getClientVersion(ProxiedPlayer player) {
         Map<String, String> modList = player.getModList();
         TerramapVersion version = null;
-        String remoteVersion = modList.get(TerramapAddon.TERRAMAP_MODID);
+        String remoteVersion = modList.get(TerramapModule.TERRAMAP_MODID);
         if (remoteVersion != null) {
             try {
                 version = new TerramapVersion(remoteVersion);

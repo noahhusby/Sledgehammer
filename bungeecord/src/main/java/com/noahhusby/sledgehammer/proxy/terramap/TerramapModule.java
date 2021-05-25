@@ -38,13 +38,13 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 /**
- * Main Terramap addon class
+ * Main Terramap module class
  *
  * @author SmylerMC
  */
-public class TerramapAddon implements Module, Listener {
+public class TerramapModule implements Module, Listener {
 
-    public static TerramapAddon instance;
+    public static TerramapModule instance;
 
     public static final String TERRAMAP_MODID = "terramap";
     public static final String MAPSYNC_CHANNEL_NAME = "terramap:mapsync";
@@ -67,7 +67,7 @@ public class TerramapAddon implements Module, Listener {
 
     private UUID proxyUUID = new UUID(0, 0);
 
-    public TerramapAddon() {
+    public TerramapModule() {
         instance = this;
     }
 

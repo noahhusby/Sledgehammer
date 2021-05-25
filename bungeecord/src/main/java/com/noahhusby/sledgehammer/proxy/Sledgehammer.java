@@ -33,7 +33,7 @@ import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.proxy.players.BorderCheckerThread;
 import com.noahhusby.sledgehammer.proxy.players.FlaggedBorderCheckerThread;
 import com.noahhusby.sledgehammer.proxy.players.PlayerManager;
-import com.noahhusby.sledgehammer.proxy.terramap.TerramapAddon;
+import com.noahhusby.sledgehammer.proxy.terramap.TerramapModule;
 import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
@@ -71,14 +71,14 @@ public class Sledgehammer extends Plugin implements Listener {
         }
 
         // Manual module handling
-        if (ConfigHandler.terramapEnabled && TerramapAddon.instance == null) {
-            ModuleHandler.getInstance().registerModule(new TerramapAddon());
-            ModuleHandler.getInstance().enable(TerramapAddon.instance);
+        if (ConfigHandler.terramapEnabled && TerramapModule.instance == null) {
+            ModuleHandler.getInstance().registerModule(new TerramapModule());
+            ModuleHandler.getInstance().enable(TerramapModule.instance);
         } else if (ConfigHandler.terramapEnabled) {
-            ModuleHandler.getInstance().enable(TerramapAddon.instance);
-        } else if (TerramapAddon.instance != null && ModuleHandler.getInstance().getModules().containsKey(TerramapAddon.instance)) {
-            ModuleHandler.getInstance().disable(TerramapAddon.instance);
-            ModuleHandler.getInstance().unregisterModule(TerramapAddon.instance);
+            ModuleHandler.getInstance().enable(TerramapModule.instance);
+        } else if (TerramapModule.instance != null && ModuleHandler.getInstance().getModules().containsKey(TerramapModule.instance)) {
+            ModuleHandler.getInstance().disable(TerramapModule.instance);
+            ModuleHandler.getInstance().unregisterModule(TerramapModule.instance);
         }
 
         if (!ConfigHandler.warpCommand.equals("")) {

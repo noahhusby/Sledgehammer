@@ -24,7 +24,7 @@ import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
-import com.noahhusby.sledgehammer.proxy.terramap.TerramapAddon;
+import com.noahhusby.sledgehammer.proxy.terramap.TerramapModule;
 import com.noahhusby.sledgehammer.proxy.terramap.TerramapVersion;
 import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.ChatMessageType;
@@ -365,7 +365,7 @@ public class SledgehammerPlayer implements ProxiedPlayer {
      * This will only work if the user has logged onto a Forge server at least once, and will return false otherwise.
      */
     public boolean hasCompatibleTerramap() {
-        return TerramapAddon.MINIMUM_COMPATIBLE_VERSION.isOlderOrSame(TerramapVersion.getClientVersion(this));
+        return TerramapModule.MINIMUM_COMPATIBLE_VERSION.isOlderOrSame(TerramapVersion.getClientVersion(this));
     }
 
     /**
