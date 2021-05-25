@@ -1,16 +1,17 @@
 package com.noahhusby.sledgehammer.proxy.terramap.network;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.IForgePacket;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.protocol.DefinedPacket;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Implements a Forge plugin channel. Encodes, decodes, receives and dispatches {@link IForgePacket}.
@@ -181,6 +182,11 @@ public class ForgeChannel {
      */
     public static String readStringFromBuf(ByteBuf buf) {
         return DefinedPacket.readString(buf);
+    }
+    
+    public static void writeStringArrayToByteBuf(String[] strings, ByteBuf buf) {
+        DefinedPacket.writeVarInt(strings.length, buf);
+        for(String str: strings) DefinedPacket.writeString(str, buf);
     }
 
 }

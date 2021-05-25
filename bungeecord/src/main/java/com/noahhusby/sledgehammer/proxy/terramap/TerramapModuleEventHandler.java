@@ -1,9 +1,11 @@
 package com.noahhusby.sledgehammer.proxy.terramap;
 
 import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
+import com.noahhusby.sledgehammer.proxy.terramap.MapStyleLibrary.MapStyle;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.P2CMapStylePacket;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.P2CSledgehammerHelloPacket;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync.PlayerSyncStatus;
+
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PluginMessageEvent;
@@ -43,8 +45,8 @@ public class TerramapModuleEventHandler implements Listener {
                 TerramapModule.instance.getProxyUUID()
         ), event.getPlayer());
         if (ConfigHandler.terramapSendCustomMapsToClient) {
-            for (P2CMapStylePacket packet : MapStyleRegistry.getMaps().values()) {
-                TerramapModule.instance.sledgehammerChannel.send(packet, event.getPlayer());
+            for (MapStyle style : MapStyleLibrary.getMaps().values()) {
+                TerramapModule.instance.sledgehammerChannel.send(new P2CMapStylePacket(style), event.getPlayer());
             }
         }
     }
