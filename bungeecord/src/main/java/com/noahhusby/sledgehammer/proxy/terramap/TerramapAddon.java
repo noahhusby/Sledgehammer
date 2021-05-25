@@ -18,6 +18,9 @@
 
 package com.noahhusby.sledgehammer.proxy.terramap;
 
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
 import com.noahhusby.sledgehammer.proxy.modules.Module;
@@ -29,12 +32,10 @@ import com.noahhusby.sledgehammer.proxy.terramap.network.packets.P2CSledgehammer
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync.C2PRegisterForUpdatePacket;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync.P2CPlayerSyncPacket;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync.P2CRegistrationExpiresPacket;
+
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
-
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Main Terramap addon class
@@ -49,6 +50,7 @@ public class TerramapAddon implements Module, Listener {
     public static final String MAPSYNC_CHANNEL_NAME = "terramap:mapsync";
     public static final String SLEDGEHAMMER_CHANNEL_NAME = "terramap:sh"; // Forge does not support channel names longer than 20
     public static final TerramapVersion MINIMUM_COMPATIBLE_VERSION = new TerramapVersion(1, 0, 0, ReleaseType.BETA, 6, 0);
+    public static final TerramapVersion OLDEST_TERRA121_TERRAMAP_VERSION = new TerramapVersion(1, 0, 0, ReleaseType.BETA, 6, 7);
 
     public static final String PLAYER_SYNC_PERMISSION_NODE = "sledgehammer.terramap.playersync";
     public static final String TERRASHOW_BASE_PERMISSION_NODE = "sledgehammer.terramap.terrashow";

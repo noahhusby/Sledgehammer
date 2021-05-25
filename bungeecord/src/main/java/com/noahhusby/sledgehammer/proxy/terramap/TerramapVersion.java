@@ -1,10 +1,12 @@
 package com.noahhusby.sledgehammer.proxy.terramap;
 
-import com.noahhusby.sledgehammer.proxy.Sledgehammer;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-
 import java.util.Arrays;
 import java.util.Map;
+
+import com.google.common.base.Strings;
+import com.noahhusby.sledgehammer.proxy.Sledgehammer;
+
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 /**
  * Represents a version of Terramap.
@@ -36,6 +38,8 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
     public final boolean devBuild;
     public final boolean devRun;
 
+    public final String mcVersion;
+
     /**
      * Creates a new version object
      *
@@ -46,6 +50,7 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
      * @param build
      * @param revision
      * @param devBuild
+     * @param mcVersion
      */
     public TerramapVersion(
             int majorTarget,
@@ -54,7 +59,8 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
             ReleaseType releaseType,
             int build,
             int revision,
-            boolean devBuild) {
+            boolean devBuild,
+            String mcVersion) {
         super();
         this.majorTarget = majorTarget;
         this.minorTarget = minorTarget;
@@ -64,6 +70,7 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
         this.revision = revision;
         this.devBuild = devBuild;
         this.devRun = false;
+        this.mcVersion = mcVersion;
     }
 
     /**
@@ -75,15 +82,15 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
      * @param revision
      */
     public TerramapVersion(int majorTarget, int minorTarget, int buildTarget, ReleaseType type, int build, int revision) {
-        this(majorTarget, minorTarget, buildTarget, type, build, revision, false);
+        this(majorTarget, minorTarget, buildTarget, type, build, revision, false, "");
     }
 
     public TerramapVersion(int majorTarget, int minorTarget, int buildTarget, ReleaseType type, int build) {
-        this(majorTarget, minorTarget, buildTarget, type, build, 0, false);
+        this(majorTarget, minorTarget, buildTarget, type, build, 0, false, "");
     }
 
     public TerramapVersion(int majorTarget, int minorTarget, int buildTarget) {
-        this(majorTarget, minorTarget, buildTarget, ReleaseType.RELEASE, 0, 0, false);
+        this(majorTarget, minorTarget, buildTarget, ReleaseType.RELEASE, 0, 0, false, "");
     }
 
     /**
@@ -94,62 +101,69 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
      *                              See other constructors to safely create version numbers if you don't need to do it by parsing a version String.
      */
     public TerramapVersion(String versionString) throws InvalidVersionString {
-        if ("${version}".equals(versionString)) {
+        if("${version}".equals(versionString)) {
             this.majorTarget = this.minorTarget = this.buildTarget = this.build = this.revision = 0;
             this.devBuild = false;
             this.devRun = true;
             this.releaseType = ReleaseType.DEV;
+            this.mcVersion = "";
         } else {
-            String[] parts = versionString.split("-");
-            if (parts.length > 3) {
+            String[] versions = versionString.split("\\_");
+            String mcVersion;
+            if(versions.length == 2) {
+                mcVersion = versions[1];
+            } else  if(versions.length == 1) {
+                mcVersion = "";
+            } else {
                 throw new InvalidVersionString("Invalid version string " + versionString);
             }
-            if (parts.length > 0) {
-                if ("dev".equals(parts[parts.length - 1])) {
+            this.mcVersion = mcVersion;
+            String[] parts = versions[0].split("-");
+            if(parts.length > 3) {
+                throw new InvalidVersionString("Invalid version string " + versionString);
+            }
+            if(parts.length > 0) {
+                if("dev".equals(parts[parts.length - 1])) {
                     this.devBuild = true;
-                    parts = (String[]) Arrays.copyOfRange(parts, 0, parts.length - 1);
+                    parts = Arrays.copyOfRange(parts, 0, parts.length - 1);
                 } else {
                     this.devBuild = false;
                 }
                 String[] target = parts[0].split("\\.");
-                if (target.length != 3) {
-                    throw new InvalidVersionString("Invalid target version " + parts[0]);
-                }
+                if(target.length != 3) throw new InvalidVersionString("Invalid target version " + parts[0]);
                 devRun = false;
                 try {
                     this.majorTarget = Integer.parseInt(target[0]);
-                } catch (NumberFormatException e) {
+                } catch(NumberFormatException e) {
                     throw new InvalidVersionString("Invalid target major version: " + target[0]);
                 }
                 try {
                     this.minorTarget = Integer.parseInt(target[1]);
-                } catch (NumberFormatException e) {
+                } catch(NumberFormatException e) {
                     throw new InvalidVersionString("Invalid target minor version: " + target[1]);
                 }
                 try {
                     this.buildTarget = Integer.parseInt(target[2]);
-                } catch (NumberFormatException e) {
+                } catch(NumberFormatException e) {
                     throw new InvalidVersionString("Invalid target build version: " + target[2]);
                 }
-                if (parts.length > 1) {
-                    for (ReleaseType type : ReleaseType.values()) {
-                        if (type.equals(ReleaseType.RELEASE)) {
-                            continue;
-                        }
-                        if (parts[1].startsWith(type.name)) {
+                if(parts.length > 1) {
+                    for(ReleaseType type: ReleaseType.values()) {
+                        if(type.equals(ReleaseType.RELEASE)) continue;
+                        if(parts[1].startsWith(type.name)) {
                             this.releaseType = type;
                             parts[1] = parts[1].substring(type.name.length());
                             String[] build = parts[1].split("\\.");
-                            if (build.length > 0) {
+                            if(build.length > 0) {
                                 try {
                                     this.build = Integer.parseInt(build[0]);
-                                } catch (NumberFormatException e) {
+                                } catch(NumberFormatException e) {
                                     throw new InvalidVersionString("Invalid build version: " + build[0]);
                                 }
-                                if (build.length > 1) {
+                                if(build.length > 1) {
                                     try {
                                         this.revision = Integer.parseInt(build[1]);
-                                    } catch (NumberFormatException e) {
+                                    } catch(NumberFormatException e) {
                                         throw new InvalidVersionString("Invalid revision version: " + build[1]);
                                     }
                                 } else {
@@ -178,21 +192,29 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
      */
     @Override
     public String toString() {
-        if (this.isDev()) {
+        String str = this.getTerramapVersionString();
+        if(!Strings.isNullOrEmpty(this.mcVersion)) {
+            str += "_" + this.mcVersion;
+        }
+        return str;
+    }
+
+    public String getTerramapVersionString() {
+        if(this.isDev()) {
             return "${version}";
         }
         String str = "";
         str += this.majorTarget;
         str += "." + this.minorTarget;
         str += "." + this.buildTarget;
-        if (!this.releaseType.equals(ReleaseType.RELEASE)) {
+        if(!this.releaseType.equals(ReleaseType.RELEASE)) {
             str += "-" + this.releaseType.name;
             str += this.build;
-            if (this.revision != 0) {
+            if(this.revision != 0) {
                 str += "." + this.revision;
             }
         }
-        if (this.devBuild) {
+        if(this.devBuild) {
             str += "-dev";
         }
         return str;
@@ -209,14 +231,14 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + build;
-        result = prime * result + buildTarget;
-        result = prime * result + (devBuild ? 1231 : 1237);
-        result = prime * result + (devRun ? 1231 : 1237);
-        result = prime * result + majorTarget;
-        result = prime * result + minorTarget;
-        result = prime * result + ((releaseType == null) ? 0 : releaseType.hashCode());
-        result = prime * result + revision;
+        result = prime * result + this.build;
+        result = prime * result + this.buildTarget;
+        result = prime * result + (this.devBuild ? 1231 : 1237);
+        result = prime * result + (this.devRun ? 1231 : 1237);
+        result = prime * result + this.majorTarget;
+        result = prime * result + this.minorTarget;
+        result = prime * result + ((this.releaseType == null) ? 0 : releaseType.hashCode());
+        result = prime * result + this.revision;
         return result;
     }
 
@@ -322,6 +344,18 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
     public boolean isOlder(TerramapVersion other) {
         return this.compareTo(other) < 0;
     }
+    
+    /**
+     * 
+     * @return
+     */
+    public TerraDependency getTerraDependency() {
+        if(this.isNewer(TerramapAddon.OLDEST_TERRA121_TERRAMAP_VERSION)) {
+            return TerraDependency.TERRAPLUSPLUS;
+        } else {
+            return TerraDependency.TERRA121;
+        }
+    }
 
     /**
      * Get's the given player's Terramap version.
@@ -366,10 +400,24 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
         }
 
     }
+    
+    /**
+     * Terramap's version dependent dependencies
+     * 
+     * @author SmylerMC
+     *
+     */
+    public enum TerraDependency {
+        TERRA121("terra121"), TERRAPLUSPLUS("terraplusplus");
+
+        public final String MODID;
+
+        private TerraDependency(String modid) {
+            this.MODID = modid;
+        }
+    }
 
     public static class InvalidVersionString extends Exception {
-
-        private static final long serialVersionUID = 1L;
 
         public InvalidVersionString(String message) {
             super(message);
