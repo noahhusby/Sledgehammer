@@ -83,7 +83,7 @@ public class TerramapModule implements Module, Listener {
         } catch (IllegalArgumentException e) {
             Sledgehammer.logger.warning("Failed to parse Terramap proxy uuid. Will be using 0.");
         }
-        this.listener = new TerramapAddonEventHandler();
+        this.listener = new TerramapModuleEventHandler();
         Sledgehammer.addListener(this.listener);
         if (ConfigHandler.terramapSyncPlayers) {
             this.syncTask = Sledgehammer.getInstance().getProxy().getScheduler().schedule(Sledgehammer.getInstance(), this.synchronizer::syncPlayers, 0, ConfigHandler.terramapSyncInterval, TimeUnit.MILLISECONDS);
