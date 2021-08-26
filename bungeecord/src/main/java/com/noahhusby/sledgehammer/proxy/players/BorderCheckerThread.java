@@ -26,6 +26,7 @@ import com.noahhusby.sledgehammer.proxy.datasets.OpenStreetMaps;
 import net.md_5.bungee.api.config.ServerInfo;
 
 /**
+ * @author Noah Husby
  * Finds players and flags them if they are within a certain region of a border
  * Flagged players are then tracked in {@link FlaggedBorderCheckerThread}
  */

@@ -36,6 +36,7 @@ import net.md_5.bungee.api.config.ServerInfo;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * @author Noah Husby
  * Checks flagged players and teleports them if within region
  */
 public class FlaggedBorderCheckerThread implements Runnable {

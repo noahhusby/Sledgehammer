@@ -18,37 +18,62 @@
 
 package com.noahhusby.sledgehammer.common;
 
+import com.noahhusby.sledgehammer.common.exceptions.VersionParseException;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Objects;
 
 /**
  * @author Noah Husby
  * A class represtenting a single version of Sledgehammer
  */
 @Getter
+@RequiredArgsConstructor
 public class SledgehammerVersion implements Comparable<SledgehammerVersion> {
-    private int majorVersion;
-    private int minorVersion;
-    private int buildVersion;
+    private final int majorVersion;
+    private final int minorVersion;
+    private final int buildVersion;
 
-    private boolean isDevBuild = false;
+    private final boolean isDevBuild;
 
-    public SledgehammerVersion(String version) {
+    public SledgehammerVersion(int major, int minor, int build) {
+        this(major, minor, build, false);
+    }
+
+    public SledgehammerVersion(String version) throws VersionParseException {
         if(version == null) {
             majorVersion = minorVersion = buildVersion = 0;
             isDevBuild = true;
             return;
         }
+        String[] splitVersion = version.split("-");
+        String[] versions = splitVersion[0].split("\\.");
+        if(versions.length < 3) {
+            throw new VersionParseException(String.format("Invalid version input: %s", version));
+        }
         try {
-            String[] splitVersion = version.split("-");
-            String[] versions = splitVersion[0].split("\\.");
             majorVersion = Integer.parseInt(versions[0]);
             minorVersion = Integer.parseInt(versions[1]);
             buildVersion = Integer.parseInt(versions[2]);
-        } catch (Exception e) {
-            majorVersion = minorVersion = buildVersion = 0;
-            isDevBuild = true;
+            isDevBuild = false;
+        } catch (NumberFormatException e) {
+            throw new VersionParseException(String.format("Invalid version input: %s", version));
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(majorVersion, minorVersion, buildVersion);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if(!(other instanceof SledgehammerVersion)) {
+            return false;
+        }
+        return this.compareTo((SledgehammerVersion) other) == 0;
     }
 
     @Override
@@ -76,5 +101,46 @@ public class SledgehammerVersion implements Comparable<SledgehammerVersion> {
         }
 
         return this.buildVersion - other.buildVersion;
+    }
+
+    @Override
+    public String toString() {
+        String version;
+        if(isDevBuild) {
+            version = "[Development Build]";
+        } else {
+            version = String.format("%d.%d.%d", majorVersion, minorVersion, buildVersion);
+        }
+        return version;
+    }
+
+    /**
+     * Checks whether another version is newer than the local version
+     *
+     * @param other {@link SledgehammerVersion}
+     * @return True if compared version is newer, false if not
+     */
+    public boolean isNewer(SledgehammerVersion other) {
+        return this.compareTo(other) > 0;
+    }
+
+    /**
+     * Checks whether another version is older than the local version
+     *
+     * @param other {@link SledgehammerVersion}
+     * @return True if compared version is older, false if not
+     */
+    public boolean isOlder(SledgehammerVersion other) {
+        return this.compareTo(other) < 0;
+    }
+
+    /**
+     * Checks whether another version is the same as the local version
+     *
+     * @param other {@link SledgehammerVersion}
+     * @return True if compared version is the same, false if not
+     */
+    public boolean isSame(SledgehammerVersion other) {
+        return this.compareTo(other) == 0;
     }
 }

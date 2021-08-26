@@ -21,6 +21,7 @@ package com.noahhusby.sledgehammer.proxy.servers;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.noahhusby.lib.data.storage.Key;
+import com.noahhusby.sledgehammer.common.SledgehammerVersion;
 import com.noahhusby.sledgehammer.proxy.datasets.Location;
 import lombok.Getter;
 import lombok.Setter;
@@ -61,7 +62,7 @@ public class SledgehammerServer {
     @SerializedName("StealthMode")
     @Setter
     private boolean stealthMode;
-    private String sledgehammerVersion = null;
+    private SledgehammerVersion sledgehammerVersion = null;
 
     public SledgehammerServer() {
     }
@@ -76,7 +77,7 @@ public class SledgehammerServer {
      *
      * @param version Sledgehammer Version
      */
-    public void initialize(String version) {
+    public void initialize(SledgehammerVersion version) {
         this.sledgehammerVersion = version;
     }
 

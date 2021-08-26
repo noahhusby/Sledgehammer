@@ -1,5 +1,7 @@
 package com.noahhusby.sledgehammer.common;
 
+import com.noahhusby.sledgehammer.common.exceptions.VersionParseException;
+
 import java.io.IOException;
 import java.util.Properties;
 
@@ -7,16 +9,16 @@ import java.util.Properties;
  * @author Noah Husby
  */
 public abstract class CommonConstants {
-    public static final String VERSION;
+    public static final SledgehammerVersion VERSION;
 
     static {
-        Properties versionProperties = new Properties();
+        SledgehammerVersion tempVersion;
         try {
-            versionProperties.load(CommonConstants.class.getResourceAsStream("/version.properties"));
-        } catch (IOException ignored) {
+            tempVersion = new SledgehammerVersion(CommonConstants.class.getPackage().getImplementationVersion());
+        } catch (VersionParseException ignored) {
+            tempVersion = new SledgehammerVersion(0, 0, 0, true);
         }
-        String ver = versionProperties.getProperty("version");
-        VERSION = (ver == null ? "Development Build" : ver);
+        VERSION = tempVersion;
     }
 
     public static final double SCALE = 7318261.522857145;

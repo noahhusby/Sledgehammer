@@ -21,6 +21,7 @@ package com.noahhusby.sledgehammer.proxy.servers;
 import com.google.common.collect.Maps;
 import com.noahhusby.lib.data.storage.StorageHashMap;
 import com.noahhusby.lib.data.storage.StorageTreeMap;
+import com.noahhusby.sledgehammer.common.SledgehammerVersion;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.datasets.Location;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
@@ -48,7 +49,7 @@ public class ServerHandler implements Listener {
     @Getter
     private final StorageHashMap<String, ServerGroup> groups = new StorageHashMap<>(String.class, ServerGroup.class);
 
-    private final Map<String, String> initialized = Maps.newHashMap();
+    private final Map<String, SledgehammerVersion> initialized = Maps.newHashMap();
 
     private ServerHandler() {
         Sledgehammer.addListener(this);
@@ -60,7 +61,7 @@ public class ServerHandler implements Listener {
      * @param serverInfo {@link ServerInfo}
      * @param version    Version of initialized server
      */
-    public void initialize(ServerInfo serverInfo, String version) {
+    public void initialize(ServerInfo serverInfo, SledgehammerVersion version) {
         String name = serverInfo.getName();
         SledgehammerServer s = getServer(name);
         if (s == null) {
@@ -132,15 +133,6 @@ public class ServerHandler implements Listener {
     public List<Location> getLocationsFromServer(String server) {
         SledgehammerServer sledgehammerServer = getServer(server);
         return sledgehammerServer == null ? null : sledgehammerServer.getLocations();
-    }
-
-    /**
-     * Gets map of initialized servers with SH versions
-     *
-     * @return Map of initialized servers
-     */
-    public Map<String, String> getInitializedMap() {
-        return initialized;
     }
 
     /**
