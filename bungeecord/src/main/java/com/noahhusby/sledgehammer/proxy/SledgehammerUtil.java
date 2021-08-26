@@ -62,49 +62,13 @@ public class SledgehammerUtil extends CommonUtil {
     }
 
     /**
-     * Gets Bungeecord server from player name
-     *
-     * @param name The name of the player
-     * @return The Bungeecord server. Result will be null if no matching server is found.
-     * @deprecated As of release 0.4, replaced by {@link #getServerNameByPlayer(ProxiedPlayer)}
-     */
-    @Deprecated
-    public static ServerInfo getServerFromPlayer(String name) {
-        return ProxyServer.getInstance().getPlayer(name).getServer().getInfo();
-    }
-
-    /**
-     * Gets name of Bungeecord server from player
-     *
-     * @param player The name of the player
-     * @return The name of the Bungeecord server. Result will be null if no matching server is found.
-     * @deprecated As of release 0.4, replaced by {@link #getServerFromSender(CommandSender)}
-     */
-    @Deprecated
-    public static String getServerNameByPlayer(ProxiedPlayer player) {
-        return player.getServer().getInfo().getName();
-    }
-
-    /**
      * Checks if a Bungeecord server is a sledgehammer server
      *
      * @param server The Bungeecord server
      * @return True if the Bungeecord server is a Sledgehammer server, False if not
      */
     public static boolean isSledgehammerServer(ServerInfo server) {
-        return isSledgehammerServer(server.getName());
-    }
-
-    /**
-     * Checks if a Bungeecord server is a sledgehammer server
-     *
-     * @param name The name of the Bungeecord server
-     * @return True if the Bungeecord server is a Sledgehammer server, False if not
-     * @deprecated As of release 0.4, replaced by {@link #isSledgehammerServer(ServerInfo)}
-     */
-    @Deprecated
-    public static boolean isSledgehammerServer(String name) {
-        return ServerHandler.getInstance().getServers().containsKey(name);
+        return ServerHandler.getInstance().getServers().containsKey(server.getName());
     }
 
     /**
