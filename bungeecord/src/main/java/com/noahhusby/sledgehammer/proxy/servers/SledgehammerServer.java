@@ -22,6 +22,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.noahhusby.lib.data.storage.Key;
 import com.noahhusby.sledgehammer.common.SledgehammerVersion;
+import com.noahhusby.sledgehammer.common.TpllMode;
 import com.noahhusby.sledgehammer.proxy.datasets.Location;
 import lombok.Getter;
 import lombok.Setter;
@@ -62,6 +63,10 @@ public class SledgehammerServer {
     @SerializedName("StealthMode")
     @Setter
     private boolean stealthMode;
+    @Expose
+    @SerializedName("TpllMode")
+    @Setter
+    private TpllMode tpllMode = TpllMode.NORMAL;
     private SledgehammerVersion sledgehammerVersion = null;
 
     public SledgehammerServer() {

@@ -18,6 +18,7 @@
 
 package com.noahhusby.sledgehammer.proxy.commands;
 
+import com.noahhusby.sledgehammer.common.TpllMode;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.datasets.OpenStreetMaps;
@@ -25,6 +26,8 @@ import com.noahhusby.sledgehammer.proxy.network.P2S.P2SLocationPacket;
 import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.proxy.permissions.PermissionRequest;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
+import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
+import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -121,6 +124,12 @@ public class TpllCommand extends Command {
                     } else {
                         regularUsage(sender);
                     }
+                    return;
+                }
+
+                SledgehammerServer sledgehammerServer = ServerHandler.getInstance().getServer(recipient.getServer().getInfo().getName());
+                if(sledgehammerServer != null && sledgehammerServer.getTpllMode() == TpllMode.PASSTHROUGH) {
+                    recipient.chat("/tpll " + SledgehammerUtil.getRawArguments(args));
                     return;
                 }
 
