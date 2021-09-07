@@ -18,6 +18,8 @@
 
 package com.noahhusby.sledgehammer.server;
 
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,6 +30,7 @@ import org.bukkit.command.CommandSender;
 public class SledgehammerCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        return false;
+        sender.spigot().sendMessage(new TextComponent(ChatColor.BLUE + "" + ChatColor.BOLD + "SH " + ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "> " + ChatColor.RESET + "" + ChatColor.RED + "Sledgehammer " + Constants.VERSION + " " + ChatColor.GRAY + "by " + ChatColor.BLUE + "Noah Husby"));
+        return true;
     }
 }

@@ -82,7 +82,7 @@ public class ChatUtil {
     }
 
     public static TextComponent getVersionMessage() {
-        return titleAndCombine(ChatColor.RED, String.format("Sledgehammer %s", Constants.VERSION),
+        return adminAndCombine(ChatColor.RED, String.format("Sledgehammer %s", Constants.VERSION),
                 ChatColor.GRAY, " by ", ChatColor.BLUE + "Noah Husby");
     }
 

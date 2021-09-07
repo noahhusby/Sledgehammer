@@ -64,7 +64,7 @@ public final class Sledgehammer extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(new GUIRegistry(), this);
         Bukkit.getPluginManager().registerEvents(ChatHandler.getInstance(), this);
         Bukkit.getPluginManager().registerEvents(NetworkHandler.getInstance(), this);
-
+        this.getCommand("shs").setExecutor(new SledgehammerCommand());
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, new PlayerLocationTask(), 0, 250);
     }
 
