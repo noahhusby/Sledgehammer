@@ -18,9 +18,9 @@
 
 package com.noahhusby.sledgehammer.proxy.commands.fragments.warps;
 
+import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
-import com.noahhusby.sledgehammer.proxy.permissions.PermissionRequest;
+import com.noahhusby.sledgehammer.proxy.players.Permission;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 import net.md_5.bungee.api.CommandSender;
@@ -28,13 +28,13 @@ import net.md_5.bungee.api.CommandSender;
 public class WarpListFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
-        PermissionHandler.getInstance().check(SledgehammerPlayer.getPlayer(sender), "sledgehammer.warp.list", (code, global) -> {
-            if (code == PermissionRequest.PermissionCode.PERMISSION) {
-                SledgehammerPlayer player = SledgehammerPlayer.getPlayer(sender);
-                sender.sendMessage(WarpHandler.getInstance().getWarpList(player.getServer().getInfo().getName()));
-                return;
-            }
-        });
+        Permission permission = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp.list");
+        if(permission.isLocal()) {
+            SledgehammerPlayer player = SledgehammerPlayer.getPlayer(sender);
+            sender.sendMessage(WarpHandler.getInstance().getWarpList(player.getServer().getInfo().getName()));
+        } else {
+            sender.sendMessage(ChatUtil.getNoPermission());
+        }
     }
 
     @Override

@@ -28,8 +28,8 @@ import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
 import com.noahhusby.sledgehammer.proxy.network.P2S.P2SWarpConfigPacket;
 import com.noahhusby.sledgehammer.proxy.network.PacketInfo;
 import com.noahhusby.sledgehammer.proxy.network.S2PPacket;
-import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
-import com.noahhusby.sledgehammer.proxy.permissions.PermissionRequest;
+import com.noahhusby.sledgehammer.proxy.players.Permission;
+import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 
@@ -47,19 +47,16 @@ public class S2PWarpConfigPacket extends S2PPacket {
             return;
         }
         JsonObject response = new JsonObject();
-        boolean g = PermissionHandler.getInstance().isAdmin(player) || player.hasPermission("sledgehammer.warp.edit");
+        boolean g = PlayerHandler.getInstance().isAdmin(player) || player.hasPermission("sledgehammer.warp.edit");
 
         switch (ProxyConfigAction.valueOf(packet.get("action").getAsString())) {
             case OPEN_CONFIG:
-                PermissionHandler.getInstance().check(player, "sledgehammer.warp.edit", (code, global) -> {
-                    if (code == PermissionRequest.PermissionCode.PERMISSION) {
-                        NetworkHandler.getInstance().send(new P2SWarpConfigPacket(player,
-                                P2SWarpConfigPacket.ServerConfigAction.OPEN_CONFIG, global));
-                        return;
-                    }
+                Permission permission = player.getPermission("sledgehammer.warp.edit");
+                if(permission.isLocal()) {
+                    NetworkHandler.getInstance().send(new P2SWarpConfigPacket(player, P2SWarpConfigPacket.ServerConfigAction.OPEN_CONFIG, permission.isGlobal()));
+                } else {
                     player.sendMessage(ChatUtil.getNoPermission());
-                });
-
+                }
                 break;
             case CREATE_WARP:
                 String warpName = data.get("warpName").getAsString();

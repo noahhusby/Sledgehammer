@@ -19,7 +19,7 @@
 package com.noahhusby.sledgehammer.proxy.commands;
 
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
-import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
+import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import net.md_5.bungee.api.CommandSender;
 
@@ -48,7 +48,7 @@ public abstract class Command extends net.md_5.bungee.api.plugin.Command {
     }
 
     protected boolean hasPerms(CommandSender sender, boolean exact) {
-        if (PermissionHandler.getInstance().isAdmin(sender)) {
+        if (PlayerHandler.getInstance().isAdmin(sender)) {
             return true;
         }
         if (permissionNode == null) {
@@ -68,7 +68,7 @@ public abstract class Command extends net.md_5.bungee.api.plugin.Command {
     }
 
     protected boolean hasPerms(CommandSender sender, String specificNode) {
-        if (PermissionHandler.getInstance().isAdmin(sender)) {
+        if (PlayerHandler.getInstance().isAdmin(sender)) {
             return true;
         }
         if (permissionNode == null) {
@@ -88,7 +88,7 @@ public abstract class Command extends net.md_5.bungee.api.plugin.Command {
     }
 
     public boolean isAdmin(CommandSender sender) {
-        return PermissionHandler.getInstance().isAdmin(sender);
+        return PlayerHandler.getInstance().isAdmin(sender);
     }
 
     protected NetworkHandler getNetworkManager() {

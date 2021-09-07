@@ -30,8 +30,8 @@ import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
 import com.noahhusby.sledgehammer.proxy.network.P2S.P2STeleportPacket;
 import com.noahhusby.sledgehammer.proxy.network.P2S.P2SWarpGUIPacket;
-import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
-import com.noahhusby.sledgehammer.proxy.permissions.PermissionRequest;
+import com.noahhusby.sledgehammer.proxy.players.Permission;
+import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.servers.ServerGroup;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
@@ -71,13 +71,12 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
             return;
         }
 
-        PermissionHandler.getInstance().check(SledgehammerPlayer.getPlayer(sender), "sledgehammer.warp", (code, global) -> {
-            if (code == PermissionRequest.PermissionCode.PERMISSION) {
-                run(sender, args);
-                return;
-            }
+        Permission permission = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp");
+        if (permission.isLocal()) {
+            run(sender, args);
+        } else {
             sender.sendMessage(ChatUtil.getNoPermission());
-        });
+        }
     }
 
     private void run(CommandSender sender, String[] args) {
@@ -93,9 +92,8 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
                 }
 
                 if (openGUI) {
-                    PermissionHandler.getInstance().check(SledgehammerPlayer.getPlayer(sender), "sledgehammer.warp.edit", (code, global) -> NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(),
-                            SledgehammerUtil.getServerFromSender(sender).getName(),
-                            code == PermissionRequest.PermissionCode.PERMISSION)));
+                    Permission permission = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp.edit");
+                    NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName(), permission.isLocal()));
                     return;
                 }
             }
@@ -114,9 +112,8 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
         if (aliases.contains(args[0])) {
             for (ServerGroup g : ServerHandler.getInstance().getGroups().values()) {
                 if (g.getAliases().contains(args[0])) {
-                    PermissionHandler.getInstance().check(SledgehammerPlayer.getPlayer(sender), "sledgehammer.warp.edit", (code, global) -> NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(),
-                            SledgehammerUtil.getServerFromSender(sender).getName(),
-                            code == PermissionRequest.PermissionCode.PERMISSION)));
+                    Permission permission = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp.edit");
+                    NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName(), permission.isLocal()));
                     return;
                 }
             }
@@ -154,7 +151,7 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
 
     @Override
     public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
-        boolean tab = PermissionHandler.getInstance().isAdmin(sender) || sender.hasPermission("sledgehammer.warp");
+        boolean tab = PlayerHandler.getInstance().isAdmin(sender) || sender.hasPermission("sledgehammer.warp");
         if (tab) {
             SledgehammerServer s = SledgehammerPlayer.getPlayer(sender).getSledgehammerServer();
             if (s == null) {

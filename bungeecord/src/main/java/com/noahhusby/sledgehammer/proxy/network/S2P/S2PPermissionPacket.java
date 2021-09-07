@@ -22,7 +22,10 @@ import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.network.PacketInfo;
 import com.noahhusby.sledgehammer.proxy.network.S2PPacket;
-import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
+import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
+import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
+
+import java.util.UUID;
 
 public class S2PPermissionPacket extends S2PPacket {
     @Override
@@ -32,6 +35,12 @@ public class S2PPermissionPacket extends S2PPacket {
 
     @Override
     public void onMessage(PacketInfo info, JsonObject data) {
-        PermissionHandler.getInstance().response(data.get("salt").getAsString(), data.get("permission").getAsBoolean());
+        UUID uuid = UUID.fromString(data.get("player").getAsString());
+        SledgehammerPlayer player = PlayerHandler.getInstance().getPlayer(uuid);
+        String salt = data.get("salt").getAsString();
+        boolean localPermission = data.get("permission").getAsBoolean();
+        if(player != null) {
+            player.validatePermission(salt, localPermission);
+        }
     }
 }

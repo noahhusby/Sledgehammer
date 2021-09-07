@@ -2,8 +2,7 @@ package com.noahhusby.sledgehammer.proxy.terramap;
 
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
-import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
-import com.noahhusby.sledgehammer.proxy.players.PlayerManager;
+import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync.P2CPlayerSyncPacket;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync.P2CRegistrationExpiresPacket;
@@ -34,7 +33,7 @@ public class RemoteSynchronizer {
             }
             long ctime = System.currentTimeMillis();
             List<SledgehammerPlayer> playersToSend = new ArrayList<>();
-            List<SledgehammerPlayer> players = new ArrayList<>(PlayerManager.getInstance().getPlayers().values());
+            List<SledgehammerPlayer> players = new ArrayList<>(PlayerHandler.getInstance().getPlayers().values());
             for (SledgehammerPlayer player : players) {
                 if (!player.onEarthServer()) {
                     continue;
@@ -105,7 +104,7 @@ public class RemoteSynchronizer {
     }
 
     public static boolean hasSyncPermission(ProxiedPlayer player) {
-        return player.hasPermission(TerramapAddon.PLAYER_SYNC_PERMISSION_NODE) || PermissionHandler.getInstance().isAdmin(player);
+        return player.hasPermission(TerramapAddon.PLAYER_SYNC_PERMISSION_NODE) || PlayerHandler.getInstance().isAdmin(player);
     }
 
     private static class RegisteredForUpdatePlayer {

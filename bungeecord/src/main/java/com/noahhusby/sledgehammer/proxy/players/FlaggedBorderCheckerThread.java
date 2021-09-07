@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit;
 public class FlaggedBorderCheckerThread implements Runnable {
     @Override
     public void run() {
-        ImmutableMap.copyOf(PlayerManager.getInstance().getPlayers()).forEach((u, p) -> {
+        ImmutableMap.copyOf(PlayerHandler.getInstance().getPlayers()).forEach((u, p) -> {
             if (!p.isFlagged()) {
                 return;
             }

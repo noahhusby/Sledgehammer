@@ -8,6 +8,8 @@ import com.noahhusby.sledgehammer.server.network.S2P.S2PPermissionPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public class P2SPermissionPacket extends P2SPacket {
     @Override
     public String getPacketID() {
@@ -16,7 +18,7 @@ public class P2SPermissionPacket extends P2SPacket {
 
     @Override
     public void onMessage(PacketInfo info, JsonObject data) {
-        String player = data.get("player").getAsString();
+        UUID player = UUID.fromString(data.get("player").getAsString());
         String salt = data.get("salt").getAsString();
         String permission = data.get("permission").getAsString();
 

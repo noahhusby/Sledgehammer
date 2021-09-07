@@ -22,6 +22,8 @@ package com.noahhusby.sledgehammer.proxy.players;
 import com.google.common.collect.Maps;
 import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
+import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
+import com.noahhusby.sledgehammer.proxy.network.P2S.P2SPermissionPacket;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
 import com.noahhusby.sledgehammer.proxy.terramap.TerramapAddon;
@@ -46,6 +48,10 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * An object representing a player on the network with Sledgehammer specific access.
@@ -63,6 +69,8 @@ public class SledgehammerPlayer implements ProxiedPlayer {
     Map<String, Object> attributes = Maps.newHashMap();
 
     private String trackSalt = null;
+
+    private PermissionRequest permissionRequest;
 
     public SledgehammerPlayer(ProxiedPlayer player) {
         this.player = player;
@@ -498,6 +506,41 @@ public class SledgehammerPlayer implements ProxiedPlayer {
         return this.trackSalt.equals(salt);
     }
 
+    public void validatePermission(String salt, boolean localPermission) {
+        if(validateAction(salt)) {
+            if(permissionRequest != null) {
+                String permission = permissionRequest.getPermission();
+                permissionRequest.getFuture().complete(new Permission(permissionRequest.getPermission(), this, this.hasPermission(permission), localPermission));
+            }
+        }
+    }
+
+    public Permission getPermission(String permission) {
+        if(permission == null) {
+            return new Permission(null, this, false, false);
+        }
+        if(PlayerHandler.getInstance().isAdmin(this)) {
+            return new Permission(permission, this, true, true);
+        }
+        boolean global = hasPermission(permission);
+        if(!onSledgehammer()) {
+            return new Permission(permission, this, global, false);
+        }
+        CompletableFuture<Permission> permissionFuture = new CompletableFuture<>();
+        permissionRequest = new PermissionRequest(permissionFuture, permission);
+        NetworkHandler.getInstance().send(new P2SPermissionPacket(player.getServer().getInfo(), this, permission, trackAction()));
+        Permission perm = null;
+        try {
+            perm = permissionFuture.get(500, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException ignored) {
+        }
+        permissionRequest = null;
+        if(perm == null) {
+            perm = new Permission(permission, this, global, false);
+        }
+        return perm;
+    }
+
     /**
      * Get SledgehammerPlayer from player name
      *
@@ -505,7 +548,7 @@ public class SledgehammerPlayer implements ProxiedPlayer {
      * @return {@link SledgehammerPlayer}
      */
     public static SledgehammerPlayer getPlayer(String s) {
-        return PlayerManager.getInstance().getPlayer(s);
+        return PlayerHandler.getInstance().getPlayer(s);
     }
 
     /**
@@ -515,6 +558,15 @@ public class SledgehammerPlayer implements ProxiedPlayer {
      * @return {@link SledgehammerPlayer}
      */
     public static SledgehammerPlayer getPlayer(CommandSender s) {
-        return PlayerManager.getInstance().getPlayer(s);
+        return PlayerHandler.getInstance().getPlayer(s);
+    }
+
+    /**
+     * Gets a SledgehammerPlayer by {@link UUID}
+     * @param uuid {@link UUID}
+     * @return {@link SledgehammerPlayer}
+     */
+    public static SledgehammerPlayer getPlayer(UUID uuid) {
+        return PlayerHandler.getInstance().getPlayer(uuid);
     }
 }

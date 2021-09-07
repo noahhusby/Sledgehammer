@@ -27,7 +27,7 @@ import com.noahhusby.lib.data.storage.Storage;
 import com.noahhusby.lib.data.storage.handlers.LocalStorageHandler;
 import com.noahhusby.lib.data.storage.handlers.SQLStorageHandler;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
-import com.noahhusby.sledgehammer.proxy.players.PlayerManager;
+import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.terramap.MapStyleRegistry;
 import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
@@ -139,7 +139,7 @@ public class ConfigHandler {
     public void unload() {
         ServerHandler.getInstance().getServers().destroy();
         WarpHandler.getInstance().getWarps().destroy();
-        PlayerManager.getInstance().getAttributes().destroy();
+        PlayerHandler.getInstance().getAttributes().destroy();
         ServerHandler.getInstance().getGroups().destroy();
     }
 
@@ -239,7 +239,7 @@ public class ConfigHandler {
         warpData.registerHandler(new LocalStorageHandler(ConfigHandler.warpFile));
         warpData.clearHandlers();
 
-        Storage attributeData = PlayerManager.getInstance().getAttributes();
+        Storage attributeData = PlayerHandler.getInstance().getAttributes();
         attributeData.registerHandler(new LocalStorageHandler(ConfigHandler.attributeFile));
         attributeData.clearHandlers();
 
@@ -346,7 +346,7 @@ public class ConfigHandler {
         ServerHandler.getInstance().getServers().migrate(0);
         ServerHandler.getInstance().getGroups().migrate(0);
         WarpHandler.getInstance().getWarps().migrate(0);
-        PlayerManager.getInstance().getAttributes().migrate(0);
+        PlayerHandler.getInstance().getAttributes().migrate(0);
     }
 
     /**

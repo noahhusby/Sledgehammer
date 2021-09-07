@@ -33,7 +33,7 @@ import net.md_5.bungee.api.config.ServerInfo;
 public class BorderCheckerThread implements Runnable {
     @Override
     public void run() {
-        ImmutableMap.copyOf(PlayerManager.getInstance().getPlayers()).forEach((u, p) -> {
+        ImmutableMap.copyOf(PlayerHandler.getInstance().getPlayers()).forEach((u, p) -> {
             if (!p.onEarthServer() || !SledgehammerUtil.inEarthRegion(p) || p.checkAttribute("BORDER_MODE", false)) {
                 p.setTrackingPoint(null);
                 p.setFlagged(false);

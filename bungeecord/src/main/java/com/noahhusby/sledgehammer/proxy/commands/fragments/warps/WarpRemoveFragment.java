@@ -23,8 +23,7 @@ import com.noahhusby.sledgehammer.common.warps.Warp;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
-import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
-import com.noahhusby.sledgehammer.proxy.permissions.PermissionRequest;
+import com.noahhusby.sledgehammer.proxy.players.Permission;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 import net.md_5.bungee.api.ChatColor;
@@ -35,13 +34,12 @@ import java.util.List;
 public class WarpRemoveFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
-        PermissionHandler.getInstance().check(SledgehammerPlayer.getPlayer(sender), "sledgehammer.warp.remove", (code, global) -> {
-            if (code == PermissionRequest.PermissionCode.PERMISSION) {
-                run(sender, args, global);
-                return;
-            }
+        Permission permission = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp.remove");
+        if(permission.isLocal()) {
+            run(sender, args, permission.isGlobal());
+        } else {
             sender.sendMessage(ChatUtil.getNoPermission());
-        });
+        }
     }
 
     private void run(CommandSender sender, String[] args, boolean global) {

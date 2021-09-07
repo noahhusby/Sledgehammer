@@ -24,10 +24,11 @@ import com.noahhusby.sledgehammer.proxy.network.P2SPacket;
 import com.noahhusby.sledgehammer.proxy.network.PacketInfo;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import lombok.AllArgsConstructor;
+import net.md_5.bungee.api.config.ServerInfo;
 
 @AllArgsConstructor
 public class P2SPermissionPacket extends P2SPacket {
-    private final String server;
+    private final ServerInfo server;
     private final SledgehammerPlayer player;
     private final String permission;
     private final String salt;
@@ -40,7 +41,7 @@ public class P2SPermissionPacket extends P2SPacket {
     @Override
     public void getMessage(JsonObject data) {
         data.addProperty("salt", salt);
-        data.addProperty("player", player.getName());
+        data.addProperty("player", player.getUniqueId().toString());
         data.addProperty("permission", permission);
     }
 

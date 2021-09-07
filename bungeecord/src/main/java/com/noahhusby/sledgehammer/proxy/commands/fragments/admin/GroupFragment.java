@@ -27,7 +27,7 @@ import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.groups.GroupLis
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.groups.GroupRemoveFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.groups.GroupSetHeadFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.groups.GroupSetNameFragment;
-import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
+import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 
@@ -46,7 +46,7 @@ public class GroupFragment implements ICommandFragment {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if (!PermissionHandler.getInstance().isAdmin(sender)) {
+        if (!PlayerHandler.getInstance().isAdmin(sender)) {
             sender.sendMessage(ChatUtil.getNoPermission());
             return;
         }

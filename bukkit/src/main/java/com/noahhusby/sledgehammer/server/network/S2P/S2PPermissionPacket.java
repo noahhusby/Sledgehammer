@@ -20,6 +20,7 @@ public class S2PPermissionPacket extends S2PPacket {
 
     @Override
     public void getMessage(JsonObject data) {
+        data.addProperty("player", player.getUniqueId().toString());
         data.addProperty("salt", salt);
         data.addProperty("permission", permission);
     }
