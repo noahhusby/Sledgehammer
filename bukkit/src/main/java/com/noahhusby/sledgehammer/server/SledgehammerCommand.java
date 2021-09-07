@@ -1,6 +1,6 @@
 /*
  *  Copyright (c) 2021 Noah Husby
- *  Sledgehammer - After.java
+ *  Sledgehammer - SledgehammerCommand.java
  *
  *  Sledgehammer is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,18 +16,18 @@
  *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
-package com.noahhusby.sledgehammer.proxy.network.annotations;
+package com.noahhusby.sledgehammer.server;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 
 /**
  * @author Noah Husby
  */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface After {
-    String value();
+public class SledgehammerCommand implements CommandExecutor {
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        return false;
+    }
 }

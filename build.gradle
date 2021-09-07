@@ -3,17 +3,21 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
 
-def versionDir = "${buildDir}/generated-version"
-
 allprojects {
     apply plugin: "java"
 
     ext {
-        sledgehammerVersion = "0.5.0." + ('git rev-list --count HEAD'.execute().text.trim()) + "-1.12.2"
+        sledgehammerVersion = "0.5." + ('git rev-list --count HEAD'.execute().text.trim())
 
+        gsonVersion = "2.8.0"
+        hikariVersion = "4.0.3"
+        lombokVersion = "1.18.20"
         husbyVersion = "3c6ad811b2"
         guavaVersion = "30.1.1-jre"
-        lombokVersion = "1.18.20"
+        anvilGuiVersion = "1.5.3-SNAPSHOT"
+        paperVersion = "1.12.2-R0.1-SNAPSHOT"
+        bungeecordVersion = "1.17-R0.1-SNAPSHOT"
+        terraplusplusVersion = "74449c4af349fd9b77b10e1041ed2c09f2d78518"
     }
 
     group "com.noahhusby"
@@ -53,21 +57,11 @@ dependencies {
     }
 }
 
-sourceSets {
-    main {
-        output.dir(versionDir, builtBy: 'generateVersionProperties')
-    }
-}
-
-task generateVersionProperties {
-    doLast {
-        def propertiesFile = file "$versionDir/version.properties"
-        propertiesFile.parentFile.mkdirs()
-        def properties = new Properties()
-        properties.setProperty("version", sledgehammerVersion.toString())
-        propertiesFile.withWriter { properties.store(it, null) }
+shadowJar {
+    archiveFileName = "Sledgehammer-${version}.jar"
+    manifest {
+        attributes( 'Implementation-Version': "${version}" )
     }
 }
 
 build.dependsOn shadowJar
-processResources.dependsOn generateVersionProperties

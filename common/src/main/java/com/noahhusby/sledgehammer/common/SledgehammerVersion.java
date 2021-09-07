@@ -19,7 +19,6 @@
 package com.noahhusby.sledgehammer.common;
 
 import com.noahhusby.sledgehammer.common.exceptions.VersionParseException;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -48,8 +47,7 @@ public class SledgehammerVersion implements Comparable<SledgehammerVersion> {
             isDevBuild = true;
             return;
         }
-        String[] splitVersion = version.split("-");
-        String[] versions = splitVersion[0].split("\\.");
+        String[] versions = version.split("\\.");
         if(versions.length < 3) {
             throw new VersionParseException(String.format("Invalid version input: %s", version));
         }
