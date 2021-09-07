@@ -146,7 +146,7 @@ public class ConfigHandler {
     private void loadConfig() {
         config.load();
         cat("General", "General options for sledgehammer");
-        authenticationCode = config.getString(prop("Network Authentication Code"), "General", "",
+        authenticationCode = config.getString(prop("Network Authentication Code"), "General", UUID.randomUUID().toString(),
                 "Generate a new key using https://uuidgenerator.net/version4\n" +
                 "All corresponding sledgehammer clients must have the same code\n" +
                 "Don't share this key with anyone you don't trust as it will allow anybody to run any command on connected servers.");
