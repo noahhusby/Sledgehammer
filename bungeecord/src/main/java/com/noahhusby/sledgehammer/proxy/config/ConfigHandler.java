@@ -108,6 +108,9 @@ public class ConfigHandler {
      */
     public void init(File dataFolder) {
         this.dataFolder = dataFolder;
+        if (!dataFolder.exists()) {
+            dataFolder.mkdir();
+        }
         localStorage = new File(dataFolder, "local");
         if (!localStorage.exists()) {
             localStorage.mkdir();
@@ -116,10 +119,6 @@ public class ConfigHandler {
         serverFile = new File(localStorage, "servers.json");
         attributeFile = new File(localStorage, "attributes.json");
         groupsFile = new File(localStorage, "groups.json");
-
-        if (!dataFolder.exists()) {
-            dataFolder.mkdir();
-        }
 
         config = new net.minecraftforge.common.config.Configuration(new File(dataFolder, "sledgehammer.cfg"));
     }

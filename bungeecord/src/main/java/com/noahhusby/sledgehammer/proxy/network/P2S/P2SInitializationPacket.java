@@ -22,8 +22,6 @@ import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.network.P2SPacket;
 import com.noahhusby.sledgehammer.proxy.network.PacketInfo;
-import com.noahhusby.sledgehammer.proxy.network.annotations.After;
-import com.noahhusby.sledgehammer.proxy.network.annotations.Between;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
