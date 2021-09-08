@@ -25,70 +25,53 @@ import com.google.gson.annotations.SerializedName;
 import com.noahhusby.lib.data.storage.Key;
 import com.noahhusby.sledgehammer.common.CommonUtil;
 import com.noahhusby.sledgehammer.common.WarpDeserializer;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * @author Noah Husby
  */
+@Data
 @Key("Id")
+@AllArgsConstructor
 @JsonAdapter(WarpDeserializer.class)
 public class Warp {
     @Expose
-    @SerializedName("Pinned")
-    @Getter
-    @Setter
-    private PinnedMode pinned;
+    @SerializedName("Id")
+    private int id;
+    @Expose
+    @SerializedName("Name")
+    private String name;
+    @Expose
+    @SerializedName("Point")
+    private Point point;
     @Expose
     @SerializedName("Server")
-    @Getter
-    @Setter
     private String server;
     @Expose
     @SerializedName("HeadId")
-    @Getter
-    @Setter
     private String headID;
     @Expose
-    @SerializedName("Point")
-    @Getter
-    @Setter
-    private Point point;
-    @Expose
-    @SerializedName("Name")
-    @Getter
-    @Setter
-    private String name;
-    @Expose
-    @SerializedName("Id")
-    @Getter
-    @Setter
-    private int id;
+    @SerializedName("Global")
+    private boolean global;
 
     public Warp() {
-        this(-1, "", new Point(), "", PinnedMode.NONE, "");
+        this(-1, "", new Point(), "", "", false);
     }
 
-    public Warp(int id, String name, Point point, String server, PinnedMode pinned, String headID) {
-        this.id = id;
-        this.name = name;
-        this.point = point;
-        this.server = server;
-        this.pinned = pinned;
-        this.headID = headID;
+    public Warp copy() {
+        return new Warp(id, name, point, server, headID, global);
     }
 
     public JsonObject toJson() {
         return CommonUtil.GSON.toJsonTree(this).getAsJsonObject();
     }
 
-    public JsonObject toWaypoint() {
-        JsonObject obj = toJson();
-        obj.remove("point");
-        return obj;
-    }
-
-    public enum PinnedMode {
-        NONE, LOCAL, GLOBAL
+    public Warp toWaypoint() {
+        Warp warp = copy();
+        warp.setPoint(null);
+        return warp;
     }
 }

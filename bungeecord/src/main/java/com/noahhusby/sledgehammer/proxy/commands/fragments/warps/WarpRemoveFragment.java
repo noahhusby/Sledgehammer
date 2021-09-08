@@ -25,6 +25,7 @@ import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
 import com.noahhusby.sledgehammer.proxy.players.Permission;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
+import com.noahhusby.sledgehammer.proxy.warp.WarpGroup;
 import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -60,7 +61,8 @@ public class WarpRemoveFragment implements ICommandFragment {
                 continue;
             }
 
-            if (SledgehammerPlayer.getPlayer(sender).getSledgehammerServer().getGroup().getServers().contains(w.getServer())) {
+            WarpGroup warpGroup = WarpHandler.getInstance().getWarpGroupByServer().get(SledgehammerPlayer.getPlayer(sender).getSledgehammerServer().getName());
+            if (warpGroup != null && warpGroup.getServers().contains(w.getServer())) {
                 warps.add(w);
             }
         }

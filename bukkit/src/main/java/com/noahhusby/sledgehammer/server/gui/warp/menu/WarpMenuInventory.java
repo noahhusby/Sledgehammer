@@ -18,7 +18,8 @@
 
 package com.noahhusby.sledgehammer.server.gui.warp.menu;
 
-import com.noahhusby.sledgehammer.common.warps.WarpGroup;
+import com.google.common.collect.Lists;
+import com.noahhusby.sledgehammer.common.warps.WarpGroupPayload;
 import com.noahhusby.sledgehammer.common.warps.WarpPayload;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
@@ -42,16 +43,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WarpMenuInventory extends AbstractWarpInventory {
     private final int page;
-    private final List<WarpGroup> groups;
+    private final List<WarpGroupPayload> groups;
 
     @Override
     public void init() {
         super.init();
-        inventory.setItem(4, SledgehammerUtil.getSkull(Constants.monitorHead, ChatColor.GREEN + "" + ChatColor.BOLD + "Warp Menu"));
+        inventory.setItem(4, SledgehammerUtil.getSkull(Constants.monitorHead, ChatColor.GREEN + "" + ChatColor.BOLD + "All Groups"));
         inventory.setItem(45, WarpGUIUtil.generateWarpSort());
-        inventory.setItem(48, SledgehammerUtil.getSkull(Constants.lampHead, ChatColor.GOLD + "" + ChatColor.BOLD + "Pinned Warps"));
         inventory.setItem(49, WarpGUIUtil.generateExit());
-        inventory.setItem(50, SledgehammerUtil.getSkull(Constants.globeHead, ChatColor.GREEN + "" + ChatColor.BOLD + "All Warps"));
 
         boolean paged = false;
         if (page != 0) {
@@ -80,7 +79,7 @@ public class WarpMenuInventory extends AbstractWarpInventory {
 
         int current = 9;
         for (int x = min; x < max; x++) {
-            WarpGroup group = groups.get(x);
+            WarpGroupPayload group = groups.get(x);
 
             String headId = group.getHeadId();
             if (headId.equals("")) {
@@ -136,18 +135,8 @@ public class WarpMenuInventory extends AbstractWarpInventory {
             return;
         }
 
-        if (e.getSlot() == 48) {
-            GUIRegistry.register(new PinnedWarpInventory.PinnedWarpInventoryController(getController(), controller.getPayload()));
-            return;
-        }
-
         if (e.getSlot() == 49) {
             controller.close();
-            return;
-        }
-
-        if (e.getSlot() == 50) {
-            GUIRegistry.register(new AllWarpInventory.AllWarpInventoryController(getController(), controller.getPayload()));
             return;
         }
 
@@ -207,7 +196,7 @@ public class WarpMenuInventory extends AbstractWarpInventory {
 
         @Override
         public void init() {
-            List<WarpGroup> groups = payload.getGroups();
+            List<WarpGroupPayload> groups = Lists.newArrayList(payload.getGroups().values());
 
             int total_pages = (int) Math.ceil(groups.size() / 27.0);
             if (total_pages == 0) {

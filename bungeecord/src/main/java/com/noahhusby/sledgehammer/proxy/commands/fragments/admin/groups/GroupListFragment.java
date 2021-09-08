@@ -20,12 +20,12 @@ package com.noahhusby.sledgehammer.proxy.commands.fragments.admin.groups;
 
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.proxy.servers.ServerGroup;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
+import com.noahhusby.sledgehammer.proxy.warp.WarpGroup;
+import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
@@ -33,26 +33,22 @@ import net.md_5.bungee.api.chat.hover.content.Text;
 public class GroupListFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
-        TextComponent list = ChatUtil.adminAndCombine(ChatColor.RED, "Groups: ");
+        TextComponent list = ChatUtil.adminAndCombine(ChatColor.RED, "Warp Groups: ");
         boolean first = true;
-        for (ServerGroup s : ServerHandler.getInstance().getGroups().values()) {
+        for (WarpGroup s : WarpHandler.getInstance().getWarpGroups().values()) {
             if (first) {
-                TextComponent t = new TextComponent(s.getID());
+                TextComponent t = new TextComponent(s.getId());
                 t.setColor(ChatColor.BLUE);
-                t.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/sha group info %s",
-                        s.getID())));
-                t.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                        new Text("Click for more info")));
+                t.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/sha group info %s", s.getId())));
+                t.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click for more info")));
                 list.addExtra(t);
                 first = false;
             } else {
                 list.addExtra(ChatUtil.combine(ChatColor.GRAY, ", "));
-                TextComponent t = new TextComponent(s.getID());
+                TextComponent t = new TextComponent(s.getId());
                 t.setColor(ChatColor.BLUE);
-                t.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/sha group info %s",
-                        s.getID())));
-                t.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                        new Text("Click for more info")));
+                t.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/sha group info %s", s.getId())));
+                t.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click for more info")));
                 list.addExtra(t);
             }
         }
@@ -66,7 +62,7 @@ public class GroupListFragment implements ICommandFragment {
 
     @Override
     public String getPurpose() {
-        return "List all groups";
+        return "List all warp groups";
     }
 
     @Override

@@ -18,8 +18,9 @@
 
 package com.noahhusby.sledgehammer.server.gui.warp.menu;
 
+import com.google.common.collect.Lists;
 import com.noahhusby.sledgehammer.common.warps.Warp;
-import com.noahhusby.sledgehammer.common.warps.WarpGroup;
+import com.noahhusby.sledgehammer.common.warps.WarpGroupPayload;
 import com.noahhusby.sledgehammer.common.warps.WarpPayload;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
@@ -44,17 +45,17 @@ import java.util.List;
 public class GroupWarpInventory extends AbstractWarpInventory {
     private final int page;
     private final List<Warp> warps;
-    private final WarpGroup group;
+    private final WarpGroupPayload group;
 
     @Override
     public void init() {
         super.init();
 
         {
-            String headId = (group.getHeadId().equals("")) ? Constants.globeHead : group.getHeadId();
+            String headId = (group.getHeadId() == null || group.getHeadId().equals("")) ? Constants.globeHead : group.getHeadId();
             setItem(4, SledgehammerUtil.getSkull(headId, ChatColor.RED + "" + ChatColor.BOLD + group.getName()));
         }
-        setItem(40, WarpGUIUtil.generateCompass());
+        setItem(40, WarpGUIUtil.generateCompass("View All Groups"));
         setItem(45, WarpGUIUtil.generateWarpSort());
 
         boolean paged = false;
@@ -87,11 +88,10 @@ public class GroupWarpInventory extends AbstractWarpInventory {
             Warp warp = warps.get(x);
 
             String headId = warp.getHeadID();
-            if (headId.equals("")) {
+            if (headId == null || headId.equals("")) {
                 headId = Constants.cyanWoolHead;
             }
-            ItemStack item = SledgehammerUtil.getSkull(headId, ((warp.getPinned() == Warp.PinnedMode.GLOBAL
-                                                                 || warp.getPinned() == Warp.PinnedMode.LOCAL) ? ChatColor.GOLD : ChatColor.BLUE)
+            ItemStack item = SledgehammerUtil.getSkull(headId, ((warp.isGlobal()) ? ChatColor.GOLD : ChatColor.BLUE)
                                                                + "" + ChatColor.BOLD + warp.getName());
 
             ItemMeta meta = item.getItemMeta();
@@ -112,7 +112,6 @@ public class GroupWarpInventory extends AbstractWarpInventory {
 
     @Override
     public void onInventoryClick(InventoryClickEvent e) {
-        System.out.println(e.getSlot() + ", " + e.getCurrentItem().getItemMeta().getDisplayName());
         e.setCancelled(true);
         if (e.getCurrentItem() == null) {
             return;
@@ -200,19 +199,20 @@ public class GroupWarpInventory extends AbstractWarpInventory {
 
         @Override
         public void init() {
-            WarpGroup group = null;
-            for (WarpGroup g : payload.getGroups()) {
-                if (g.getId().equals(groupId)) {
-                    group = g;
-                }
-            }
-
+            WarpGroupPayload group = payload.getGroups().get(groupId);
             if (group == null) {
+                close();
                 GUIRegistry.register(new AllWarpInventory.AllWarpInventoryController(getPlayer(), payload));
                 return;
             }
 
-            List<Warp> warps = group.getWarps();
+            List<Warp> warps = Lists.newArrayList();
+            for(Integer warpId : group.getWarps()) {
+                Warp warp = payload.getWaypoints().get(warpId);
+                if(warp != null) {
+                    warps.add(warp);
+                }
+            }
 
             int total_pages = (int) Math.ceil(warps.size() / 27.0);
             if (total_pages == 0) {

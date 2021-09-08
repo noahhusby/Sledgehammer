@@ -3,7 +3,7 @@ package com.noahhusby.sledgehammer.server.gui.warp.config.manage;
 import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.common.warps.Warp;
-import com.noahhusby.sledgehammer.common.warps.WarpGroup;
+import com.noahhusby.sledgehammer.common.warps.WarpGroupPayload;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.chat.ChatHandler;
@@ -34,6 +34,7 @@ public class ManageWarpInventory extends GUIChild {
 
     @Override
     public void init() {
+        /*
         fillInventory(createItem(Material.STAINED_GLASS_PANE, 1, (byte) 15, null));
         {
             String headId = cur.getHeadID();
@@ -92,10 +93,12 @@ public class ManageWarpInventory extends GUIChild {
 
         setItem(14, SledgehammerUtil.getSkull(Constants.steveHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Change Head"));
         setItem(15, SledgehammerUtil.getSkull(Constants.redTrashCanHead, ChatColor.RED + "" + ChatColor.BOLD + "Delete Warp"));
+        */
     }
 
     @Override
     public void onInventoryClick(InventoryClickEvent e) {
+        /*
         e.setCancelled(true);
         if (e.getCurrentItem() == null) {
             return;
@@ -174,6 +177,8 @@ public class ManageWarpInventory extends GUIChild {
                             ((ManageWarpInventoryController) controller).getPayload().getSalt(), cur.toJson()));
             GUIRegistry.register(new ConfirmationController(getPlayer(), payload, ConfirmationController.Type.HEAD_UPDATE));
         }
+
+         */
     }
 
     public static class ManageWarpInventoryController extends GUIController {
@@ -184,7 +189,8 @@ public class ManageWarpInventory extends GUIChild {
         public ManageWarpInventoryController(Player p, WarpConfigPayload payload, int warpId) {
             super(27, "Edit Warp Settings", p);
             this.payload = payload;
-            for (WarpGroup wg : payload.getGroups()) {
+            /*
+            for (WarpGroupPayload wg : payload.getGroups()) {
                 for (Warp w : wg.getWarps()) {
                     if (w.getId() == warpId) {
                         this.warp = w;
@@ -192,6 +198,8 @@ public class ManageWarpInventory extends GUIChild {
                 }
             }
             init();
+
+             */
         }
 
         public ManageWarpInventoryController(Player p, WarpConfigPayload payload, Warp warp) {

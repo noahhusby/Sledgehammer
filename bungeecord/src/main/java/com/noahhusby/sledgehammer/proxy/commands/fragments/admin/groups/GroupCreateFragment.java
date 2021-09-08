@@ -20,8 +20,9 @@ package com.noahhusby.sledgehammer.proxy.commands.fragments.admin.groups;
 
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.proxy.servers.ServerGroup;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
+import com.noahhusby.sledgehammer.proxy.warp.WarpGroup;
+import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 
@@ -35,18 +36,17 @@ public class GroupCreateFragment implements ICommandFragment {
 
         String ID = args[0];
 
-        if (ServerHandler.getInstance().getGroups().containsKey(ID)) {
+        if (WarpHandler.getInstance().getWarpGroups().containsKey(ID)) {
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "A group with that name already exists!"));
             return;
         }
 
         if (args.length == 1) {
-
-            ServerGroup group = new ServerGroup();
-            group.setID(ID);
-            ServerHandler.getInstance().getGroups().put(group.getID(), group);
-            ServerHandler.getInstance().getGroups().saveAsync();
-            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Successfully created new group", ChatColor.BLUE, group.getID()));
+            WarpGroup group = new WarpGroup();
+            group.setId(ID);
+            WarpHandler.getInstance().getWarpGroups().put(group.getId(), group);
+            WarpHandler.getInstance().getWarpGroups().saveAsync();
+            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Successfully created new warp group", ChatColor.YELLOW, group.getId()));
             return;
         }
 
@@ -55,13 +55,13 @@ public class GroupCreateFragment implements ICommandFragment {
             name.append(" ").append(args[i]);
         }
 
-        ServerGroup group = new ServerGroup();
-        group.setID(ID);
+        WarpGroup group = new WarpGroup();
+        group.setId(ID);
         group.setName(name.toString());
-        sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Successfully created new group", ChatColor.BLUE, group.getID(),
+        sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Successfully created new warp group ", ChatColor.YELLOW, group.getId(),
                 ChatColor.GRAY, " with name ", ChatColor.RED, name.toString()));
-        ServerHandler.getInstance().getGroups().put(group.getID(), group);
-        ServerHandler.getInstance().getGroups().saveAsync();
+        WarpHandler.getInstance().getWarpGroups().put(group.getId(), group);
+        WarpHandler.getInstance().getWarpGroups().saveAsync();
     }
 
     @Override
@@ -71,7 +71,7 @@ public class GroupCreateFragment implements ICommandFragment {
 
     @Override
     public String getPurpose() {
-        return "Create a new group";
+        return "Create a new warp group";
     }
 
     @Override

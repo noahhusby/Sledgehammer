@@ -20,11 +20,11 @@ public class WarpGUIUtil {
         return exit;
     }
 
-    public static ItemStack generateCompass() {
+    public static ItemStack generateCompass(String message) {
         ItemStack compass = new ItemStack(Material.COMPASS);
         ItemMeta m = compass.getItemMeta();
 
-        m.setDisplayName(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Warp Menu");
+        m.setDisplayName(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + message);
         List<String> lore = new ArrayList<>();
         lore.add(ChatColor.GRAY + "View other warps");
         m.setLore(lore);

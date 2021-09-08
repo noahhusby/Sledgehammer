@@ -46,9 +46,6 @@ public class ServerHandler implements Listener {
     @Getter
     private final StorageTreeMap<String, SledgehammerServer> servers = new StorageTreeMap<>(String.class, SledgehammerServer.class, String.CASE_INSENSITIVE_ORDER);
 
-    @Getter
-    private final StorageHashMap<String, ServerGroup> groups = new StorageHashMap<>(String.class, ServerGroup.class);
-
     private final Map<String, SledgehammerVersion> initialized = Maps.newHashMap();
 
     private ServerHandler() {

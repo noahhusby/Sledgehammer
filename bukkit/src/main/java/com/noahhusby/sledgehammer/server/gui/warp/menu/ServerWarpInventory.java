@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2020 Noah Husby
- * sledgehammer - WarpInventory.java
+ * sledgehammer - ServerWarpInventory.java
  *
  * Sledgehammer is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,14 +42,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class AllWarpInventory extends AbstractWarpInventory {
+public class ServerWarpInventory extends AbstractWarpInventory {
     private final int page;
     private final List<Warp> warps;
+    private final String server;
 
     @Override
     public void init() {
         super.init();
-        setItem(4, SledgehammerUtil.getSkull(Constants.globeHead, ChatColor.GREEN + "" + ChatColor.BOLD + "All Warps"));
+
+        {
+            String headId = Constants.yellowWoolHead;
+            setItem(4, SledgehammerUtil.getSkull(headId, ChatColor.RED + "" + ChatColor.BOLD + server));
+        }
+        setItem(40, WarpGUIUtil.generateCompass("View All Servers"));
+        setItem(45, WarpGUIUtil.generateWarpSort());
 
         boolean paged = false;
         if (page != 0) {
@@ -82,7 +89,7 @@ public class AllWarpInventory extends AbstractWarpInventory {
 
             String headId = warp.getHeadID();
             if (headId == null || headId.equals("")) {
-                headId = Constants.yellowWoolHead;
+                headId = Constants.cyanWoolHead;
             }
             ItemStack item = SledgehammerUtil.getSkull(headId, ((warp.isGlobal()) ? ChatColor.GOLD : ChatColor.BLUE)
                                                                + "" + ChatColor.BOLD + warp.getName());
@@ -98,7 +105,7 @@ public class AllWarpInventory extends AbstractWarpInventory {
             meta.setLore(lore);
             item.setItemMeta(meta);
 
-            setItem(current, item);
+            inventory.setItem(current, item);
             current++;
         }
     }
@@ -116,14 +123,14 @@ public class AllWarpInventory extends AbstractWarpInventory {
             return;
         }
 
-        AllWarpInventoryController controller = (AllWarpInventoryController) getController();
+        ServerWarpInventoryController controller = (ServerWarpInventoryController) getController();
 
         if (e.getCurrentItem().getItemMeta().getDisplayName() == null) {
             return;
         }
 
         if (e.getSlot() == 40) {
-            GUIRegistry.register(new WarpMenuInventory.WarpMenuInventoryController(getController(), controller.getPayload()));
+            GUIRegistry.register(new ServerSortMenuInventory.ServerSortMenuInventoryController(getController(), controller.getPayload()));
             return;
         }
 
@@ -155,7 +162,6 @@ public class AllWarpInventory extends AbstractWarpInventory {
             return;
         }
 
-
         if (e.getSlot() > 8 && e.getSlot() < 36) {
             ItemMeta meta = e.getCurrentItem().getItemMeta();
             int id = -1;
@@ -165,6 +171,7 @@ public class AllWarpInventory extends AbstractWarpInventory {
                     id = ((Long) Long.parseLong(ChatColor.stripColor(s).replaceAll("[^\\d.]", ""))).intValue();
                 }
             }
+
             NetworkHandler.getInstance().send(new S2PWarpPacket(player, controller.getPayload(), id));
             controller.close();
         }
@@ -175,26 +182,37 @@ public class AllWarpInventory extends AbstractWarpInventory {
         return page;
     }
 
-    public static class AllWarpInventoryController extends AbstractWarpInventoryController<AllWarpInventory> {
-        public AllWarpInventoryController(Player player, WarpPayload payload) {
+    public static class ServerWarpInventoryController extends AbstractWarpInventoryController<ServerWarpInventory> {
+        private final String server;
+
+        public ServerWarpInventoryController(Player player, WarpPayload payload, String server) {
             super("Warps", player, payload);
+            this.server = server;
             init();
         }
 
-        public AllWarpInventoryController(GUIController controller, WarpPayload payload) {
+        public ServerWarpInventoryController(GUIController controller, WarpPayload payload, String server) {
             super(controller, payload);
+            this.server = server;
             init();
         }
 
         @Override
         public void init() {
-            List<Warp> warps = Lists.newArrayList(payload.getWaypoints().values());
+            List<Warp> warps = Lists.newArrayList();
+            for(Integer warpId : payload.getServers().get(server)) {
+                Warp warp = payload.getWaypoints().get(warpId);
+                if(warp != null) {
+                    warps.add(warp);
+                }
+            }
+
             int total_pages = (int) Math.ceil(warps.size() / 27.0);
             if (total_pages == 0) {
                 total_pages = 1;
             }
             for (int x = 0; x < total_pages; x++) {
-                addPage(new AllWarpInventory(x, warps));
+                addPage(new ServerWarpInventory(x, warps, server));
             }
             openChild(getChildByPage(0));
         }

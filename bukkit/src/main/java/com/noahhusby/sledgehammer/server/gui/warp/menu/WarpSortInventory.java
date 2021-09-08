@@ -1,6 +1,7 @@
 package com.noahhusby.sledgehammer.server.gui.warp.menu;
 
 import com.google.gson.JsonObject;
+import com.noahhusby.sledgehammer.common.warps.Page;
 import com.noahhusby.sledgehammer.common.warps.WarpPayload;
 import com.noahhusby.sledgehammer.server.gui.GUIChild;
 import com.noahhusby.sledgehammer.server.gui.GUIController;
@@ -26,24 +27,22 @@ public class WarpSortInventory extends GUIChild {
     public void init() {
         fillInventory(createItem(Material.STAINED_GLASS_PANE, 1, (byte) 15, null));
 
-        byte pinColor = payload.getDefaultPage() == WarpPayload.Page.PINNED ? (byte) 14 : (byte) 0;
-        byte allColor = payload.getDefaultPage() == WarpPayload.Page.ALL ? (byte) 14 : (byte) 0;
-        byte groupColor = payload.getDefaultPage() == WarpPayload.Page.GROUPS ? (byte) 14 : (byte) 0;
+        byte serverColor = (payload.getDefaultPage() == Page.SERVERS || payload.getDefaultPage() == Page.LOCAL_SERVER) ? (byte) 14 : (byte) 0;
+        byte allColor = payload.getDefaultPage() == Page.ALL ? (byte) 14 : (byte) 0;
+        byte groupColor = (payload.getDefaultPage() == Page.GROUPS || payload.getDefaultPage() == Page.LOCAL_GROUP) ? (byte) 14 : (byte) 0;
 
         {
-            ItemStack item = new ItemStack(Material.WOOL, 1, pinColor);
+            ItemStack item = new ItemStack(Material.WOOL, 1, serverColor);
             ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "Pinned Warps");
+            meta.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "Server Warps");
 
             List<String> lore = new ArrayList<>();
-            if (payload.getDefaultPage() == WarpPayload.Page.PINNED) {
-                lore.add(ChatColor.RED + "Current Default");
+            lore.add(ChatColor.BLUE + "This will show warps sorted by server.");
+            if (payload.getDefaultPage() == Page.SERVERS) {
+                lore.add(ChatColor.RED + "This will be the default view when the menu opens.");
             }
-            lore.add(ChatColor.BLUE + "This will show pinned warps when opened.");
             meta.setLore(lore);
-
             item.setItemMeta(meta);
-
             inventory.setItem(11, item);
         }
 
@@ -53,14 +52,12 @@ public class WarpSortInventory extends GUIChild {
             meta.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "All Warps");
 
             List<String> lore = new ArrayList<>();
-            if (payload.getDefaultPage() == WarpPayload.Page.ALL) {
-                lore.add(ChatColor.RED + "Current Default");
+            lore.add(ChatColor.BLUE + "This will show all warps.");
+            if (payload.getDefaultPage() == Page.ALL) {
+                lore.add(ChatColor.RED + "This will be the default view when the menu opens.");
             }
-            lore.add(ChatColor.BLUE + "This will show all warps when opened.");
             meta.setLore(lore);
-
             item.setItemMeta(meta);
-
             inventory.setItem(13, item);
         }
 
@@ -70,14 +67,12 @@ public class WarpSortInventory extends GUIChild {
             meta.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "Group Warps");
 
             List<String> lore = new ArrayList<>();
-            if (payload.getDefaultPage() == WarpPayload.Page.GROUPS) {
-                lore.add(ChatColor.RED + "Current Default");
+            lore.add(ChatColor.BLUE + "This will show warps sorted by group.");
+            if (payload.getDefaultPage() == Page.GROUPS) {
+                lore.add(ChatColor.RED + "This will be the default view when the menu opens.");
             }
-            lore.add(ChatColor.BLUE + "This will show your local group when opened.");
             meta.setLore(lore);
-
             item.setItemMeta(meta);
-
             inventory.setItem(15, item);
         }
 
@@ -102,17 +97,17 @@ public class WarpSortInventory extends GUIChild {
         JsonObject data = new JsonObject();
 
         if (e.getSlot() == 11) {
-            payload.setDefaultPage(WarpPayload.Page.PINNED);
-            data.addProperty("sort", "pinned");
+            payload.setDefaultPage(Page.SERVERS);
+            data.addProperty("sort", "server");
         }
 
         if (e.getSlot() == 13) {
-            payload.setDefaultPage(WarpPayload.Page.ALL);
+            payload.setDefaultPage(Page.ALL);
             data.addProperty("sort", "all");
         }
 
         if (e.getSlot() == 15) {
-            payload.setDefaultPage(WarpPayload.Page.GROUPS);
+            payload.setDefaultPage(Page.GROUPS);
             data.addProperty("sort", "group");
         }
 
@@ -120,7 +115,18 @@ public class WarpSortInventory extends GUIChild {
                 player, controller.getPayload().getSalt(), data));
 
         controller.close();
-        GUIRegistry.register(new AllWarpInventory.AllWarpInventoryController(getPlayer(), payload));
+
+        switch(payload.getDefaultPage()) {
+            case ALL:
+                GUIRegistry.register(new AllWarpInventory.AllWarpInventoryController(getPlayer(), payload));
+                break;
+            case GROUPS:
+                GUIRegistry.register(new WarpMenuInventory.WarpMenuInventoryController(getPlayer(), payload));
+                break;
+            case SERVERS:
+                GUIRegistry.register(new ServerSortMenuInventory.ServerSortMenuInventoryController(getPlayer(), payload));
+                break;
+        }
     }
 
     public static class WarpSortInventoryController extends GUIController {

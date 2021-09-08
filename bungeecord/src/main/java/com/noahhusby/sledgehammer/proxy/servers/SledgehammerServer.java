@@ -103,18 +103,4 @@ public class SledgehammerServer {
     public ServerInfo getServerInfo() {
         return ProxyServer.getInstance().getServerInfo(name);
     }
-
-    /**
-     * Gets the group assigned to this server
-     *
-     * @return Returns the associated group, or a new group if none exists
-     */
-    public ServerGroup getGroup() {
-        for (ServerGroup g : ServerHandler.getInstance().getGroups().values()) {
-            if (g.getServers().contains(name)) {
-                return g;
-            }
-        }
-        return new ServerGroup(name, "", friendlyName, Collections.singletonList(name), new ArrayList<>());
-    }
 }

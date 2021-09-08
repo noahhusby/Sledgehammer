@@ -18,12 +18,18 @@
 
 package com.noahhusby.sledgehammer.proxy.commands.fragments.admin.groups;
 
+import com.google.common.collect.Lists;
+import com.noahhusby.sledgehammer.common.warps.Warp;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.proxy.servers.ServerGroup;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
+import com.noahhusby.sledgehammer.proxy.warp.WarpGroup;
+import com.noahhusby.sledgehammer.proxy.warp.WarpGroupType;
+import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
+
+import java.util.List;
 
 public class GroupInfoFragment implements ICommandFragment {
     @Override
@@ -34,23 +40,40 @@ public class GroupInfoFragment implements ICommandFragment {
         }
 
         String gn = args[0];
-        ServerGroup group = null;
+        WarpGroup group = null;
 
-        for (ServerGroup g : ServerHandler.getInstance().getGroups().values()) {
-            if (g.getID().equalsIgnoreCase(gn)) {
+        for (WarpGroup g : WarpHandler.getInstance().getWarpGroups().values()) {
+            if (g.getId().equalsIgnoreCase(gn)) {
                 group = g;
             }
         }
 
         if (group == null) {
-            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Group doesn't exist!"));
+            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "That group doesn't exist"));
             return;
         }
 
-        sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Group Information:"));
-        sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "ID: ", ChatColor.BLUE, group.getID()));
-        sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Name: ", ChatColor.BLUE, group.getName()));
-        sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Servers: ", ChatColor.BLUE, String.join(", ", group.getServers())));
+        sender.sendMessage();
+        WarpGroup finalGroup = group;
+        ChatUtil.sendMessageBox(sender, ChatColor.AQUA + "" + ChatColor.BOLD + "Warp Group Report", () -> {
+            sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Id: ", ChatColor.WHITE, finalGroup.getId()));
+            sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Name: ", ChatColor.WHITE, finalGroup.getName()));
+            sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Type: ", ChatColor.WHITE, finalGroup.getType().name()));
+            if(finalGroup.getType() == WarpGroupType.SERVER) {
+                sender.sendMessage();
+                sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Servers: ", ChatColor.WHITE, String.join(ChatColor.GRAY + ", " + ChatColor.WHITE, finalGroup.getServers())));
+            } else {
+                sender.sendMessage();
+                List<String> warpNames = Lists.newArrayList();
+                for(Integer warpId : finalGroup.getWarps()) {
+                    Warp warp = WarpHandler.getInstance().getWarp(warpId);
+                    if(warp != null) {
+                        warpNames.add(warp.getName());
+                    }
+                }
+                sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Warps: ", ChatColor.WHITE, String.join(ChatColor.GRAY + ", " + ChatColor.WHITE, warpNames)));
+            }
+        });
     }
 
     @Override
@@ -60,7 +83,7 @@ public class GroupInfoFragment implements ICommandFragment {
 
     @Override
     public String getPurpose() {
-        return "See info about a group";
+        return "See info about a warp group";
     }
 
     @Override

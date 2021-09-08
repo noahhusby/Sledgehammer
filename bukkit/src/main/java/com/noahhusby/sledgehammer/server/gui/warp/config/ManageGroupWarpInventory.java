@@ -19,7 +19,7 @@
 package com.noahhusby.sledgehammer.server.gui.warp.config;
 
 import com.noahhusby.sledgehammer.common.warps.Warp;
-import com.noahhusby.sledgehammer.common.warps.WarpGroup;
+import com.noahhusby.sledgehammer.common.warps.WarpGroupPayload;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.data.warp.WarpConfigPayload;
@@ -43,10 +43,11 @@ import java.util.List;
 public class ManageGroupWarpInventory extends GUIChild {
     private final int page;
     private final List<Warp> warps;
-    private final WarpGroup group;
+    private final WarpGroupPayload group;
 
     @Override
     public void init() {
+        /*
         for (int x = 0; x < 45; x++) {
             ItemStack glass = new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) 15);
 
@@ -114,6 +115,8 @@ public class ManageGroupWarpInventory extends GUIChild {
             inventory.setItem(current, item);
             current++;
         }
+
+         */
     }
 
     @Override
@@ -190,8 +193,9 @@ public class ManageGroupWarpInventory extends GUIChild {
 
         @Override
         public void init() {
-            WarpGroup group = null;
-            for (WarpGroup g : payload.getGroups()) {
+            /*
+            WarpGroupPayload group = null;
+            for (WarpGroupPayload g : payload.getGroups()) {
                 if (g.getId().equals(groupId)) {
                     group = g;
                 }
@@ -210,6 +214,8 @@ public class ManageGroupWarpInventory extends GUIChild {
             }
 
             openChild(getChildByPage(0));
+
+             */
         }
 
         public GUIChild getChildByPage(int page) {

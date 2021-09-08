@@ -23,7 +23,6 @@ import com.noahhusby.sledgehammer.proxy.commands.fragments.FragmentManager;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server.ServerAddLocationFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server.ServerEarthModeFragment;
-import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server.ServerGroupFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server.ServerInfoFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server.ServerListLocationFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server.ServerOffsetFragment;
@@ -52,7 +51,6 @@ public class ServerFragment implements ICommandFragment {
         manager.register(new ServerEarthModeFragment());
         manager.register(new ServerSHSelectFragment());
         manager.register(new ServerStealthModeFragment());
-        manager.register(new ServerGroupFragment());
         manager.register(new ServerSetFriendlyFragment());
         manager.register(new ServerOffsetFragment());
         manager.register(new ServerTpllModeFragment());

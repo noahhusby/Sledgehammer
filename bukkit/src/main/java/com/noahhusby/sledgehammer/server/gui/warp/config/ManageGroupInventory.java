@@ -18,7 +18,7 @@
 
 package com.noahhusby.sledgehammer.server.gui.warp.config;
 
-import com.noahhusby.sledgehammer.common.warps.WarpGroup;
+import com.noahhusby.sledgehammer.common.warps.WarpGroupPayload;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.data.warp.WarpConfigPayload;
@@ -40,7 +40,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ManageGroupInventory extends GUIChild {
     private final int page;
-    private final List<WarpGroup> groups;
+    private final List<WarpGroupPayload> groups;
 
     @Override
     public void init() {
@@ -84,7 +84,7 @@ public class ManageGroupInventory extends GUIChild {
 
         int current = 9;
         for (int x = min; x < max; x++) {
-            WarpGroup group = groups.get(x);
+            WarpGroupPayload group = groups.get(x);
 
             String headId = group.getHeadId();
             if (headId.equals("")) {
@@ -173,7 +173,7 @@ public class ManageGroupInventory extends GUIChild {
 
         @Override
         public void init() {
-            List<WarpGroup> groups = payload.getGroups();
+            List<WarpGroupPayload> groups = payload.getGroups();
 
             int total_pages = (int) Math.ceil(groups.size() / 27.0);
             if (total_pages == 0) {

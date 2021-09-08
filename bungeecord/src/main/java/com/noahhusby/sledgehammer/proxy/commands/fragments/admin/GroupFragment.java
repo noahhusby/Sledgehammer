@@ -60,7 +60,7 @@ public class GroupFragment implements ICommandFragment {
 
     @Override
     public String getPurpose() {
-        return "Configure group settings";
+        return "Configure warp groups";
     }
 
     @Override

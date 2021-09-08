@@ -19,6 +19,7 @@
 package com.noahhusby.sledgehammer.proxy.network.S2P;
 
 import com.google.gson.JsonObject;
+import com.noahhusby.sledgehammer.common.warps.Page;
 import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.common.warps.Warp;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
@@ -87,7 +88,7 @@ public class S2PWarpConfigPacket extends S2PPacket {
                 int warpId = data.get("id").getAsInt();
                 String name = data.get("name").getAsString();
                 String headId = data.get("headId").getAsString();
-                Warp.PinnedMode pin = Warp.PinnedMode.valueOf(data.get("pinned").getAsString());
+                //Warp.PinnedMode pin = Warp.PinnedMode.valueOf(data.get("pinned").getAsString());
 
                 Warp warp = WarpHandler.getInstance().getWarp(warpId);
                 if (warp == null) {
@@ -95,18 +96,18 @@ public class S2PWarpConfigPacket extends S2PPacket {
                 }
                 warp.setHeadID(headId);
                 warp.setName(name);
-                warp.setPinned(pin);
+                //warp.setPinned(pin);
 
                 WarpHandler.getInstance().getWarps().saveAsync();
                 break;
             case UPDATE_PLAYER_DEFAULT:
                 String sort = data.get("sort").getAsString();
                 if (sort.equalsIgnoreCase("all")) {
-                    player.getAttributes().put("WARP_SORT", "WARP_SORT_ALL");
+                    player.getAttributes().put("WARP_SORT", Page.ALL.name());
                 } else if (sort.equalsIgnoreCase("group")) {
-                    player.getAttributes().put("WARP_SORT", "WARP_SORT_GROUP");
-                } else if (sort.equalsIgnoreCase("pinned")) {
-                    player.getAttributes().put("WARP_SORT", "WARP_SORT_PINNED");
+                    player.getAttributes().put("WARP_SORT", Page.GROUPS.name());
+                } else if (sort.equalsIgnoreCase("servers")) {
+                    player.getAttributes().put("WARP_SORT", Page.SERVERS.name());
                 }
                 break;
             case WARP_UPDATE_LOCATION:

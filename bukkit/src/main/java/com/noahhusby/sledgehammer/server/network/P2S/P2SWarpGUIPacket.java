@@ -19,14 +19,15 @@
 package com.noahhusby.sledgehammer.server.network.P2S;
 
 import com.google.gson.JsonObject;
-import com.noahhusby.sledgehammer.common.warps.WarpGroup;
+import com.noahhusby.sledgehammer.common.warps.WarpGroupPayload;
 import com.noahhusby.sledgehammer.common.warps.WarpPayload;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.gui.warp.menu.AllWarpInventory;
 import com.noahhusby.sledgehammer.server.gui.warp.menu.GroupWarpInventory;
-import com.noahhusby.sledgehammer.server.gui.warp.menu.PinnedWarpInventory;
+import com.noahhusby.sledgehammer.server.gui.warp.menu.ServerSortMenuInventory;
+import com.noahhusby.sledgehammer.server.gui.warp.menu.ServerWarpInventory;
 import com.noahhusby.sledgehammer.server.gui.warp.menu.WarpMenuInventory;
 import com.noahhusby.sledgehammer.server.network.P2SPacket;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
@@ -53,25 +54,23 @@ public class P2SWarpGUIPacket extends P2SPacket {
         }
 
         WarpPayload payload = SledgehammerUtil.GSON.fromJson(data.get("payload"), WarpPayload.class);
-        if (payload.isOverride()) {
-            for (WarpGroup wg : payload.getGroups()) {
-                if (wg.getId().equalsIgnoreCase(payload.getLocalGroup())) {
-                    GUIRegistry.register(new GroupWarpInventory.GroupWarpInventoryController(player, payload, payload.getLocalGroup()));
-                    return;
-                }
-            }
-        }
 
         switch (payload.getDefaultPage()) {
             default:
             case ALL:
                 GUIRegistry.register(new AllWarpInventory.AllWarpInventoryController(player, payload));
                 break;
-            case PINNED:
-                GUIRegistry.register(new PinnedWarpInventory.PinnedWarpInventoryController(player, payload));
+            case LOCAL_GROUP:
+                GUIRegistry.register(new GroupWarpInventory.GroupWarpInventoryController(player, payload, payload.getLocalGroup()));
                 break;
             case GROUPS:
                 GUIRegistry.register(new WarpMenuInventory.WarpMenuInventoryController(player, payload));
+                break;
+            case SERVERS:
+                GUIRegistry.register(new ServerSortMenuInventory.ServerSortMenuInventoryController(player, payload));
+                break;
+            case LOCAL_SERVER:
+                GUIRegistry.register(new ServerWarpInventory.ServerWarpInventoryController(player, payload, payload.getLocalGroup()));
                 break;
         }
     }

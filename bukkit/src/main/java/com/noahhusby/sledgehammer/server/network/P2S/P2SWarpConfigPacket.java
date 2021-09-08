@@ -2,7 +2,7 @@ package com.noahhusby.sledgehammer.server.network.P2S;
 
 import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.common.warps.Warp;
-import com.noahhusby.sledgehammer.common.warps.WarpGroup;
+import com.noahhusby.sledgehammer.common.warps.WarpGroupPayload;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.data.warp.WarpConfigPayload;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
@@ -35,15 +35,20 @@ public class P2SWarpConfigPacket extends P2SPacket {
                 break;
             case LOCATION_UPDATE:
                 JsonObject d = data.getAsJsonObject("data");
-                for (WarpGroup wg : payload.getGroups()) {
-                    for (Warp w : wg.getWarps()) {
+                for (WarpGroupPayload wg : payload.getGroups()) {
+                    /*
+                    for (Warp warpId : wg.getWarps()) {
+                        Warp w =
                         if (w.getId() == d.get("warpId").getAsInt()) {
                             GUIRegistry.register(new ConfirmationController(Bukkit.getPlayer(info.getSender()),
                                     payload, ConfirmationController.Type.LOCATION_UPDATE, w));
                             return;
                         }
                     }
+                                         */
+
                 }
+
         }
     }
 

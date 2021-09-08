@@ -20,6 +20,7 @@ package com.noahhusby.sledgehammer.proxy.network.P2S;
 
 import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.proxy.Constants;
+import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.network.P2SPacket;
 import com.noahhusby.sledgehammer.proxy.network.PacketInfo;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
@@ -40,7 +41,9 @@ public class P2SWarpGUIPacket extends P2SPacket {
 
     @Override
     public void getMessage(JsonObject data) {
-        data.add("payload", WarpHandler.getInstance().generateGUIPayload(SledgehammerPlayer.getPlayer(sender), editAccess));
+        JsonObject payload = SledgehammerUtil.GSON.toJsonTree(WarpHandler.getInstance().generateGUIPayload(SledgehammerPlayer.getPlayer(sender), editAccess)).getAsJsonObject();
+        System.out.println(SledgehammerUtil.GSON.toJson(payload));
+        data.add("payload", payload);
     }
 
     @Override

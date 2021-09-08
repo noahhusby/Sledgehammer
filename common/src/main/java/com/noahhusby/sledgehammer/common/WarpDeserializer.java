@@ -20,17 +20,19 @@ public class WarpDeserializer implements JsonDeserializer<Warp> {
     public Warp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject object = json.getAsJsonObject();
         JsonObject point = object.getAsJsonObject("Point");
-        convert(point, "x");
-        convert(point, "y");
-        convert(point, "z");
-        convert(point, "yaw");
-        convert(point, "pitch");
+        if(point != null) {
+            convert(point, "x");
+            convert(point, "y");
+            convert(point, "z");
+            convert(point, "yaw");
+            convert(point, "pitch");
+        }
         return new Warp(object.get("Id").getAsInt(),
                 object.get("Name").getAsString(),
-                context.deserialize(point, Point.class),
+                point == null ? null : context.deserialize(point, Point.class),
                 object.get("Server").getAsString(),
-                Warp.PinnedMode.valueOf(object.get("Pinned").getAsString()),
-                object.get("headID") == null ? null : object.get("headID").getAsString());
+                object.get("headID") == null ? null : object.get("headID").getAsString(),
+                object.get("Global").getAsBoolean());
     }
 
     private void convert(JsonObject json, String key) {

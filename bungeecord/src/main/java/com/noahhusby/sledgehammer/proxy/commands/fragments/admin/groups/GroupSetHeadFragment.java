@@ -20,8 +20,9 @@ package com.noahhusby.sledgehammer.proxy.commands.fragments.admin.groups;
 
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.proxy.servers.ServerGroup;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
+import com.noahhusby.sledgehammer.proxy.warp.WarpGroup;
+import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 
@@ -35,16 +36,16 @@ public class GroupSetHeadFragment implements ICommandFragment {
 
         String ID = args[0];
         String headTexture = args[1];
-        ServerGroup group = ServerHandler.getInstance().getGroups().get(ID);
+        WarpGroup group = WarpHandler.getInstance().getWarpGroups().get(ID);
 
         if (group == null) {
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "That group doesn't exist!"));
             return;
         }
 
-        sender.sendMessage(ChatUtil.getValueMessage("head", headTexture, group.getID()));
-        group.setHeadID(headTexture);
-        ServerHandler.getInstance().getGroups().saveAsync();
+        sender.sendMessage(ChatUtil.getValueMessage("head", headTexture, group.getId()));
+        group.setHeadId(headTexture);
+        WarpHandler.getInstance().getWarpGroups().saveAsync();
 
     }
 
@@ -55,7 +56,7 @@ public class GroupSetHeadFragment implements ICommandFragment {
 
     @Override
     public String getPurpose() {
-        return "Set head texture of a group";
+        return "Set head texture of a warp group";
     }
 
     @Override

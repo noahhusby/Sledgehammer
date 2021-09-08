@@ -33,9 +33,9 @@ import com.noahhusby.sledgehammer.proxy.network.P2S.P2SWarpGUIPacket;
 import com.noahhusby.sledgehammer.proxy.players.Permission;
 import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
-import com.noahhusby.sledgehammer.proxy.servers.ServerGroup;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
+import com.noahhusby.sledgehammer.proxy.warp.WarpGroup;
 import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -108,12 +108,12 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
         }
 
         List<String> aliases = new ArrayList<>();
-        for (ServerGroup group : ServerHandler.getInstance().getGroups().values()) {
+        for (WarpGroup group : WarpHandler.getInstance().getWarpGroups().values()) {
             aliases.addAll(group.getAliases());
         }
 
         if (aliases.contains(args[0])) {
-            for (ServerGroup g : ServerHandler.getInstance().getGroups().values()) {
+            for (WarpGroup g : WarpHandler.getInstance().getWarpGroups().values()) {
                 if (g.getAliases().contains(args[0])) {
                     CompletableFuture<Permission> permissionFuture = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp.edit");
                     permissionFuture.thenAccept(permission -> NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName(), permission.isLocal())));
@@ -124,7 +124,7 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
 
         List<Warp> warps = new ArrayList<>();
         for (Warp w : WarpHandler.getInstance().getWarps().values()) {
-            if (w.getPinned() == Warp.PinnedMode.GLOBAL || !ConfigHandler.localWarp
+            if (w.isGlobal() || !ConfigHandler.localWarp
                 || w.getServer().equalsIgnoreCase(SledgehammerUtil.getServerFromSender(sender).getName())) {
                 warps.add(w);
             }
@@ -160,16 +160,16 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
             if (s == null) {
                 return new ArrayList<>();
             }
-            ServerGroup group = s.getGroup();
+            WarpGroup warpGroup = WarpHandler.getInstance().getWarpGroupByServer().get(s.getName());
 
             List<String> tabbedWarps = new ArrayList<>();
             for (Warp w : WarpHandler.getInstance().getWarps().values()) {
-                if (group.getServers().contains(w.getServer())) {
+                if (warpGroup != null && warpGroup.getServers().contains(w.getServer())) {
                     tabbedWarps.add(w.getName());
                 }
             }
 
-            for (ServerGroup g : ServerHandler.getInstance().getGroups().values()) {
+            for (WarpGroup g : WarpHandler.getInstance().getWarpGroups().values()) {
                 tabbedWarps.addAll(g.getAliases());
             }
 

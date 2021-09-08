@@ -20,26 +20,26 @@ package com.noahhusby.sledgehammer.proxy.commands.fragments.admin.groups;
 
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.warp.WarpGroup;
+import com.noahhusby.sledgehammer.proxy.warp.WarpGroupType;
 import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 
-public class GroupSetNameFragment implements ICommandFragment {
+import java.util.Locale;
+
+public class GroupSetTypeFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (args.length < 2) {
-            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Usage: /sha group setname <id> <name>"));
+            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Usage: /sha group settype <id> <group/server>"));
+            sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Group [default] ", ChatColor.GRAY, "is a group of singular warps / waypoints."));
+            sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Server ", ChatColor.GRAY, "is a collection of warps from a group of servers."));
             return;
         }
 
         String ID = args[0];
-        StringBuilder name = new StringBuilder(args[1]);
-        for (int i = 2; i < args.length; i++) {
-            name.append(" ").append(args[i]);
-        }
-
+        String type = args[1].toLowerCase(Locale.ROOT);
         WarpGroup group = WarpHandler.getInstance().getWarpGroups().get(ID);
 
         if (group == null) {
@@ -47,24 +47,30 @@ public class GroupSetNameFragment implements ICommandFragment {
             return;
         }
 
-        sender.sendMessage(ChatUtil.getValueMessage("name", name.toString(), group.getId()));
-        group.setName(name.toString());
-        WarpHandler.getInstance().getWarpGroups().saveAsync();
-
+        if(type.equalsIgnoreCase("group") || type.equalsIgnoreCase("server")) {
+            WarpGroupType warpGroupType = WarpGroupType.valueOf(type.toUpperCase(Locale.ROOT));
+            sender.sendMessage(ChatUtil.getValueMessage("type", warpGroupType.name(), group.getId()));
+            group.setType(warpGroupType);
+            WarpHandler.getInstance().getWarpGroups().saveAsync();
+        } else {
+            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.RED, "Usage: /sha group settype <id> <group/server>"));
+            sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Group [default] ", ChatColor.GRAY, "is a group of singular warps / waypoints."));
+            sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Server ", ChatColor.GRAY, "is a collection of warps from a group of servers."));
+        }
     }
 
     @Override
     public String getName() {
-        return "setname";
+        return "settype";
     }
 
     @Override
     public String getPurpose() {
-        return "Set name of a group";
+        return "Set type of a warp group";
     }
 
     @Override
     public String[] getArguments() {
-        return new String[]{ "<id>", "<name>" };
+        return new String[]{ "<id>", "<group/server>" };
     }
 }

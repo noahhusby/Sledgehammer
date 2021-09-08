@@ -54,7 +54,7 @@ public class ConfigHandler {
     public static File serverFile;
     public static File localStorage;
     public static File attributeFile;
-    public static File groupsFile;
+    public static File warpGroupsFile;
 
     private ConfigHandler() {
     }
@@ -73,6 +73,8 @@ public class ConfigHandler {
     public static boolean localWarp = false;
     public static boolean warpMenuDefault = false;
     public static String warpMenuPage = "";
+    public static boolean showServersOption = true;
+    public static boolean showGroupsOption = true;
 
     public static boolean useSql;
     public static String sqlHost;
@@ -118,7 +120,7 @@ public class ConfigHandler {
         warpFile = new File(localStorage, "warps.json");
         serverFile = new File(localStorage, "servers.json");
         attributeFile = new File(localStorage, "attributes.json");
-        groupsFile = new File(localStorage, "groups.json");
+        warpGroupsFile = new File(localStorage, "warpgroups.json");
 
         config = new net.minecraftforge.common.config.Configuration(new File(dataFolder, "sledgehammer.cfg"));
     }
@@ -140,7 +142,7 @@ public class ConfigHandler {
         ServerHandler.getInstance().getServers().destroy();
         WarpHandler.getInstance().getWarps().destroy();
         PlayerHandler.getInstance().getAttributes().destroy();
-        ServerHandler.getInstance().getGroups().destroy();
+        WarpHandler.getInstance().getWarpGroups().destroy();
     }
 
     private void loadConfig() {
@@ -183,14 +185,17 @@ public class ConfigHandler {
                 "Local warp allows for each individual server to set their own warps.\n" +
                 "Standard warp [false] is a shared pool of warps for the entire network.\n" +
                 "All warps are accessible regardless of warp mode.");
-        warpMenuDefault = config.getBoolean(prop("Default Warp Menu"), category, true,
+        warpMenuDefault = config.getBoolean(prop("Use Warp GUI"), category, true,
                 "This will open the interactive GUI by default when the warp command is called.\n" +
                 "Otherwise `/[warp command] menu` is required to open the menu.");
-        warpMenuPage = config.getString(prop("Default Menu Page"), category, "group",
+        warpMenuPage = config.getString(prop("Default Menu Page"), category, "all",
                 "This is the main page that will be shown upon the warp menu opening.\n" +
-                "Use `group` to show the warps on the current server (or groups of servers)\n" +
+                "Use `local` to show the warps on the current server (or groups of servers)\n" +
                 "Use `all` to show all the warps by default\n" +
-                "or Use `pinned` to show the pinned warps.");
+                "Use `servers` to show all the warps sorted by server\n" +
+                "Use `groups` to show all the warps sorted by group\n" +
+                "If local is used, but no local warps are found, the GUI will default to showing all warps.");
+
         order();
 
 
@@ -243,9 +248,9 @@ public class ConfigHandler {
         attributeData.clearHandlers();
         attributeData.registerHandler(new LocalStorageHandler(ConfigHandler.attributeFile));
 
-        Storage serverGroups = ServerHandler.getInstance().getGroups();
-        serverGroups.clearHandlers();
-        serverGroups.registerHandler(new LocalStorageHandler(ConfigHandler.groupsFile));
+        Storage warpGroups = WarpHandler.getInstance().getWarpGroups();
+        warpGroups.clearHandlers();
+        warpGroups.registerHandler(new LocalStorageHandler(ConfigHandler.warpGroupsFile));
 
         if (useSql) {
             {
@@ -272,9 +277,9 @@ public class ConfigHandler {
                                 .add("Id", Type.INT)
                                 .add("Name", Type.TEXT)
                                 .add("Server", Type.TEXT)
-                                .add("Pinned", Type.TEXT)
                                 .add("Point", Type.TEXT)
                                 .add("HeadId", Type.TEXT)
+                                .add("Global", Type.TEXT)
                                 .repair(true)
                                 .build());
                 sqlStorageHandler.setPriority(100);
@@ -295,30 +300,31 @@ public class ConfigHandler {
 
             {
                 SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(
-                        new Credentials(sqlHost, sqlPort, sqlUser, sqlPassword, sqlDb)), "ServerGroups",
+                        new Credentials(sqlHost, sqlPort, sqlUser, sqlPassword, sqlDb)), "WarpGroups",
                         Structure.builder()
                                 .add("Id", Type.TEXT)
-                                .add("HeadId", Type.TEXT)
                                 .add("Name", Type.TEXT)
+                                .add("HeadId", Type.TEXT)
+                                .add("Type", Type.TEXT)
+                                .add("Warps", Type.TEXT)
                                 .add("Servers", Type.TEXT)
-                                .add("Aliases", Type.TEXT)
                                 .repair(true)
                                 .build());
                 sqlStorageHandler.setPriority(100);
-                serverGroups.registerHandler(sqlStorageHandler);
+                warpGroups.registerHandler(sqlStorageHandler);
             }
         }
 
         serverData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
         warpData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
         attributeData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
-        serverGroups.setAutoLoad(autoLoad, TimeUnit.SECONDS);
+        warpGroups.setAutoLoad(autoLoad, TimeUnit.SECONDS);
 
         ProxyServer.getInstance().getScheduler().schedule(Sledgehammer.getInstance(), () -> {
             serverData.loadAsync();
             warpData.loadAsync();
             attributeData.loadAsync();
-            serverGroups.loadAsync();
+            warpGroups.loadAsync();
         }, 10, TimeUnit.SECONDS);
     }
 
@@ -344,7 +350,7 @@ public class ConfigHandler {
      */
     public void migrate() {
         ServerHandler.getInstance().getServers().migrate(0);
-        ServerHandler.getInstance().getGroups().migrate(0);
+        WarpHandler.getInstance().getWarpGroups().migrate(0);
         WarpHandler.getInstance().getWarps().migrate(0);
         PlayerHandler.getInstance().getAttributes().migrate(0);
     }
