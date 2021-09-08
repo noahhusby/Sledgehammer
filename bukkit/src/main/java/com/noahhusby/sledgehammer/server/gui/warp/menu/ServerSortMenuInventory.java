@@ -79,7 +79,7 @@ public class ServerSortMenuInventory extends AbstractWarpInventory {
 
         int current = 9;
         for (int x = min; x < max; x++) {
-            ItemStack item = SledgehammerUtil.getSkull(Constants.cyanWoolHead, servers.get(x));
+            ItemStack item = SledgehammerUtil.getSkull(Constants.yellowWoolHead, ChatColor.YELLOW + "" + ChatColor.BOLD + servers.get(x));
             ItemMeta meta = item.getItemMeta();
             List<String> lore = new ArrayList<>();
             lore.add(ChatColor.BLUE + "" + ChatColor.STRIKETHROUGH + "------------------");

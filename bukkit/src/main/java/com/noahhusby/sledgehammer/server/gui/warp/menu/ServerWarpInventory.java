@@ -52,8 +52,7 @@ public class ServerWarpInventory extends AbstractWarpInventory {
         super.init();
 
         {
-            String headId = Constants.yellowWoolHead;
-            setItem(4, SledgehammerUtil.getSkull(headId, ChatColor.RED + "" + ChatColor.BOLD + server));
+            setItem(4, SledgehammerUtil.getSkull(Constants.yellowWoolHead, ChatColor.YELLOW + "" + ChatColor.BOLD + server));
         }
         setItem(40, WarpGUIUtil.generateCompass("View All Servers"));
         setItem(45, WarpGUIUtil.generateWarpSort());
@@ -91,7 +90,7 @@ public class ServerWarpInventory extends AbstractWarpInventory {
             if (headId == null || headId.equals("")) {
                 headId = Constants.cyanWoolHead;
             }
-            ItemStack item = SledgehammerUtil.getSkull(headId, ((warp.isGlobal()) ? ChatColor.GOLD : ChatColor.BLUE)
+            ItemStack item = SledgehammerUtil.getSkull(headId, (ChatColor.BLUE)
                                                                + "" + ChatColor.BOLD + warp.getName());
 
             ItemMeta meta = item.getItemMeta();

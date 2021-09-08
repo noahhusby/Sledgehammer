@@ -106,7 +106,7 @@ public class S2PWarpConfigPacket extends S2PPacket {
                     player.getAttributes().put("WARP_SORT", Page.ALL.name());
                 } else if (sort.equalsIgnoreCase("group")) {
                     player.getAttributes().put("WARP_SORT", Page.GROUPS.name());
-                } else if (sort.equalsIgnoreCase("servers")) {
+                } else if (sort.equalsIgnoreCase("server")) {
                     player.getAttributes().put("WARP_SORT", Page.SERVERS.name());
                 }
                 break;

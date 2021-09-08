@@ -84,7 +84,7 @@ public class AllWarpInventory extends AbstractWarpInventory {
             if (headId == null || headId.equals("")) {
                 headId = Constants.yellowWoolHead;
             }
-            ItemStack item = SledgehammerUtil.getSkull(headId, ((warp.isGlobal()) ? ChatColor.GOLD : ChatColor.BLUE)
+            ItemStack item = SledgehammerUtil.getSkull(headId, (ChatColor.BLUE)
                                                                + "" + ChatColor.BOLD + warp.getName());
 
             ItemMeta meta = item.getItemMeta();
