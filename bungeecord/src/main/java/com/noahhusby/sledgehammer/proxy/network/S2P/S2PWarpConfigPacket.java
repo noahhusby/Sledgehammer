@@ -33,6 +33,8 @@ import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 
+import java.util.concurrent.CompletableFuture;
+
 public class S2PWarpConfigPacket extends S2PPacket {
     @Override
     public String getPacketID() {
@@ -51,12 +53,14 @@ public class S2PWarpConfigPacket extends S2PPacket {
 
         switch (ProxyConfigAction.valueOf(packet.get("action").getAsString())) {
             case OPEN_CONFIG:
-                Permission permission = player.getPermission("sledgehammer.warp.edit");
-                if(permission.isLocal()) {
-                    NetworkHandler.getInstance().send(new P2SWarpConfigPacket(player, P2SWarpConfigPacket.ServerConfigAction.OPEN_CONFIG, permission.isGlobal()));
-                } else {
-                    player.sendMessage(ChatUtil.getNoPermission());
-                }
+                CompletableFuture<Permission> permissionFuture = player.getPermission("sledgehammer.warp.edit");
+                permissionFuture.thenAccept(permission -> {
+                    if(permission.isLocal()) {
+                        NetworkHandler.getInstance().send(new P2SWarpConfigPacket(player, P2SWarpConfigPacket.ServerConfigAction.OPEN_CONFIG, permission.isGlobal()));
+                    } else {
+                        player.sendMessage(ChatUtil.getNoPermission());
+                    }
+                });
                 break;
             case CREATE_WARP:
                 String warpName = data.get("warpName").getAsString();

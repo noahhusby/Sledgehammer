@@ -27,39 +27,42 @@ import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 
+import java.util.concurrent.CompletableFuture;
+
 public class WarpSetFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
         SledgehammerPlayer player = SledgehammerPlayer.getPlayer(sender);
-        Permission permission = player.getPermission("sledgehammer.warp.set");
-        if(permission.isLocal()) {
-            if (args.length == 0) {
-                sender.sendMessage(ChatUtil.combine(ChatColor.RED, String.format("Usage: /%s set <name>", ConfigHandler.warpCommand)));
-                return;
-            }
-            WarpHandler.WarpStatus warpStatus = WarpHandler.getInstance().getWarpStatus(args[0], player.getServer().getInfo().getName());
+        CompletableFuture<Permission> permissionFuture = player.getPermission("sledgehammer.warp.set");
+        permissionFuture.thenAccept(permission -> {
+            if(permission.isLocal()) {
+                if (args.length == 0) {
+                    sender.sendMessage(ChatUtil.combine(ChatColor.RED, String.format("Usage: /%s set <name>", ConfigHandler.warpCommand)));
+                    return;
+                }
+                WarpHandler.WarpStatus warpStatus = WarpHandler.getInstance().getWarpStatus(args[0], player.getServer().getInfo().getName());
 
-            switch (warpStatus) {
-                case EXISTS:
-                    sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "A warp with that name already exists!"));
-                    sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Use the warp GUI to move it's location."));
-                    break;
-                case RESERVED:
-                    if (permission.isGlobal()) {
+                switch (warpStatus) {
+                    case EXISTS:
                         sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "A warp with that name already exists!"));
                         sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Use the warp GUI to move it's location."));
-                        return;
-                    }
-                    sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "This warp name is reserved and cannot be used."));
-                    break;
-                case AVAILABLE:
-                    WarpHandler.getInstance().requestNewWarp(args[0], sender);
-                    break;
+                        break;
+                    case RESERVED:
+                        if (permission.isGlobal()) {
+                            sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "A warp with that name already exists!"));
+                            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Use the warp GUI to move it's location."));
+                            return;
+                        }
+                        sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "This warp name is reserved and cannot be used."));
+                        break;
+                    case AVAILABLE:
+                        WarpHandler.getInstance().requestNewWarp(args[0], sender);
+                        break;
+                }
+            } else {
+                sender.sendMessage(ChatUtil.getNoPermission());
             }
-            return;
-        } else {
-            sender.sendMessage(ChatUtil.getNoPermission());
-        }
+        });
     }
 
     @Override

@@ -30,16 +30,19 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class WarpRemoveFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
-        Permission permission = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp.remove");
-        if(permission.isLocal()) {
-            run(sender, args, permission.isGlobal());
-        } else {
-            sender.sendMessage(ChatUtil.getNoPermission());
-        }
+        CompletableFuture<Permission> permissionFuture = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp.remove");
+        permissionFuture.thenAccept(permission -> {
+            if(permission.isLocal()) {
+                run(sender, args, permission.isGlobal());
+            } else {
+                sender.sendMessage(ChatUtil.getNoPermission());
+            }
+        });
     }
 
     private void run(CommandSender sender, String[] args, boolean global) {

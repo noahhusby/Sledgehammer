@@ -44,6 +44,7 @@ import net.md_5.bungee.api.plugin.TabExecutor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class WarpCommand extends WarpFragmentManager implements TabExecutor {
 
@@ -71,12 +72,14 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
             return;
         }
 
-        Permission permission = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp");
-        if (permission.isLocal()) {
-            run(sender, args);
-        } else {
-            sender.sendMessage(ChatUtil.getNoPermission());
-        }
+        CompletableFuture<Permission> permissionFuture = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp");
+        permissionFuture.thenAccept(permission -> {
+            if (permission.isLocal()) {
+                run(sender, args);
+            } else {
+                sender.sendMessage(ChatUtil.getNoPermission());
+            }
+        });
     }
 
     private void run(CommandSender sender, String[] args) {
@@ -92,8 +95,10 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
                 }
 
                 if (openGUI) {
-                    Permission permission = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp.edit");
-                    NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName(), permission.isLocal()));
+                    CompletableFuture<Permission> permissionFuture = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp.edit");
+                    permissionFuture.thenAccept(permission -> {
+                        NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName(), permission.isLocal()));
+                    });
                     return;
                 }
             }
@@ -112,8 +117,10 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
         if (aliases.contains(args[0])) {
             for (ServerGroup g : ServerHandler.getInstance().getGroups().values()) {
                 if (g.getAliases().contains(args[0])) {
-                    Permission permission = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp.edit");
-                    NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName(), permission.isLocal()));
+                    CompletableFuture<Permission> permissionFuture = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp.edit");
+                    permissionFuture.thenAccept(permission -> {
+                        NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName(), permission.isLocal()));
+                    });
                     return;
                 }
             }

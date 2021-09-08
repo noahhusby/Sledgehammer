@@ -28,6 +28,8 @@ import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
 import net.md_5.bungee.api.CommandSender;
 
+import java.util.concurrent.CompletableFuture;
+
 public class WarpMenuFragment implements ICommandFragment {
 
     @Override
@@ -42,8 +44,10 @@ public class WarpMenuFragment implements ICommandFragment {
             new WarpCommand("").execute(sender, new String[]{});
             return;
         }
-        Permission permission = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp.edit");
-        NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName(), permission.isLocal()));
+        CompletableFuture<Permission> permissionFuture = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp.edit");
+        permissionFuture.thenAccept(permission -> {
+            NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName(), permission.isLocal()));
+        });
     }
 
     @Override

@@ -25,16 +25,20 @@ import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 import net.md_5.bungee.api.CommandSender;
 
+import java.util.concurrent.CompletableFuture;
+
 public class WarpListFragment implements ICommandFragment {
     @Override
     public void execute(CommandSender sender, String[] args) {
-        Permission permission = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp.list");
-        if(permission.isLocal()) {
-            SledgehammerPlayer player = SledgehammerPlayer.getPlayer(sender);
-            sender.sendMessage(WarpHandler.getInstance().getWarpList(player.getServer().getInfo().getName()));
-        } else {
-            sender.sendMessage(ChatUtil.getNoPermission());
-        }
+        CompletableFuture<Permission> permissionFuture = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp.list");
+        permissionFuture.thenAccept(permission -> {
+            if(permission.isLocal()) {
+                SledgehammerPlayer player = SledgehammerPlayer.getPlayer(sender);
+                sender.sendMessage(WarpHandler.getInstance().getWarpList(player.getServer().getInfo().getName()));
+            } else {
+                sender.sendMessage(ChatUtil.getNoPermission());
+            }
+        });
     }
 
     @Override

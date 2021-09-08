@@ -29,6 +29,6 @@ import java.util.concurrent.CompletableFuture;
 @Getter
 @RequiredArgsConstructor
 public class PermissionRequest {
-    private final CompletableFuture<Permission> future;
+    private final CompletableFuture<Permission> future = new CompletableFuture<>();
     private final String permission;
 }

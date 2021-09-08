@@ -21,6 +21,7 @@ package com.noahhusby.sledgehammer.proxy.players;
 
 import com.google.common.collect.Maps;
 import com.noahhusby.sledgehammer.common.warps.Point;
+import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
 import com.noahhusby.sledgehammer.proxy.network.P2S.P2SPermissionPacket;
@@ -31,6 +32,7 @@ import com.noahhusby.sledgehammer.proxy.terramap.TerramapVersion;
 import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.ServerConnectRequest;
 import net.md_5.bungee.api.SkinConfiguration;
 import net.md_5.bungee.api.Title;
@@ -503,6 +505,9 @@ public class SledgehammerPlayer implements ProxiedPlayer {
      * @return True if valid, false if not
      */
     public boolean validateAction(String salt) {
+        if(this.trackSalt == null || salt == null) {
+            return false;
+        }
         return this.trackSalt.equals(salt);
     }
 
@@ -515,30 +520,27 @@ public class SledgehammerPlayer implements ProxiedPlayer {
         }
     }
 
-    public Permission getPermission(String permission) {
+    public CompletableFuture<Permission> getPermission(String permission) {
+        permissionRequest = new PermissionRequest(permission);
+        CompletableFuture<Permission> permissionFuture = permissionRequest.getFuture();
         if(permission == null) {
-            return new Permission(null, this, false, false);
+            permissionFuture.complete(new Permission(null, this, false, false));
         }
         if(PlayerHandler.getInstance().isAdmin(this)) {
-            return new Permission(permission, this, true, true);
+            permissionFuture.complete(new Permission(permission, this, true, true));
         }
         boolean global = hasPermission(permission);
         if(!onSledgehammer()) {
-            return new Permission(permission, this, global, false);
+            permissionFuture.complete(new Permission(permission, this, global, false));
         }
-        CompletableFuture<Permission> permissionFuture = new CompletableFuture<>();
-        permissionRequest = new PermissionRequest(permissionFuture, permission);
         NetworkHandler.getInstance().send(new P2SPermissionPacket(player.getServer().getInfo(), this, permission, trackAction()));
-        Permission perm = null;
-        try {
-            perm = permissionFuture.get(500, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException ignored) {
-        }
-        permissionRequest = null;
-        if(perm == null) {
-            perm = new Permission(permission, this, global, false);
-        }
-        return perm;
+        ProxyServer.getInstance().getScheduler().schedule(Sledgehammer.getInstance(), () -> {
+            if(permissionRequest != null && !permissionRequest.getFuture().isDone()) {
+                permissionRequest.getFuture().complete(new Permission(permission, this, global, false));
+            }
+            permissionRequest = null;
+        }, 500, TimeUnit.MILLISECONDS);
+        return permissionFuture;
     }
 
     /**
