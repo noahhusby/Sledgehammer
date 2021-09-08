@@ -51,9 +51,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * An object representing a player on the network with Sledgehammer specific access.
@@ -505,15 +503,15 @@ public class SledgehammerPlayer implements ProxiedPlayer {
      * @return True if valid, false if not
      */
     public boolean validateAction(String salt) {
-        if(this.trackSalt == null || salt == null) {
+        if (this.trackSalt == null || salt == null) {
             return false;
         }
         return this.trackSalt.equals(salt);
     }
 
     public void validatePermission(String salt, boolean localPermission) {
-        if(validateAction(salt)) {
-            if(permissionRequest != null) {
+        if (validateAction(salt)) {
+            if (permissionRequest != null) {
                 String permission = permissionRequest.getPermission();
                 permissionRequest.getFuture().complete(new Permission(permissionRequest.getPermission(), this, this.hasPermission(permission), localPermission));
             }
@@ -523,19 +521,19 @@ public class SledgehammerPlayer implements ProxiedPlayer {
     public CompletableFuture<Permission> getPermission(String permission) {
         permissionRequest = new PermissionRequest(permission);
         CompletableFuture<Permission> permissionFuture = permissionRequest.getFuture();
-        if(permission == null) {
+        if (permission == null) {
             permissionFuture.complete(new Permission(null, this, false, false));
         }
-        if(PlayerHandler.getInstance().isAdmin(this)) {
+        if (PlayerHandler.getInstance().isAdmin(this)) {
             permissionFuture.complete(new Permission(permission, this, true, true));
         }
         boolean global = hasPermission(permission);
-        if(!onSledgehammer()) {
+        if (!onSledgehammer()) {
             permissionFuture.complete(new Permission(permission, this, global, false));
         }
         NetworkHandler.getInstance().send(new P2SPermissionPacket(player.getServer().getInfo(), this, permission, trackAction()));
         ProxyServer.getInstance().getScheduler().schedule(Sledgehammer.getInstance(), () -> {
-            if(permissionRequest != null && !permissionRequest.getFuture().isDone()) {
+            if (permissionRequest != null && !permissionRequest.getFuture().isDone()) {
                 permissionRequest.getFuture().complete(new Permission(permission, this, global, false));
             }
             permissionRequest = null;
@@ -565,6 +563,7 @@ public class SledgehammerPlayer implements ProxiedPlayer {
 
     /**
      * Gets a SledgehammerPlayer by {@link UUID}
+     *
      * @param uuid {@link UUID}
      * @return {@link SledgehammerPlayer}
      */

@@ -35,7 +35,7 @@ public class WarpSetFragment implements ICommandFragment {
         SledgehammerPlayer player = SledgehammerPlayer.getPlayer(sender);
         CompletableFuture<Permission> permissionFuture = player.getPermission("sledgehammer.warp.set");
         permissionFuture.thenAccept(permission -> {
-            if(permission.isLocal()) {
+            if (permission.isLocal()) {
                 if (args.length == 0) {
                     sender.sendMessage(ChatUtil.combine(ChatColor.RED, String.format("Usage: /%s set <name>", ConfigHandler.warpCommand)));
                     return;

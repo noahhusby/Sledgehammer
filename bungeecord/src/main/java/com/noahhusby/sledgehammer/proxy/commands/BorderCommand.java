@@ -47,7 +47,7 @@ public class BorderCommand extends Command {
 
         CompletableFuture<Permission> permissionFuture = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.border");
         permissionFuture.thenAccept(permission -> {
-            if(permission.isLocal()) {
+            if (permission.isLocal()) {
                 SledgehammerPlayer p = PlayerHandler.getInstance().getPlayer(sender);
                 if (args.length == 0) {
                     if (p.checkAttribute("BORDER_MODE", false)) {

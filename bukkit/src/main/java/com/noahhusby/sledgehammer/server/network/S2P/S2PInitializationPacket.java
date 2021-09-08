@@ -19,7 +19,6 @@
 package com.noahhusby.sledgehammer.server.network.S2P;
 
 import com.google.gson.JsonObject;
-import com.noahhusby.sledgehammer.common.SledgehammerVersion;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;

@@ -33,6 +33,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -73,7 +74,7 @@ public class TpllCommand extends Command {
 
                     TextComponent interaction = new TextComponent(ChatColor.YELLOW + "Click here");
                     interaction.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://giant.gfycat.com/JitteryTerrificChimpanzee.webm"));
-                    interaction.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("View the tpll guide").create()));
+                    interaction.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("View the tpll guide")));
 
                     text.addExtra(interaction);
                     text.addExtra(new TextComponent(ChatColor.GRAY + " to see how to use " + ChatColor.BLUE + "/tpll"
@@ -128,7 +129,7 @@ public class TpllCommand extends Command {
                 }
 
                 SledgehammerServer sledgehammerServer = ServerHandler.getInstance().getServer(recipient.getServer().getInfo().getName());
-                if(sledgehammerServer != null && sledgehammerServer.getTpllMode() == TpllMode.PASSTHROUGH) {
+                if (sledgehammerServer != null && sledgehammerServer.getTpllMode() == TpllMode.PASSTHROUGH) {
                     recipient.chat("/tpll " + SledgehammerUtil.getRawArguments(args));
                     return;
                 }
@@ -191,7 +192,7 @@ public class TpllCommand extends Command {
 
                     TextComponent interaction = new TextComponent(ChatColor.YELLOW + "Click here");
                     interaction.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://giant.gfycat.com/JitteryTerrificChimpanzee.webm"));
-                    interaction.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("View the tpll guide").create()));
+                    interaction.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("View the tpll guide")));
 
                     text.addExtra(interaction);
                     text.addExtra(new TextComponent(ChatColor.GRAY + " to see how to use " + ChatColor.BLUE + "/tpll"

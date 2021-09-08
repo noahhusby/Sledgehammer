@@ -150,6 +150,7 @@ public class PlayerHandler implements Listener, Module {
 
     /**
      * Gets a SledgehammerPlayer by {@link UUID}
+     *
      * @param uuid {@link UUID}
      * @return {@link SledgehammerPlayer}
      */
@@ -192,7 +193,6 @@ public class PlayerHandler implements Listener, Module {
             ConfigHandler.useOfflineMode = false;
         }
     }
-
 
 
     @Override

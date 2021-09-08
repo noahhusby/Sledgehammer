@@ -37,7 +37,7 @@ public class WarpRemoveFragment implements ICommandFragment {
     public void execute(CommandSender sender, String[] args) {
         CompletableFuture<Permission> permissionFuture = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp.remove");
         permissionFuture.thenAccept(permission -> {
-            if(permission.isLocal()) {
+            if (permission.isLocal()) {
                 run(sender, args, permission.isGlobal());
             } else {
                 sender.sendMessage(ChatUtil.getNoPermission());

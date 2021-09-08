@@ -32,7 +32,7 @@ public class WarpListFragment implements ICommandFragment {
     public void execute(CommandSender sender, String[] args) {
         CompletableFuture<Permission> permissionFuture = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp.list");
         permissionFuture.thenAccept(permission -> {
-            if(permission.isLocal()) {
+            if (permission.isLocal()) {
                 SledgehammerPlayer player = SledgehammerPlayer.getPlayer(sender);
                 sender.sendMessage(WarpHandler.getInstance().getWarpList(player.getServer().getInfo().getName()));
             } else {

@@ -49,7 +49,7 @@ public class TplloCommand extends Command {
 
         CompletableFuture<Permission> permissionFuture = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.tpll");
         permissionFuture.thenAccept(permission -> {
-            if(permission.isLocal()) {
+            if (permission.isLocal()) {
                 String[] args = a;
                 if (args.length == 0) {
                     sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "Usage: /tpllo <lat> <lon>"));

@@ -55,7 +55,7 @@ public class S2PWarpConfigPacket extends S2PPacket {
             case OPEN_CONFIG:
                 CompletableFuture<Permission> permissionFuture = player.getPermission("sledgehammer.warp.edit");
                 permissionFuture.thenAccept(permission -> {
-                    if(permission.isLocal()) {
+                    if (permission.isLocal()) {
                         NetworkHandler.getInstance().send(new P2SWarpConfigPacket(player, P2SWarpConfigPacket.ServerConfigAction.OPEN_CONFIG, permission.isGlobal()));
                     } else {
                         player.sendMessage(ChatUtil.getNoPermission());
@@ -123,7 +123,7 @@ public class S2PWarpConfigPacket extends S2PPacket {
                         g, response));
                 break;
             case REMOVE_WARP:
-                WarpHandler.getInstance().getWarps().remove(WarpHandler.getInstance().getWarp(data.get("warpId").getAsInt()));
+                //WarpHandler.getInstance().getWarps().remove(WarpHandler.getInstance().getWarp(data.get("warpId").getAsInt()));
                 WarpHandler.getInstance().getWarps().saveAsync();
                 NetworkHandler.getInstance().send(new P2SWarpConfigPacket(player,
                         P2SWarpConfigPacket.ServerConfigAction.REMOVE_SUCCESSFUL, g));

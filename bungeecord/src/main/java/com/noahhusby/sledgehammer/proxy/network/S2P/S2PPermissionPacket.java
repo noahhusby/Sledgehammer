@@ -39,7 +39,7 @@ public class S2PPermissionPacket extends S2PPacket {
         SledgehammerPlayer player = PlayerHandler.getInstance().getPlayer(uuid);
         String salt = data.get("salt").getAsString();
         boolean localPermission = data.get("permission").getAsBoolean();
-        if(player != null) {
+        if (player != null) {
             player.validatePermission(salt, localPermission);
         }
     }
