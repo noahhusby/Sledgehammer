@@ -31,6 +31,7 @@ import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server.ServerRe
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server.ServerSHSelectFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server.ServerSetFriendlyFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server.ServerStealthModeFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server.ServerTpllModeFragment;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -54,6 +55,7 @@ public class ServerFragment implements ICommandFragment {
         manager.register(new ServerGroupFragment());
         manager.register(new ServerSetFriendlyFragment());
         manager.register(new ServerOffsetFragment());
+        manager.register(new ServerTpllModeFragment());
     }
 
     @Override

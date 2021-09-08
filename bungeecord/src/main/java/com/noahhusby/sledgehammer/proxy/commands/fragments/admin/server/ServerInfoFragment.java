@@ -32,29 +32,32 @@ public class ServerInfoFragment implements ICommandFragment {
     public void execute(CommandSender sender, String[] args) {
         SledgehammerServer server = ServerHandler.getInstance().getServer(args[0]);
         ServerInfo info = ProxyServer.getInstance().getServerInfo(args[0]);
-        sender.sendMessage();
-        sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Server Info - ", ChatColor.BLUE, info.getName()));
-        sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Name: ", ChatColor.BLUE, info.getName()));
-        if (server == null) {
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Status: ", ChatColor.RED, "Unconfigured"));
-        } else if (!server.isInitialized()) {
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Status: ", ChatColor.GREEN, "Configured",
-                    ChatColor.RED, " (Not Initialized)"));
-            sender.sendMessage();
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Earth: ", (server.isEarthServer() ? ChatColor.GREEN + "Yes" : ChatColor.RED + "No")));
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Friendly Name: ", ChatColor.BLUE, server.getFriendlyName()));
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "X Offset: ", ChatColor.BLUE, server.getXOffset()));
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Z Offset: ", ChatColor.BLUE, server.getZOffset()));
-        } else {
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Status: ", ChatColor.GREEN, "Configured"));
-            sender.sendMessage();
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Earth: ", (server.isEarthServer() ? ChatColor.GREEN + "Yes" : ChatColor.RED + "No")));
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Friendly Name: ", ChatColor.BLUE, server.getFriendlyName()));
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "X Offset: ", ChatColor.BLUE, server.getXOffset()));
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Z Offset: ", ChatColor.BLUE, server.getZOffset()));
-            sender.sendMessage();
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "SH Version: ", ChatColor.BLUE, server.getSledgehammerVersion()));
-        }
+        ChatUtil.sendMessageBox(sender, ChatColor.YELLOW + "Server Report", () -> {
+            sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Name: ", ChatColor.WHITE, info.getName()));
+            if (server == null) {
+                sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Status: ", ChatColor.RED, "Unconfigured"));
+            } else if (!server.isInitialized()) {
+                sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Status: ", ChatColor.GREEN, "Configured",
+                        ChatColor.RED, " (Not Initialized)"));
+                sender.sendMessage();
+                sender.sendMessage(ChatUtil.combine(ChatColor.BLUE, "Earth: ", (server.isEarthServer() ? ChatColor.GREEN + "Yes" : ChatColor.RED + "No")));
+                sender.sendMessage(ChatUtil.combine(ChatColor.BLUE, "Friendly Name: ", ChatColor.WHITE, server.getFriendlyName()));
+                sender.sendMessage(ChatUtil.combine(ChatColor.BLUE, "X Offset: ", ChatColor.WHITE, server.getXOffset()));
+                sender.sendMessage(ChatUtil.combine(ChatColor.BLUE, "Z Offset: ", ChatColor.WHITE, server.getZOffset()));
+                sender.sendMessage(ChatUtil.combine(ChatColor.BLUE, "Tpll Mode: ", ChatColor.WHITE, server.getTpllMode().name()));
+            } else {
+                sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Status: ", ChatColor.GREEN, "Configured"));
+                sender.sendMessage();
+                sender.sendMessage(ChatUtil.combine(ChatColor.BLUE, "Earth: ", (server.isEarthServer() ? ChatColor.GREEN + "Yes" : ChatColor.RED + "No")));
+                sender.sendMessage(ChatUtil.combine(ChatColor.BLUE, "Friendly Name: ", ChatColor.WHITE, server.getFriendlyName()));
+                sender.sendMessage(ChatUtil.combine(ChatColor.BLUE, "X Offset: ", ChatColor.WHITE, server.getXOffset()));
+                sender.sendMessage(ChatUtil.combine(ChatColor.BLUE, "Z Offset: ", ChatColor.WHITE, server.getZOffset()));
+                sender.sendMessage(ChatUtil.combine(ChatColor.BLUE, "Tpll Mode: ", ChatColor.WHITE, server.getTpllMode().name()));
+                sender.sendMessage();
+                sender.sendMessage(ChatUtil.combine(ChatColor.BLUE, "SH Version: ", ChatColor.BLUE, server.getSledgehammerVersion()));
+            }
+        });
+
     }
 
     @Override

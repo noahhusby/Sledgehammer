@@ -172,7 +172,6 @@ public class WarpMenuInventory extends AbstractWarpInventory {
             }
 
             GUIRegistry.register(new GroupWarpInventory.GroupWarpInventoryController(getController(), controller.getPayload(), id));
-            return;
         }
     }
 

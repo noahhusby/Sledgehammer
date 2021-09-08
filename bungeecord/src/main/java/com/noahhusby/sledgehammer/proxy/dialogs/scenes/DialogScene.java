@@ -138,7 +138,7 @@ public abstract class DialogScene implements IDialogScene {
 
     public String getValue(String key) {
         for (Map.Entry<Integer, IDialogComponent> s : components.entrySet()) {
-            if (s.getValue().getKey().toLowerCase().equals(key.toLowerCase())) {
+            if (s.getValue().getKey().equalsIgnoreCase(key)) {
                 return s.getValue().getValue();
             }
         }

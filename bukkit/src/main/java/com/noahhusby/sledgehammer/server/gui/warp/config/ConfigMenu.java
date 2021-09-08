@@ -41,7 +41,6 @@ public class ConfigMenu extends GUIChild {
         }
         if (e.getSlot() == 15) {
             GUIRegistry.register(new ManageGroupInventory.ManageGroupInventoryController(getPlayer(), ((ConfigMenuController) controller).getPayload()));
-            return;
         }
     }
 

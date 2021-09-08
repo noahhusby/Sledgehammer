@@ -43,14 +43,19 @@ public class LocationConfigScene extends DialogScene {
     @Override
     public void onFinish() {
         String v = getValue("location").trim().toLowerCase();
-        if (v.equals("add")) {
-            discardAndStart(new LocationSelectionScene(server, new LocationConfigScene(server)));
-        } else if (v.equals("finish")) {
-            discardAndStart(new ConfigScene(server, true));
-        } else if (v.equals("remove")) {
-            discardAndStart(new LocationRemovalScene(server, new LocationConfigScene(server)));
-        } else if (v.equals("list")) {
-            discardAndStart(new LocationListScene(server, new LocationConfigScene(server)));
+        switch (v) {
+            case "add":
+                discardAndStart(new LocationSelectionScene(server, new LocationConfigScene(server)));
+                break;
+            case "finish":
+                discardAndStart(new ConfigScene(server, true));
+                break;
+            case "remove":
+                discardAndStart(new LocationRemovalScene(server, new LocationConfigScene(server)));
+                break;
+            case "list":
+                discardAndStart(new LocationListScene(server, new LocationConfigScene(server)));
+                break;
         }
     }
 

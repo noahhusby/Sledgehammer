@@ -44,6 +44,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -204,7 +205,7 @@ public class WarpHandler {
                 t.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/%s %s",
                         ConfigHandler.warpCommand, w.getName())));
                 t.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                        new ComponentBuilder("Click to warp to " + w.getName()).create()));
+                        new Text("Click to warp to " + w.getName())));
                 list.addExtra(t);
                 first = false;
             } else {
@@ -214,7 +215,7 @@ public class WarpHandler {
                 t.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/%s %s",
                         ConfigHandler.warpCommand, w.getName())));
                 t.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                        new ComponentBuilder("Click to warp to " + w.getName()).create()));
+                        new Text("Click to warp to " + w.getName())));
                 list.addExtra(t);
             }
         }

@@ -37,6 +37,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public class ServerAddLocationFragment implements ICommandFragment {
 
@@ -58,7 +59,7 @@ public class ServerAddLocationFragment implements ICommandFragment {
         }
 
         if (args.length > 2) {
-            String arg = SledgehammerUtil.getRawArguments(SledgehammerUtil.selectArray(args, 2));
+            String arg = SledgehammerUtil.getRawArguments(Arrays.copyOfRange(args, 2, args.length));
             if (arg.equalsIgnoreCase("city")) {
                 DialogHandler.getInstance().startDialog(sender, new CityScene(ProxyServer.getInstance().getServerInfo(args[0])));
                 return;
@@ -106,7 +107,7 @@ public class ServerAddLocationFragment implements ICommandFragment {
                 sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Successfully added ", ChatColor.BLUE, l.detailType.name() + ": ", ChatColor.RED, x));
                 return;
             } else if (arg.contains("{")) {
-                sender.sendMessage(ChatColor.RED + "Unable to parse json location! Please try again.");
+                sender.sendMessage(ChatUtil.combine(ChatColor.RED, "Unable to parse json location! Please try again."));
                 return;
             }
 

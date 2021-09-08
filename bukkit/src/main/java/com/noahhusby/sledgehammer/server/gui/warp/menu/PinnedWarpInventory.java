@@ -171,7 +171,6 @@ public class PinnedWarpInventory extends AbstractWarpInventory {
             NetworkHandler.getInstance().send(new S2PWarpPacket(player, controller.getPayload(), id));
 
             controller.close();
-            return;
         }
     }
 

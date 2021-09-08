@@ -128,7 +128,6 @@ public class TerrashowCommand extends Command implements TabExecutor {
                 break;
             default:
                 context.sendError("terramap.commands.terrashow.invalid_action");
-                return;
         }
 
     }

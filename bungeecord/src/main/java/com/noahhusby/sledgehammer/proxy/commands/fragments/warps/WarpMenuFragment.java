@@ -45,9 +45,7 @@ public class WarpMenuFragment implements ICommandFragment {
             return;
         }
         CompletableFuture<Permission> permissionFuture = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp.edit");
-        permissionFuture.thenAccept(permission -> {
-            NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName(), permission.isLocal()));
-        });
+        permissionFuture.thenAccept(permission -> NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName(), permission.isLocal())));
     }
 
     @Override

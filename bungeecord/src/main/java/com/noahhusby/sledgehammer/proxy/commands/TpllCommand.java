@@ -30,7 +30,6 @@ import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
@@ -54,6 +53,11 @@ public class TpllCommand extends Command {
 
         if (!isAllowed(sender)) {
             sender.sendMessage(ChatUtil.getNotAvailable());
+            return;
+        }
+        SledgehammerPlayer player = SledgehammerPlayer.getPlayer(sender);
+        if (player.getSledgehammerServer() != null && player.getSledgehammerServer().getTpllMode() == TpllMode.PASSTHROUGH) {
+            player.chat("/tpll " + SledgehammerUtil.getRawArguments(args));
             return;
         }
         CompletableFuture<Permission> permissionFuture = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.tpll");
@@ -129,11 +133,6 @@ public class TpllCommand extends Command {
                 }
 
                 SledgehammerServer sledgehammerServer = ServerHandler.getInstance().getServer(recipient.getServer().getInfo().getName());
-                if (sledgehammerServer != null && sledgehammerServer.getTpllMode() == TpllMode.PASSTHROUGH) {
-                    recipient.chat("/tpll " + SledgehammerUtil.getRawArguments(args));
-                    return;
-                }
-
                 ServerInfo server = OpenStreetMaps.getInstance().getServerFromLocation(lon, lat);
 
                 if (server == null) {

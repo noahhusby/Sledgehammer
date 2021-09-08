@@ -2,9 +2,6 @@ package com.noahhusby.sledgehammer.common;
 
 import com.noahhusby.sledgehammer.common.exceptions.VersionParseException;
 
-import java.io.IOException;
-import java.util.Properties;
-
 /**
  * @author Noah Husby
  */

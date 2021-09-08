@@ -107,7 +107,7 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
             if (parts.length > 0) {
                 if ("dev".equals(parts[parts.length - 1])) {
                     this.devBuild = true;
-                    parts = (String[]) Arrays.copyOfRange(parts, 0, parts.length - 1);
+                    parts = Arrays.copyOfRange(parts, 0, parts.length - 1);
                 } else {
                     this.devBuild = false;
                 }

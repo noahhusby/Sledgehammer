@@ -96,9 +96,7 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
 
                 if (openGUI) {
                     CompletableFuture<Permission> permissionFuture = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp.edit");
-                    permissionFuture.thenAccept(permission -> {
-                        NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName(), permission.isLocal()));
-                    });
+                    permissionFuture.thenAccept(permission -> NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName(), permission.isLocal())));
                     return;
                 }
             }
@@ -118,9 +116,7 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
             for (ServerGroup g : ServerHandler.getInstance().getGroups().values()) {
                 if (g.getAliases().contains(args[0])) {
                     CompletableFuture<Permission> permissionFuture = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp.edit");
-                    permissionFuture.thenAccept(permission -> {
-                        NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName(), permission.isLocal()));
-                    });
+                    permissionFuture.thenAccept(permission -> NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName(), permission.isLocal())));
                     return;
                 }
             }
@@ -177,9 +173,7 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
                 tabbedWarps.addAll(g.getAliases());
             }
 
-            List<String> completion = new ArrayList<>();
-            SledgehammerUtil.copyPartialMatches(args[0], tabbedWarps, completion);
-            return completion;
+            return SledgehammerUtil.copyPartialMatches(args[0], tabbedWarps);
         }
 
         return new ArrayList<>();

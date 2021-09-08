@@ -12,7 +12,7 @@ import java.util.Map;
  * Sent to players joining the network to give them access to this proxy's custom map styles.
  *
  * @author SmylerMC
- * @see com.noahhusby.sledgehammer.proxy.addons.terramap.MapStyleRegistry
+ * @see com.noahhusby.sledgehammer.proxy.terramap.MapStyleRegistry
  */
 public class P2CMapStylePacket implements IForgePacket {
 

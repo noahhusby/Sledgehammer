@@ -17,7 +17,7 @@ import net.md_5.bungee.chat.ComponentSerializer;
  * The interval at which packets are sent can be configured in {@link ConfigHandler#terramapSyncInterval}
  *
  * @author SmylerMC
- * @see com.noahhusby.sledgehammer.proxy.addons.terramap.RemoteSynchronizer
+ * @see com.noahhusby.sledgehammer.proxy.terramap.RemoteSynchronizer
  */
 public class P2CPlayerSyncPacket implements IForgePacket {
 

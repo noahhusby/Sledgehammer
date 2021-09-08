@@ -18,6 +18,7 @@
 
 package com.noahhusby.sledgehammer.proxy;
 
+import com.google.common.collect.Lists;
 import com.noahhusby.sledgehammer.common.CommonUtil;
 import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
@@ -29,9 +30,6 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -98,18 +96,6 @@ public class SledgehammerUtil extends CommonUtil {
     }
 
     /**
-     * Gets all objects in a string array above a given index
-     *
-     * @param args  Initial array
-     * @param index Starting index
-     * @return Selected array
-     */
-    public static String[] selectArray(String[] args, int index) {
-        List<String> array = new ArrayList<>(Arrays.asList(args).subList(index, args.length));
-        return array.toArray(array.toArray(new String[0]));
-    }
-
-    /**
      * Gets a space seperated string from an array
      *
      * @param args A string array
@@ -148,12 +134,8 @@ public class SledgehammerUtil extends CommonUtil {
         return salt.toString();
     }
 
-    public String getLastArgument(String[] a) {
-        return a.length == 0 ? null : a[a.length - 1];
-    }
-
-
-    public static <T extends Collection<? super String>> T copyPartialMatches(@NonNull final String token, @NonNull final Iterable<String> originals, @NonNull final T collection) throws UnsupportedOperationException, IllegalArgumentException {
+    public static List<String> copyPartialMatches(@NonNull final String token, @NonNull final Iterable<String> originals) throws UnsupportedOperationException, IllegalArgumentException {
+        List<String> collection = Lists.newArrayList();
         for (String string : originals) {
             if (startsWithIgnoreCase(string, token)) {
                 collection.add(string);

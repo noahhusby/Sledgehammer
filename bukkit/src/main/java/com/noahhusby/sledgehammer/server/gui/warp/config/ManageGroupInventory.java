@@ -148,7 +148,6 @@ public class ManageGroupInventory extends GUIChild {
             }
 
             GUIRegistry.register(new ManageGroupWarpInventory.ManageGroupWarpInventoryController(getController(), controller.getPayload(), id));
-            return;
         }
     }
 

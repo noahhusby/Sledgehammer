@@ -28,6 +28,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 
 public class GroupListFragment implements ICommandFragment {
     @Override
@@ -41,7 +42,7 @@ public class GroupListFragment implements ICommandFragment {
                 t.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/sha group info %s",
                         s.getID())));
                 t.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                        new ComponentBuilder("Click for more info").create()));
+                        new Text("Click for more info")));
                 list.addExtra(t);
                 first = false;
             } else {
@@ -51,7 +52,7 @@ public class GroupListFragment implements ICommandFragment {
                 t.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/sha group info %s",
                         s.getID())));
                 t.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                        new ComponentBuilder("Click for more info").create()));
+                        new Text("Click for more info")));
                 list.addExtra(t);
             }
         }
