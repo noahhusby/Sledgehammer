@@ -2,7 +2,9 @@ package com.noahhusby.sledgehammer.proxy.commands.fragments;
 
 import com.google.common.collect.Maps;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -15,9 +17,10 @@ import java.util.Map;
 /**
  * @author Noah Husby
  */
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class FragmentManager {
-    private final String base;
+    @Setter
+    private String base;
     private final String title;
 
     private final Map<String, ICommandFragment> fragments = Maps.newHashMap();

@@ -63,6 +63,7 @@ public class ServerFragment implements ICommandFragment {
         if (args.length != 0) {
             for (Map.Entry<String, ServerInfo> s : getInstance().getServers().entrySet()) {
                 if (s.getValue().getName().equalsIgnoreCase(args[0])) {
+                    manager.setBase(String.format("/sha server %s", args[0]));
                     manager.execute(sender, args, 1);
                     return;
                 }
@@ -70,6 +71,7 @@ public class ServerFragment implements ICommandFragment {
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.DARK_RED, args[0], ChatColor.RED, " is not a bungeecord server!"));
             return;
         }
+        manager.setBase("/sha server <server name>");
         manager.execute(sender, args, 1);
     }
 

@@ -22,7 +22,6 @@ import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.FragmentManager;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.GroupFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.MigrateFragment;
-import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.PermissionCheckFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.ReloadFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.ServerFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.SetupFragment;
@@ -40,7 +39,6 @@ public class SledgehammerAdminCommand extends Command {
         manager.register(new SetupFragment());
         manager.register(new ServerFragment());
         manager.register(new GroupFragment());
-        manager.register(new PermissionCheckFragment());
         manager.register(new TestLocationFragment());
         manager.register(new MigrateFragment());
     }

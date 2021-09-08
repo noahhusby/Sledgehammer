@@ -232,20 +232,20 @@ public class ConfigHandler {
 
     private void loadHandlers() {
         Storage serverData = ServerHandler.getInstance().getServers();
-        serverData.registerHandler(new LocalStorageHandler(ConfigHandler.serverFile));
         serverData.clearHandlers();
+        serverData.registerHandler(new LocalStorageHandler(ConfigHandler.serverFile));
 
         Storage warpData = WarpHandler.getInstance().getWarps();
-        warpData.registerHandler(new LocalStorageHandler(ConfigHandler.warpFile));
         warpData.clearHandlers();
+        warpData.registerHandler(new LocalStorageHandler(ConfigHandler.warpFile));
 
         Storage attributeData = PlayerHandler.getInstance().getAttributes();
-        attributeData.registerHandler(new LocalStorageHandler(ConfigHandler.attributeFile));
         attributeData.clearHandlers();
+        attributeData.registerHandler(new LocalStorageHandler(ConfigHandler.attributeFile));
 
         Storage serverGroups = ServerHandler.getInstance().getGroups();
-        serverGroups.registerHandler(new LocalStorageHandler(ConfigHandler.groupsFile));
         serverGroups.clearHandlers();
+        serverGroups.registerHandler(new LocalStorageHandler(ConfigHandler.groupsFile));
 
         if (useSql) {
             {
