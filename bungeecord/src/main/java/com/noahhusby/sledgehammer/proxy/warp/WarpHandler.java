@@ -45,10 +45,12 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public class WarpHandler {
@@ -61,7 +63,7 @@ public class WarpHandler {
     @Getter
     private final StorageHashMap<Integer, Warp> warps = new StorageHashMap<>(Integer.class, Warp.class);
 
-    private final Map<CommandSender, Warp> warpRequests = Maps.newHashMap();
+    private final Map<UUID, Warp> warpRequests = Maps.newHashMap();
     private final Map<Warp, Consumer<Warp>> warpConsumers = Maps.newHashMap();
 
     /**
@@ -111,7 +113,8 @@ public class WarpHandler {
     public void requestNewWarp(String warpName, CommandSender sender, Consumer<Warp> consumer) {
         Warp warp = new Warp();
         warp.setName(warpName);
-        warpRequests.put(sender, warp);
+        UUID uuid = ((ProxiedPlayer) sender).getUniqueId();
+        warpRequests.put(uuid, warp);
         if (consumer != null) {
             warpConsumers.put(warp, consumer);
         }
@@ -137,7 +140,7 @@ public class WarpHandler {
     public void incomingLocationResponse(String sender, Point point) {
         synchronized (warpRequests) {
             SledgehammerPlayer player = SledgehammerPlayer.getPlayer(sender);
-            Warp warp = warpRequests.remove(player);
+            Warp warp = warpRequests.remove(player.getUniqueId());
 
             if (warp == null) {
                 return;

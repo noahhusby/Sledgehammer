@@ -70,7 +70,7 @@ public class Sledgehammer extends Plugin implements Listener {
         }
 
         // Manual module handling
-        if (ConfigHandler.terramapEnabled && TerramapAddon.instance == null) {
+        if (ConfigHandler.terramapEnabled && (TerramapAddon.instance == null || !ModuleHandler.getInstance().getModules().containsKey(TerramapAddon.instance))) {
             ModuleHandler.getInstance().registerModule(new TerramapAddon());
             ModuleHandler.getInstance().enable(TerramapAddon.instance);
         } else if (ConfigHandler.terramapEnabled) {
