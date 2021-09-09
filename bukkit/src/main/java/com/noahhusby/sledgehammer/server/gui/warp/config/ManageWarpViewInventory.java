@@ -57,7 +57,7 @@ public class ManageWarpViewInventory extends GUIChild {
             inventory.setItem(x, glass);
         }
 
-        inventory.setItem(0, SledgehammerUtil.getSkull(Constants.redCheckmarkHead, ChatColor.RED + "" + ChatColor.BOLD + "Go Back"));
+        inventory.setItem(0, SledgehammerUtil.getSkull(Constants.redLeftHead, ChatColor.RED + "" + ChatColor.BOLD + "Go Back"));
 
         {
             inventory.setItem(4, SledgehammerUtil.getSkull(Constants.globeHead, ChatColor.GREEN + "" + ChatColor.BOLD + "Select a warp"));
