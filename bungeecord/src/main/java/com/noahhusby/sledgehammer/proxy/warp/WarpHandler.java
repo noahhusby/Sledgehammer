@@ -18,15 +18,13 @@
 
 package com.noahhusby.sledgehammer.proxy.warp;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.noahhusby.lib.data.storage.StorageHashMap;
 import com.noahhusby.sledgehammer.common.warps.Page;
 import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.common.warps.Warp;
+import com.noahhusby.sledgehammer.common.warps.WarpConfigPayload;
 import com.noahhusby.sledgehammer.common.warps.WarpGroupPayload;
 import com.noahhusby.sledgehammer.common.warps.WarpPayload;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
@@ -36,7 +34,6 @@ import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
 import com.noahhusby.sledgehammer.proxy.network.P2S.P2SSetwarpPacket;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
-import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
 import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
@@ -47,7 +44,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -313,55 +309,40 @@ public class WarpHandler {
      * @param admin  True if they are able to edit all groups
      * @return Config Payload
      */
-    public JsonObject generateConfigPayload(SledgehammerPlayer player, boolean admin) {
-        /*
+    public WarpConfigPayload generateConfigPayload(SledgehammerPlayer player, boolean admin) {
         SledgehammerServer s = player.getSledgehammerServer();
         if (s == null) {
-            return new JsonObject();
+            return null;
         }
-
-        JsonObject data = new JsonObject();
-        data.addProperty("requestGroup", s.getGroup().getID());
-        data.addProperty("admin", admin);
-        data.addProperty("local", ConfigHandler.localWarp);
-
-        List<WarpGroupPayload> groupsList = new ArrayList<>();
-
-        for (Warp w : warps.values()) {
-            SledgehammerServer server = ServerHandler.getInstance().getServer(w.getServer());
-            if (server == null) {
+        String requestGroup = null;
+        WarpGroup group = warpGroupByServer.get(s.getServerInfo().getName());
+        if(group != null) {
+            requestGroup = group.getId();
+        }
+        Map<String, List<Integer>> servers = Maps.newHashMap();
+        Map<Integer, Warp> waypoints = Maps.newHashMap();
+        for(Warp warp : warps.values()) {
+            if(!admin && !((group != null && group.getServers().contains(warp.getServer())) || s.getName().equalsIgnoreCase(warp.getServer()))) {
                 continue;
             }
-            if (!server.getGroup().getID().equals(s.getGroup().getID()) && !admin) {
-                continue;
-            }
-
-            WarpGroupPayload wg = null;
-            for (WarpGroupPayload g : groupsList) {
-                if (g.getId().equals(server.getGroup().getID())) {
-                    wg = g;
-                }
-            }
-
-            if (wg == null) {
-                ServerGroup sg = server.getGroup();
-                wg = new WarpGroupPayload(sg.getID(), sg.getName(), sg.getHeadID());
-                wg.getWarps().add(w);
-                groupsList.add(wg);
+            if(!servers.containsKey(warp.getServer())) {
+                servers.put(warp.getServer(), Lists.newArrayList(warp.getId()));
             } else {
-                wg.getWarps().add(w);
+                servers.get(warp.getServer()).add(warp.getId());
             }
+            waypoints.put(warp.getId(), warp.toWaypoint());
         }
-
-        JsonArray groups = new JsonArray();
-        for (WarpGroupPayload wg : groupsList) {
-            groups.add(wg.toJson());
+        Map<String, WarpGroupPayload> groupPayload = Maps.newHashMap();
+        if(admin) {
+            Map<String, WarpGroupPayload> temp = Maps.newHashMap();
+            for(Map.Entry<String, WarpGroup> g : warpGroups.entrySet()) {
+                temp.put(g.getKey(), g.getValue().toPayload());
+            }
+            groupPayload = temp;
+        } else if(group != null){
+            groupPayload.put(group.getId(), group.toPayload());
         }
-        data.add("groups", groups);
-        return data;
-
-         */
-        return null;
+        return new WarpConfigPayload(ConfigHandler.localWarp, admin, requestGroup, player.trackAction(), waypoints, groupPayload, servers);
     }
 
     /**

@@ -2,9 +2,10 @@ package com.noahhusby.sledgehammer.server.network.P2S;
 
 import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.common.warps.Warp;
+import com.noahhusby.sledgehammer.common.warps.WarpConfigPayload;
 import com.noahhusby.sledgehammer.common.warps.WarpGroupPayload;
 import com.noahhusby.sledgehammer.server.Constants;
-import com.noahhusby.sledgehammer.server.data.warp.WarpConfigPayload;
+import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.gui.warp.config.ConfigMenu;
 import com.noahhusby.sledgehammer.server.gui.warp.config.confirmation.ConfirmationController;
@@ -20,9 +21,8 @@ public class P2SWarpConfigPacket extends P2SPacket {
 
     @Override
     public void onMessage(PacketInfo info, JsonObject data) {
-        ServerConfigAction action = ServerConfigAction.valueOf(data.get("action").getAsString());
-        WarpConfigPayload payload = WarpConfigPayload.fromPayload(data);
-        switch (action) {
+        WarpConfigPayload payload = SledgehammerUtil.GSON.fromJson(data.get("payload"), WarpConfigPayload.class);
+        switch (payload.getAction()) {
             case OPEN_CONFIG:
                 GUIRegistry.register(new ConfigMenu.ConfigMenuController(Bukkit.getPlayer(info.getSender()), payload));
                 break;
@@ -30,29 +30,11 @@ public class P2SWarpConfigPacket extends P2SPacket {
             case ADD_SUCCESSFUL:
             case REMOVE_SUCCESSFUL:
             case REMOVE_FAILURE:
-                GUIRegistry.register(new ConfirmationController(Bukkit.getPlayer(info.getSender()),
-                        payload, ConfirmationController.Type.valueOf(action.name())));
+                GUIRegistry.register(new ConfirmationController(Bukkit.getPlayer(info.getSender()), payload, ConfirmationController.Type.valueOf(payload.getAction().name())));
                 break;
             case LOCATION_UPDATE:
-                JsonObject d = data.getAsJsonObject("data");
-                for (WarpGroupPayload wg : payload.getGroups()) {
-                    /*
-                    for (Warp warpId : wg.getWarps()) {
-                        Warp w =
-                        if (w.getId() == d.get("warpId").getAsInt()) {
-                            GUIRegistry.register(new ConfirmationController(Bukkit.getPlayer(info.getSender()),
-                                    payload, ConfirmationController.Type.LOCATION_UPDATE, w));
-                            return;
-                        }
-                    }
-                                         */
-
-                }
-
+                Warp warp = payload.getWaypoints().get(data.get("warpId").getAsInt());
+                GUIRegistry.register(new ConfirmationController(Bukkit.getPlayer(info.getSender()), payload, ConfirmationController.Type.LOCATION_UPDATE, warp));
         }
-    }
-
-    public enum ServerConfigAction {
-        OPEN_CONFIG, REMOVE_SUCCESSFUL, REMOVE_FAILURE, ADD_SUCCESSFUL, ADD_FAILURE, LOCATION_UPDATE
     }
 }

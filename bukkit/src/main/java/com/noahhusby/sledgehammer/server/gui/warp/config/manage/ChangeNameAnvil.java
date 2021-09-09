@@ -1,8 +1,8 @@
 package com.noahhusby.sledgehammer.server.gui.warp.config.manage;
 
 import com.noahhusby.sledgehammer.common.warps.Warp;
+import com.noahhusby.sledgehammer.common.warps.WarpConfigPayload;
 import com.noahhusby.sledgehammer.server.Sledgehammer;
-import com.noahhusby.sledgehammer.server.data.warp.WarpConfigPayload;
 import com.noahhusby.sledgehammer.server.gui.AnvilChild;
 import com.noahhusby.sledgehammer.server.gui.AnvilController;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;

@@ -31,7 +31,7 @@ public class WarpDeserializer implements JsonDeserializer<Warp> {
                 object.get("Name").getAsString(),
                 point == null ? null : context.deserialize(point, Point.class),
                 object.get("Server").getAsString(),
-                object.get("headID") == null ? null : object.get("headID").getAsString(),
+                (object.get("HeadId") == null || object.get("HeadId").isJsonNull()) ? null : object.get("HeadId").getAsString(),
                 object.get("Global").getAsBoolean());
     }
 

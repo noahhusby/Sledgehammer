@@ -22,6 +22,7 @@ import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.common.warps.Page;
 import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.common.warps.Warp;
+import com.noahhusby.sledgehammer.common.warps.WarpConfigPayload;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
@@ -57,7 +58,7 @@ public class S2PWarpConfigPacket extends S2PPacket {
                 CompletableFuture<Permission> permissionFuture = player.getPermission("sledgehammer.warp.edit");
                 permissionFuture.thenAccept(permission -> {
                     if (permission.isLocal()) {
-                        NetworkHandler.getInstance().send(new P2SWarpConfigPacket(player, P2SWarpConfigPacket.ServerConfigAction.OPEN_CONFIG, permission.isGlobal()));
+                        NetworkHandler.getInstance().send(new P2SWarpConfigPacket(player, WarpConfigPayload.ServerConfigAction.OPEN_CONFIG, permission.isGlobal()));
                     } else {
                         player.sendMessage(ChatUtil.getNoPermission());
                     }
@@ -72,30 +73,27 @@ public class S2PWarpConfigPacket extends S2PPacket {
                     case RESERVED:
                         response.addProperty("warpName", warpName);
                         NetworkHandler.getInstance().send(new P2SWarpConfigPacket(
-                                player, P2SWarpConfigPacket.ServerConfigAction.ADD_FAILURE, g, response));
+                                player, WarpConfigPayload.ServerConfigAction.ADD_FAILURE, g, response));
                         break;
                     case AVAILABLE:
                         WarpHandler.getInstance().requestNewWarp(warpName, player, (warp) -> {
                             response.addProperty("warpName", warp.getName());
                             response.addProperty("warpId", warp.getId());
                             NetworkHandler.getInstance().send(new P2SWarpConfigPacket(
-                                    player, P2SWarpConfigPacket.ServerConfigAction.ADD_SUCCESSFUL, g, response));
+                                    player, WarpConfigPayload.ServerConfigAction.ADD_SUCCESSFUL, g, response));
                         });
                         break;
                 }
                 break;
             case UPDATE_WARP:
-                int warpId = data.get("id").getAsInt();
-                String name = data.get("name").getAsString();
-                String headId = data.get("headId").getAsString();
-                //Warp.PinnedMode pin = Warp.PinnedMode.valueOf(data.get("pinned").getAsString());
+                Warp incomingWarp = SledgehammerUtil.GSON.fromJson(data, Warp.class);
 
-                Warp warp = WarpHandler.getInstance().getWarp(warpId);
+                Warp warp = WarpHandler.getInstance().getWarp(incomingWarp.getId());
                 if (warp == null) {
                     return;
                 }
-                warp.setHeadID(headId);
-                warp.setName(name);
+                warp.setHeadID(incomingWarp.getHeadID());
+                warp.setName(incomingWarp.getName());
                 //warp.setPinned(pin);
 
                 WarpHandler.getInstance().getWarps().saveAsync();
@@ -120,14 +118,14 @@ public class S2PWarpConfigPacket extends S2PPacket {
 
                 response.addProperty("warpId", w.getId());
                 NetworkHandler.getInstance().send(new P2SWarpConfigPacket(player,
-                        P2SWarpConfigPacket.ServerConfigAction.LOCATION_UPDATE,
+                        WarpConfigPayload.ServerConfigAction.LOCATION_UPDATE,
                         g, response));
                 break;
             case REMOVE_WARP:
-                //WarpHandler.getInstance().getWarps().remove(WarpHandler.getInstance().getWarp(data.get("warpId").getAsInt()));
+                WarpHandler.getInstance().getWarps().remove(data.get("warpId").getAsInt());
                 WarpHandler.getInstance().getWarps().saveAsync();
                 NetworkHandler.getInstance().send(new P2SWarpConfigPacket(player,
-                        P2SWarpConfigPacket.ServerConfigAction.REMOVE_SUCCESSFUL, g));
+                        WarpConfigPayload.ServerConfigAction.REMOVE_SUCCESSFUL, g));
                 break;
         }
     }

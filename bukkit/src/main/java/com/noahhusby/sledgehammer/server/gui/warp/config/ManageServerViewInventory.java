@@ -18,13 +18,15 @@
 
 package com.noahhusby.sledgehammer.server.gui.warp.config;
 
-import com.noahhusby.sledgehammer.common.warps.WarpGroupPayload;
+import com.google.common.collect.Lists;
+import com.noahhusby.sledgehammer.common.warps.Warp;
+import com.noahhusby.sledgehammer.common.warps.WarpConfigPayload;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
-import com.noahhusby.sledgehammer.server.data.warp.WarpConfigPayload;
 import com.noahhusby.sledgehammer.server.gui.GUIChild;
 import com.noahhusby.sledgehammer.server.gui.GUIController;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
+import com.noahhusby.sledgehammer.server.gui.warp.menu.WarpSortInventory;
 import com.noahhusby.sledgehammer.server.util.SkullUtil;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
@@ -38,9 +40,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class ManageGroupInventory extends GUIChild {
+public class ManageServerViewInventory extends GUIChild {
     private final int page;
-    private final List<WarpGroupPayload> groups;
+    private final List<String> servers;
 
     @Override
     public void init() {
@@ -55,7 +57,15 @@ public class ManageGroupInventory extends GUIChild {
             inventory.setItem(x, glass);
         }
 
-        inventory.setItem(4, SledgehammerUtil.getSkull(Constants.monitorHead, ChatColor.GREEN + "" + ChatColor.BOLD + "Groups"));
+        inventory.setItem(0, SledgehammerUtil.getSkull(Constants.redLeftHead, ChatColor.RED + "" + ChatColor.BOLD + "Go Back"));
+
+        {
+            ItemStack overview = SledgehammerUtil.getSkull(Constants.globeHead, ChatColor.YELLOW + "" + ChatColor.BOLD + "Servers");
+            ItemMeta meta = overview.getItemMeta();
+            meta.setLore(Lists.newArrayList(ChatColor.GOLD + "Click to sort warps by group"));
+            overview.setItemMeta(meta);
+            inventory.setItem(4, overview);
+        }
 
         boolean paged = false;
         if (page != 0) {
@@ -64,7 +74,7 @@ public class ManageGroupInventory extends GUIChild {
             paged = true;
         }
 
-        if (groups.size() > (page + 1) * Constants.warpsPerPage) {
+        if (servers.size() > (page + 1) * Constants.warpsPerPage) {
             ItemStack head = SledgehammerUtil.getSkull(Constants.arrowRightHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Next Page");
             inventory.setItem(44, head);
             paged = true;
@@ -78,28 +88,20 @@ public class ManageGroupInventory extends GUIChild {
         int min = page * 27;
         int max = min + 27;
 
-        if (max > groups.size()) {
-            max = min + (groups.size() - (page * 27));
+        if (max > servers.size()) {
+            max = min + (servers.size() - (page * 27));
         }
 
         int current = 9;
         for (int x = min; x < max; x++) {
-            WarpGroupPayload group = groups.get(x);
-
-            String headId = group.getHeadId();
-            if (headId.equals("")) {
-                headId = Constants.cyanWoolHead;
-            }
-            ItemStack item = SledgehammerUtil.getSkull(headId, group.getName());
-
+            String server = servers.get(x);
+            ItemStack item = SledgehammerUtil.getSkull(Constants.yellowWoolHead, ChatColor.YELLOW + "" + ChatColor.BOLD + server);
             ItemMeta meta = item.getItemMeta();
-
             List<String> lore = new ArrayList<>();
             lore.add(ChatColor.BLUE + "" + ChatColor.STRIKETHROUGH + "------------------");
-            lore.add(ChatColor.DARK_GRAY + "Group: " + group.getName());
+            lore.add(ChatColor.DARK_GRAY + "Server: " + server);
             lore.add(ChatColor.DARK_GRAY + "> " + ChatColor.GREEN + "Click to view.");
             lore.add(ChatColor.BLUE + "" + ChatColor.STRIKETHROUGH + "------------------");
-            lore.add(ChatColor.GRAY + "ID: " + group.getId());
             meta.setLore(lore);
             item.setItemMeta(meta);
 
@@ -127,6 +129,17 @@ public class ManageGroupInventory extends GUIChild {
             return;
         }
 
+        if (e.getSlot() == 0) {
+            controller.close();
+            GUIRegistry.register(new ConfigMenu.ConfigMenuController(getPlayer(), controller.getPayload()));
+            return;
+        }
+
+        if (e.getSlot() == 4) {
+            GUIRegistry.register(new ManageGroupViewInventory.ManageGroupInventoryController(getController(), controller.getPayload()));
+            return;
+        }
+
         if (ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Previous Page")) {
             controller.openChild(controller.getChildByPage(page - 1));
             return;
@@ -142,12 +155,18 @@ public class ManageGroupInventory extends GUIChild {
             String id = "";
             List<String> lore = meta.getLore();
             for (String s : lore) {
-                if (s.contains("ID:")) {
-                    id = ChatColor.stripColor(s).trim().replace("ID: ", "");
+                if (s.contains("Server:")) {
+                    id = ChatColor.stripColor(s).trim().replace("Server: ", "");
                 }
             }
 
-            GUIRegistry.register(new ManageGroupWarpInventory.ManageGroupWarpInventoryController(getController(), controller.getPayload(), id));
+            List<Integer> warpIds = controller.getPayload().getServers().get(id);
+            List<Warp> warps = Lists.newArrayList();
+            for(Integer warpId : warpIds) {
+                warps.add(controller.getPayload().getWaypoints().get(warpId));
+            }
+
+            GUIRegistry.register(new ManageWarpViewInventory.ManageWarpViewInventoryController(getController(), controller.getPayload(), warps));
         }
     }
 
@@ -156,11 +175,11 @@ public class ManageGroupInventory extends GUIChild {
     }
 
     public static class ManageGroupInventoryController extends GUIController {
-        private final List<ManageGroupInventory> warpInventories = new ArrayList<>();
+        private final List<ManageServerViewInventory> warpInventories = new ArrayList<>();
         private final WarpConfigPayload payload;
 
         public ManageGroupInventoryController(Player p, WarpConfigPayload payload) {
-            super(45, "Select a group to manage", p);
+            super(45, "Select a warp to edit", p);
             this.payload = payload;
             init();
         }
@@ -173,14 +192,14 @@ public class ManageGroupInventory extends GUIChild {
 
         @Override
         public void init() {
-            List<WarpGroupPayload> groups = payload.getGroups();
+            List<String> servers = Lists.newArrayList(payload.getServers().keySet());;
 
-            int total_pages = (int) Math.ceil(groups.size() / 27.0);
+            int total_pages = (int) Math.ceil(servers.size() / 27.0);
             if (total_pages == 0) {
                 total_pages = 1;
             }
             for (int x = 0; x < total_pages; x++) {
-                ManageGroupInventory w = new ManageGroupInventory(x, groups);
+                ManageServerViewInventory w = new ManageServerViewInventory(x, servers);
                 w.initFromController(this, getPlayer(), getInventory());
                 warpInventories.add(w);
             }
@@ -189,7 +208,7 @@ public class ManageGroupInventory extends GUIChild {
         }
 
         public GUIChild getChildByPage(int page) {
-            for (ManageGroupInventory w : warpInventories) {
+            for (ManageServerViewInventory w : warpInventories) {
                 if (w.getPage() == page) {
                     return w;
                 }

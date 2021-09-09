@@ -1,7 +1,7 @@
 package com.noahhusby.sledgehammer.server.gui.warp.config.confirmation;
 
 import com.noahhusby.sledgehammer.common.warps.Warp;
-import com.noahhusby.sledgehammer.server.data.warp.WarpConfigPayload;
+import com.noahhusby.sledgehammer.common.warps.WarpConfigPayload;
 import com.noahhusby.sledgehammer.server.gui.GUIChild;
 import com.noahhusby.sledgehammer.server.gui.GUIController;
 import org.bukkit.entity.Player;
