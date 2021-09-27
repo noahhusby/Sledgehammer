@@ -13,7 +13,7 @@ allprojects {
         hikariVersion = "4.0.3"
         lombokVersion = "1.18.20"
         husbyVersion = "9298199ab9"
-        guavaVersion = "30.1.1-jre"
+        guavaVersion = "31.0-jre"
         anvilGuiVersion = "1.5.3-SNAPSHOT"
         paperVersion = "1.12.2-R0.1-SNAPSHOT"
         bungeecordVersion = "1.17-R0.1-SNAPSHOT"
