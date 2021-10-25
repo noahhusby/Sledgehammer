@@ -3,10 +3,9 @@ package com.noahhusby.sledgehammer.proxy.terramap;
 import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.P2CMapStylePacket;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.P2CSledgehammerHelloPacket;
-import com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync.PlayerSyncStatus;
+import com.noahhusby.sledgehammer.proxy.terramap.network.PlayerSyncStatus;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
-import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -54,12 +53,4 @@ public class TerramapAddonEventHandler implements Listener {
         TerramapAddon.instance.synchronizer.unregisterPlayer(event.getPlayer());
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPluginMessage(PluginMessageEvent event) {
-        if (event.getTag().equals(TerramapAddon.MAPSYNC_CHANNEL_NAME)) {
-            TerramapAddon.instance.mapSyncChannel.process(event);
-        } else if (event.getTag().equals(TerramapAddon.SLEDGEHAMMER_CHANNEL_NAME)) {
-            TerramapAddon.instance.sledgehammerChannel.process(event);
-        }
-    }
 }

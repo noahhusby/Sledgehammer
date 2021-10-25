@@ -1,6 +1,7 @@
 package com.noahhusby.sledgehammer.proxy.terramap.network.packets;
 
-import com.noahhusby.sledgehammer.proxy.terramap.network.ForgeChannel;
+import com.noahhusby.sledgehammer.proxy.terramap.network.NetworkUtil;
+import fr.thesmyler.bungee2forge.api.ForgePacket;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
@@ -14,7 +15,7 @@ import java.util.Map;
  * @author SmylerMC
  * @see com.noahhusby.sledgehammer.proxy.terramap.MapStyleRegistry
  */
-public class P2CMapStylePacket implements IForgePacket {
+public class P2CMapStylePacket implements ForgePacket {
 
     public String id;
     public long providerVersion;
@@ -56,22 +57,22 @@ public class P2CMapStylePacket implements IForgePacket {
 
     @Override
     public void decode(ByteBuf buf) {
-        this.id = ForgeChannel.readStringFromBuf(buf);
+        this.id = NetworkUtil.readStringFromBuf(buf);
         this.providerVersion = buf.readLong();
-        this.urlPattern = ForgeChannel.readStringFromBuf(buf);
+        this.urlPattern = NetworkUtil.readStringFromBuf(buf);
         int nameCount = buf.readInt();
         Map<String, String> names = new HashMap<>();
         for (int i = 0; i < nameCount; i++) {
-            String key = ForgeChannel.readStringFromBuf(buf);
-            String name = ForgeChannel.readStringFromBuf(buf);
+            String key = NetworkUtil.readStringFromBuf(buf);
+            String name = NetworkUtil.readStringFromBuf(buf);
             names.put(key, name);
         }
         this.names = names;
         int copyrightCount = buf.readInt();
         Map<String, String> copyrights = new HashMap<>();
         for (int i = 0; i < copyrightCount; i++) {
-            String key = ForgeChannel.readStringFromBuf(buf);
-            String copyright = ForgeChannel.readStringFromBuf(buf);
+            String key = NetworkUtil.readStringFromBuf(buf);
+            String copyright = NetworkUtil.readStringFromBuf(buf);
             copyrights.put(key, copyright);
         }
         this.copyrights = copyrights;
@@ -79,29 +80,29 @@ public class P2CMapStylePacket implements IForgePacket {
         this.maxZoom = buf.readInt();
         this.displayPriority = buf.readInt();
         this.isAllowedOnMinimap = buf.readBoolean();
-        this.comment = ForgeChannel.readStringFromBuf(buf);
+        this.comment = NetworkUtil.readStringFromBuf(buf);
     }
 
     @Override
     public void encode(ByteBuf buf) {
-        ForgeChannel.writeStringToBuf(this.id, buf);
+        NetworkUtil.writeStringToBuf(this.id, buf);
         buf.writeLong(this.providerVersion);
-        ForgeChannel.writeStringToBuf(this.urlPattern, buf);
+        NetworkUtil.writeStringToBuf(this.urlPattern, buf);
         buf.writeInt(this.names.size());
         for (String key : this.names.keySet()) {
-            ForgeChannel.writeStringToBuf(key, buf);
-            ForgeChannel.writeStringToBuf(this.names.get(key), buf);
+            NetworkUtil.writeStringToBuf(key, buf);
+            NetworkUtil.writeStringToBuf(this.names.get(key), buf);
         }
         buf.writeInt(this.copyrights.size());
         for (String key : this.copyrights.keySet()) {
-            ForgeChannel.writeStringToBuf(key, buf);
-            ForgeChannel.writeStringToBuf(this.copyrights.get(key), buf);
+            NetworkUtil.writeStringToBuf(key, buf);
+            NetworkUtil.writeStringToBuf(this.copyrights.get(key), buf);
         }
         buf.writeInt(this.minZoom);
         buf.writeInt(this.maxZoom);
         buf.writeInt(this.displayPriority);
         buf.writeBoolean(this.isAllowedOnMinimap);
-        ForgeChannel.writeStringToBuf(this.comment, buf);
+        NetworkUtil.writeStringToBuf(this.comment, buf);
     }
 
     @Override
