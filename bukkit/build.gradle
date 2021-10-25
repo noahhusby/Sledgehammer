@@ -1,0 +1,5 @@
+dependencies {
+    implementation "net.wesjd:anvilgui:$anvilGuiVersion"
+    compileOnly "com.destroystokyo.paper:paper-api:$paperVersion"
+    compileOnly "com.github.BuildTheEarth:terraplusplus:$terraplusplusVersion"
+}

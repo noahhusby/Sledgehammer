@@ -1,0 +1,4 @@
+rootProject.name = 'sledgehammer'
+include 'common'
+include 'bungeecord'
+include 'bukkit'

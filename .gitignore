@@ -1,43 +1,98 @@
-# Created by https://www.gitignore.io/api/c++,java,linux,macos,gradle,windows,visualstudiocode
+### Intellij ###
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
+# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
-Sledgehammer [Bungeecord]\target
-Sledgehammer [Bungeecord]\.idea
-Sledgehammer [Bungeecord]\.idea
+# User-specific stuff
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
 
+# Generated files
+.idea/**/contentModel.xml
 
-### C++ ###
-# Prerequisites
-*.d
+# Sensitive or high-churn files
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+.idea/**/dbnavigator.xml
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+# Gradle
+.idea/**/gradle.xml
+.idea/**/libraries
 
-# Precompiled Headers
-*.gch
-*.pch
+.idea/artifacts
+.idea/compiler.xml
+.idea/jarRepositories.xml
+.idea/modules.xml
+.idea/*.iml
+.idea/modules
+*.iml
+*.ipr
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+# CMake
+cmake-build-*/
 
-# Fortran module files
-*.mod
-*.smod
+# Mongo Explorer plugin
+.idea/**/mongoSettings.xml
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+# File-based project format
+*.iws
 
-# Executables
-*.exe
-*.out
-*.app
+# IntelliJ
+out/
+
+# mpeltonen/sbt-idea plugin
+.idea_modules/
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+# Cursive Clojure plugin
+.idea/replstate.xml
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+# Android studio 3.1+ serialized cache file
+.idea/caches/build_file_checksums.ser
+
+### Intellij Patch ###
+# Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
+
+# *.iml
+# modules.xml
+# .idea/misc.xml
+# *.ipr
+
+# Sonarlint plugin
+# https://plugins.jetbrains.com/plugin/7973-sonarlint
+.idea/**/sonarlint/
+
+# SonarQube Plugin
+# https://plugins.jetbrains.com/plugin/7238-sonarqube-community-plugin
+.idea/**/sonarIssues.xml
+
+# Markdown Navigator plugin
+# https://plugins.jetbrains.com/plugin/7896-markdown-navigator-enhanced
+.idea/**/markdown-navigator.xml
+.idea/**/markdown-navigator-enh.xml
+.idea/**/markdown-navigator/
+
+# Cache file creation bug
+# See https://youtrack.jetbrains.com/issue/JBR-2257
+.idea/$CACHE_FILE$
+
+# CodeStream plugin
+# https://plugins.jetbrains.com/plugin/12206-codestream
+.idea/codestream.xml
 
 ### Java ###
 # Compiled class file
@@ -64,84 +119,10 @@ Sledgehammer [Bungeecord]\.idea
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-### Linux ###
-*~
-
-# temporary files which can be created if a process still has a handle open of a deleted file
-.fuse_hidden*
-
-# KDE directory preferences
-.directory
-
-# Linux trash folder which might appear on any partition or disk
-.Trash-*
-
-# .nfs files are created when an open file is removed but is still being accessed
-.nfs*
-
-### macOS ###
-# General
-.DS_Store
-.AppleDouble
-.LSOverride
-
-# Icon must end with two \r
-Icon
-
-# Thumbnails
-._*
-
-# Files that might appear in the root of a volume
-.DocumentRevisions-V100
-.fseventsd
-.Spotlight-V100
-.TemporaryItems
-.Trashes
-.VolumeIcon.icns
-.com.apple.timemachine.donotpresent
-
-# Directories potentially created on remote AFP share
-.AppleDB
-.AppleDesktop
-Network Trash Folder
-Temporary Items
-.apdisk
-
-### VisualStudioCode ###
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-
-### Windows ###
-# Windows thumbnail cache files
-Thumbs.db
-ehthumbs.db
-ehthumbs_vista.db
-
-# Dump file
-*.stackdump
-
-# Folder config file
-[Dd]esktop.ini
-
-# Recycle Bin used on file shares
-$RECYCLE.BIN/
-
-# Windows Installer files
-*.cab
-*.msi
-*.msix
-*.msm
-*.msp
-
-# Windows shortcuts
-*.lnk
-
 ### Gradle ###
 .gradle
-/build/
+build/
+\build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -155,191 +136,10 @@ gradle-app.setting
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
 
-# # VS Code Specific Java Settings
-.classpath
-.project
-.settings/
-bin/
-imgui.ini
+### Gradle Patch ###
+**/build/
 
-### Intellij+all ###
-# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
-# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
-
-# User-specific stuff
-Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/**/workspace.xml
-Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/**/tasks.xml
-Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/**/usage.statistics.xml
-Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/**/dictionaries
-Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/**/shelf
-
-# Generated files
-Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/**/contentModel.xml
-
-# Sensitive or high-churn files
-Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/**/dataSources/
-Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/**/dataSources.ids
-Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/**/dataSources.local.xml
-Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/**/sqlDataSources.xml
-Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/**/dynamic.xml
-Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/**/uiDesigner.xml
-Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/**/dbnavigator.xml
-
-# Gradle
-Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/**/gradle.xml
-Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/**/libraries
-
-# Gradle and Maven with auto-import
-# When using Gradle or Maven with auto-import, you should exclude module files,
-# since they will be recreated, and may cause churn.  Uncomment if using
-# auto-import.
-# Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/artifacts
-# Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/compiler.xml
-# Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/jarRepositories.xml
-# Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/modules.xml
-# Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/*.iml
-# Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/modules
-# *.iml
-# *.ipr
-
-# CMake
-cmake-build-*/
-
-# Mongo Explorer plugin
-Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/**/mongoSettings.xml
-
-# File-based project format
-*.iws
-
-# IntelliJ
-out/
-
-# mpeltonen/sbt-idea plugin
-Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea_modules/
-
-# JIRA plugin
-atlassian-ide-plugin.xml
-
-# Cursive Clojure plugin
-Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/replstate.xml
-
-# Crashlytics plugin (for Android Studio and IntelliJ)
-com_crashlytics_export_strings.xml
-crashlytics.properties
-crashlytics-build.properties
-fabric.properties
-
-# Editor-based Rest Client
-Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/httpRequests
-
-# Android studio 3.1+ serialized cache file
-Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/caches/build_file_checksums.ser
-
-### Intellij+all Patch ###
-# Ignores the whole Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea folder and all .iml files
-# See https://github.com/joeblau/gitignore.io/issues/186 and https://github.com/joeblau/gitignore.io/issues/360
-
-Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/
-
-# Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-249601023
-
-*.iml
-modules.xml
-Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/misc.xml
-*.ipr
-
-# Sonarlint plugin
-Sledgehammer [Bukkit]\Sledgehammer [Bukkit]\.idea/sonarlint
-
-
-### Intellij+all ###
-# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
-# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
-
-# User-specific stuff
-Sledgehammer [Bungeecord]\.idea/**/workspace.xml
-Sledgehammer [Bungeecord]\.idea/**/tasks.xml
-Sledgehammer [Bungeecord]\.idea/**/usage.statistics.xml
-Sledgehammer [Bungeecord]\.idea/**/dictionaries
-Sledgehammer [Bungeecord]\.idea/**/shelf
-
-# Generated files
-Sledgehammer [Bungeecord]\.idea/**/contentModel.xml
-
-# Sensitive or high-churn files
-Sledgehammer [Bungeecord]\.idea/**/dataSources/
-Sledgehammer [Bungeecord]\.idea/**/dataSources.ids
-Sledgehammer [Bungeecord]\.idea/**/dataSources.local.xml
-Sledgehammer [Bungeecord]\.idea/**/sqlDataSources.xml
-Sledgehammer [Bungeecord]\.idea/**/dynamic.xml
-Sledgehammer [Bungeecord]\.idea/**/uiDesigner.xml
-Sledgehammer [Bungeecord]\.idea/**/dbnavigator.xml
-
-# Gradle
-Sledgehammer [Bungeecord]\.idea/**/gradle.xml
-Sledgehammer [Bungeecord]\.idea/**/libraries
-
-# Gradle and Maven with auto-import
-# When using Gradle or Maven with auto-import, you should exclude module files,
-# since they will be recreated, and may cause churn.  Uncomment if using
-# auto-import.
-# Sledgehammer [Bungeecord]\.idea/artifacts
-# Sledgehammer [Bungeecord]\.idea/compiler.xml
-# Sledgehammer [Bungeecord]\.idea/jarRepositories.xml
-# Sledgehammer [Bungeecord]\.idea/modules.xml
-# Sledgehammer [Bungeecord]\.idea/*.iml
-# Sledgehammer [Bungeecord]\.idea/modules
-# *.iml
-# *.ipr
-
-# CMake
-cmake-build-*/
-
-# Mongo Explorer plugin
-Sledgehammer [Bungeecord]\.idea/**/mongoSettings.xml
-
-# File-based project format
-*.iws
-
-# IntelliJ
-out/
-
-# mpeltonen/sbt-idea plugin
-Sledgehammer [Bungeecord]\.idea_modules/
-
-# JIRA plugin
-atlassian-ide-plugin.xml
-
-# Cursive Clojure plugin
-Sledgehammer [Bungeecord]\.idea/replstate.xml
-
-# Crashlytics plugin (for Android Studio and IntelliJ)
-com_crashlytics_export_strings.xml
-crashlytics.properties
-crashlytics-build.properties
-fabric.properties
-
-# Editor-based Rest Client
-Sledgehammer [Bungeecord]\.idea/httpRequests
-
-# Android studio 3.1+ serialized cache file
-Sledgehammer [Bungeecord]\.idea/caches/build_file_checksums.ser
-
-### Intellij+all Patch ###
-# Ignores the whole Sledgehammer [Bungeecord]\.idea folder and all .iml files
-# See https://github.com/joeblau/gitignore.io/issues/186 and https://github.com/joeblau/gitignore.io/issues/360
-
-Sledgehammer [Bungeecord]\.idea/
-
-# Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-249601023
-
-*.iml
-modules.xml
-Sledgehammer [Bungeecord]\.idea/misc.xml
-*.ipr
-
-# Sonarlint plugin
-Sledgehammer [Bungeecord]\.idea/sonarlint
-
-
+# End of https://www.toptal.com/developers/gitignore/api/java,intellij,gradle
 # End of https://www.gitignore.io/api/c++,java,linux,macos,gradle,windows,visualstudiocode
+/bungeecord/src/main/java/com/noahhusby/sledgehammer/proxy/btenet/
+/.idea/

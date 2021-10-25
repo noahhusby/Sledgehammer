@@ -1,0 +1,10 @@
+main: com.noahhusby.sledgehammer.server.Sledgehammer
+name: Sledgehammer
+version: 0.5
+prefix: Sledgehammer
+authors: [ noahhusby ]
+website: https://github.com/noahhusby/sledgehammer
+commands:
+  shs:
+    description: Fetch the current Sledgehammer version
+    usage: /shs

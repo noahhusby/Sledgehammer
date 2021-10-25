@@ -1,9 +1,6 @@
 ---
-name: Bug report
-about: File a bug report
-title: "[BUG] Simple title for issue"
-labels: bug
-assignees: ''
+name: Bug report about: File a bug report title: "[BUG] Simple title for issue"
+labels: bug assignees: ''
 
 ---
 
@@ -11,8 +8,8 @@ assignees: ''
 A clear and concise description of what the bug is.
 
 **To Reproduce**
-Describe the steps it takes to reproduce the bug
-Example:
+Describe the steps it takes to reproduce the bug Example:
+
 1. Join the game
 2. Teleport to `server1`
 3. Execute command `/sha ...`
@@ -28,8 +25,10 @@ If applicable, add screenshots to help explain your problem.
 If applicable, paste your server logs into `https://mclo.gs/` and include the link here.
 
 **Sledgehammer Bungeecord (please complete the following information):**
- - Version: [e.g. 0.4.0]
+
+- Version: [e.g. 0.4.0]
 
 **Sledgehammer Bukkit (please complete the following information):**
- - Version: [e.g. 0.4.0]
- - Server Backend: [e.g. Paper, Spigot, Mohist, etc.]
+
+- Version: [e.g. 0.4.0]
+- Server Backend: [e.g. Paper, Spigot, Mohist, etc.]

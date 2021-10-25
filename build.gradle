@@ -1,0 +1,67 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.0'
+}
+
+allprojects {
+    apply plugin: "java"
+
+    ext {
+        sledgehammerVersion = "0.5." + ('git rev-list --count HEAD'.execute().text.trim())
+
+        gsonVersion = "2.8.0"
+        hikariVersion = "4.0.3"
+        lombokVersion = "1.18.22"
+        husbyVersion = "9298199ab9"
+        guavaVersion = "31.0.1-jre"
+        anvilGuiVersion = "1.5.3-SNAPSHOT"
+        paperVersion = "1.12.2-R0.1-SNAPSHOT"
+        bungeecordVersion = "1.17-R0.1-SNAPSHOT"
+        terraplusplusVersion = "74449c4af349fd9b77b10e1041ed2c09f2d78518"
+    }
+
+    group "com.noahhusby"
+    version "$sledgehammerVersion"
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+
+    repositories {
+        mavenCentral()
+        maven { url 'https://papermc.io/repo/repository/maven-public/' }
+        maven { url 'https://repo.codemc.io/repository/maven-snapshots' }
+        maven { url 'https://jitpack.io/' }
+        maven { url 'https://maven.daporkchop.net/'}
+    }
+
+    dependencies {
+        if (!("common".equalsIgnoreCase(project.name))) {
+            implementation project(":common")
+        }
+
+        implementation "com.github.noahhusby.HusbyLib:data:$husbyVersion"
+
+        compileOnly "org.projectlombok:lombok:$lombokVersion"
+        testCompileOnly "org.projectlombok:lombok:$lombokVersion"
+        annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+        testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
+    }
+}
+
+dependencies {
+    for (Project prj : project.allprojects) {
+        if (!"sledgehammer".equalsIgnoreCase(prj.name) && prj.parent.name.equalsIgnoreCase("sledgehammer")) {
+            implementation project(":" + prj.name)
+        }
+    }
+}
+
+shadowJar {
+    archiveFileName = "Sledgehammer-${version}.jar"
+    manifest {
+        attributes( 'Implementation-Version': "${version}" )
+    }
+}
+
+build.dependsOn shadowJar
