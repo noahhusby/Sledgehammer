@@ -10,7 +10,7 @@ allprojects {
         sledgehammerVersion = "0.5." + ('git rev-list --count HEAD'.execute().text.trim())
 
         gsonVersion = "2.8.0"
-        hikariVersion = "4.0.3"
+        hikariVersion = "5.0.0"
         lombokVersion = "1.18.22"
         husbyVersion = "0.1.89"
         guavaVersion = "31.0.1-jre"
