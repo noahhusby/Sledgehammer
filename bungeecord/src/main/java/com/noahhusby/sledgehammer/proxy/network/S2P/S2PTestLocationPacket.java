@@ -22,7 +22,7 @@ import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
-import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
+import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.datasets.Location;
 import com.noahhusby.sledgehammer.proxy.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.proxy.network.PacketInfo;
@@ -111,7 +111,7 @@ public class S2PTestLocationPacket extends S2PPacket {
 
                 player.sendMessage(text);
             }
-            if (!ConfigHandler.useOfflineMode) {
+            if (!SledgehammerConfig.geography.useOfflineMode) {
                 player.sendMessage(ChatUtil.combine(ChatColor.RED, "Offline: ", ChatColor.DARK_RED, "Disabled"));
             } else {
                 Location offline = OpenStreetMaps.getInstance().getOfflineLocation(proj[0], proj[1]);

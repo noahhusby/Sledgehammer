@@ -25,12 +25,14 @@ import com.noahhusby.sledgehammer.common.warps.Page;
 import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.common.warps.Warp;
 import com.noahhusby.sledgehammer.common.warps.WarpConfigPayload;
+import com.noahhusby.sledgehammer.common.warps.WarpGroup;
 import com.noahhusby.sledgehammer.common.warps.WarpGroupPayload;
+import com.noahhusby.sledgehammer.common.warps.WarpGroupType;
 import com.noahhusby.sledgehammer.common.warps.WarpPayload;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
-import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
+import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
 import com.noahhusby.sledgehammer.proxy.network.P2S.P2SSetwarpPacket;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
@@ -172,7 +174,7 @@ public class WarpHandler {
     public WarpStatus getWarpStatus(String warpName, String server) {
         WarpGroup serverWarpGroup = warpGroupByServer.get(server);
         for (Warp w : warps.values()) {
-            if (w.getName().equalsIgnoreCase(warpName) && (!ConfigHandler.localWarp || (serverWarpGroup != null && serverWarpGroup.getServers().contains(w.getServer())))) {
+            if (w.getName().equalsIgnoreCase(warpName) && (!SledgehammerConfig.warps.localWarp || (serverWarpGroup != null && serverWarpGroup.getServers().contains(w.getServer())))) {
                 return getWarpStatus(w.getId(), server);
             }
         }
@@ -181,7 +183,7 @@ public class WarpHandler {
     }
 
     public WarpStatus getWarpStatus(int warpId, String server) {
-        boolean local = ConfigHandler.localWarp;
+        boolean local = SledgehammerConfig.warps.localWarp;
         Warp warp = warps.get(warpId);
         if (warp == null) {
             return WarpStatus.AVAILABLE;
@@ -207,14 +209,14 @@ public class WarpHandler {
         boolean first = true;
         for (Warp w : warps.values()) {
             if (!(w.getServer().equalsIgnoreCase(server) || w.isGlobal() ||
-                  !ConfigHandler.localWarp)) {
+                  !SledgehammerConfig.warps.localWarp)) {
                 continue;
             }
             if (first) {
                 TextComponent t = new TextComponent(w.getName());
                 t.setColor(ChatColor.BLUE);
                 t.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/%s %s",
-                        ConfigHandler.warpCommand, w.getName())));
+                        SledgehammerConfig.warps.warpCommand, w.getName())));
                 t.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                         new Text("Click to warp to " + w.getName())));
                 list.addExtra(t);
@@ -224,7 +226,7 @@ public class WarpHandler {
                 TextComponent t = new TextComponent(w.getName());
                 t.setColor(ChatColor.BLUE);
                 t.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/%s %s",
-                        ConfigHandler.warpCommand, w.getName())));
+                        SledgehammerConfig.warps.warpCommand, w.getName())));
                 t.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                         new Text("Click to warp to " + w.getName())));
                 list.addExtra(t);
@@ -247,36 +249,36 @@ public class WarpHandler {
             return null;
         }
 
-        boolean local = ConfigHandler.localWarp;
+        boolean local = SledgehammerConfig.warps.localWarp;
         Page page = Page.ALL;
         String localGroup = null;
-        if(player.getAttributes().containsKey("WARP_SORT")) {
+        if (player.getAttributes().containsKey("WARP_SORT")) {
             if (player.checkAttribute("WARP_SORT", Page.GROUPS.name())) {
                 page = Page.LOCAL_GROUP;
-            } else if(player.checkAttribute("WARP_SORT", Page.SERVERS.name())) {
+            } else if (player.checkAttribute("WARP_SORT", Page.SERVERS.name())) {
                 page = Page.SERVERS;
             }
         } else {
-            if(ConfigHandler.warpMenuPage.equalsIgnoreCase("local")) {
+            if (SledgehammerConfig.warps.warpMenuPage.equalsIgnoreCase("local")) {
                 page = Page.LOCAL_GROUP;
-            } else if(ConfigHandler.warpMenuPage.equalsIgnoreCase("servers")) {
+            } else if (SledgehammerConfig.warps.warpMenuPage.equalsIgnoreCase("servers")) {
                 page = Page.SERVERS;
-            } else if(ConfigHandler.warpMenuPage.equalsIgnoreCase("groups")) {
+            } else if (SledgehammerConfig.warps.warpMenuPage.equalsIgnoreCase("groups")) {
                 page = Page.GROUPS;
             }
         }
 
-        if(page == Page.LOCAL_GROUP) {
+        if (page == Page.LOCAL_GROUP) {
             WarpGroup warpGroup = warpGroupByServer.get(s.getName());
-            if(warpGroup == null) {
-                for(Warp warp : warps.values()) {
-                    if(warp.getServer().equalsIgnoreCase(s.getName())) {
+            if (warpGroup == null) {
+                for (Warp warp : warps.values()) {
+                    if (warp.getServer().equalsIgnoreCase(s.getName())) {
                         localGroup = s.getName();
                         page = Page.LOCAL_SERVER;
                         break;
                     }
                 }
-                if(page != Page.LOCAL_SERVER) {
+                if (page != Page.LOCAL_SERVER) {
                     page = Page.GROUPS;
                 }
             } else {
@@ -285,15 +287,15 @@ public class WarpHandler {
         }
 
         Map<String, WarpGroupPayload> groups = Maps.newHashMap();
-        for(Map.Entry<String, WarpGroup> group : warpGroups.entrySet()) {
-            groups.put(group.getKey(), group.getValue().toPayload());
+        for (Map.Entry<String, WarpGroup> group : warpGroups.entrySet()) {
+            groups.put(group.getKey(), toPayload(group.getValue()));
         }
 
         Map<Integer, Warp> warps = Maps.newHashMap();
         Map<String, List<Integer>> servers = Maps.newHashMap();
-        for(Warp warp : this.warps.values()) {
+        for (Warp warp : this.warps.values()) {
             warps.put(warp.getId(), warp.toWaypoint());
-            if(!servers.containsKey(warp.getServer())) {
+            if (!servers.containsKey(warp.getServer())) {
                 servers.put(warp.getServer(), Lists.newArrayList(warp.getId()));
             } else {
                 servers.get(warp.getServer()).add(warp.getId());
@@ -316,16 +318,16 @@ public class WarpHandler {
         }
         String requestGroup = null;
         WarpGroup group = warpGroupByServer.get(s.getServerInfo().getName());
-        if(group != null) {
+        if (group != null) {
             requestGroup = group.getId();
         }
         Map<String, List<Integer>> servers = Maps.newHashMap();
         Map<Integer, Warp> waypoints = Maps.newHashMap();
-        for(Warp warp : warps.values()) {
-            if(!admin && !((group != null && group.getServers().contains(warp.getServer())) || s.getName().equalsIgnoreCase(warp.getServer()))) {
+        for (Warp warp : warps.values()) {
+            if (!admin && !((group != null && group.getServers().contains(warp.getServer())) || s.getName().equalsIgnoreCase(warp.getServer()))) {
                 continue;
             }
-            if(!servers.containsKey(warp.getServer())) {
+            if (!servers.containsKey(warp.getServer())) {
                 servers.put(warp.getServer(), Lists.newArrayList(warp.getId()));
             } else {
                 servers.get(warp.getServer()).add(warp.getId());
@@ -333,16 +335,35 @@ public class WarpHandler {
             waypoints.put(warp.getId(), warp.toWaypoint());
         }
         Map<String, WarpGroupPayload> groupPayload = Maps.newHashMap();
-        if(admin) {
+        if (admin) {
             Map<String, WarpGroupPayload> temp = Maps.newHashMap();
-            for(Map.Entry<String, WarpGroup> g : warpGroups.entrySet()) {
-                temp.put(g.getKey(), g.getValue().toPayload());
+            for (Map.Entry<String, WarpGroup> g : warpGroups.entrySet()) {
+                temp.put(g.getKey(), toPayload(g.getValue()));
             }
             groupPayload = temp;
-        } else if(group != null){
-            groupPayload.put(group.getId(), group.toPayload());
+        } else if (group != null) {
+            groupPayload.put(group.getId(), toPayload(group));
         }
-        return new WarpConfigPayload(ConfigHandler.localWarp, admin, requestGroup, player.trackAction(), waypoints, groupPayload, servers);
+        return new WarpConfigPayload(SledgehammerConfig.warps.localWarp, admin, requestGroup, player.trackAction(), waypoints, groupPayload, servers);
+    }
+
+    public WarpGroupPayload toPayload(WarpGroup group) {
+        List<Integer> payloadWarps = Lists.newArrayList();
+        if (group.getType() == WarpGroupType.GROUP) {
+            for (Integer warpId : group.getWarps()) {
+                Warp warp = WarpHandler.getInstance().getWarp(warpId);
+                if (warp != null) {
+                    payloadWarps.add(warpId);
+                }
+            }
+        } else {
+            for (Warp warp : WarpHandler.getInstance().getWarps().values()) {
+                if (group.getServers().contains(warp.getServer())) {
+                    payloadWarps.add(warp.getId());
+                }
+            }
+        }
+        return new WarpGroupPayload(group.getId(), group.getName(), group.getHeadId(), payloadWarps);
     }
 
     /**
@@ -351,7 +372,7 @@ public class WarpHandler {
      * @return New ID
      */
     private int generateWarpID() {
-        if (ConfigHandler.proxyTotal != -1) {
+        if (SledgehammerConfig.general.proxyTotal != -1) {
             return generateMultiWarpID();
         }
         int x = -1;
@@ -370,7 +391,7 @@ public class WarpHandler {
      * @return New ID
      */
     private int generateMultiWarpID() {
-        int i = ConfigHandler.proxyId;
+        int i = SledgehammerConfig.general.proxyId;
         int min = i * Constants.warpIdBuffer;
         int max = (min + Constants.warpIdBuffer) - 1;
         while (true) {
@@ -380,7 +401,7 @@ public class WarpHandler {
                 }
             }
 
-            i += (ConfigHandler.proxyTotal + 1);
+            i += (SledgehammerConfig.general.proxyTotal + 1);
             min = i * Constants.warpIdBuffer;
             max = (min + Constants.warpIdBuffer) - 1;
         }
@@ -388,8 +409,8 @@ public class WarpHandler {
 
     private void refreshWarpGroupCache() {
         TreeMap<String, WarpGroup> temp = Maps.newTreeMap(String.CASE_INSENSITIVE_ORDER);
-        for(WarpGroup group : warpGroups.values()) {
-            for(String server : group.getServers()) {
+        for (WarpGroup group : warpGroups.values()) {
+            for (String server : group.getServers()) {
                 temp.put(server, group);
             }
         }

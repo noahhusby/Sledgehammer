@@ -20,7 +20,7 @@ package com.noahhusby.sledgehammer.proxy.network.P2S;
 
 import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.proxy.Constants;
-import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
+import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.network.P2SPacket;
 import com.noahhusby.sledgehammer.proxy.network.PacketInfo;
 
@@ -34,7 +34,7 @@ public class P2STestLocationPacket extends P2SPacket {
         this.sender = sender;
         this.zoom = zoom;
         if (zoom == -1) {
-            this.zoom = ConfigHandler.zoom;
+            this.zoom = SledgehammerConfig.geography.zoom;
         }
     }
 

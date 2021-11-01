@@ -1,7 +1,7 @@
 package com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync;
 
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
-import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
+import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.terramap.network.ForgeChannel;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.IForgePacket;
@@ -14,7 +14,7 @@ import net.md_5.bungee.chat.ComponentSerializer;
 /**
  * Sent at regular intervals to players that registered with a {@link C2PRegisterForUpdatePacket}.
  * Contains the display name (JSON formatted), uuid, longitude, latitude, Azimuth and gamemode.
- * The interval at which packets are sent can be configured in {@link ConfigHandler#terramapSyncInterval}
+ * The interval at which packets are sent can be configured in {@link SledgehammerConfig.TerramapOptions#terramapSyncInterval}
  *
  * @author SmylerMC
  * @see com.noahhusby.sledgehammer.proxy.terramap.RemoteSynchronizer
@@ -68,13 +68,13 @@ public class P2CPlayerSyncPacket implements IForgePacket {
     @Override
     public boolean processFromServer(String channel, Server fromServer, ProxiedPlayer toPlayer) {
         // We will never receive this here
-        return ConfigHandler.terramapSyncPlayers;
+        return SledgehammerConfig.terramap.terramapSyncPlayers;
     }
 
     @Override
     public boolean processFromClient(String channel, ProxiedPlayer fromPlayer, Server toServer) {
         // We will never receive this here
-        return ConfigHandler.terramapSyncPlayers;
+        return SledgehammerConfig.terramap.terramapSyncPlayers;
     }
 
 }

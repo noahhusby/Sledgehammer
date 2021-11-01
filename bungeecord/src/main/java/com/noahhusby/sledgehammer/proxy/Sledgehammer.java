@@ -26,6 +26,7 @@ import com.noahhusby.sledgehammer.proxy.commands.TpllCommand;
 import com.noahhusby.sledgehammer.proxy.commands.TplloCommand;
 import com.noahhusby.sledgehammer.proxy.commands.WarpCommand;
 import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
+import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.proxy.modules.ModuleHandler;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
@@ -61,7 +62,7 @@ public class Sledgehammer extends Plugin implements Listener {
         ModuleHandler.getInstance().registerModules(PlayerHandler.getInstance(), NetworkHandler.getInstance(), OpenStreetMaps.getInstance());
         ConfigHandler.getInstance().load();
 
-        if (!ConfigHandler.getInstance().isAuthCodeConfigured()) {
+        if (!ConfigHandler.getInstance().isAuthenticationConfigured()) {
             ChatUtil.sendMessageBox(ProxyServer.getInstance().getConsole(), ChatColor.DARK_RED + "WARNING", ChatUtil.combine(ChatColor.RED,
                     "The sledgehammer authentication code is not configured, or is configured incorrectly.\n" +
                     "Please generate a valid authentication code using https://www.uuidgenerator.net/version4\n"
@@ -70,27 +71,27 @@ public class Sledgehammer extends Plugin implements Listener {
         }
 
         // Manual module handling
-        if (ConfigHandler.terramapEnabled && (TerramapAddon.instance == null || !ModuleHandler.getInstance().getModules().containsKey(TerramapAddon.instance))) {
+        if (SledgehammerConfig.terramap.terramapEnabled && (TerramapAddon.instance == null || !ModuleHandler.getInstance().getModules().containsKey(TerramapAddon.instance))) {
             ModuleHandler.getInstance().registerModule(new TerramapAddon());
             ModuleHandler.getInstance().enable(TerramapAddon.instance);
-        } else if (ConfigHandler.terramapEnabled) {
+        } else if (SledgehammerConfig.terramap.terramapEnabled) {
             ModuleHandler.getInstance().enable(TerramapAddon.instance);
         } else if (TerramapAddon.instance != null && ModuleHandler.getInstance().getModules().containsKey(TerramapAddon.instance)) {
             ModuleHandler.getInstance().disable(TerramapAddon.instance);
             ModuleHandler.getInstance().unregisterModule(TerramapAddon.instance);
         }
 
-        if (!ConfigHandler.warpCommand.equals("")) {
-            ProxyServer.getInstance().getPluginManager().registerCommand(this, new WarpCommand(ConfigHandler.warpCommand));
+        if (!SledgehammerConfig.warps.warpCommand.equals("")) {
+            ProxyServer.getInstance().getPluginManager().registerCommand(this, new WarpCommand(SledgehammerConfig.warps.warpCommand));
         }
 
-        if (ConfigHandler.globalTpll) {
+        if (SledgehammerConfig.general.globalTpll) {
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new TpllCommand());
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new TplloCommand());
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new CsTpllCommand());
         }
 
-        if (ConfigHandler.borderTeleportation) {
+        if (SledgehammerConfig.geography.borderTeleportation) {
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new BorderCommand());
             ProxyServer.getInstance().getScheduler().schedule(this, new BorderCheckerThread(), 0, 10, TimeUnit.SECONDS);
             ProxyServer.getInstance().getScheduler().schedule(this, new FlaggedBorderCheckerThread(), 0, 10, TimeUnit.SECONDS);

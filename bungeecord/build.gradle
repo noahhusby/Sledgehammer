@@ -1,5 +1,6 @@
 dependencies {
     implementation "com.zaxxer:HikariCP:$hikariVersion"
+    implementation "com.noahhusby.lib:application:$husbyVersion"
     compileOnly "com.google.guava:guava:$guavaVersion"
     compileOnly "net.md-5:bungeecord-api:$bungeecordVersion"
 }

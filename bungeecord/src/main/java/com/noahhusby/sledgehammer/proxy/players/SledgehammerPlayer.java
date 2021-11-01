@@ -531,7 +531,7 @@ public class SledgehammerPlayer implements ProxiedPlayer {
         if (!onSledgehammer()) {
             permissionFuture.complete(new Permission(permission, this, global, false));
         }
-        if(!permissionRequest.getFuture().isDone()) {
+        if (!permissionRequest.getFuture().isDone()) {
             NetworkHandler.getInstance().send(new P2SPermissionPacket(player.getServer().getInfo(), this, permission, trackAction()));
         }
         ProxyServer.getInstance().getScheduler().schedule(Sledgehammer.getInstance(), () -> {

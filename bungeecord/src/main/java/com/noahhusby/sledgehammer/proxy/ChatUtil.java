@@ -1,6 +1,6 @@
 package com.noahhusby.sledgehammer.proxy;
 
-import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
+import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
@@ -20,7 +20,7 @@ public class ChatUtil {
             ChatColor.BLUE, " /sha server <server name> setearth true ", ChatColor.GRAY, "to enable it.");
 
     public static TextComponent title() {
-        return new TextComponent(ConfigHandler.messagePrefix.replace("&", "\u00A7"));
+        return new TextComponent(SledgehammerConfig.general.messagePrefix.replace("&", "\u00A7"));
     }
 
     public static TextComponent adminTitle() {
@@ -101,7 +101,7 @@ public class ChatUtil {
     }
 
     public static TextComponent getNotAvailable() {
-        return combine(ConfigHandler.replaceNotAvailable ? (ChatColor.WHITE + "Unknown command. Type \"/help\" for help.") :
+        return combine(SledgehammerConfig.general.replaceNotAvailable ? (ChatColor.WHITE + "Unknown command. Type \"/help\" for help.") :
                 (ChatColor.RED + "That command is not available."));
     }
 

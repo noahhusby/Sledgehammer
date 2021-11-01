@@ -19,6 +19,7 @@
 package com.noahhusby.sledgehammer.proxy.commands;
 
 import com.noahhusby.sledgehammer.common.warps.Warp;
+import com.noahhusby.sledgehammer.common.warps.WarpGroup;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.warps.WarpFragmentManager;
@@ -26,16 +27,14 @@ import com.noahhusby.sledgehammer.proxy.commands.fragments.warps.WarpListFragmen
 import com.noahhusby.sledgehammer.proxy.commands.fragments.warps.WarpMenuFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.warps.WarpRemoveFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.warps.WarpSetFragment;
-import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
+import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
 import com.noahhusby.sledgehammer.proxy.network.P2S.P2STeleportPacket;
 import com.noahhusby.sledgehammer.proxy.network.P2S.P2SWarpGUIPacket;
 import com.noahhusby.sledgehammer.proxy.players.Permission;
 import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
-import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
-import com.noahhusby.sledgehammer.proxy.warp.WarpGroup;
 import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -84,7 +83,7 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
 
     private void run(CommandSender sender, String[] args) {
         if (args.length == 0) {
-            if (ConfigHandler.warpMenuDefault) {
+            if (SledgehammerConfig.warps.warpMenuDefault) {
                 SledgehammerServer server = SledgehammerPlayer.getPlayer(sender).getSledgehammerServer();
                 boolean openGUI = (server != null);
 
@@ -101,9 +100,9 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
                 }
             }
 
-            sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, String.format("Usage: /%s <warp>", ConfigHandler.warpCommand)));
+            sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, String.format("Usage: /%s <warp>", SledgehammerConfig.warps.warpCommand)));
             sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Use ", ChatColor.BLUE,
-                    String.format("/%s list", ConfigHandler.warpCommand), ChatColor.GRAY, " to see the available warps."));
+                    String.format("/%s list", SledgehammerConfig.warps.warpCommand), ChatColor.GRAY, " to see the available warps."));
             return;
         }
 
@@ -124,7 +123,7 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
 
         List<Warp> warps = new ArrayList<>();
         for (Warp w : WarpHandler.getInstance().getWarps().values()) {
-            if (w.isGlobal() || !ConfigHandler.localWarp
+            if (w.isGlobal() || !SledgehammerConfig.warps.localWarp
                 || w.getServer().equalsIgnoreCase(SledgehammerUtil.getServerFromSender(sender).getName())) {
                 warps.add(w);
             }

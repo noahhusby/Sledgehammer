@@ -18,10 +18,10 @@
 
 package com.noahhusby.sledgehammer.proxy.commands.fragments.admin.groups;
 
+import com.noahhusby.sledgehammer.common.warps.WarpGroup;
+import com.noahhusby.sledgehammer.common.warps.WarpGroupType;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.proxy.warp.WarpGroup;
-import com.noahhusby.sledgehammer.proxy.warp.WarpGroupType;
 import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -47,7 +47,7 @@ public class GroupSetTypeFragment implements ICommandFragment {
             return;
         }
 
-        if(type.equalsIgnoreCase("group") || type.equalsIgnoreCase("server")) {
+        if (type.equalsIgnoreCase("group") || type.equalsIgnoreCase("server")) {
             WarpGroupType warpGroupType = WarpGroupType.valueOf(type.toUpperCase(Locale.ROOT));
             sender.sendMessage(ChatUtil.getValueMessage("type", warpGroupType.name(), group.getId()));
             group.setType(warpGroupType);

@@ -1,7 +1,7 @@
 package com.noahhusby.sledgehammer.proxy.terramap;
 
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
-import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
+import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync.P2CPlayerSyncPacket;
@@ -54,14 +54,14 @@ public class RemoteSynchronizer {
             P2CPlayerSyncPacket pkt = new P2CPlayerSyncPacket(playersToSend.toArray(new SledgehammerPlayer[0]));
             TerramapAddon.instance.mapSyncChannel.send(pkt, players2send2);
             for (RegisteredForUpdatePlayer player : this.playersToUpdate.values()) {
-                if (ctime - player.lastRegisterTime > ConfigHandler.terramapSyncTimeout - 10000 && !player.noticeSent) {
+                if (ctime - player.lastRegisterTime > SledgehammerConfig.terramap.terramapSyncTimeout - 10000 && !player.noticeSent) {
                     Sledgehammer.logger.fine("Sending registration expires notice to " + player.player.getName());
                     TerramapAddon.instance.mapSyncChannel.send(new P2CRegistrationExpiresPacket(), player.player);
                     player.noticeSent = true;
                 }
             }
             for (RegisteredForUpdatePlayer player : this.playersToUpdate.values()) {
-                if (ctime - player.lastRegisterTime > ConfigHandler.terramapSyncTimeout) {
+                if (ctime - player.lastRegisterTime > SledgehammerConfig.terramap.terramapSyncTimeout) {
                     Sledgehammer.logger.fine("Unregistering " + player.player.getName() + " from map update as it did not renew its registration");
                     this.playersToUpdate.remove(player.player.getUniqueId());
                     TerramapAddon.instance.mapSyncChannel.send(new P2CRegistrationExpiresPacket(), player.player);

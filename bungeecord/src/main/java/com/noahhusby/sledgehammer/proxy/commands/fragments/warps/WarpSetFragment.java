@@ -20,7 +20,7 @@ package com.noahhusby.sledgehammer.proxy.commands.fragments.warps;
 
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
+import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.players.Permission;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
@@ -37,7 +37,7 @@ public class WarpSetFragment implements ICommandFragment {
         permissionFuture.thenAccept(permission -> {
             if (permission.isLocal()) {
                 if (args.length == 0) {
-                    sender.sendMessage(ChatUtil.combine(ChatColor.RED, String.format("Usage: /%s set <name>", ConfigHandler.warpCommand)));
+                    sender.sendMessage(ChatUtil.combine(ChatColor.RED, String.format("Usage: /%s set <name>", SledgehammerConfig.warps.warpCommand)));
                     return;
                 }
                 WarpHandler.WarpStatus warpStatus = WarpHandler.getInstance().getWarpStatus(args[0], player.getServer().getInfo().getName());

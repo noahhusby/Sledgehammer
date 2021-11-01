@@ -19,7 +19,7 @@
 package com.noahhusby.sledgehammer.proxy.terramap;
 
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
-import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
+import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.modules.Module;
 import com.noahhusby.sledgehammer.proxy.terramap.TerramapVersion.ReleaseType;
 import com.noahhusby.sledgehammer.proxy.terramap.commands.TerrashowCommand;
@@ -77,14 +77,14 @@ public class TerramapAddon implements Module, Listener {
         this.sledgehammerChannel.registerPacket(0, P2CSledgehammerHelloPacket.class);
         this.sledgehammerChannel.registerPacket(2, P2CMapStylePacket.class);
         try {
-            this.proxyUUID = UUID.fromString(ConfigHandler.terramapProxyUUID);
+            this.proxyUUID = UUID.fromString(SledgehammerConfig.terramap.terramapProxyUUID);
         } catch (IllegalArgumentException e) {
             Sledgehammer.logger.warning("Failed to parse Terramap proxy uuid. Will be using 0.");
         }
         this.listener = new TerramapAddonEventHandler();
         Sledgehammer.addListener(this.listener);
-        if (ConfigHandler.terramapSyncPlayers) {
-            this.syncTask = Sledgehammer.getInstance().getProxy().getScheduler().schedule(Sledgehammer.getInstance(), this.synchronizer::syncPlayers, 0, ConfigHandler.terramapSyncInterval, TimeUnit.MILLISECONDS);
+        if (SledgehammerConfig.terramap.terramapSyncPlayers) {
+            this.syncTask = Sledgehammer.getInstance().getProxy().getScheduler().schedule(Sledgehammer.getInstance(), this.synchronizer::syncPlayers, 0, SledgehammerConfig.terramap.terramapSyncInterval, TimeUnit.MILLISECONDS);
         }
         ProxyServer.getInstance().getPluginManager().registerCommand(Sledgehammer.getInstance(), new TerrashowCommand());
     }

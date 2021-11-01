@@ -16,7 +16,7 @@
  *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
-package com.noahhusby.sledgehammer.proxy.warp;
+package com.noahhusby.sledgehammer.common.warps;
 
 /**
  * @author Noah Husby

@@ -1,6 +1,6 @@
 package com.noahhusby.sledgehammer.proxy.terramap;
 
-import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
+import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.P2CMapStylePacket;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.P2CSledgehammerHelloPacket;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync.PlayerSyncStatus;
@@ -31,18 +31,18 @@ public class TerramapAddonEventHandler implements Listener {
         }
 
         String version = ProxyServer.getInstance().getPluginManager().getPlugin("Sledgehammer").getDescription().getVersion();
-        boolean playerSync = ConfigHandler.terramapSyncPlayers && RemoteSynchronizer.hasSyncPermission(event.getPlayer());
+        boolean playerSync = SledgehammerConfig.terramap.terramapSyncPlayers && RemoteSynchronizer.hasSyncPermission(event.getPlayer());
         PlayerSyncStatus syncStatus = PlayerSyncStatus.getFromBoolean(playerSync);
         TerramapAddon.instance.sledgehammerChannel.send(new P2CSledgehammerHelloPacket(
                 version,
                 syncStatus,
                 syncStatus,
-                ConfigHandler.terramapGlobalMap,
-                ConfigHandler.terramapGlobalSettings,
+                SledgehammerConfig.terramap.terramapGlobalMap,
+                SledgehammerConfig.terramap.terramapGlobalSettings,
                 false, // We do not have warp support yet
                 TerramapAddon.instance.getProxyUUID()
         ), event.getPlayer());
-        if (ConfigHandler.terramapSendCustomMapsToClient) {
+        if (SledgehammerConfig.terramap.terramapSendCustomMapsToClient) {
             for (P2CMapStylePacket packet : MapStyleRegistry.getMaps().values()) {
                 TerramapAddon.instance.sledgehammerChannel.send(packet, event.getPlayer());
             }

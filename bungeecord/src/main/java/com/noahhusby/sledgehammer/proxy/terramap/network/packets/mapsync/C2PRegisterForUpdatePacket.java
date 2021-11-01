@@ -1,6 +1,6 @@
 package com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync;
 
-import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
+import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.terramap.RemoteSynchronizer;
@@ -33,12 +33,12 @@ public class C2PRegisterForUpdatePacket implements IForgePacket {
     @Override
     public boolean processFromServer(String channel, Server fromServer, ProxiedPlayer toPlayer) {
         // Should never receive this from a server
-        return ConfigHandler.terramapSyncPlayers;
+        return SledgehammerConfig.terramap.terramapSyncPlayers;
     }
 
     @Override
     public boolean processFromClient(String channel, ProxiedPlayer fromPlayer, Server toServer) {
-        if (!ConfigHandler.terramapSyncPlayers) {
+        if (!SledgehammerConfig.terramap.terramapSyncPlayers) {
             return false;
         }
         SledgehammerPlayer player = PlayerHandler.getInstance().getPlayer(fromPlayer.getName());

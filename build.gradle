@@ -12,7 +12,7 @@ allprojects {
         gsonVersion = "2.8.0"
         hikariVersion = "4.0.3"
         lombokVersion = "1.18.22"
-        husbyVersion = "9298199ab9"
+        husbyVersion = "0.1.89"
         guavaVersion = "31.0.1-jre"
         anvilGuiVersion = "1.5.3-SNAPSHOT"
         paperVersion = "1.12.2-R0.1-SNAPSHOT"
@@ -33,6 +33,7 @@ allprojects {
         maven { url 'https://repo.codemc.io/repository/maven-snapshots' }
         maven { url 'https://jitpack.io/' }
         maven { url 'https://maven.daporkchop.net/'}
+        maven { url 'https://maven.noahhusby.com/releases'}
     }
 
     dependencies {
@@ -40,7 +41,8 @@ allprojects {
             implementation project(":common")
         }
 
-        implementation "com.github.noahhusby.HusbyLib:data:$husbyVersion"
+        implementation "com.noahhusby.lib:data:$husbyVersion"
+        implementation "com.noahhusby.lib:application:$husbyVersion"
 
         compileOnly "org.projectlombok:lombok:$lombokVersion"
         testCompileOnly "org.projectlombok:lombok:$lombokVersion"

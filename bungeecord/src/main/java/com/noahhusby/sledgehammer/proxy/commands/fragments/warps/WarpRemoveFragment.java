@@ -20,12 +20,12 @@ package com.noahhusby.sledgehammer.proxy.commands.fragments.warps;
 
 import com.google.common.collect.Lists;
 import com.noahhusby.sledgehammer.common.warps.Warp;
+import com.noahhusby.sledgehammer.common.warps.WarpGroup;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
-import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
+import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.players.Permission;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
-import com.noahhusby.sledgehammer.proxy.warp.WarpGroup;
 import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -48,7 +48,7 @@ public class WarpRemoveFragment implements ICommandFragment {
 
     private void run(CommandSender sender, String[] args, boolean global) {
         if (args.length < 1) {
-            sender.sendMessage(ChatUtil.combine(ChatColor.RED, String.format("Usage: /%s remove <name>", ConfigHandler.warpCommand)));
+            sender.sendMessage(ChatUtil.combine(ChatColor.RED, String.format("Usage: /%s remove <name>", SledgehammerConfig.warps.warpCommand)));
             return;
         }
 
@@ -97,7 +97,7 @@ public class WarpRemoveFragment implements ICommandFragment {
                         ChatColor.GRAY, " - ", ChatColor.YELLOW, warps.get(i).getServer()));
             }
             sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Use ", ChatColor.YELLOW,
-                    String.format("/%s remove %s", ConfigHandler.warpCommand, args[0]), ChatColor.RED,
+                    String.format("/%s remove %s", SledgehammerConfig.warps.warpCommand, args[0]), ChatColor.RED,
                     " <id>", ChatColor.GRAY, " to remove a specific warp!"));
             return;
         }

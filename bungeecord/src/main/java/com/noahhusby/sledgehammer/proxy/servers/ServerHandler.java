@@ -19,7 +19,6 @@
 package com.noahhusby.sledgehammer.proxy.servers;
 
 import com.google.common.collect.Maps;
-import com.noahhusby.lib.data.storage.StorageHashMap;
 import com.noahhusby.lib.data.storage.StorageTreeMap;
 import com.noahhusby.sledgehammer.common.SledgehammerVersion;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;

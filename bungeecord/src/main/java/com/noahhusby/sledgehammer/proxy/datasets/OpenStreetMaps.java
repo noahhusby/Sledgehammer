@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.noahhusby.lib.data.JsonUtils;
 import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
+import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.modules.Module;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
@@ -56,7 +57,7 @@ public class OpenStreetMaps implements Module {
      * @return Returns {@link ServerInfo} if a valid region is found, or null if not
      */
     public ServerInfo getServerFromLocation(double lon, double lat) {
-        return getServerFromLocation(lon, lat, ConfigHandler.useOfflineMode);
+        return getServerFromLocation(lon, lat, SledgehammerConfig.geography.useOfflineMode);
     }
 
     /**
@@ -138,7 +139,7 @@ public class OpenStreetMaps implements Module {
      * @return {@link Location}
      */
     public Location getLocation(double lon, double lat) {
-        return getLocation(lon, lat, ConfigHandler.zoom);
+        return getLocation(lon, lat, SledgehammerConfig.geography.zoom);
     }
 
     /**
@@ -255,7 +256,7 @@ public class OpenStreetMaps implements Module {
     @Override
     public void onEnable() {
         try {
-            if (ConfigHandler.useOfflineMode && ConfigHandler.getInstance().getOfflineBin().exists()) {
+            if (SledgehammerConfig.geography.useOfflineMode && ConfigHandler.getInstance().getOfflineBin().exists()) {
                 offlineGeocoder = new ReverseGeocoder(ConfigHandler.getInstance().getOfflineBin());
             }
         } catch (IOException e) {

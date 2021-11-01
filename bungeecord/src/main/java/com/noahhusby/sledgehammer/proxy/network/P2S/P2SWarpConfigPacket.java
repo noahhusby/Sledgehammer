@@ -18,7 +18,6 @@
 
 package com.noahhusby.sledgehammer.proxy.network.P2S;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.noahhusby.lib.data.JsonUtils;
 import com.noahhusby.sledgehammer.common.warps.WarpConfigPayload;
@@ -49,7 +48,7 @@ public class P2SWarpConfigPacket extends P2SPacket {
     public void getMessage(JsonObject data) {
         WarpConfigPayload payload = WarpHandler.getInstance().generateConfigPayload(player, admin);
         payload.setAction(action);
-        for(String key : JsonUtils.keySet(this.data)) {
+        for (String key : JsonUtils.keySet(this.data)) {
             data.add(key, this.data.get(key));
         }
         data.add("payload", SledgehammerUtil.GSON.toJsonTree(payload));

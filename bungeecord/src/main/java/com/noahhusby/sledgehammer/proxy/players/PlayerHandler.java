@@ -23,6 +23,7 @@ import com.noahhusby.lib.data.storage.StorageHashMap;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
+import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.modules.Module;
 import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
@@ -165,7 +166,7 @@ public class PlayerHandler implements Listener, Module {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(PostLoginEvent e) {
-        if (e.getPlayer().hasPermission("sledgehammer.admin") && !ConfigHandler.getInstance().isAuthCodeConfigured()) {
+        if (e.getPlayer().hasPermission("sledgehammer.admin") && !ConfigHandler.getInstance().isAuthenticationConfigured()) {
             ChatUtil.sendAuthCodeWarning(e.getPlayer());
         }
     }
@@ -178,19 +179,19 @@ public class PlayerHandler implements Listener, Module {
     @Override
     public void onEnable() {
         Sledgehammer.addListener(this);
-        if (ConfigHandler.borderTeleportation && !ConfigHandler.doesOfflineExist) {
+        if (SledgehammerConfig.geography.borderTeleportation && !ConfigHandler.getInstance().getOfflineBin().exists()) {
             ChatUtil.sendMessageBox(ProxyServer.getInstance().getConsole(), ChatColor.DARK_RED + "WARNING", ChatUtil.combine(ChatColor.RED,
                     "Automatic border teleportation was enabled without an offline OSM database.\n" +
                     "This feature will now be disabled."));
-            ConfigHandler.borderTeleportation = false;
+            SledgehammerConfig.geography.borderTeleportation = false;
         }
 
-        if (ConfigHandler.useOfflineMode && !ConfigHandler.doesOfflineExist) {
+        if (SledgehammerConfig.geography.useOfflineMode && !ConfigHandler.getInstance().getOfflineBin().exists()) {
             ChatUtil.sendMessageBox(ProxyServer.getInstance().getConsole(), ChatColor.DARK_RED + "WARNING", ChatUtil.combine(ChatColor.RED,
                     "The offline OSM database was enabled without a proper database configured.\n" +
                     "Please follow the guide on https://github.com/noahhusby/Sledgehammer/wiki/Border-Offline-Database to configure an offline database.\n" +
                     "This feature will now be disabled."));
-            ConfigHandler.useOfflineMode = false;
+            SledgehammerConfig.geography.useOfflineMode = false;
         }
     }
 

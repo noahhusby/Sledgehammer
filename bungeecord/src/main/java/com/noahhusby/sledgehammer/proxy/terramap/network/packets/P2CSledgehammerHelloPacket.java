@@ -1,6 +1,6 @@
 package com.noahhusby.sledgehammer.proxy.terramap.network.packets;
 
-import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
+import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.terramap.network.ForgeChannel;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync.PlayerSyncStatus;
 import io.netty.buffer.ByteBuf;
@@ -13,11 +13,11 @@ import java.util.UUID;
  * Sent to clients joining the network to inform them of this proxy's specific settings, such as:
  * <ul>
  * <li>The Sledgehammer version</li>
- * <li>Whether or not players are being synchronized. See {@link ConfigHandler#terramapSyncPlayers}</li>
- * <li>Whether or not to enable the map on all worlds and not just on Terra121's. See {@link ConfigHandler#terramapGlobalMap}</li>
- * <li>Whether or not to save settings per world or for the whole network. See See {@link ConfigHandler#terramapGlobalSettings}</li>
+ * <li>Whether or not players are being synchronized. See {@link SledgehammerConfig.TerramapOptions#terramapSyncPlayers}</li>
+ * <li>Whether or not to enable the map on all worlds and not just on Terra121's. See {@link SledgehammerConfig.TerramapOptions#terramapGlobalMap}</li>
+ * <li>Whether or not to save settings per world or for the whole network. See See {@link SledgehammerConfig.TerramapOptions#terramapGlobalSettings}</li>
  * <li>Whether or not warps are supported.</li>
- * <li>The proxy UUID. See {@link ConfigHandler#terramapProxyUUID}.</li>
+ * <li>The proxy UUID. See {@link SledgehammerConfig.TerramapOptions#terramapProxyUUID}.</li>
  * </ul>
  *
  * @author SmylerMC

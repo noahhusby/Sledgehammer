@@ -20,7 +20,7 @@ package com.noahhusby.sledgehammer.proxy;
 
 import com.google.common.collect.Lists;
 import com.noahhusby.sledgehammer.common.CommonUtil;
-import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
+import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import lombok.NonNull;
@@ -76,7 +76,7 @@ public class SledgehammerUtil extends CommonUtil {
      * @return True if they are within the region, false if not
      */
     public static boolean inEarthRegion(SledgehammerPlayer player) {
-        if(player == null || player.getLocation() == null) {
+        if (player == null || player.getLocation() == null) {
             return false;
         }
         double[] geo = toGeo(player.getLocation().getX(), player.getLocation().getZ());
@@ -91,7 +91,7 @@ public class SledgehammerUtil extends CommonUtil {
      */
     public static boolean isGenuineRequest(String u) {
         try {
-            return u.equals(ConfigHandler.authenticationCode);
+            return u.equals(SledgehammerConfig.general.authenticationCode);
         } catch (Exception e) {
             Sledgehammer.logger.info("Error occurred while parsing incoming authentication command!");
             return false;

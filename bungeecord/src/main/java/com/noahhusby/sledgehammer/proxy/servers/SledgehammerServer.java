@@ -30,7 +30,6 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Key("Name")

@@ -16,16 +16,11 @@
  *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
  */
 
-package com.noahhusby.sledgehammer.proxy.warp;
+package com.noahhusby.sledgehammer.common.warps;
 
-import com.google.common.collect.Lists;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.noahhusby.lib.data.storage.Key;
-import com.noahhusby.sledgehammer.common.warps.Warp;
-import com.noahhusby.sledgehammer.common.warps.WarpGroupPayload;
-import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
-import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -66,23 +61,4 @@ public class WarpGroup {
     @Expose
     @SerializedName("Aliases")
     private final List<String> aliases = new ArrayList<>();
-
-    public WarpGroupPayload toPayload() {
-        List<Integer> payloadWarps = Lists.newArrayList();
-        if(type == WarpGroupType.GROUP) {
-            for(Integer warpId : warps) {
-                Warp warp = WarpHandler.getInstance().getWarp(warpId);
-                if(warp != null) {
-                    payloadWarps.add(warpId);
-                }
-            }
-        } else {
-            for(Warp warp : WarpHandler.getInstance().getWarps().values()) {
-                if(servers.contains(warp.getServer())) {
-                    payloadWarps.add(warp.getId());
-                }
-            }
-        }
-        return new WarpGroupPayload(id, name, headId, payloadWarps);
-    }
 }
