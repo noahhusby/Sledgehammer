@@ -64,6 +64,11 @@ shadowJar {
     manifest {
         attributes( 'Implementation-Version': "${version}" )
     }
+    dependencies {
+        exclude(dependency("com.google.code.gson:gson"))
+        exclude(dependency("org.yaml:snakeyaml"))
+        exclude(dependency("org.slf4j:slf4j-api"))
+    }
 }
 
 build.dependsOn shadowJar
