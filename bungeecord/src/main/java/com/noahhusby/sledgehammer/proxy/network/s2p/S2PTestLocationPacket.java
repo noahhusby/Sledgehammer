@@ -43,134 +43,56 @@ public class S2PTestLocationPacket extends S2PPacket {
 
     @Override
     public void onMessage(PacketInfo info, JsonObject data) {
-        new Thread(() -> {
-            JsonObject point = data.getAsJsonObject("point");
+        JsonObject point = data.getAsJsonObject("point");
+        int zoom = Math.round(data.get("zoom").getAsInt());
+        double[] proj = SledgehammerUtil.toGeo(Double.parseDouble(point.get("x").getAsString()), Double.parseDouble(point.get("z").getAsString()));
+        Location online = OpenStreetMaps.getInstance().getLocation(proj[0], proj[1], zoom);
+        CommandSender player = ProxyServer.getInstance().getPlayer(info.getSender());
+        if (online == null) {
+            player.sendMessage(ChatUtil.getNotProjection());
+            return;
+        }
+        player.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Testing location at ",
+                ChatColor.BLUE, String.format("%s, %s", proj[1], proj[0]), ChatColor.GRAY, String.format(" (Zoom: %d)", zoom)));
+        player.sendMessage(ChatUtil.combine(ChatColor.RED, "Online: "));
+        printLocationBlocks(info, player, online);
+        if (!SledgehammerConfig.geography.useOfflineMode) {
+            player.sendMessage(ChatUtil.combine(ChatColor.RED, "Offline: ", ChatColor.DARK_RED, "Disabled"));
+        } else {
+            Location offline = OpenStreetMaps.getInstance().getOfflineLocation(proj[0], proj[1]);
+            player.sendMessage(ChatUtil.combine(ChatColor.RED, "Offline ", ChatColor.GRAY, "(",
+                    ChatColor.GREEN, "Active", ChatColor.GRAY, "):"));
+            printLocationBlocks(info, player, offline);
+        }
+    }
 
-            int zoom = Math.round(data.get("zoom").getAsInt());
-            double[] proj = SledgehammerUtil.toGeo(Double.parseDouble(point.get("x").getAsString()), Double.parseDouble(point.get("z").getAsString()));
-            Location online = OpenStreetMaps.getInstance().getLocation(proj[0], proj[1], zoom);
-            CommandSender player = ProxyServer.getInstance().getPlayer(info.getSender());
+    private void printLocationBlocks(PacketInfo info, CommandSender player, Location location) {
+        if (!location.city.equals("")) {
+            TextComponent text = ChatUtil.combine(ChatColor.GRAY, "City - ", ChatColor.BLUE, location.city);
+            text.addExtra(generateAddButton(info, new Location(Location.Detail.city, location.city, location.county, location.state, location.country)));
+            player.sendMessage(text);
+        }
+        if (!location.county.equals("")) {
+            TextComponent text = ChatUtil.combine(ChatColor.GRAY, "County - ", ChatColor.BLUE, location.county);
+            text.addExtra(generateAddButton(info, new Location(Location.Detail.county, location.city, location.county, location.state, location.country)));
+            player.sendMessage(text);
+        }
+        if (!location.state.equals("")) {
+            TextComponent text = ChatUtil.combine(ChatColor.GRAY, "State - ", ChatColor.BLUE, location.state);
+            text.addExtra(generateAddButton(info, new Location(Location.Detail.state, location.city, location.county, location.state, location.country)));
+            player.sendMessage(text);
+        }
+        if (!location.country.equals("")) {
+            TextComponent text = ChatUtil.combine(ChatColor.GRAY, "Country - ", ChatColor.BLUE, location.country);
+            text.addExtra(generateAddButton(info, new Location(Location.Detail.country, location.city, location.county, location.state, location.country)));
+            player.sendMessage(text);
+        }
+    }
 
-            if (online == null) {
-                player.sendMessage(ChatUtil.getNotProjection());
-                return;
-            }
-
-            player.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Testing location at ",
-                    ChatColor.BLUE, String.format("%s, %s", proj[1], proj[0]), ChatColor.GRAY, String.format(" (Zoom: %d)", zoom)));
-            player.sendMessage(ChatUtil.combine(ChatColor.RED, "Online: "));
-            if (!online.city.equals("")) {
-                TextComponent add = new TextComponent(ChatColor.GREEN + " [+]");
-                add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Add location")));
-                add.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/sha server " +
-                                                                                    info.getServer() + " addlocation " +
-                                                                                    SledgehammerUtil.GSON.toJson(new Location(Location.Detail.city,
-                                                                                            online.city, online.county, online.state, online.country))));
-
-                TextComponent text = ChatUtil.combine(ChatColor.GRAY, "City - ", ChatColor.BLUE, online.city);
-                text.addExtra(add);
-
-                player.sendMessage(text);
-            }
-            if (!online.county.equals("")) {
-                TextComponent add = new TextComponent(ChatColor.GREEN + " [+]");
-                add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Add location")));
-                add.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/sha server " +
-                                                                                    info.getServer() + " addlocation " +
-                                                                                    SledgehammerUtil.GSON.toJson(new Location(Location.Detail.county,
-                                                                                            online.city, online.county, online.state, online.country))));
-
-                TextComponent text = ChatUtil.combine(ChatColor.GRAY, "County - ", ChatColor.BLUE, online.county);
-                text.addExtra(add);
-
-                player.sendMessage(text);
-            }
-            if (!online.state.equals("")) {
-                TextComponent add = new TextComponent(ChatColor.GREEN + " [+]");
-                add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Add location")));
-                add.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/sha server " +
-                                                                                    info.getServer() + " addlocation " +
-                                                                                    SledgehammerUtil.GSON.toJson(new Location(Location.Detail.state,
-                                                                                            online.city, online.county, online.state, online.country))));
-
-                TextComponent text = ChatUtil.combine(ChatColor.GRAY, "State - ", ChatColor.BLUE, online.state);
-                text.addExtra(add);
-
-                player.sendMessage(text);
-            }
-            if (!online.country.equals("")) {
-                TextComponent add = new TextComponent(ChatColor.GREEN + " [+]");
-                add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Add location")));
-                add.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/sha server " +
-                                                                                    info.getServer() + " addlocation " +
-                                                                                    SledgehammerUtil.GSON.toJson(new Location(Location.Detail.country,
-                                                                                            online.city, online.county, online.state, online.country))));
-
-                TextComponent text = ChatUtil.combine(ChatColor.GRAY, "Country - ", ChatColor.BLUE, online.country);
-                text.addExtra(add);
-
-                player.sendMessage(text);
-            }
-            if (!SledgehammerConfig.geography.useOfflineMode) {
-                player.sendMessage(ChatUtil.combine(ChatColor.RED, "Offline: ", ChatColor.DARK_RED, "Disabled"));
-            } else {
-                Location offline = OpenStreetMaps.getInstance().getOfflineLocation(proj[0], proj[1]);
-                player.sendMessage(ChatUtil.combine(ChatColor.RED, "Offline ", ChatColor.GRAY, "(",
-                        ChatColor.GREEN, "Active", ChatColor.GRAY, "):"));
-                if (!offline.city.equals("")) {
-                    TextComponent add = new TextComponent(ChatColor.GREEN + " [+]");
-                    add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Add location")));
-                    add.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/sha server " +
-                                                                                        info.getServer() + " addlocation " +
-                                                                                        SledgehammerUtil.GSON.toJson(new Location(Location.Detail.city,
-                                                                                                offline.city, offline.county, offline.state, offline.country))));
-
-                    TextComponent text = ChatUtil.combine(ChatColor.GRAY, "City - ", ChatColor.BLUE, offline.city);
-                    text.addExtra(add);
-
-                    player.sendMessage(text);
-                }
-                if (!offline.county.equals("")) {
-                    TextComponent add = new TextComponent(ChatColor.GREEN + " [+]");
-                    add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Add location")));
-                    add.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/sha server " +
-                                                                                        info.getServer() + " addlocation " +
-                                                                                        SledgehammerUtil.GSON.toJson(new Location(Location.Detail.county,
-                                                                                                offline.city, offline.county, offline.state, offline.country))));
-
-                    TextComponent text = ChatUtil.combine(ChatColor.GRAY, "County - ", ChatColor.BLUE, offline.county);
-                    text.addExtra(add);
-
-                    player.sendMessage(text);
-                }
-                if (!offline.state.equals("")) {
-                    TextComponent add = new TextComponent(ChatColor.GREEN + " [+]");
-                    add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Add location")));
-                    add.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/sha server " +
-                                                                                        info.getServer() + " addlocation " +
-                                                                                        SledgehammerUtil.GSON.toJson(new Location(Location.Detail.state,
-                                                                                                offline.city, offline.county, offline.state, offline.country))));
-
-                    TextComponent text = ChatUtil.combine(ChatColor.GRAY, "State - ", ChatColor.BLUE, offline.state);
-                    text.addExtra(add);
-
-                    player.sendMessage(text);
-                }
-                if (!offline.country.equals("")) {
-                    TextComponent add = new TextComponent(ChatColor.GREEN + " [+]");
-                    add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Add location")));
-                    add.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/sha server " +
-                                                                                        info.getServer() + " addlocation " +
-                                                                                        SledgehammerUtil.GSON.toJson(new Location(Location.Detail.country,
-                                                                                                offline.city, offline.county, offline.state, offline.country))));
-
-                    TextComponent text = ChatUtil.combine(ChatColor.GRAY, "Country - ", ChatColor.BLUE, offline.country);
-                    text.addExtra(add);
-
-                    player.sendMessage(text);
-                }
-            }
-
-        }).start();
+    private TextComponent generateAddButton(PacketInfo info, Location location) {
+        TextComponent add = new TextComponent(ChatColor.GREEN + " [+]");
+        add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Add location")));
+        add.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/sha server " + info.getServer() + " addlocation " + SledgehammerUtil.GSON.toJson(location)));
+        return add;
     }
 }

@@ -24,6 +24,7 @@ public class InvertedOrientation extends ProjectionTransform {
         super(input);
     }
 
+    @SuppressWarnings("SuspiciousNameCombination")
     public double[] toGeo(double x, double y) {
         return input.toGeo(y, x);
     }

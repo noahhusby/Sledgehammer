@@ -87,22 +87,11 @@ public class ReverseGeocoder implements AutoCloseable {
      */
     private String[][] cache;
 
-    /**
-     * Constructor.
-     *
-     * @param f Index file
-     * @throws IOException
-     */
     public ReverseGeocoder(File f) throws IOException {
         this.filename = f;
         reopen();
     }
 
-    /**
-     * Reopen the index file.
-     *
-     * @throws IOException
-     */
     public void reopen() throws IOException {
         file = new RandomAccessFile(filename, "r");
         buffer = file.getChannel().map(MapMode.READ_ONLY, 0, file.length());
@@ -251,12 +240,5 @@ public class ReverseGeocoder implements AutoCloseable {
             file.close();
             file = null;
         }
-    }
-
-    /**
-     * @return The number of entries in the geocoder.
-     */
-    public int getNumberOfEntries() {
-        return numentries;
     }
 }

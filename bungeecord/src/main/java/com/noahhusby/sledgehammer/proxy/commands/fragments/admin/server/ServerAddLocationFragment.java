@@ -90,21 +90,7 @@ public class ServerAddLocationFragment implements ICommandFragment {
                 SledgehammerServer s = ServerHandler.getInstance().getServer(args[0]);
                 s.getLocations().add(l);
                 ServerHandler.getInstance().getServers().saveAsync();
-
-                String x = "";
-                if (!l.city.equals("")) {
-                    x += ChatUtil.capitalize(l.city) + ", ";
-                }
-                if (!l.county.equals("")) {
-                    x += ChatUtil.capitalize(l.county) + ", ";
-                }
-                if (!l.state.equals("")) {
-                    x += ChatUtil.capitalize(l.state) + ", ";
-                }
-                if (!l.country.equals("")) {
-                    x += ChatUtil.capitalize(l.country);
-                }
-                sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Successfully added ", ChatColor.BLUE, l.detailType.name() + ": ", ChatColor.RED, x));
+                sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Successfully added ", ChatColor.BLUE, l.detailType.name() + ": ", ChatColor.RED, l));
                 return;
             } else if (arg.contains("{")) {
                 sender.sendMessage(ChatUtil.combine(ChatColor.RED, "Unable to parse json location! Please try again."));

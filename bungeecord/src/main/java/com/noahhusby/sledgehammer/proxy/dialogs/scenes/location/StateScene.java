@@ -18,7 +18,6 @@
 
 package com.noahhusby.sledgehammer.proxy.dialogs.scenes.location;
 
-import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.datasets.Location;
 import com.noahhusby.sledgehammer.proxy.dialogs.DialogHandler;
 import com.noahhusby.sledgehammer.proxy.dialogs.components.location.CountryComponent;
@@ -26,9 +25,6 @@ import com.noahhusby.sledgehammer.proxy.dialogs.components.location.StateCompone
 import com.noahhusby.sledgehammer.proxy.dialogs.scenes.DialogScene;
 import com.noahhusby.sledgehammer.proxy.dialogs.toolbars.ExitSkipToolbar;
 import com.noahhusby.sledgehammer.proxy.dialogs.toolbars.IToolbar;
-import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
-import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.config.ServerInfo;
 
 public class StateScene extends DialogScene {
@@ -50,33 +46,7 @@ public class StateScene extends DialogScene {
     @Override
     public void onFinish() {
         Location l = new Location(Location.Detail.state, "", "", getValue("state"), getValue("country"));
-
-        SledgehammerServer s = ServerHandler.getInstance().getServers().containsKey(server.getName()) ? ServerHandler.getInstance().getServer(server.getName()) : new SledgehammerServer(server.getName());
-        s.getLocations().add(l);
-        ServerHandler.getInstance().getServers().put(server.getName(), s);
-        ServerHandler.getInstance().getServers().saveAsync();
-
-        if (scene != null) {
-            DialogHandler.getInstance().discardDialog(this);
-            DialogHandler.getInstance().startDialog(getCommandSender(), scene);
-            return;
-        }
-
-        String x = "";
-        if (!l.city.equals("")) {
-            x += ChatUtil.capitalize(l.city) + ", ";
-        }
-        if (!l.county.equals("")) {
-            x += ChatUtil.capitalize(l.county) + ", ";
-        }
-        if (!l.state.equals("")) {
-            x += ChatUtil.capitalize(l.state) + ", ";
-        }
-        if (!l.country.equals("")) {
-            x += ChatUtil.capitalize(l.country);
-        }
-        sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Successfully added ",
-                ChatColor.RED, ChatUtil.capitalize(l.detailType.name()) + " - ", ChatColor.GOLD, x));
+        LocationSceneUtil.completeScene(this, server, l, scene);
     }
 
     @Override

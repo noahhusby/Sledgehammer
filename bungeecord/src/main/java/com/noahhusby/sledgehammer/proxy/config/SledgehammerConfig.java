@@ -27,6 +27,7 @@ import java.util.UUID;
 /**
  * @author Noah Husby
  */
+@SuppressWarnings("CanBeFinal")
 @Config(name = "sledgehammer", type = Type.HOCON)
 public class SledgehammerConfig {
 
@@ -35,6 +36,7 @@ public class SledgehammerConfig {
     })
     public static GeneralOptions general = new GeneralOptions();
 
+    @SuppressWarnings("CanBeFinal")
     public static class GeneralOptions {
         @Comment({
                 "Generate a new key using https://uuidgenerator.net/version4",
@@ -70,6 +72,7 @@ public class SledgehammerConfig {
     })
     public static DatabaseOptions database = new DatabaseOptions();
 
+    @SuppressWarnings("CanBeFinal")
     public static class DatabaseOptions {
         @Comment({
                 "Should SQL be used to synchronize/store data?"
@@ -112,6 +115,7 @@ public class SledgehammerConfig {
     })
     public static WarpOptions warps = new WarpOptions();
 
+    @SuppressWarnings("CanBeFinal")
     public static class WarpOptions {
         @Comment({
                 "The command for network-wide warping. Leave blank to disable"
@@ -151,6 +155,7 @@ public class SledgehammerConfig {
     })
     public static GeographyOptions geography = new GeographyOptions();
 
+    @SuppressWarnings("CanBeFinal")
     public static class GeographyOptions {
         @Comment({
                 "Zoom detail level for OSM requests."
@@ -174,6 +179,7 @@ public class SledgehammerConfig {
     })
     public static TerramapOptions terramap = new TerramapOptions();
 
+    @SuppressWarnings("CanBeFinal")
     public static class TerramapOptions {
         @Comment({
                 "Enables Terramap integration"

@@ -212,25 +212,17 @@ public class WarpHandler {
                   !SledgehammerConfig.warps.localWarp)) {
                 continue;
             }
+            TextComponent t = new TextComponent(w.getName());
+            t.setColor(ChatColor.BLUE);
+            t.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/%s %s", SledgehammerConfig.warps.warpCommand, w.getName())));
+            t.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                    new Text("Click to warp to " + w.getName())));
             if (first) {
-                TextComponent t = new TextComponent(w.getName());
-                t.setColor(ChatColor.BLUE);
-                t.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/%s %s",
-                        SledgehammerConfig.warps.warpCommand, w.getName())));
-                t.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                        new Text("Click to warp to " + w.getName())));
-                list.addExtra(t);
                 first = false;
             } else {
                 list.addExtra(ChatUtil.combine(ChatColor.GRAY, ", "));
-                TextComponent t = new TextComponent(w.getName());
-                t.setColor(ChatColor.BLUE);
-                t.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/%s %s",
-                        SledgehammerConfig.warps.warpCommand, w.getName())));
-                t.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                        new Text("Click to warp to " + w.getName())));
-                list.addExtra(t);
             }
+            list.addExtra(t);
         }
 
         return list;

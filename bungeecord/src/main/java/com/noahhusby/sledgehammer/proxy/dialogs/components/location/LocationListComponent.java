@@ -51,10 +51,8 @@ public class LocationListComponent extends DialogComponent {
     public TextComponent getExplanation() {
         TextComponent explanation = ChatUtil.combine(ChatColor.GRAY, "Type anything to continue");
         locations = ServerHandler.getInstance().getLocationsFromServer(server.getName());
-        int v = 0;
-        for (Location l : locations) {
-            explanation.addExtra(ChatUtil.combine(ChatColor.RED, "\n" + v + ". ", ChatColor.GOLD, ChatUtil.capitalize(l.detailType.name()), " - ", ChatColor.RED, l));
-            v++;
+        for (int i = 0; i < locations.size(); i++) {
+            explanation.addExtra(ChatUtil.combine(ChatColor.RED, "\n" + i + ". ", ChatColor.GOLD, ChatUtil.capitalize(locations.get(i).detailType.name()), " - ", ChatColor.RED, locations.get(i)));
         }
         return explanation;
     }

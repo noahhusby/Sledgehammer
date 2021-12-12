@@ -53,24 +53,9 @@ public class ServerListLocationFragment implements ICommandFragment {
             return;
         }
 
-        sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Locations for ",
-                ChatColor.BLUE, args[0].toLowerCase(Locale.ROOT), ChatColor.GRAY, ":"));
+        sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Locations for ", ChatColor.BLUE, args[0].toLowerCase(Locale.ROOT), ChatColor.GRAY, ":"));
         for (Location l : locations) {
-            String x = "";
-            if (!l.city.equals("")) {
-                x += ChatUtil.capitalize(l.city) + ", ";
-            }
-            if (!l.county.equals("")) {
-                x += ChatUtil.capitalize(l.county) + ", ";
-            }
-            if (!l.state.equals("")) {
-                x += ChatUtil.capitalize(l.state) + ", ";
-            }
-            if (!l.country.equals("")) {
-                x += ChatUtil.capitalize(l.country);
-            }
-            sender.sendMessage(ChatUtil.combine(ChatColor.RED, ChatUtil.capitalize(l.detailType.name()) + " - ",
-                    ChatColor.GOLD, x));
+            sender.sendMessage(ChatUtil.combine(ChatColor.RED, ChatUtil.capitalize(l.detailType.name()) + " - ", ChatColor.GOLD, l));
         }
     }
 
