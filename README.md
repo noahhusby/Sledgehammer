@@ -1,6 +1,9 @@
 # Sledgehammer
 
 [![Build Status](https://jenkins.noahhusby.com/buildStatus/icon?job=Sledgehammer)](https://jenkins.noahhusby.com/job/Sledgehammer/)
+![GitHub](https://img.shields.io/github/license/noahhusby/sledgehammer)
+![Lines of code](https://img.shields.io/tokei/lines/github/noahhusby/sledgehammer)
+![GitHub repo size](https://img.shields.io/github/repo-size/noahhusby/sledgehammer)
 
 A set of tools for multi-server Build the Earth networks
 
