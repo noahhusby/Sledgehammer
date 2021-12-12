@@ -27,8 +27,6 @@ import com.noahhusby.sledgehammer.common.CommonUtil;
 import com.noahhusby.sledgehammer.common.WarpDeserializer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * @author Noah Husby

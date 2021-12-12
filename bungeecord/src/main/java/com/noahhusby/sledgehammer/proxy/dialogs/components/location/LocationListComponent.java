@@ -30,7 +30,7 @@ import java.util.List;
 
 public class LocationListComponent extends DialogComponent {
 
-    ServerInfo server;
+    private final ServerInfo server;
     List<Location> locations;
 
     public LocationListComponent(ServerInfo server) {
@@ -53,24 +53,9 @@ public class LocationListComponent extends DialogComponent {
         locations = ServerHandler.getInstance().getLocationsFromServer(server.getName());
         int v = 0;
         for (Location l : locations) {
-            String x = "";
-            if (!l.city.equals("")) {
-                x += ChatUtil.capitalize(l.city) + ", ";
-            }
-            if (!l.county.equals("")) {
-                x += ChatUtil.capitalize(l.county) + ", ";
-            }
-            if (!l.state.equals("")) {
-                x += ChatUtil.capitalize(l.state) + ", ";
-            }
-            if (!l.country.equals("")) {
-                x += ChatUtil.capitalize(l.country);
-            }
-            explanation.addExtra(ChatUtil.combine(ChatColor.RED, "\n" + v + ". ", ChatColor.GOLD,
-                    ChatUtil.capitalize(l.detailType.name()), " - ", ChatColor.RED, x));
+            explanation.addExtra(ChatUtil.combine(ChatColor.RED, "\n" + v + ". ", ChatColor.GOLD, ChatUtil.capitalize(l.detailType.name()), " - ", ChatColor.RED, l));
             v++;
         }
-
         return explanation;
     }
 

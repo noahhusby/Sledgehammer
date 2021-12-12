@@ -25,7 +25,7 @@ import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
-import com.noahhusby.sledgehammer.proxy.network.P2S.P2STeleportPacket;
+import com.noahhusby.sledgehammer.proxy.network.p2s.P2STeleportPacket;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
 import net.md_5.bungee.api.ChatColor;

@@ -62,22 +62,7 @@ public class LocationRemovalScene extends DialogScene {
             discardAndStart(scene);
             return;
         }
-
-        String x = "";
-        if (!l.city.equals("")) {
-            x += ChatUtil.capitalize(l.city) + ", ";
-        }
-        if (!l.county.equals("")) {
-            x += ChatUtil.capitalize(l.county) + ", ";
-        }
-        if (!l.state.equals("")) {
-            x += ChatUtil.capitalize(l.state) + ", ";
-        }
-        if (!l.country.equals("")) {
-            x += ChatUtil.capitalize(l.country);
-        }
-        sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Successfully removed location :",
-                ChatColor.RED, ChatUtil.capitalize(l.detailType.name()) + " - ", ChatColor.GOLD, x));
+        sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Successfully removed location :", ChatColor.RED, ChatUtil.capitalize(l.detailType.name()) + " - ", ChatColor.GOLD, l));
     }
 
     @Override

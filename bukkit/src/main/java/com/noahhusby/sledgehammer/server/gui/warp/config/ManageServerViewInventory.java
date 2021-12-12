@@ -26,7 +26,6 @@ import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.gui.GUIChild;
 import com.noahhusby.sledgehammer.server.gui.GUIController;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
-import com.noahhusby.sledgehammer.server.gui.warp.menu.WarpSortInventory;
 import com.noahhusby.sledgehammer.server.util.SkullUtil;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
@@ -162,7 +161,7 @@ public class ManageServerViewInventory extends GUIChild {
 
             List<Integer> warpIds = controller.getPayload().getServers().get(id);
             List<Warp> warps = Lists.newArrayList();
-            for(Integer warpId : warpIds) {
+            for (Integer warpId : warpIds) {
                 warps.add(controller.getPayload().getWaypoints().get(warpId));
             }
 
@@ -192,7 +191,7 @@ public class ManageServerViewInventory extends GUIChild {
 
         @Override
         public void init() {
-            List<String> servers = Lists.newArrayList(payload.getServers().keySet());;
+            List<String> servers = Lists.newArrayList(payload.getServers().keySet());
 
             int total_pages = (int) Math.ceil(servers.size() / 27.0);
             if (total_pages == 0) {

@@ -22,7 +22,7 @@ import com.noahhusby.sledgehammer.common.TpllMode;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.datasets.OpenStreetMaps;
-import com.noahhusby.sledgehammer.proxy.network.P2S.P2SLocationPacket;
+import com.noahhusby.sledgehammer.proxy.network.p2s.P2SLocationPacket;
 import com.noahhusby.sledgehammer.proxy.players.Permission;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;

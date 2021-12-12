@@ -29,8 +29,8 @@ import com.noahhusby.sledgehammer.proxy.commands.fragments.warps.WarpRemoveFragm
 import com.noahhusby.sledgehammer.proxy.commands.fragments.warps.WarpSetFragment;
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
-import com.noahhusby.sledgehammer.proxy.network.P2S.P2STeleportPacket;
-import com.noahhusby.sledgehammer.proxy.network.P2S.P2SWarpGUIPacket;
+import com.noahhusby.sledgehammer.proxy.network.p2s.P2STeleportPacket;
+import com.noahhusby.sledgehammer.proxy.network.p2s.P2SWarpGUIPacket;
 import com.noahhusby.sledgehammer.proxy.players.Permission;
 import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;

@@ -21,7 +21,7 @@ import net.md_5.bungee.chat.ComponentSerializer;
  */
 public class P2CPlayerSyncPacket implements IForgePacket {
 
-    public SledgehammerPlayer[] players;
+    public final SledgehammerPlayer[] players;
 
     public P2CPlayerSyncPacket(SledgehammerPlayer[] players) {
         this.players = players;

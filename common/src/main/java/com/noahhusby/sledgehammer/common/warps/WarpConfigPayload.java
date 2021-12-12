@@ -1,6 +1,5 @@
 package com.noahhusby.sledgehammer.common.warps;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

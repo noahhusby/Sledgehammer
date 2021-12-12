@@ -102,7 +102,7 @@ public class SledgehammerUtil extends CommonUtil {
     /**
      * Checks if TerraPlusPlus is installed
      */
-    protected static void checkForTerra() {
+    public static void checkForTerra() {
         try {
             Class.forName("net.buildtheearth.terraplusplus.TerraMod");
             terraConnector = new TerraConnector();

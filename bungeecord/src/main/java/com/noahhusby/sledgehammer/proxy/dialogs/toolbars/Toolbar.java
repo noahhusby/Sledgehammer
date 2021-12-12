@@ -23,7 +23,7 @@ import com.google.common.collect.Maps;
 import java.util.Map;
 
 public abstract class Toolbar implements IToolbar {
-    Map<String, String> tools = Maps.newHashMap();
+    final Map<String, String> tools = Maps.newHashMap();
 
     public void addTool(String symbol, String action) {
         tools.put(symbol, action);

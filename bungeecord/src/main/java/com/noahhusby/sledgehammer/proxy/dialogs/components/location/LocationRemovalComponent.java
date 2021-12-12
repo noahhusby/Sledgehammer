@@ -50,25 +50,10 @@ public class LocationRemovalComponent extends DialogComponent {
     @Override
     public TextComponent getExplanation() {
         TextComponent explanation = ChatUtil.combine(ChatColor.GRAY, "Enter the # of the location to delete:");
-
         locations = ServerHandler.getInstance().getLocationsFromServer(server.getName());
         int v = 0;
         for (Location l : locations) {
-            String x = "";
-            if (!l.city.equals("")) {
-                x += ChatUtil.capitalize(l.city) + ", ";
-            }
-            if (!l.county.equals("")) {
-                x += ChatUtil.capitalize(l.county) + ", ";
-            }
-            if (!l.state.equals("")) {
-                x += ChatUtil.capitalize(l.state) + ", ";
-            }
-            if (!l.country.equals("")) {
-                x += ChatUtil.capitalize(l.country);
-            }
-            explanation.addExtra(ChatUtil.combine(ChatColor.RED, "\n" + v + ". ", ChatColor.GOLD,
-                    ChatUtil.capitalize(l.detailType.name()), " - ", ChatColor.RED, x));
+            explanation.addExtra(ChatUtil.combine(ChatColor.RED, "\n" + v + ". ", ChatColor.GOLD, ChatUtil.capitalize(l.detailType.name()), " - ", ChatColor.RED, l));
             v++;
         }
 

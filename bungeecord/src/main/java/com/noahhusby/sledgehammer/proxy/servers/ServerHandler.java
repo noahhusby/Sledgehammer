@@ -18,13 +18,12 @@
 
 package com.noahhusby.sledgehammer.proxy.servers;
 
-import com.google.common.collect.Maps;
 import com.noahhusby.lib.data.storage.StorageTreeMap;
 import com.noahhusby.sledgehammer.common.SledgehammerVersion;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.datasets.Location;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
-import com.noahhusby.sledgehammer.proxy.network.P2S.P2SInitializationPacket;
+import com.noahhusby.sledgehammer.proxy.network.p2s.P2SInitializationPacket;
 import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -44,8 +43,6 @@ public class ServerHandler implements Listener {
 
     @Getter
     private final StorageTreeMap<String, SledgehammerServer> servers = new StorageTreeMap<>(String.class, SledgehammerServer.class, String.CASE_INSENSITIVE_ORDER);
-
-    private final Map<String, SledgehammerVersion> initialized = Maps.newHashMap();
 
     private ServerHandler() {
         Sledgehammer.addListener(this);
@@ -71,7 +68,6 @@ public class ServerHandler implements Listener {
         }
 
         s.initialize(version);
-        initialized.put(s.getName(), version);
     }
 
     /**

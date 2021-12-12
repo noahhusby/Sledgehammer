@@ -20,15 +20,14 @@ package com.noahhusby.sledgehammer.server.gui.warp.menu;
 
 import com.google.common.collect.Lists;
 import com.noahhusby.sledgehammer.common.warps.Warp;
-import com.noahhusby.sledgehammer.common.warps.WarpGroupPayload;
 import com.noahhusby.sledgehammer.common.warps.WarpPayload;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.gui.GUIController;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
-import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpConfigPacket;
-import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpPacket;
+import com.noahhusby.sledgehammer.server.network.p2s.S2PWarpConfigPacket;
+import com.noahhusby.sledgehammer.server.network.p2s.S2PWarpPacket;
 import com.noahhusby.sledgehammer.server.util.SkullUtil;
 import com.noahhusby.sledgehammer.server.util.WarpGUIUtil;
 import lombok.RequiredArgsConstructor;
@@ -199,9 +198,9 @@ public class ServerWarpInventory extends AbstractWarpInventory {
         @Override
         public void init() {
             List<Warp> warps = Lists.newArrayList();
-            for(Integer warpId : payload.getServers().get(server)) {
+            for (Integer warpId : payload.getServers().get(server)) {
                 Warp warp = payload.getWaypoints().get(warpId);
-                if(warp != null) {
+                if (warp != null) {
                     warps.add(warp);
                 }
             }

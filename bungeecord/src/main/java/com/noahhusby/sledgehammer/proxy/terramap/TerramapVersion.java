@@ -269,7 +269,7 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
             return buildComp;
         }
 
-        int typeComp = this.releaseType.priority - this.releaseType.priority;
+        int typeComp = 0;
         if (typeComp != 0) {
             return typeComp;
         }

@@ -22,7 +22,7 @@ import java.util.Map;
  */
 public class TranslationContextBuilder {
 
-    private Map<String, String> texts = new HashMap<>();
+    private final Map<String, String> texts = new HashMap<>();
     private TerramapVersion minTranslationVersion = null;
 
     /**

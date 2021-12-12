@@ -24,7 +24,7 @@ import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
-import com.noahhusby.sledgehammer.proxy.network.P2S.P2SPermissionPacket;
+import com.noahhusby.sledgehammer.proxy.network.p2s.P2SPermissionPacket;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
 import com.noahhusby.sledgehammer.proxy.terramap.TerramapAddon;

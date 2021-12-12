@@ -19,6 +19,7 @@
 package com.noahhusby.sledgehammer.proxy.datasets;
 
 import com.google.gson.annotations.Expose;
+import com.noahhusby.sledgehammer.proxy.ChatUtil;
 
 public class Location {
     @Expose
@@ -71,5 +72,23 @@ public class Location {
 
     public enum Detail {
         none, city, county, state, country
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder string = new StringBuilder();
+        if (!city.equals("")) {
+            string.append(ChatUtil.capitalize(city)).append(", ");
+        }
+        if (!county.equals("")) {
+            string.append(ChatUtil.capitalize(county)).append(", ");
+        }
+        if (!state.equals("")) {
+            string.append(ChatUtil.capitalize(state)).append(", ");
+        }
+        if (!country.equals("")) {
+            string.append(ChatUtil.capitalize(country)).append(", ");
+        }
+        return string.toString();
     }
 }

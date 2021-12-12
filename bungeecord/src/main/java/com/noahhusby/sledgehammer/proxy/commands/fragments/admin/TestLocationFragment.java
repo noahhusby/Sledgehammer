@@ -22,7 +22,7 @@ import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
-import com.noahhusby.sledgehammer.proxy.network.P2S.P2STestLocationPacket;
+import com.noahhusby.sledgehammer.proxy.network.p2s.P2STestLocationPacket;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

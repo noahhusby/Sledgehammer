@@ -168,7 +168,7 @@ public class SkullUtil {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
-        String toEncode = "{\"textures\":{\"SKIN\":{\"url\":\"" + actualUrl.toString() + "\"}}}";
+        String toEncode = "{\"textures\":{\"SKIN\":{\"url\":\"" + actualUrl + "\"}}}";
         return Base64.getEncoder().encodeToString(toEncode.getBytes());
     }
 
@@ -205,6 +205,6 @@ public class SkullUtil {
     }
 
     private static ItemStack itemFromTextureId(String textureId) {
-        return itemFromUrl("http://textures.minecraft.net/texture/" + textureId);
+        return itemFromUrl("https://textures.minecraft.net/texture/" + textureId);
     }
 }

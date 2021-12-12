@@ -20,16 +20,13 @@ package com.noahhusby.sledgehammer.common.projection;
 
 public class ScaleProjection extends ProjectionTransform {
 
-    double scaleX, scaleY;
+    final double scaleX;
+    final double scaleY;
 
     public ScaleProjection(GeographicProjection input, double scaleX, double scaleY) {
         super(input);
         this.scaleX = scaleX;
         this.scaleY = scaleY;
-    }
-
-    public ScaleProjection(GeographicProjection input, double scale) {
-        this(input, scale, scale);
     }
 
     public double[] toGeo(double x, double y) {

@@ -20,7 +20,6 @@ package com.noahhusby.sledgehammer.server.gui.warp.config;
 
 import com.noahhusby.sledgehammer.common.warps.Warp;
 import com.noahhusby.sledgehammer.common.warps.WarpConfigPayload;
-import com.noahhusby.sledgehammer.common.warps.WarpGroupPayload;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.gui.GUIChild;
@@ -128,7 +127,7 @@ public class ManageWarpViewInventory extends GUIChild {
             return;
         }
 
-        if(e.getSlot() == 0) {
+        if (e.getSlot() == 0) {
             controller.close();
             GUIRegistry.register(new ConfigMenu.ConfigMenuController(getPlayer(), ((ManageWarpViewInventoryController) getController()).getPayload()));
             return;

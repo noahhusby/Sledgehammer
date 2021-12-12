@@ -169,7 +169,7 @@ public class ManageGroupViewInventory extends GUIChild {
 
             List<Integer> warpIds = controller.getPayload().getGroups().get(id).getWarps();
             List<Warp> warps = Lists.newArrayList();
-            for(Integer warpId : warpIds) {
+            for (Integer warpId : warpIds) {
                 warps.add(controller.getPayload().getWaypoints().get(warpId));
             }
 

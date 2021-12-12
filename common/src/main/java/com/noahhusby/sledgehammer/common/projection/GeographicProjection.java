@@ -18,23 +18,10 @@
 
 package com.noahhusby.sledgehammer.common.projection;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class GeographicProjection {
 
-    public static double EARTH_CIRCUMFERENCE = 40075017;
-    public static double EARTH_POLAR_CIRCUMFERENCE = 40008000;
-
-    public static Map<String, GeographicProjection> projections;
-
-    static {
-        projections = new HashMap<>();
-        projections.put("equirectangular", new GeographicProjection());
-        projections.put("airocean", new Airocean());
-        projections.put("conformal", new ConformalEstimate());
-        projections.put("bteairocean", new ModifiedAirocean());
-    }
+    public static final double EARTH_CIRCUMFERENCE = 40075017;
+    public static final double EARTH_POLAR_CIRCUMFERENCE = 40008000;
 
     public static GeographicProjection orientProjection(GeographicProjection base, Orientation o) {
         if (base.upright()) {
@@ -106,35 +93,5 @@ public class GeographicProjection {
                 geo[1] + north * 360.0 / EARTH_POLAR_CIRCUMFERENCE);
 
         return new double[]{ off[0] - x, off[1] - y };
-    }
-
-    public double[] tissot(double lon, double lat, double d) {
-
-        double R = EARTH_CIRCUMFERENCE / (2 * Math.PI);
-
-        double ddeg = d * 180.0 / Math.PI;
-
-        double[] base = fromGeo(lon, lat);
-        double[] lonoff = fromGeo(lon + ddeg, lat);
-        double[] latoff = fromGeo(lon, lat + ddeg);
-
-        double dxdl = (lonoff[0] - base[0]) / d;
-        double dxdp = (latoff[0] - base[0]) / d;
-        double dydl = (lonoff[1] - base[1]) / d;
-        double dydp = (latoff[1] - base[1]) / d;
-
-        double cosp = Math.cos(lat * Math.PI / 180.0);
-
-        double h = Math.sqrt(dxdp * dxdp + dydp * dydp) / R;
-        double k = Math.sqrt(dxdl * dxdl + dydl * dydl) / (cosp * R);
-
-        double sint = Math.abs(dydp * dxdl - dxdp * dydl) / (R * R * cosp * h * k);
-        double ap = Math.sqrt(h * h + k * k + 2 * h * k * sint);
-        double bp = Math.sqrt(h * h + k * k - 2 * h * k * sint);
-
-        double a = (ap + bp) / 2;
-        double b = (ap - bp) / 2;
-
-        return new double[]{ h * k * sint, 2 * Math.asin(bp / ap), a, b };
     }
 }

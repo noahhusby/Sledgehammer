@@ -14,7 +14,7 @@ allprojects {
         lombokVersion = "1.18.22"
         husbyVersion = "0.1.89"
         guavaVersion = "31.0.1-jre"
-        anvilGuiVersion = "1.5.3-SNAPSHOT"
+        anvilGuiVersion = "1.5.2-SNAPSHOT"
         paperVersion = "1.12.2-R0.1-SNAPSHOT"
         bungeecordVersion = "1.17-R0.1-SNAPSHOT"
         terraplusplusVersion = "74449c4af349fd9b77b10e1041ed2c09f2d78518"
@@ -30,10 +30,10 @@ allprojects {
     repositories {
         mavenCentral()
         maven { url 'https://papermc.io/repo/repository/maven-public/' }
-        maven { url 'https://repo.codemc.io/repository/maven-snapshots' }
         maven { url 'https://jitpack.io/' }
-        maven { url 'https://maven.daporkchop.net/'}
-        maven { url 'https://maven.noahhusby.com/releases'}
+        maven { url 'https://maven.daporkchop.net/' }
+        maven { url 'https://maven.noahhusby.com/releases' }
+        maven { url 'https://repo.codemc.io/repository/maven-snapshots' }
     }
 
     dependencies {
@@ -62,7 +62,7 @@ dependencies {
 shadowJar {
     archiveFileName = "Sledgehammer-${version}.jar"
     manifest {
-        attributes( 'Implementation-Version': "${version}" )
+        attributes('Implementation-Version': "${version}")
     }
     dependencies {
         exclude(dependency("com.google.code.gson:gson"))

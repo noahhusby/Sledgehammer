@@ -13,7 +13,7 @@ import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.gui.warp.config.ManageServerViewInventory;
 import com.noahhusby.sledgehammer.server.gui.warp.config.confirmation.ConfirmationController;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
-import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpConfigPacket;
+import com.noahhusby.sledgehammer.server.network.p2s.S2PWarpConfigPacket;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -131,7 +131,7 @@ public class ManageWarpInventory extends GUIChild {
     public static class ManageWarpInventoryController extends GUIController {
 
         private final WarpConfigPayload payload;
-        private Warp warp;
+        private final Warp warp;
 
         public ManageWarpInventoryController(Player p, WarpConfigPayload payload, int warpId) {
             super(27, "Edit Warp Settings", p);

@@ -46,7 +46,7 @@ public class MapStyleRegistry {
                 MapStyleFile mapFile = new MapStyleFile(new MapFileMetadata(0, "Add custom map styles here. See an example at styles.terramap.thesmyler.fr (open in your browser, do not add http or https prefix)"));
                 GsonBuilder builder = new GsonBuilder();
                 builder.setPrettyPrinting();
-                Files.write(builder.create().toJson(mapFile), configMapsFile, Charset.defaultCharset());
+                Files.asCharSink(configMapsFile, Charset.defaultCharset()).write(builder.create().toJson(mapFile));
             } catch (IOException e) {
                 Sledgehammer.logger.warning("Failed to create map style config file! " + e.getLocalizedMessage());
             }

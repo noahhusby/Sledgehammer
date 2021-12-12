@@ -76,7 +76,7 @@ public class TerrashowCommand extends Command implements TabExecutor {
         }
 
         if (player != null && player.equals(senderPlayer)) {
-            if (senderPlayer != null && !this.canPlayerHideSelf(senderPlayer)) {
+            if (!this.canPlayerHideSelf(senderPlayer)) {
                 context.sendError("terramap.commands.terrashow.cannot_change_own_visibility");
                 return;
             }

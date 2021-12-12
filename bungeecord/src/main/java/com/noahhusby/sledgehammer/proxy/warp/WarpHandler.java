@@ -34,7 +34,7 @@ import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
-import com.noahhusby.sledgehammer.proxy.network.P2S.P2SSetwarpPacket;
+import com.noahhusby.sledgehammer.proxy.network.p2s.P2SSetwarpPacket;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
 import lombok.Getter;

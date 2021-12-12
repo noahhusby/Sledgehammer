@@ -20,7 +20,7 @@ public class WarpDeserializer implements JsonDeserializer<Warp> {
     public Warp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject object = json.getAsJsonObject();
         JsonObject point = object.getAsJsonObject("Point");
-        if(point != null) {
+        if (point != null) {
             convert(point, "x");
             convert(point, "y");
             convert(point, "z");

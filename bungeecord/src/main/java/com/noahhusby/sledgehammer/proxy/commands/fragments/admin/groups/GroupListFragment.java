@@ -35,21 +35,16 @@ public class GroupListFragment implements ICommandFragment {
         TextComponent list = ChatUtil.adminAndCombine(ChatColor.RED, "Warp Groups: ");
         boolean first = true;
         for (WarpGroup s : WarpHandler.getInstance().getWarpGroups().values()) {
+            TextComponent t = new TextComponent(s.getId());
+            t.setColor(ChatColor.BLUE);
+            t.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/sha group info %s", s.getId())));
+            t.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click for more info")));
             if (first) {
-                TextComponent t = new TextComponent(s.getId());
-                t.setColor(ChatColor.BLUE);
-                t.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/sha group info %s", s.getId())));
-                t.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click for more info")));
-                list.addExtra(t);
                 first = false;
             } else {
                 list.addExtra(ChatUtil.combine(ChatColor.GRAY, ", "));
-                TextComponent t = new TextComponent(s.getId());
-                t.setColor(ChatColor.BLUE);
-                t.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/sha group info %s", s.getId())));
-                t.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click for more info")));
-                list.addExtra(t);
             }
+            list.addExtra(t);
         }
         sender.sendMessage(list);
     }

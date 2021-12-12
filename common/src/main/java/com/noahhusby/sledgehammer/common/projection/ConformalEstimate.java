@@ -24,13 +24,12 @@ import java.util.Scanner;
 
 public class ConformalEstimate extends Airocean {
 
-    InvertableVectorField forward;
-    InvertableVectorField inverse;
+    final InvertableVectorField inverse;
 
-    double VECTOR_SCALE_FACTOR = 1 / 1.1473979730192934;
+    final double VECTOR_SCALE_FACTOR = 1 / 1.1473979730192934;
 
     public ConformalEstimate() {
-        InputStream is = null;
+        InputStream is;
 
 
         int sideLength = 256;
@@ -79,11 +78,6 @@ public class ConformalEstimate extends Airocean {
         c[0] += 0.5;
         c[1] += ROOT3 / 6;
 
-        //use another interpolated vector to have a really good guess before using newtons method
-        //c = forward.getInterpolatedVector(c[0], c[1]);
-        //c = inverse.applyNewtonsMethod(x, y, c[0]/ARC + 0.5, c[1]/ARC + ROOT3/6, 1);
-
-        //just use newtons method: slower
         c = inverse.applyNewtonsMethod(x, y, c[0], c[1], 5);//c[0]/ARC + 0.5, c[1]/ARC + ROOT3/6
 
         c[0] -= 0.5;

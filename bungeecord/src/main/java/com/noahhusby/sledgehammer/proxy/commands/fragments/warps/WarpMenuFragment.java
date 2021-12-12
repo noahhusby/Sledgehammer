@@ -22,7 +22,7 @@ import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.commands.WarpCommand;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
-import com.noahhusby.sledgehammer.proxy.network.P2S.P2SWarpGUIPacket;
+import com.noahhusby.sledgehammer.proxy.network.p2s.P2SWarpGUIPacket;
 import com.noahhusby.sledgehammer.proxy.players.Permission;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;

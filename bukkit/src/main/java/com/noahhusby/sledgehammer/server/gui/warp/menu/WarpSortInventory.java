@@ -7,7 +7,7 @@ import com.noahhusby.sledgehammer.server.gui.GUIChild;
 import com.noahhusby.sledgehammer.server.gui.GUIController;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
-import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpConfigPacket;
+import com.noahhusby.sledgehammer.server.network.p2s.S2PWarpConfigPacket;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -116,7 +116,7 @@ public class WarpSortInventory extends GUIChild {
 
         controller.close();
 
-        switch(payload.getDefaultPage()) {
+        switch (payload.getDefaultPage()) {
             case ALL:
                 GUIRegistry.register(new AllWarpInventory.AllWarpInventoryController(getPlayer(), payload));
                 break;

@@ -27,8 +27,8 @@ import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.gui.GUIController;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
-import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpConfigPacket;
-import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpPacket;
+import com.noahhusby.sledgehammer.server.network.p2s.S2PWarpConfigPacket;
+import com.noahhusby.sledgehammer.server.network.p2s.S2PWarpPacket;
 import com.noahhusby.sledgehammer.server.util.SkullUtil;
 import com.noahhusby.sledgehammer.server.util.WarpGUIUtil;
 import lombok.RequiredArgsConstructor;
@@ -207,9 +207,9 @@ public class GroupWarpInventory extends AbstractWarpInventory {
             }
 
             List<Warp> warps = Lists.newArrayList();
-            for(Integer warpId : group.getWarps()) {
+            for (Integer warpId : group.getWarps()) {
                 Warp warp = payload.getWaypoints().get(warpId);
-                if(warp != null) {
+                if (warp != null) {
                     warps.add(warp);
                 }
             }

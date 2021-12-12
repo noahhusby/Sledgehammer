@@ -19,7 +19,7 @@
 package com.noahhusby.sledgehammer.common.projection;
 
 public abstract class ProjectionTransform extends GeographicProjection {
-    protected GeographicProjection input;
+    protected final GeographicProjection input;
 
     public ProjectionTransform(GeographicProjection input) {
         this.input = input;

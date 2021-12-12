@@ -47,7 +47,6 @@ public class ForgeChannel {
             if (event.getSender() instanceof ProxiedPlayer && event.getReceiver() instanceof Server) {
                 player = (ProxiedPlayer) event.getSender();
                 server = (Server) event.getReceiver();
-                player2server = true;
             } else if (event.getSender() instanceof Server && event.getReceiver() instanceof ProxiedPlayer) {
                 player = (ProxiedPlayer) event.getReceiver();
                 server = (Server) event.getSender();
@@ -70,14 +69,14 @@ public class ForgeChannel {
             }
             IForgePacket packetHandler = clazz.newInstance();
             packetHandler.decode(stream);
-            boolean cancel = false;
+            boolean cancel;
             if (player2server) {
                 cancel = packetHandler.processFromClient(this.channelName, player, server);
             } else {
                 cancel = packetHandler.processFromServer(this.channelName, server, player);
             }
             if (cancel) {
-                event.setCancelled(cancel);
+                event.setCancelled(true);
             }
         } catch (Exception e) {
             Sledgehammer.logger.warning("Failed to process a Forge packet!");
