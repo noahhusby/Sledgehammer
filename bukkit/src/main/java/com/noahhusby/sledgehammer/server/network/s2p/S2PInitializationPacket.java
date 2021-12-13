@@ -22,19 +22,29 @@ package com.noahhusby.sledgehammer.server.network.s2p;
 
 import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.server.Constants;
-import com.noahhusby.sledgehammer.server.network.P2SPacket;
+import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
-import com.noahhusby.sledgehammer.server.network.p2s.S2PTestLocationPacket;
+import com.noahhusby.sledgehammer.server.network.S2PPacket;
+import lombok.RequiredArgsConstructor;
+import org.bukkit.entity.Player;
 
-public class P2STestLocationPacket extends P2SPacket {
+@RequiredArgsConstructor
+public class S2PInitializationPacket extends S2PPacket {
+
+    private final Player player;
+
     @Override
     public String getPacketID() {
-        return Constants.testLocationID;
+        return Constants.initID;
     }
 
     @Override
-    public void onMessage(PacketInfo info, JsonObject data) {
-        int zoom = data.get("zoom").getAsInt();
-        getManager().send(new S2PTestLocationPacket(info, zoom));
+    public void getMessage(JsonObject data) {
+        data.add("version", SledgehammerUtil.GSON.toJsonTree(Constants.VERSION));
+    }
+
+    @Override
+    public PacketInfo getPacketInfo() {
+        return PacketInfo.build(getPacketID(), player);
     }
 }

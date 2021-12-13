@@ -82,9 +82,9 @@ dependencies {
 }
 
 shadowJar {
-    archiveFileName = "Sledgehammer-${version}.jar"
+    archiveFileName = "Sledgehammer-${sledgehammerVersion}.jar"
     manifest {
-        attributes('Implementation-Version': "${version}")
+        attributes('Implementation-Version': "${sledgehammerVersion}")
     }
     dependencies {
         exclude(dependency("com.google.code.gson:gson"))

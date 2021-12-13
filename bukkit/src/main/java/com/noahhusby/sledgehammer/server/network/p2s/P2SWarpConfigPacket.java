@@ -18,38 +18,42 @@
  *
  */
 
-package com.noahhusby.sledgehammer.server.network.s2p;
+package com.noahhusby.sledgehammer.server.network.p2s;
 
 import com.google.gson.JsonObject;
-import com.noahhusby.sledgehammer.common.warps.Point;
+import com.noahhusby.sledgehammer.common.warps.Warp;
+import com.noahhusby.sledgehammer.common.warps.WarpConfigPayload;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
+import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
+import com.noahhusby.sledgehammer.server.gui.warp.config.ConfigMenu;
+import com.noahhusby.sledgehammer.server.gui.warp.config.confirmation.ConfirmationController;
 import com.noahhusby.sledgehammer.server.network.P2SPacket;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
-public class P2STeleportPacket extends P2SPacket {
+public class P2SWarpConfigPacket extends P2SPacket {
     @Override
     public String getPacketID() {
-        return Constants.teleportID;
+        return Constants.warpConfigID;
     }
 
     @Override
     public void onMessage(PacketInfo info, JsonObject data) {
-        Player player = Bukkit.getPlayer(info.getSender());
-        if (player == null) {
-            throwNoSender();
-            return;
+        WarpConfigPayload payload = SledgehammerUtil.GSON.fromJson(data.get("payload"), WarpConfigPayload.class);
+        switch (payload.getAction()) {
+            case OPEN_CONFIG:
+                GUIRegistry.register(new ConfigMenu.ConfigMenuController(Bukkit.getPlayer(info.getSender()), payload));
+                break;
+            case ADD_FAILURE:
+            case ADD_SUCCESSFUL:
+            case REMOVE_SUCCESSFUL:
+            case REMOVE_FAILURE:
+                GUIRegistry.register(new ConfirmationController(Bukkit.getPlayer(info.getSender()), payload, ConfirmationController.Type.valueOf(payload.getAction().name())));
+                break;
+            case LOCATION_UPDATE:
+                Warp warp = payload.getWaypoints().get(data.get("warpId").getAsInt());
+                GUIRegistry.register(new ConfirmationController(Bukkit.getPlayer(info.getSender()), payload, ConfirmationController.Type.LOCATION_UPDATE, warp));
         }
-
-        if (!player.isOnline()) {
-            throwNoSender();
-            return;
-        }
-
-        Point point = SledgehammerUtil.GSON.fromJson(data.get("point"), Point.class);
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), String.format("minecraft:tp %s %s %s %s %s %s", info.getSender(), point.getX(),
-                point.getY(), point.getZ(), point.getYaw(), point.getPitch()));
     }
 }

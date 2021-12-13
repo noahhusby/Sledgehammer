@@ -21,35 +21,19 @@
 package com.noahhusby.sledgehammer.server.network.p2s;
 
 import com.google.gson.JsonObject;
-import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.server.Constants;
-import com.noahhusby.sledgehammer.server.SledgehammerUtil;
+import com.noahhusby.sledgehammer.server.network.P2SPacket;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
-import com.noahhusby.sledgehammer.server.network.S2PPacket;
-import lombok.RequiredArgsConstructor;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
+import com.noahhusby.sledgehammer.server.network.s2p.S2PSetwarpPacket;
 
-@RequiredArgsConstructor
-public class S2PPlayerUpdatePacket extends S2PPacket {
-
-    private final Player player;
-
+public class P2SSetwarpPacket extends P2SPacket {
     @Override
     public String getPacketID() {
-        return Constants.playerUpdateID;
+        return Constants.setwarpID;
     }
 
     @Override
-    public void getMessage(JsonObject data) {
-        Location loc = player.getLocation();
-        Point point = new Point(loc.getX(), loc.getY(), loc.getZ(), loc.getY(), loc.getPitch()).limit();
-        data.add("point", SledgehammerUtil.GSON.toJsonTree(point));
-        data.addProperty("gameMode", player.getGameMode().name());
-    }
-
-    @Override
-    public PacketInfo getPacketInfo() {
-        return PacketInfo.build(getPacketID(), player);
+    public void onMessage(PacketInfo info, JsonObject data) {
+        getManager().send(new S2PSetwarpPacket(info));
     }
 }

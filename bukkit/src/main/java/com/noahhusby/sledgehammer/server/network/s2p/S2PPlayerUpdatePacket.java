@@ -21,42 +21,35 @@
 package com.noahhusby.sledgehammer.server.network.s2p;
 
 import com.google.gson.JsonObject;
+import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
-import com.noahhusby.sledgehammer.server.network.P2SPacket;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
-import org.bukkit.Bukkit;
+import com.noahhusby.sledgehammer.server.network.S2PPacket;
+import lombok.RequiredArgsConstructor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-public class P2SLocationPacket extends P2SPacket {
+@RequiredArgsConstructor
+public class S2PPlayerUpdatePacket extends S2PPacket {
+
+    private final Player player;
+
     @Override
     public String getPacketID() {
-        return Constants.locationID;
+        return Constants.playerUpdateID;
     }
 
     @Override
-    public void onMessage(PacketInfo info, JsonObject data) {
-        Player player = Bukkit.getPlayer(info.getSender());
-        if (player == null) {
-            throwNoSender();
-            return;
-        }
-        String lat = data.get("lat").getAsString();
-        String lon = data.get("lon").getAsString();
-        int xOffset = 0;
-        int zOffset = 0;
-        try {
-            xOffset = Integer.parseInt(data.get("xOffset").getAsString());
-            zOffset = Integer.parseInt(data.get("zOffset").getAsString());
-        } catch (Exception ignored) {
-        }
-        double[] proj = SledgehammerUtil.fromGeo(Double.parseDouble(lon), Double.parseDouble(lat));
-        int x = (int) Math.floor(proj[0]) + xOffset;
-        int z = (int) Math.floor(proj[1]) + zOffset;
-        if (SledgehammerUtil.hasTerraPlusPlus()) {
-            SledgehammerUtil.getTerraConnector().getHeight(x, z).thenAccept(y -> Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), String.format("minecraft:tp %s %s %s %s", player.getName(), x, y, z)));
-        } else {
-            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), String.format("minecraft:tp %s %s %s %s", player.getName(), x, player.getWorld().getHighestBlockYAt(x, z) + 1, z));
-        }
+    public void getMessage(JsonObject data) {
+        Location loc = player.getLocation();
+        Point point = new Point(loc.getX(), loc.getY(), loc.getZ(), loc.getY(), loc.getPitch()).limit();
+        data.add("point", SledgehammerUtil.GSON.toJsonTree(point));
+        data.addProperty("gameMode", player.getGameMode().name());
+    }
+
+    @Override
+    public PacketInfo getPacketInfo() {
+        return PacketInfo.build(getPacketID(), player);
     }
 }

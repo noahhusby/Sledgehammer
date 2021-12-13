@@ -21,32 +21,34 @@
 package com.noahhusby.sledgehammer.server.network.p2s;
 
 import com.google.gson.JsonObject;
-import com.noahhusby.sledgehammer.common.warps.WarpPayload;
 import com.noahhusby.sledgehammer.server.Constants;
+import com.noahhusby.sledgehammer.server.network.P2SPacket;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
-import com.noahhusby.sledgehammer.server.network.S2PPacket;
-import lombok.RequiredArgsConstructor;
+import com.noahhusby.sledgehammer.server.network.s2p.S2PPermissionPacket;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-@RequiredArgsConstructor
-public class S2PWarpPacket extends S2PPacket {
-    private final Player player;
-    private final WarpPayload payload;
-    private final int warpId;
+import java.util.UUID;
 
+public class P2SPermissionPacket extends P2SPacket {
     @Override
     public String getPacketID() {
-        return Constants.warpID;
+        return Constants.permissionCheckID;
     }
 
     @Override
-    public void getMessage(JsonObject data) {
-        data.addProperty("salt", payload.getSalt());
-        data.addProperty("warpId", warpId);
-    }
+    public void onMessage(PacketInfo info, JsonObject data) {
+        UUID player = UUID.fromString(data.get("player").getAsString());
+        String salt = data.get("salt").getAsString();
+        String permission = data.get("permission").getAsString();
 
-    @Override
-    public PacketInfo getPacketInfo() {
-        return PacketInfo.build(getPacketID(), player);
+        boolean permissionResponse = false;
+
+        Player p = Bukkit.getPlayer(player);
+        if (p != null) {
+            permissionResponse = p.hasPermission(permission);
+        }
+
+        getManager().send(new S2PPermissionPacket(p, salt, permissionResponse));
     }
 }

@@ -82,14 +82,13 @@ public class ModuleHandler {
      * @param module {@link Module}
      * @return True if successfully enabled, false if not
      */
-    public boolean enable(Module module) {
+    public void enable(Module module) {
         if (modules.get(module)) {
-            return false;
+            return;
         }
         module.onEnable();
         modules.put(module, true);
         Sledgehammer.logger.info(String.format("Enabling Module: %s", module.getModuleName()));
-        return true;
     }
 
     /**
@@ -98,14 +97,13 @@ public class ModuleHandler {
      * @param module {@link Module}
      * @return True if successfully disabled, false if not
      */
-    public boolean disable(Module module) {
+    public void disable(Module module) {
         if (!modules.get(module)) {
-            return false;
+            return;
         }
         module.onDisable();
         modules.put(module, false);
         Sledgehammer.logger.info(String.format("Disabling Module: %s", module.getModuleName()));
-        return true;
     }
 
     /**

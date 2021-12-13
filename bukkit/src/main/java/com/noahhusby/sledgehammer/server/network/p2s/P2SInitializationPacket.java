@@ -22,38 +22,19 @@ package com.noahhusby.sledgehammer.server.network.p2s;
 
 import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.server.Constants;
+import com.noahhusby.sledgehammer.server.network.P2SPacket;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
-import com.noahhusby.sledgehammer.server.network.S2PPacket;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.bukkit.entity.Player;
+import com.noahhusby.sledgehammer.server.network.s2p.S2PInitializationPacket;
+import org.bukkit.Bukkit;
 
-@RequiredArgsConstructor
-@AllArgsConstructor
-public class S2PWarpConfigPacket extends S2PPacket {
-    private final ProxyConfigAction action;
-    private final Player player;
-    private final String salt;
-    private JsonObject data = new JsonObject();
-
+public class P2SInitializationPacket extends P2SPacket {
     @Override
     public String getPacketID() {
-        return Constants.warpConfigID;
+        return Constants.initID;
     }
 
     @Override
-    public void getMessage(JsonObject data) {
-        data.addProperty("salt", salt);
-        data.addProperty("action", action.name());
-        data.add("data", this.data);
-    }
-
-    @Override
-    public PacketInfo getPacketInfo() {
-        return PacketInfo.build(getPacketID(), player);
-    }
-
-    public enum ProxyConfigAction {
-        OPEN_CONFIG, CREATE_WARP, UPDATE_WARP, UPDATE_PLAYER_DEFAULT, WARP_UPDATE_LOCATION, REMOVE_WARP
+    public void onMessage(PacketInfo info, JsonObject data) {
+        getManager().send(new S2PInitializationPacket(Bukkit.getPlayer(info.getSender())));
     }
 }

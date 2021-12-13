@@ -21,30 +21,35 @@
 package com.noahhusby.sledgehammer.server.network.p2s;
 
 import com.google.gson.JsonObject;
+import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
+import com.noahhusby.sledgehammer.server.network.P2SPacket;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
-import com.noahhusby.sledgehammer.server.network.S2PPacket;
-import lombok.RequiredArgsConstructor;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-@RequiredArgsConstructor
-public class S2PInitializationPacket extends S2PPacket {
-
-    private final Player player;
-
+public class P2STeleportPacket extends P2SPacket {
     @Override
     public String getPacketID() {
-        return Constants.initID;
+        return Constants.teleportID;
     }
 
     @Override
-    public void getMessage(JsonObject data) {
-        data.add("version", SledgehammerUtil.GSON.toJsonTree(Constants.VERSION));
-    }
+    public void onMessage(PacketInfo info, JsonObject data) {
+        Player player = Bukkit.getPlayer(info.getSender());
+        if (player == null) {
+            throwNoSender();
+            return;
+        }
 
-    @Override
-    public PacketInfo getPacketInfo() {
-        return PacketInfo.build(getPacketID(), player);
+        if (!player.isOnline()) {
+            throwNoSender();
+            return;
+        }
+
+        Point point = SledgehammerUtil.GSON.fromJson(data.get("point"), Point.class);
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), String.format("minecraft:tp %s %s %s %s %s %s", info.getSender(), point.getX(),
+                point.getY(), point.getZ(), point.getYaw(), point.getPitch()));
     }
 }

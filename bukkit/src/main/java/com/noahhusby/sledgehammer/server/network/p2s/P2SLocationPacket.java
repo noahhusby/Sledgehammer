@@ -18,23 +18,45 @@
  *
  */
 
-package com.noahhusby.sledgehammer.server.network.s2p;
+package com.noahhusby.sledgehammer.server.network.p2s;
 
 import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.server.Constants;
+import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.network.P2SPacket;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
-import com.noahhusby.sledgehammer.server.network.p2s.S2PInitializationPacket;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
-public class P2SInitializationPacket extends P2SPacket {
+public class P2SLocationPacket extends P2SPacket {
     @Override
     public String getPacketID() {
-        return Constants.initID;
+        return Constants.locationID;
     }
 
     @Override
     public void onMessage(PacketInfo info, JsonObject data) {
-        getManager().send(new S2PInitializationPacket(Bukkit.getPlayer(info.getSender())));
+        Player player = Bukkit.getPlayer(info.getSender());
+        if (player == null) {
+            throwNoSender();
+            return;
+        }
+        String lat = data.get("lat").getAsString();
+        String lon = data.get("lon").getAsString();
+        int xOffset = 0;
+        int zOffset = 0;
+        try {
+            xOffset = Integer.parseInt(data.get("xOffset").getAsString());
+            zOffset = Integer.parseInt(data.get("zOffset").getAsString());
+        } catch (Exception ignored) {
+        }
+        double[] proj = SledgehammerUtil.fromGeo(Double.parseDouble(lon), Double.parseDouble(lat));
+        int x = (int) Math.floor(proj[0]) + xOffset;
+        int z = (int) Math.floor(proj[1]) + zOffset;
+        if (SledgehammerUtil.hasTerraPlusPlus()) {
+            SledgehammerUtil.getTerraConnector().getHeight(x, z).thenAccept(y -> Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), String.format("minecraft:tp %s %s %s %s", player.getName(), x, y, z)));
+        } else {
+            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), String.format("minecraft:tp %s %s %s %s", player.getName(), x, player.getWorld().getHighestBlockYAt(x, z) + 1, z));
+        }
     }
 }

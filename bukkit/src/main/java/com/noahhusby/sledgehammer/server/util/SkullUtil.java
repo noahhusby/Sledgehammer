@@ -56,12 +56,6 @@ public class SkullUtil {
     private static final Map<Integer, ItemStack> numberHeads = Maps.newHashMap();
 
     static {
-        try {
-            Material.class.getDeclaredField("PLAYER_HEAD");
-            Material.valueOf("SKULL");
-        } catch (NoSuchFieldException | IllegalArgumentException ignored) {
-        }
-
         numberHeads.put(0, itemFromTextureId("3f09018f46f349e553446946a38649fcfcf9fdfd62916aec33ebca96bb21b5"));
         numberHeads.put(1, itemFromTextureId("ca516fbae16058f251aef9a68d3078549f48f6d5b683f19cf5a1745217d72cc"));
         numberHeads.put(2, itemFromTextureId("4698add39cf9e4ea92d42fadefdec3be8a7dafa11fb359de752e9f54aecedc9a"));
@@ -159,7 +153,7 @@ public class SkullUtil {
      * @return The head associated with the URL.
      */
     public static ItemStack itemWithUrlId(@NonNull ItemStack item, @NonNull String url) {
-        return itemWithBase64(item, urlToBase64("http://textures.minecraft.net/texture/" + url));
+        return itemWithBase64(item, urlToBase64("https://textures.minecraft.net/texture/" + url));
     }
 
     /**

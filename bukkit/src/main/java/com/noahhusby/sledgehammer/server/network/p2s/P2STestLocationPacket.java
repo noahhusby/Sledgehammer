@@ -22,31 +22,19 @@ package com.noahhusby.sledgehammer.server.network.p2s;
 
 import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.server.Constants;
+import com.noahhusby.sledgehammer.server.network.P2SPacket;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
-import com.noahhusby.sledgehammer.server.network.S2PPacket;
-import lombok.RequiredArgsConstructor;
-import org.bukkit.entity.Player;
+import com.noahhusby.sledgehammer.server.network.s2p.S2PTestLocationPacket;
 
-@RequiredArgsConstructor
-public class S2PPermissionPacket extends S2PPacket {
-    private final Player player;
-    private final String salt;
-    private final boolean permission;
-
+public class P2STestLocationPacket extends P2SPacket {
     @Override
     public String getPacketID() {
-        return Constants.permissionCheckID;
+        return Constants.testLocationID;
     }
 
     @Override
-    public void getMessage(JsonObject data) {
-        data.addProperty("player", player.getUniqueId().toString());
-        data.addProperty("salt", salt);
-        data.addProperty("permission", permission);
-    }
-
-    @Override
-    public PacketInfo getPacketInfo() {
-        return PacketInfo.build(getPacketID(), player);
+    public void onMessage(PacketInfo info, JsonObject data) {
+        int zoom = data.get("zoom").getAsInt();
+        getManager().send(new S2PTestLocationPacket(info, zoom));
     }
 }

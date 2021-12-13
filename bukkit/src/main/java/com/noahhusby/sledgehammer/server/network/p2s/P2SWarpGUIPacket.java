@@ -18,7 +18,7 @@
  *
  */
 
-package com.noahhusby.sledgehammer.server.network.s2p;
+package com.noahhusby.sledgehammer.server.network.p2s;
 
 import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.common.warps.WarpPayload;

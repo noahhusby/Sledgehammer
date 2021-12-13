@@ -18,45 +18,42 @@
  *
  */
 
-package com.noahhusby.sledgehammer.server.network.p2s;
+package com.noahhusby.sledgehammer.server.network.s2p;
 
 import com.google.gson.JsonObject;
-import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.server.Constants;
-import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
 import com.noahhusby.sledgehammer.server.network.S2PPacket;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 @RequiredArgsConstructor
-public class S2PSetwarpPacket extends S2PPacket {
-
-    private final PacketInfo info;
+@AllArgsConstructor
+public class S2PWarpConfigPacket extends S2PPacket {
+    private final ProxyConfigAction action;
+    private final Player player;
+    private final String salt;
+    private JsonObject data = new JsonObject();
 
     @Override
     public String getPacketID() {
-        return Constants.setwarpID;
+        return Constants.warpConfigID;
     }
 
     @Override
     public void getMessage(JsonObject data) {
-        Player p = Bukkit.getPlayer(info.getSender());
-        if (p == null) {
-            return;
-        }
-        if (!p.isOnline()) {
-            return;
-        }
-        Location loc = p.getLocation();
-        Point point = new Point(loc.getX(), loc.getY(), loc.getZ(), loc.getY(), loc.getPitch());
-        data.add("point", SledgehammerUtil.GSON.toJsonTree(point));
+        data.addProperty("salt", salt);
+        data.addProperty("action", action.name());
+        data.add("data", this.data);
     }
 
     @Override
     public PacketInfo getPacketInfo() {
-        return PacketInfo.renew(info);
+        return PacketInfo.build(getPacketID(), player);
+    }
+
+    public enum ProxyConfigAction {
+        OPEN_CONFIG, CREATE_WARP, UPDATE_WARP, UPDATE_PLAYER_DEFAULT, WARP_UPDATE_LOCATION, REMOVE_WARP
     }
 }

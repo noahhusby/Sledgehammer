@@ -21,19 +21,32 @@
 package com.noahhusby.sledgehammer.server.network.s2p;
 
 import com.google.gson.JsonObject;
+import com.noahhusby.sledgehammer.common.warps.WarpPayload;
 import com.noahhusby.sledgehammer.server.Constants;
-import com.noahhusby.sledgehammer.server.network.P2SPacket;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
-import com.noahhusby.sledgehammer.server.network.p2s.S2PSetwarpPacket;
+import com.noahhusby.sledgehammer.server.network.S2PPacket;
+import lombok.RequiredArgsConstructor;
+import org.bukkit.entity.Player;
 
-public class P2SSetwarpPacket extends P2SPacket {
+@RequiredArgsConstructor
+public class S2PWarpPacket extends S2PPacket {
+    private final Player player;
+    private final WarpPayload payload;
+    private final int warpId;
+
     @Override
     public String getPacketID() {
-        return Constants.setwarpID;
+        return Constants.warpID;
     }
 
     @Override
-    public void onMessage(PacketInfo info, JsonObject data) {
-        getManager().send(new S2PSetwarpPacket(info));
+    public void getMessage(JsonObject data) {
+        data.addProperty("salt", payload.getSalt());
+        data.addProperty("warpId", warpId);
+    }
+
+    @Override
+    public PacketInfo getPacketInfo() {
+        return PacketInfo.build(getPacketID(), player);
     }
 }
