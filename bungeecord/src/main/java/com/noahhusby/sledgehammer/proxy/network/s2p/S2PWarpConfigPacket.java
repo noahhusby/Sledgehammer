@@ -96,8 +96,6 @@ public class S2PWarpConfigPacket extends S2PPacket {
                 }
                 warp.setHeadID(incomingWarp.getHeadID());
                 warp.setName(incomingWarp.getName());
-                //warp.setPinned(pin);
-
                 WarpHandler.getInstance().getWarps().saveAsync();
                 break;
             case UPDATE_PLAYER_DEFAULT:

@@ -61,7 +61,7 @@ public abstract class GUIChild {
     }
 
     protected ItemStack createItem(Material material, int amount, byte meta, String name) {
-        ItemStack item = new ItemStack(Material.STAINED_GLASS_PANE, amount, meta);
+        ItemStack item = new ItemStack(material, amount, meta);
         ItemMeta itemMeta = item.getItemMeta();
         itemMeta.setDisplayName(name);
         item.setItemMeta(itemMeta);

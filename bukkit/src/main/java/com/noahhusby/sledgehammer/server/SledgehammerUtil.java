@@ -66,13 +66,13 @@ public class SledgehammerUtil extends CommonUtil {
     /**
      * Gets a skull from a base64 texture
      *
-     * @param base64 Base64 Texture
-     * @param name   Display Name of Skull
+     * @param urlId Base64 Texture
+     * @param name  Display Name of Skull
      * @return {@link ItemStack}
      */
-    public static ItemStack getSkull(String base64, String name) {
+    public static ItemStack getSkull(String urlId, String name) {
         try {
-            return setItemDisplayName(SkullUtil.itemFromBase64(base64), name);
+            return setItemDisplayName(SkullUtil.itemWithUrlId(SkullUtil.createSkull(), urlId), name);
         } catch (StringIndexOutOfBoundsException | NullPointerException e) {
             return getSkull(Constants.steveHead, name);
         }

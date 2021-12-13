@@ -158,6 +158,17 @@ public class SkullUtil {
      * @param url  The URL of the Mojang skin.
      * @return The head associated with the URL.
      */
+    public static ItemStack itemWithUrlId(@NonNull ItemStack item, @NonNull String url) {
+        return itemWithBase64(item, urlToBase64("http://textures.minecraft.net/texture/" + url));
+    }
+
+    /**
+     * Modifies a skull to use the skin at the given Mojang URL.
+     *
+     * @param item The item to apply the skin to. Must be a player skull.
+     * @param url  The URL of the Mojang skin.
+     * @return The head associated with the URL.
+     */
     public static ItemStack itemWithUrl(@NonNull ItemStack item, @NonNull String url) {
         return itemWithBase64(item, urlToBase64(url));
     }

@@ -69,17 +69,10 @@ public class ManageWarpInventory extends GUIChild {
             item.setLore(lore);
             setItem(4, item);
         }
-
-        setItem(18, SledgehammerUtil.getSkull(Constants.arrowLeftHead, ChatColor.RED + ""
-                                                                       + ChatColor.BOLD + "Back"));
+        setItem(18, SledgehammerUtil.getSkull(Constants.arrowLeftHead, ChatColor.RED + "" + ChatColor.BOLD + "Back"));
         setItem(26, SledgehammerUtil.getSkull(Constants.limeCheckmarkHead, ChatColor.GREEN + "" + ChatColor.BOLD + "Save"));
         setItem(11, createItem(Material.NAME_TAG, 1, ChatColor.RED + "" + ChatColor.BOLD + "Change Name"));
-        inventory.setItem(12, SledgehammerUtil.getSkull(Constants.pocketPortalHead, ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Move Location"));
-
-        {
-            // Global
-        }
-
+        setItem(12, SledgehammerUtil.getSkull(Constants.pocketPortalHead, ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Move Location"));
         setItem(14, SledgehammerUtil.getSkull(Constants.steveHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Change Head"));
         setItem(15, SledgehammerUtil.getSkull(Constants.redTrashCanHead, ChatColor.RED + "" + ChatColor.BOLD + "Delete Warp"));
     }
@@ -116,14 +109,10 @@ public class ManageWarpInventory extends GUIChild {
             NetworkHandler.getInstance().send(new S2PWarpConfigPacket(S2PWarpConfigPacket.ProxyConfigAction.WARP_UPDATE_LOCATION, getPlayer(), payload.getSalt(), data));
         }
 
-        if (e.getSlot() == 13) {
-            // Reserved for global
-        }
-
         if (e.getSlot() == 14) {
             getController().close();
-            ChatHandler.getInstance().startEntry(getPlayer(), ChatColor.BLUE + "Enter the Base64 head code from " +
-                                                              ChatColor.GOLD + "minecraft-heads.com", (success, text) -> {
+            ChatHandler.getInstance().startEntry(getPlayer(), ChatColor.BLUE + "Enter the Minecraft-URL value from " +
+                                                              ChatColor.GRAY + "minecraft-heads.com", (success, text) -> {
                 if (success) {
                     cur.setHeadID(text);
                 }

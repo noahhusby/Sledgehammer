@@ -49,10 +49,10 @@ public class ChatHandler implements Listener {
             player.sendMessage();
         }
 
-        player.sendMessage(ChatColor.RED + "--------------------------------------------------");
+        player.sendMessage(ChatColor.DARK_GRAY + "--------------------------------------------------");
         player.sendMessage(message);
-        player.sendMessage(ChatColor.GRAY + "Send " + ChatColor.GOLD + "'cancel' " + ChatColor.GRAY + "to cancel.");
-        player.sendMessage(ChatColor.RED + "--------------------------------------------------");
+        player.sendMessage(ChatColor.GRAY + "Send " + ChatColor.RED + "'cancel' " + ChatColor.GRAY + "to cancel.");
+        player.sendMessage(ChatColor.DARK_GRAY + "--------------------------------------------------");
     }
 
     @EventHandler

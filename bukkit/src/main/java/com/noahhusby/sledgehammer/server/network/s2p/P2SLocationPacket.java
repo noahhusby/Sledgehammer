@@ -41,24 +41,18 @@ public class P2SLocationPacket extends P2SPacket {
             throwNoSender();
             return;
         }
-
         String lat = data.get("lat").getAsString();
         String lon = data.get("lon").getAsString();
-
         int xOffset = 0;
         int zOffset = 0;
-
         try {
             xOffset = Integer.parseInt(data.get("xOffset").getAsString());
             zOffset = Integer.parseInt(data.get("zOffset").getAsString());
         } catch (Exception ignored) {
         }
-
         double[] proj = SledgehammerUtil.fromGeo(Double.parseDouble(lon), Double.parseDouble(lat));
-
         int x = (int) Math.floor(proj[0]) + xOffset;
         int z = (int) Math.floor(proj[1]) + zOffset;
-
         if (SledgehammerUtil.hasTerraPlusPlus()) {
             SledgehammerUtil.getTerraConnector().getHeight(x, z).thenAccept(y -> Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), String.format("minecraft:tp %s %s %s %s", player.getName(), x, y, z)));
         } else {

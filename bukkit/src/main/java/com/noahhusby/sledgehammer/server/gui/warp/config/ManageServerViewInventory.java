@@ -47,17 +47,7 @@ public class ManageServerViewInventory extends GUIChild {
 
     @Override
     public void init() {
-        for (int x = 0; x < 45; x++) {
-            ItemStack glass = new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) 15);
-
-            ItemMeta meta = glass.getItemMeta();
-            meta.setDisplayName(ChatColor.RESET + "");
-            meta.setDisplayName(null);
-            glass.setItemMeta(meta);
-
-            inventory.setItem(x, glass);
-        }
-
+        fillInventory(createItem(Material.STAINED_GLASS_PANE, 1, (byte) 15, null));
         inventory.setItem(0, SledgehammerUtil.getSkull(Constants.redLeftHead, ChatColor.RED + "" + ChatColor.BOLD + "Go Back"));
 
         {

@@ -48,36 +48,25 @@ public class ManageGroupViewInventory extends GUIChild {
 
     @Override
     public void init() {
-        for (int x = 0; x < 45; x++) {
-            ItemStack glass = new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) 15);
-
-            ItemMeta meta = glass.getItemMeta();
-            meta.setDisplayName(ChatColor.RESET + "");
-            meta.setDisplayName(null);
-            glass.setItemMeta(meta);
-
-            inventory.setItem(x, glass);
-        }
-
-        inventory.setItem(0, SledgehammerUtil.getSkull(Constants.redLeftHead, ChatColor.RED + "" + ChatColor.BOLD + "Go Back"));
-
+        fillInventory(createItem(Material.STAINED_GLASS_PANE, 1, (byte) 15, null));
+        setItem(0, SledgehammerUtil.getSkull(Constants.redLeftHead, ChatColor.RED + "" + ChatColor.BOLD + "Go Back"));
         {
             ItemStack overview = SledgehammerUtil.getSkull(Constants.globeHead, ChatColor.GREEN + "" + ChatColor.BOLD + "Groups");
             ItemMeta meta = overview.getItemMeta();
             meta.setLore(Lists.newArrayList(ChatColor.GOLD + "Click to sort warps by server"));
             overview.setItemMeta(meta);
-            inventory.setItem(4, overview);
+            setItem(4, overview);
         }
         boolean paged = false;
         if (page != 0) {
             ItemStack head = SledgehammerUtil.getSkull(Constants.arrowLeftHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Previous Page");
-            inventory.setItem(42, head);
+            setItem(42, head);
             paged = true;
         }
 
         if (groups.size() > (page + 1) * Constants.warpsPerPage) {
             ItemStack head = SledgehammerUtil.getSkull(Constants.arrowRightHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Next Page");
-            inventory.setItem(44, head);
+            setItem(44, head);
             paged = true;
         }
 
@@ -114,7 +103,7 @@ public class ManageGroupViewInventory extends GUIChild {
             meta.setLore(lore);
             item.setItemMeta(meta);
 
-            inventory.setItem(current, item);
+            setItem(current, item);
             current++;
         }
     }

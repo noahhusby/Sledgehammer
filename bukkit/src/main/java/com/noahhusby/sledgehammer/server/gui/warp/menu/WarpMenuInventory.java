@@ -50,10 +50,9 @@ public class WarpMenuInventory extends AbstractWarpInventory {
     @Override
     public void init() {
         super.init();
-        inventory.setItem(4, SledgehammerUtil.getSkull(Constants.monitorHead, ChatColor.GREEN + "" + ChatColor.BOLD + "All Groups"));
-        inventory.setItem(45, WarpGUIUtil.generateWarpSort());
-        inventory.setItem(49, WarpGUIUtil.generateExit());
-
+        setItem(4, SledgehammerUtil.getSkull(Constants.monitorHead, ChatColor.GREEN + "" + ChatColor.BOLD + "All Groups"));
+        setItem(45, WarpGUIUtil.generateWarpSort());
+        setItem(49, WarpGUIUtil.generateExit());
         boolean paged = false;
         if (page != 0) {
             ItemStack head = SledgehammerUtil.getSkull(Constants.arrowLeftHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Previous Page");

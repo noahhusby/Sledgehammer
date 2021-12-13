@@ -36,7 +36,7 @@ allprojects {
         lombokVersion = "1.18.22"
         husbyVersion = "0.1.89"
         guavaVersion = "31.0.1-jre"
-        anvilGuiVersion = "1.5.2-SNAPSHOT"
+        anvilGuiVersion = "1.5.3-SNAPSHOT"
         paperVersion = "1.12.2-R0.1-SNAPSHOT"
         bungeecordVersion = "1.18-R0.1-SNAPSHOT"
         terraplusplusVersion = "74449c4af349fd9b77b10e1041ed2c09f2d78518"
