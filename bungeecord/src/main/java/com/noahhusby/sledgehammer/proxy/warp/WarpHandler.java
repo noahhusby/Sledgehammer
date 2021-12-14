@@ -30,7 +30,6 @@ import com.noahhusby.sledgehammer.common.warps.WarpConfigPayload;
 import com.noahhusby.sledgehammer.common.warps.WarpGroup;
 import com.noahhusby.sledgehammer.common.warps.WarpGroupConfigPayload;
 import com.noahhusby.sledgehammer.common.warps.WarpGroupPayload;
-import com.noahhusby.sledgehammer.common.warps.WarpGroupType;
 import com.noahhusby.sledgehammer.common.warps.WarpPayload;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.Constants;

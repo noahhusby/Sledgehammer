@@ -21,7 +21,6 @@
 package com.noahhusby.sledgehammer.server.gui.warp.config.manage;
 
 import com.google.common.collect.Lists;
-import com.noahhusby.sledgehammer.common.warps.Warp;
 import com.noahhusby.sledgehammer.common.warps.WarpGroup;
 import com.noahhusby.sledgehammer.common.warps.WarpGroupConfigPayload;
 import com.noahhusby.sledgehammer.server.Constants;
@@ -140,10 +139,10 @@ public class EditWarpGroupServersInventory extends GUIChild {
         if (e.getSlot() > 8 && e.getSlot() < 36) {
             ItemMeta meta = e.getCurrentItem().getItemMeta();
             String server = ChatColor.stripColor(meta.getDisplayName());
-            if(server == null || server.equals("")) {
+            if (server == null || server.equals("")) {
                 return;
             }
-            if(group.getServers().contains(server)) {
+            if (group.getServers().contains(server)) {
                 group.getServers().remove(server);
             } else {
                 group.getServers().add(server);

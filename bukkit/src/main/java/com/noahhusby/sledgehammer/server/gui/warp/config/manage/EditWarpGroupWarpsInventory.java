@@ -29,12 +29,6 @@ import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.gui.GUIChild;
 import com.noahhusby.sledgehammer.server.gui.GUIController;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
-import com.noahhusby.sledgehammer.server.gui.warp.menu.AllWarpInventory;
-import com.noahhusby.sledgehammer.server.gui.warp.menu.WarpMenuInventory;
-import com.noahhusby.sledgehammer.server.gui.warp.menu.WarpSortInventory;
-import com.noahhusby.sledgehammer.server.network.NetworkHandler;
-import com.noahhusby.sledgehammer.server.network.s2p.S2PWarpConfigPacket;
-import com.noahhusby.sledgehammer.server.network.s2p.S2PWarpPacket;
 import com.noahhusby.sledgehammer.server.util.SkullUtil;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
@@ -152,7 +146,7 @@ public class EditWarpGroupWarpsInventory extends GUIChild {
                     id = ((Long) Long.parseLong(ChatColor.stripColor(s).replaceAll("[^\\d.]", ""))).intValue();
                 }
             }
-            if(group.getWarps().contains(id)) {
+            if (group.getWarps().contains(id)) {
                 group.getWarps().remove(group.getWarps().indexOf(id));
             } else {
                 group.getWarps().add(id);

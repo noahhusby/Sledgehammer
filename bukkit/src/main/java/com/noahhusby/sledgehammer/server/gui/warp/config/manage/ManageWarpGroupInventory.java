@@ -23,7 +23,6 @@ package com.noahhusby.sledgehammer.server.gui.warp.config.manage;
 import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.common.warps.WarpGroup;
 import com.noahhusby.sledgehammer.common.warps.WarpGroupConfigPayload;
-import com.noahhusby.sledgehammer.common.warps.WarpGroupType;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.chat.ChatHandler;
