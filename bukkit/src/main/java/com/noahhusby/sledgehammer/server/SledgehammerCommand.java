@@ -32,7 +32,7 @@ import org.bukkit.command.CommandSender;
 public class SledgehammerCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        sender.spigot().sendMessage(new TextComponent(ChatColor.BLUE + "" + ChatColor.BOLD + "SH " + ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "> " + ChatColor.RESET + "" + ChatColor.RED + "Sledgehammer " + Constants.VERSION + " " + ChatColor.GRAY + "by " + ChatColor.BLUE + "Noah Husby"));
+        sender.spigot().sendMessage(new TextComponent(ChatColor.BLUE + "" + ChatColor.BOLD + "SH " + ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "> " + ChatColor.RESET + "" + ChatColor.RED + "Sledgehammer Server " + Constants.VERSION + " " + ChatColor.GRAY + "by " + ChatColor.BLUE + "Noah Husby"));
         return true;
     }
 }
