@@ -64,11 +64,9 @@ public class ServerHandler implements Listener {
             servers.put(name, s);
             servers.saveAsync();
         }
-
         if (s.isInitialized()) {
             return;
         }
-
         s.initialize(version);
     }
 
@@ -136,6 +134,9 @@ public class ServerHandler implements Listener {
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onServerJoin(ServerConnectedEvent e) {
-        NetworkHandler.getInstance().send(new P2SInitializationPacket(e.getPlayer().getName(), e.getServer().getInfo().getName()));
+        SledgehammerServer server = getServer(e.getPlayer().getServer().getInfo().getName());
+        if(server != null && !server.isInitialized()) {
+            new Thread(() -> NetworkHandler.getInstance().send(new P2SInitializationPacket(e.getPlayer().getName(), e.getServer().getInfo().getName()))).start();
+        }
     }
 }
