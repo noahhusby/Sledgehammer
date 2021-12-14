@@ -34,6 +34,7 @@ import com.noahhusby.sledgehammer.proxy.network.s2p.S2PPlayerUpdatePacket;
 import com.noahhusby.sledgehammer.proxy.network.s2p.S2PSetwarpPacket;
 import com.noahhusby.sledgehammer.proxy.network.s2p.S2PTestLocationPacket;
 import com.noahhusby.sledgehammer.proxy.network.s2p.S2PWarpConfigPacket;
+import com.noahhusby.sledgehammer.proxy.network.s2p.S2PWarpGroupConfigPacket;
 import com.noahhusby.sledgehammer.proxy.network.s2p.S2PWarpPacket;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.Server;
@@ -131,6 +132,7 @@ public class NetworkHandler implements Listener, Module {
         register(new S2PPlayerUpdatePacket());
         register(new S2PPermissionPacket());
         register(new S2PWarpConfigPacket());
+        register(new S2PWarpGroupConfigPacket());
     }
 
     @Override

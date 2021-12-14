@@ -34,6 +34,7 @@ public class WarpGroupConfigPayload {
     private final Map<Integer, Warp> waypoints;
     private final Map<String, WarpGroup> groups;
     private final Map<String, List<Integer>> servers;
+    private final boolean admin;
 
     @Setter
     private GroupConfigAction action;

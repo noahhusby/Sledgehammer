@@ -50,6 +50,7 @@ public abstract class CommonConstants {
     public static final String warpGUIID = "warp_gui";
     public static final String warpID = "warp";
     public static final String warpConfigID = "warp_config";
+    public static final String warpGroupConfigID = "warp_group_config";
     public static final String playerUpdateID = "player_update";
     public static final String permissionCheckID = "permission_check";
 }

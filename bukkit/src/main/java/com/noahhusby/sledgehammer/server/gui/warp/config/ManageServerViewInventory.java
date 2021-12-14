@@ -48,10 +48,10 @@ public class ManageServerViewInventory extends GUIChild {
     @Override
     public void init() {
         fillInventory(createItem(Material.STAINED_GLASS_PANE, 1, (byte) 15, null));
-        inventory.setItem(0, SledgehammerUtil.getSkull(Constants.redLeftHead, ChatColor.RED + "" + ChatColor.BOLD + "Go Back"));
+        inventory.setItem(0, SledgehammerUtil.getSkull(Constants.Heads.redLeft, ChatColor.RED + "" + ChatColor.BOLD + "Go Back"));
 
         {
-            ItemStack overview = SledgehammerUtil.getSkull(Constants.globeHead, ChatColor.YELLOW + "" + ChatColor.BOLD + "Servers");
+            ItemStack overview = SledgehammerUtil.getSkull(Constants.Heads.globe, ChatColor.YELLOW + "" + ChatColor.BOLD + "Servers");
             ItemMeta meta = overview.getItemMeta();
             meta.setLore(Lists.newArrayList(ChatColor.GOLD + "Click to sort warps by group"));
             overview.setItemMeta(meta);
@@ -60,13 +60,13 @@ public class ManageServerViewInventory extends GUIChild {
 
         boolean paged = false;
         if (page != 0) {
-            ItemStack head = SledgehammerUtil.getSkull(Constants.arrowLeftHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Previous Page");
+            ItemStack head = SledgehammerUtil.getSkull(Constants.Heads.arrowLeft, ChatColor.AQUA + "" + ChatColor.BOLD + "Previous Page");
             inventory.setItem(42, head);
             paged = true;
         }
 
         if (servers.size() > (page + 1) * Constants.warpsPerPage) {
-            ItemStack head = SledgehammerUtil.getSkull(Constants.arrowRightHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Next Page");
+            ItemStack head = SledgehammerUtil.getSkull(Constants.Heads.arrowRight, ChatColor.AQUA + "" + ChatColor.BOLD + "Next Page");
             inventory.setItem(44, head);
             paged = true;
         }
@@ -86,7 +86,7 @@ public class ManageServerViewInventory extends GUIChild {
         int current = 9;
         for (int x = min; x < max; x++) {
             String server = servers.get(x);
-            ItemStack item = SledgehammerUtil.getSkull(Constants.yellowWoolHead, ChatColor.YELLOW + "" + ChatColor.BOLD + server);
+            ItemStack item = SledgehammerUtil.getSkull(Constants.Heads.yellowWool, ChatColor.YELLOW + "" + ChatColor.BOLD + server);
             ItemMeta meta = item.getItemMeta();
             List<String> lore = new ArrayList<>();
             lore.add(ChatColor.BLUE + "" + ChatColor.STRIKETHROUGH + "------------------");

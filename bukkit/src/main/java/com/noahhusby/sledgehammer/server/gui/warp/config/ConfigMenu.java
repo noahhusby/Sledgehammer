@@ -26,6 +26,8 @@ import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.gui.GUIChild;
 import com.noahhusby.sledgehammer.server.gui.GUIController;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
+import com.noahhusby.sledgehammer.server.network.NetworkHandler;
+import com.noahhusby.sledgehammer.server.network.s2p.S2PWarpGroupConfigPacket;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -39,8 +41,9 @@ public class ConfigMenu extends GUIChild {
     @Override
     public void init() {
         fillInventory(createItem(Material.STAINED_GLASS_PANE, 1, (byte) 15, null));
-        inventory.setItem(13, SledgehammerUtil.getSkull(Constants.limePlusHead, ChatColor.GREEN + "" + ChatColor.BOLD + "Create new warp"));
-        inventory.setItem(15, SledgehammerUtil.getSkull(Constants.goldenExclamationHead, ChatColor.GOLD + "" + ChatColor.BOLD + "Manage Warps"));
+        inventory.setItem(11, SledgehammerUtil.getSkull(Constants.Heads.blackBook, ChatColor.YELLOW + "" + ChatColor.BOLD + "Manage Groups"));
+        inventory.setItem(13, SledgehammerUtil.getSkull(Constants.Heads.limePlus, ChatColor.GREEN + "" + ChatColor.BOLD + "Create new warp"));
+        inventory.setItem(15, SledgehammerUtil.getSkull(Constants.Heads.goldenExclamation, ChatColor.GOLD + "" + ChatColor.BOLD + "Manage Warps"));
     }
 
     @Override
@@ -53,6 +56,11 @@ public class ConfigMenu extends GUIChild {
             return;
         }
         if (e.getCurrentItem().getItemMeta().getDisplayName() == null) {
+            return;
+        }
+        if (e.getSlot() == 11) {
+            controller.close();
+            NetworkHandler.getInstance().send(new S2PWarpGroupConfigPacket(S2PWarpGroupConfigPacket.ProxyConfigAction.OPEN_CONFIG, getPlayer(), ((ConfigMenuController) controller).getPayload().getSalt()));
             return;
         }
         if (e.getSlot() == 13) {

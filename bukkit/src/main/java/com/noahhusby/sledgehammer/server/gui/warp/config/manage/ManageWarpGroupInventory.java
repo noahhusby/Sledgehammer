@@ -21,23 +21,21 @@
 package com.noahhusby.sledgehammer.server.gui.warp.config.manage;
 
 import com.google.gson.JsonObject;
-import com.noahhusby.sledgehammer.common.warps.Point;
-import com.noahhusby.sledgehammer.common.warps.Warp;
-import com.noahhusby.sledgehammer.common.warps.WarpConfigPayload;
+import com.noahhusby.sledgehammer.common.warps.WarpGroup;
+import com.noahhusby.sledgehammer.common.warps.WarpGroupConfigPayload;
+import com.noahhusby.sledgehammer.common.warps.WarpGroupType;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.chat.ChatHandler;
 import com.noahhusby.sledgehammer.server.gui.GUIChild;
 import com.noahhusby.sledgehammer.server.gui.GUIController;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
-import com.noahhusby.sledgehammer.server.gui.warp.config.ConfigMenu;
-import com.noahhusby.sledgehammer.server.gui.warp.config.ManageServerViewInventory;
+import com.noahhusby.sledgehammer.server.gui.warp.config.ManageWarpGroupViewInventory;
 import com.noahhusby.sledgehammer.server.gui.warp.config.confirmation.ConfirmationController;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
-import com.noahhusby.sledgehammer.server.network.s2p.S2PWarpConfigPacket;
+import com.noahhusby.sledgehammer.server.network.s2p.S2PWarpGroupConfigPacket;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -47,16 +45,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class ManageWarpInventory extends GUIChild {
+public class ManageWarpGroupInventory extends GUIChild {
 
-    private final WarpConfigPayload payload;
-    private final Warp cur;
+    private final WarpGroupConfigPayload payload;
+    private final WarpGroup cur;
 
     @Override
     public void init() {
         fillInventory(createItem(Material.STAINED_GLASS_PANE, 1, (byte) 15, null));
         {
-            String headId = cur.getHeadID();
+            String headId = cur.getHeadId();
             if (headId == null || headId.equals("")) {
                 headId = Constants.Heads.cyanWool;
             }
@@ -64,18 +62,24 @@ public class ManageWarpInventory extends GUIChild {
                                                                + "" + ChatColor.BOLD + cur.getName());
             List<String> lore = new ArrayList<>();
             lore.add(ChatColor.BLUE + "" + ChatColor.STRIKETHROUGH + "------------------");
-            lore.add(ChatColor.DARK_GRAY + "Server: " + cur.getServer());
+            lore.add(ChatColor.DARK_GRAY + "Type: " + cur.getType().name());
             lore.add(ChatColor.BLUE + "" + ChatColor.STRIKETHROUGH + "------------------");
             lore.add(ChatColor.GRAY + "ID: " + cur.getId());
             item.setLore(lore);
             setItem(4, item);
         }
+        setItem(11, createItem(Material.NAME_TAG, 1, ChatColor.RED + "" + ChatColor.BOLD + "Change Name"));
+        setItem(12, SledgehammerUtil.getSkull(Constants.Heads.steve, ChatColor.AQUA + "" + ChatColor.BOLD + "Change Head"));
+        if (payload.isAdmin()) {
+            {
+                String headType = cur.getType() == WarpGroupType.SERVER ? Constants.Heads.yellowWool : Constants.Heads.cyanWool;
+                String name = ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + (cur.getType() == WarpGroupType.SERVER ? "Edit servers" : "Edit warps");
+                setItem(14, SledgehammerUtil.getSkull(headType, name));
+            }
+            setItem(15, SledgehammerUtil.getSkull(Constants.Heads.redTrashCan, ChatColor.RED + "" + ChatColor.BOLD + "Delete Group"));
+        }
         setItem(18, SledgehammerUtil.getSkull(Constants.Heads.arrowLeft, ChatColor.RED + "" + ChatColor.BOLD + "Back"));
         setItem(26, SledgehammerUtil.getSkull(Constants.Heads.limeCheckmark, ChatColor.GREEN + "" + ChatColor.BOLD + "Save"));
-        setItem(11, createItem(Material.NAME_TAG, 1, ChatColor.RED + "" + ChatColor.BOLD + "Change Name"));
-        setItem(12, SledgehammerUtil.getSkull(Constants.Heads.pocketPortal, ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Move Location"));
-        setItem(14, SledgehammerUtil.getSkull(Constants.Heads.steve, ChatColor.AQUA + "" + ChatColor.BOLD + "Change Head"));
-        setItem(15, SledgehammerUtil.getSkull(Constants.Heads.redTrashCan, ChatColor.RED + "" + ChatColor.BOLD + "Delete Warp"));
     }
 
     @Override
@@ -90,89 +94,81 @@ public class ManageWarpInventory extends GUIChild {
         if (e.getCurrentItem().getItemMeta().getDisplayName() == null) {
             return;
         }
-        if (e.getSlot() == 18) {
-            GUIRegistry.register(new ManageServerViewInventory.ManageGroupInventoryController(getPlayer(), payload));
-            return;
-        }
 
         if (e.getSlot() == 11) {
-            GUIRegistry.register(new ChangeWarpNameAnvil.ChangeNameController(getPlayer(), payload, cur));
+            GUIRegistry.register(new ChangeWarpGroupNameAnvil.ChangeWarpGroupNameController(getPlayer(), payload, cur));
             return;
         }
 
         if (e.getSlot() == 12) {
-            JsonObject data = new JsonObject();
-            data.addProperty("warpId", cur.getId());
-            Location loc = player.getLocation();
-            Point point = new Point(loc.getX(), loc.getY(), loc.getZ(), loc.getY(), loc.getPitch()).limit();
-            data.add("point", SledgehammerUtil.GSON.toJsonTree(point));
-
-            NetworkHandler.getInstance().send(new S2PWarpConfigPacket(S2PWarpConfigPacket.ProxyConfigAction.WARP_UPDATE_LOCATION, getPlayer(), payload.getSalt(), data));
+            getController().close();
+            ChatHandler.getInstance().startEntry(getPlayer(), ChatColor.BLUE + "Enter the Minecraft-URL value from " + ChatColor.GRAY + "minecraft-heads.com", (success, text) -> {
+                if (success) {
+                    cur.setHeadId(text);
+                }
+                GUIRegistry.register(new ManageWarpGroupInventoryController(player, payload, cur));
+            });
         }
 
         if (e.getSlot() == 14) {
-            getController().close();
-            ChatHandler.getInstance().startEntry(getPlayer(), ChatColor.BLUE + "Enter the Minecraft-URL value from " +
-                                                              ChatColor.GRAY + "minecraft-heads.com", (success, text) -> {
-                if (success) {
-                    cur.setHeadID(text);
-                }
-                GUIRegistry.register(new ManageWarpInventoryController(player, payload, cur));
-            });
+            //TODO: Updating doesn't work?
+            //TODO: Logic
+            //GUIRegistry.register(new ManageServerViewInventory.ManageGroupInventoryController(getPlayer(), payload));
+            return;
         }
 
         if (e.getSlot() == 15) {
             JsonObject data = new JsonObject();
-            data.addProperty("warpId", cur.getId());
+            data.addProperty("groupId", cur.getId());
+            NetworkHandler.getInstance().send(new S2PWarpGroupConfigPacket(S2PWarpGroupConfigPacket.ProxyConfigAction.REMOVE_GROUP, getPlayer(), payload.getSalt(), data));
+        }
 
-            NetworkHandler.getInstance().send(new S2PWarpConfigPacket(
-                    S2PWarpConfigPacket.ProxyConfigAction.REMOVE_WARP,
-                    getPlayer(), payload.getSalt(), data));
+        if (e.getSlot() == 18) {
+            GUIRegistry.register(new ManageWarpGroupViewInventory.ManageWarpGroupViewInventoryController(getPlayer(), payload));
+            return;
         }
 
         if (e.getSlot() == 26) {
-            NetworkHandler.getInstance().send(
-                    new S2PWarpConfigPacket(S2PWarpConfigPacket.ProxyConfigAction.UPDATE_WARP, getPlayer(),
-                            ((ManageWarpInventoryController) controller).getPayload().getSalt(), SledgehammerUtil.GSON.toJsonTree(cur).getAsJsonObject()));
-            GUIRegistry.register(new ConfirmationController(getPlayer(), new ConfigMenu.ConfigMenuController(getPlayer(), payload), ConfirmationController.Type.HEAD_UPDATE, "Successfully updated warp!"));
+            GUIRegistry.register(new ConfirmationController(getPlayer(), null, ConfirmationController.Type.HEAD_UPDATE, "Successfully updated warp group!"));
+            NetworkHandler.getInstance().send(new S2PWarpGroupConfigPacket(S2PWarpGroupConfigPacket.ProxyConfigAction.UPDATE_GROUP, getPlayer(), ((ManageWarpGroupInventoryController) controller).getPayload().getSalt(), SledgehammerUtil.GSON.toJsonTree(cur).getAsJsonObject()));
         }
     }
 
-    public static class ManageWarpInventoryController extends GUIController {
+    public static class ManageWarpGroupInventoryController extends GUIController {
 
-        private final WarpConfigPayload payload;
-        private final Warp warp;
+        private final WarpGroupConfigPayload payload;
+        private final WarpGroup group;
 
-        public ManageWarpInventoryController(Player p, WarpConfigPayload payload, int warpId) {
+        public ManageWarpGroupInventoryController(Player p, WarpGroupConfigPayload payload, String warpGroupId) {
             super(27, "Edit Warp Settings", p);
             this.payload = payload;
-            this.warp = payload.getWaypoints().get(warpId);
+            this.group = payload.getGroups().get(warpGroupId);
             init();
         }
 
-        public ManageWarpInventoryController(Player p, WarpConfigPayload payload, Warp warp) {
+        public ManageWarpGroupInventoryController(Player p, WarpGroupConfigPayload payload, WarpGroup group) {
             super(27, "Edit Warp Settings", p);
             this.payload = payload;
-            this.warp = warp;
+            this.group = group;
             init();
         }
 
-        public ManageWarpInventoryController(GUIController controller, WarpConfigPayload payload, Warp warp) {
+        public ManageWarpGroupInventoryController(GUIController controller, WarpGroupConfigPayload payload, WarpGroup group) {
             super(controller);
             this.payload = payload;
-            this.warp = warp;
+            this.group = group;
             init();
         }
 
 
         @Override
         public void init() {
-            ManageWarpInventory warpConfig = new ManageWarpInventory(getPayload(), warp);
+            ManageWarpGroupInventory warpConfig = new ManageWarpGroupInventory(getPayload(), group);
             warpConfig.initFromController(this, getPlayer(), getInventory());
             openChild(warpConfig);
         }
 
-        public WarpConfigPayload getPayload() {
+        public WarpGroupConfigPayload getPayload() {
             return payload;
         }
     }

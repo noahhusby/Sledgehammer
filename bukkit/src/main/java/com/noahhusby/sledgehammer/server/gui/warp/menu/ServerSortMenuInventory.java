@@ -48,19 +48,19 @@ public class ServerSortMenuInventory extends AbstractWarpInventory {
     @Override
     public void init() {
         super.init();
-        inventory.setItem(4, SledgehammerUtil.getSkull(Constants.monitorHead, ChatColor.GREEN + "" + ChatColor.BOLD + "Servers"));
+        inventory.setItem(4, SledgehammerUtil.getSkull(Constants.Heads.monitor, ChatColor.GREEN + "" + ChatColor.BOLD + "Servers"));
         inventory.setItem(45, WarpGUIUtil.generateWarpSort());
         inventory.setItem(49, WarpGUIUtil.generateExit());
 
         boolean paged = false;
         if (page != 0) {
-            ItemStack head = SledgehammerUtil.getSkull(Constants.arrowLeftHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Previous Page");
+            ItemStack head = SledgehammerUtil.getSkull(Constants.Heads.arrowLeft, ChatColor.AQUA + "" + ChatColor.BOLD + "Previous Page");
             inventory.setItem(51, head);
             paged = true;
         }
 
         if (servers.size() > (page + 1) * Constants.warpsPerPage) {
-            ItemStack head = SledgehammerUtil.getSkull(Constants.arrowRightHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Next Page");
+            ItemStack head = SledgehammerUtil.getSkull(Constants.Heads.arrowRight, ChatColor.AQUA + "" + ChatColor.BOLD + "Next Page");
             inventory.setItem(53, head);
             paged = true;
         }
@@ -79,7 +79,7 @@ public class ServerSortMenuInventory extends AbstractWarpInventory {
 
         int current = 9;
         for (int x = min; x < max; x++) {
-            ItemStack item = SledgehammerUtil.getSkull(Constants.yellowWoolHead, ChatColor.YELLOW + "" + ChatColor.BOLD + servers.get(x));
+            ItemStack item = SledgehammerUtil.getSkull(Constants.Heads.yellowWool, ChatColor.YELLOW + "" + ChatColor.BOLD + servers.get(x));
             ItemMeta meta = item.getItemMeta();
             List<String> lore = new ArrayList<>();
             lore.add(ChatColor.BLUE + "" + ChatColor.STRIKETHROUGH + "------------------");

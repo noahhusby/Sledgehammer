@@ -49,17 +49,17 @@ public class AllWarpInventory extends AbstractWarpInventory {
     @Override
     public void init() {
         super.init();
-        setItem(4, SledgehammerUtil.getSkull(Constants.globeHead, ChatColor.GREEN + "" + ChatColor.BOLD + "All Warps"));
+        setItem(4, SledgehammerUtil.getSkull(Constants.Heads.globe, ChatColor.GREEN + "" + ChatColor.BOLD + "All Warps"));
 
         boolean paged = false;
         if (page != 0) {
-            ItemStack head = SledgehammerUtil.getSkull(Constants.arrowLeftHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Previous Page");
+            ItemStack head = SledgehammerUtil.getSkull(Constants.Heads.arrowLeft, ChatColor.AQUA + "" + ChatColor.BOLD + "Previous Page");
             setItem(51, head);
             paged = true;
         }
 
         if (warps.size() > (page + 1) * Constants.warpsPerPage) {
-            ItemStack head = SledgehammerUtil.getSkull(Constants.arrowRightHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Next Page");
+            ItemStack head = SledgehammerUtil.getSkull(Constants.Heads.arrowRight, ChatColor.AQUA + "" + ChatColor.BOLD + "Next Page");
             setItem(53, head);
             paged = true;
         }
@@ -82,7 +82,7 @@ public class AllWarpInventory extends AbstractWarpInventory {
 
             String headId = warp.getHeadID();
             if (headId == null || headId.equals("")) {
-                headId = Constants.yellowWoolHead;
+                headId = Constants.Heads.yellowWool;
             }
             ItemStack item = SledgehammerUtil.getSkull(headId, (ChatColor.BLUE)
                                                                + "" + ChatColor.BOLD + warp.getName());

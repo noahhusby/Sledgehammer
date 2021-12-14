@@ -28,6 +28,7 @@ import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.common.warps.Warp;
 import com.noahhusby.sledgehammer.common.warps.WarpConfigPayload;
 import com.noahhusby.sledgehammer.common.warps.WarpGroup;
+import com.noahhusby.sledgehammer.common.warps.WarpGroupConfigPayload;
 import com.noahhusby.sledgehammer.common.warps.WarpGroupPayload;
 import com.noahhusby.sledgehammer.common.warps.WarpGroupType;
 import com.noahhusby.sledgehammer.common.warps.WarpPayload;
@@ -299,7 +300,7 @@ public class WarpHandler {
     }
 
     /**
-     * Generates paylood for the warp configuration GUI
+     * Generates payload for the warp configuration GUI
      *
      * @param player {@link SledgehammerPlayer}
      * @param admin  True if they are able to edit all groups
@@ -341,9 +342,42 @@ public class WarpHandler {
         return new WarpConfigPayload(SledgehammerConfig.warps.localWarp, admin, requestGroup, player.trackAction(), waypoints, groupPayload, servers);
     }
 
+    /**
+     * Generates payload for the warp group configuration GUI
+     *
+     * @param player {@link SledgehammerPlayer}
+     * @param admin  True if they are able to edit all groups
+     * @return Config Payload
+     */
+    public WarpGroupConfigPayload generateGroupConfigPayload(SledgehammerPlayer player, boolean admin) {
+        SledgehammerServer s = player.getSledgehammerServer();
+        if (s == null) {
+            return null;
+        }
+        Map<String, List<Integer>> servers = Maps.newHashMap();
+        Map<Integer, Warp> waypoints = Maps.newHashMap();
+        for (Warp warp : warps.values()) {
+            if (!servers.containsKey(warp.getServer())) {
+                servers.put(warp.getServer(), Lists.newArrayList(warp.getId()));
+            } else {
+                servers.get(warp.getServer()).add(warp.getId());
+            }
+            waypoints.put(warp.getId(), warp.toWaypoint());
+        }
+        Map<String, WarpGroup> groups = Maps.newHashMap();
+        for (Map.Entry<String, WarpGroup> g : warpGroups.entrySet()) {
+            if (admin) {
+                groups.put(g.getKey(), g.getValue());
+            } else if (g.getValue().getType() == WarpGroupType.SERVER && g.getValue().getServers().contains(player.getServer().getInfo().getName())) {
+                groups.put(g.getKey(), g.getValue());
+            }
+        }
+        return new WarpGroupConfigPayload(player.trackAction(), waypoints, groups, servers, admin);
+    }
+
     public WarpGroupPayload toPayload(WarpGroup group) {
         List<Integer> payloadWarps = Lists.newArrayList();
-        if (group.getType() == WarpGroupType.GROUP) {
+        if (group.getType() == WarpGroupType.WARP) {
             for (Integer warpId : group.getWarps()) {
                 Warp warp = WarpHandler.getInstance().getWarp(warpId);
                 if (warp != null) {
@@ -380,7 +414,7 @@ public class WarpHandler {
     }
 
     /**
-     * Generates a warp ID for multi-server networks
+     * Generates a warp ID for multiserver networks
      *
      * @return New ID
      */

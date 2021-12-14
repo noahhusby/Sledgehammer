@@ -54,7 +54,7 @@ public class GroupWarpInventory extends AbstractWarpInventory {
         super.init();
 
         {
-            String headId = (group.getHeadId() == null || group.getHeadId().equals("")) ? Constants.globeHead : group.getHeadId();
+            String headId = (group.getHeadId() == null || group.getHeadId().equals("")) ? Constants.Heads.globe : group.getHeadId();
             setItem(4, SledgehammerUtil.getSkull(headId, ChatColor.RED + "" + ChatColor.BOLD + group.getName()));
         }
         setItem(40, WarpGUIUtil.generateCompass("View All Groups"));
@@ -62,13 +62,13 @@ public class GroupWarpInventory extends AbstractWarpInventory {
 
         boolean paged = false;
         if (page != 0) {
-            ItemStack head = SledgehammerUtil.getSkull(Constants.arrowLeftHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Previous Page");
+            ItemStack head = SledgehammerUtil.getSkull(Constants.Heads.arrowLeft, ChatColor.AQUA + "" + ChatColor.BOLD + "Previous Page");
             setItem(51, head);
             paged = true;
         }
 
         if (warps.size() > (page + 1) * Constants.warpsPerPage) {
-            ItemStack head = SledgehammerUtil.getSkull(Constants.arrowRightHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Next Page");
+            ItemStack head = SledgehammerUtil.getSkull(Constants.Heads.arrowRight, ChatColor.AQUA + "" + ChatColor.BOLD + "Next Page");
             setItem(53, head);
             paged = true;
         }
@@ -91,7 +91,7 @@ public class GroupWarpInventory extends AbstractWarpInventory {
 
             String headId = warp.getHeadID();
             if (headId == null || headId.equals("")) {
-                headId = Constants.cyanWoolHead;
+                headId = Constants.Heads.cyanWool;
             }
             ItemStack item = SledgehammerUtil.getSkull(headId, ((warp.isGlobal()) ? ChatColor.GOLD : ChatColor.BLUE)
                                                                + "" + ChatColor.BOLD + warp.getName());

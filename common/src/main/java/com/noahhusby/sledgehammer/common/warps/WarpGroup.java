@@ -53,14 +53,14 @@ public class WarpGroup {
     private String headId;
     @Expose
     @SerializedName("Type")
-    private WarpGroupType type = WarpGroupType.GROUP;
+    private WarpGroupType type = WarpGroupType.WARP;
     @Expose
     @SerializedName("Warps")
-    private final List<Integer> warps = new ArrayList<>();
+    private List<Integer> warps = new ArrayList<>();
     @Expose
     @SerializedName("Servers")
-    private final Set<String> servers = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    private Set<String> servers = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     @Expose
     @SerializedName("Aliases")
-    private final List<String> aliases = new ArrayList<>();
+    private List<String> aliases = new ArrayList<>();
 }

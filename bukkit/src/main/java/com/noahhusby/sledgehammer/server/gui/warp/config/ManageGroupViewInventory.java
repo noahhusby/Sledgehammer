@@ -49,9 +49,9 @@ public class ManageGroupViewInventory extends GUIChild {
     @Override
     public void init() {
         fillInventory(createItem(Material.STAINED_GLASS_PANE, 1, (byte) 15, null));
-        setItem(0, SledgehammerUtil.getSkull(Constants.redLeftHead, ChatColor.RED + "" + ChatColor.BOLD + "Go Back"));
+        setItem(0, SledgehammerUtil.getSkull(Constants.Heads.redLeft, ChatColor.RED + "" + ChatColor.BOLD + "Go Back"));
         {
-            ItemStack overview = SledgehammerUtil.getSkull(Constants.globeHead, ChatColor.GREEN + "" + ChatColor.BOLD + "Groups");
+            ItemStack overview = SledgehammerUtil.getSkull(Constants.Heads.globe, ChatColor.GREEN + "" + ChatColor.BOLD + "Groups");
             ItemMeta meta = overview.getItemMeta();
             meta.setLore(Lists.newArrayList(ChatColor.GOLD + "Click to sort warps by server"));
             overview.setItemMeta(meta);
@@ -59,13 +59,13 @@ public class ManageGroupViewInventory extends GUIChild {
         }
         boolean paged = false;
         if (page != 0) {
-            ItemStack head = SledgehammerUtil.getSkull(Constants.arrowLeftHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Previous Page");
+            ItemStack head = SledgehammerUtil.getSkull(Constants.Heads.arrowLeft, ChatColor.AQUA + "" + ChatColor.BOLD + "Previous Page");
             setItem(42, head);
             paged = true;
         }
 
         if (groups.size() > (page + 1) * Constants.warpsPerPage) {
-            ItemStack head = SledgehammerUtil.getSkull(Constants.arrowRightHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Next Page");
+            ItemStack head = SledgehammerUtil.getSkull(Constants.Heads.arrowRight, ChatColor.AQUA + "" + ChatColor.BOLD + "Next Page");
             setItem(44, head);
             paged = true;
         }
@@ -88,7 +88,7 @@ public class ManageGroupViewInventory extends GUIChild {
 
             String headId = group.getHeadId();
             if (headId.equals("")) {
-                headId = Constants.cyanWoolHead;
+                headId = Constants.Heads.cyanWool;
             }
             ItemStack item = SledgehammerUtil.getSkull(headId, group.getName());
 

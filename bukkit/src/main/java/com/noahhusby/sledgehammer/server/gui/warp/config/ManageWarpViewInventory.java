@@ -48,21 +48,21 @@ public class ManageWarpViewInventory extends GUIChild {
     @Override
     public void init() {
         fillInventory(createItem(Material.STAINED_GLASS_PANE, 1, (byte) 15, null));
-        inventory.setItem(0, SledgehammerUtil.getSkull(Constants.redLeftHead, ChatColor.RED + "" + ChatColor.BOLD + "Go Back"));
+        inventory.setItem(0, SledgehammerUtil.getSkull(Constants.Heads.redLeft, ChatColor.RED + "" + ChatColor.BOLD + "Go Back"));
 
         {
-            inventory.setItem(4, SledgehammerUtil.getSkull(Constants.globeHead, ChatColor.GREEN + "" + ChatColor.BOLD + "Select a warp"));
+            inventory.setItem(4, SledgehammerUtil.getSkull(Constants.Heads.globe, ChatColor.GREEN + "" + ChatColor.BOLD + "Select a warp"));
         }
 
         boolean paged = false;
         if (page != 0) {
-            ItemStack head = SledgehammerUtil.getSkull(Constants.arrowLeftHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Previous Page");
+            ItemStack head = SledgehammerUtil.getSkull(Constants.Heads.arrowLeft, ChatColor.AQUA + "" + ChatColor.BOLD + "Previous Page");
             inventory.setItem(42, head);
             paged = true;
         }
 
         if (warps.size() > (page + 1) * Constants.warpsPerPage) {
-            ItemStack head = SledgehammerUtil.getSkull(Constants.arrowRightHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Next Page");
+            ItemStack head = SledgehammerUtil.getSkull(Constants.Heads.arrowRight, ChatColor.AQUA + "" + ChatColor.BOLD + "Next Page");
             inventory.setItem(44, head);
             paged = true;
         }
@@ -82,7 +82,7 @@ public class ManageWarpViewInventory extends GUIChild {
         for (int x = min; x < max; x++) {
             Warp warp = warps.get(x);
 
-            ItemStack item = SledgehammerUtil.getSkull(Constants.cyanWoolHead, ChatColor.BLUE + "" + ChatColor.BOLD + warp.getName());
+            ItemStack item = SledgehammerUtil.getSkull(Constants.Heads.cyanWool, ChatColor.BLUE + "" + ChatColor.BOLD + warp.getName());
 
             ItemMeta meta = item.getItemMeta();
 

@@ -18,38 +18,42 @@
  *
  */
 
-package com.noahhusby.sledgehammer.server.gui.warp.config.confirmation;
+package com.noahhusby.sledgehammer.server.network.s2p;
 
-import com.google.common.collect.Lists;
+import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.server.Constants;
-import com.noahhusby.sledgehammer.server.SledgehammerUtil;
-import com.noahhusby.sledgehammer.server.gui.GUIChild;
-import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
-import com.noahhusby.sledgehammer.server.gui.IController;
+import com.noahhusby.sledgehammer.server.network.PacketInfo;
+import com.noahhusby.sledgehammer.server.network.S2PPacket;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.ChatColor;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.entity.Player;
 
 @RequiredArgsConstructor
-public class CreationSuccessInventory extends GUIChild {
-    private final IController c;
-    private final String message;
+@AllArgsConstructor
+public class S2PWarpGroupConfigPacket extends S2PPacket {
+    private final ProxyConfigAction action;
+    private final Player player;
+    private final String salt;
+    private JsonObject data = new JsonObject();
 
     @Override
-    public void init() {
-        ItemStack skull = SledgehammerUtil.getSkull(Constants.Heads.limeCheckmark, ChatColor.GREEN + "" + ChatColor.BOLD + message);
-        skull.setLore(Lists.newArrayList(ChatColor.BLUE + "Click to continue"));
-        fillInventory(skull);
+    public String getPacketID() {
+        return Constants.warpGroupConfigID;
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent e) {
-        e.setCancelled(true);
-        if (c != null) {
-            GUIRegistry.register(c);
-        } else {
-            controller.close();
-        }
+    public void getMessage(JsonObject data) {
+        data.addProperty("salt", salt);
+        data.addProperty("action", action.name());
+        data.add("data", this.data);
+    }
+
+    @Override
+    public PacketInfo getPacketInfo() {
+        return PacketInfo.build(getPacketID(), player);
+    }
+
+    public enum ProxyConfigAction {
+        OPEN_CONFIG, CREATE_GROUP, UPDATE_GROUP, REMOVE_GROUP
     }
 }

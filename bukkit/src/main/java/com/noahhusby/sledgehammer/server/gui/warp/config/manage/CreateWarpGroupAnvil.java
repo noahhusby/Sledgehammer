@@ -20,31 +20,30 @@
 
 package com.noahhusby.sledgehammer.server.gui.warp.config.manage;
 
-import com.noahhusby.sledgehammer.common.warps.Warp;
-import com.noahhusby.sledgehammer.common.warps.WarpConfigPayload;
+import com.google.gson.JsonObject;
+import com.noahhusby.sledgehammer.common.warps.WarpGroupConfigPayload;
 import com.noahhusby.sledgehammer.server.Sledgehammer;
 import com.noahhusby.sledgehammer.server.gui.AnvilChild;
 import com.noahhusby.sledgehammer.server.gui.AnvilController;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
+import com.noahhusby.sledgehammer.server.gui.warp.config.ManageWarpGroupViewInventory;
+import com.noahhusby.sledgehammer.server.network.NetworkHandler;
+import com.noahhusby.sledgehammer.server.network.s2p.S2PWarpGroupConfigPacket;
+import lombok.RequiredArgsConstructor;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class ChangeNameAnvil extends AnvilChild {
+@RequiredArgsConstructor
+public class CreateWarpGroupAnvil extends AnvilChild {
 
-    private final WarpConfigPayload payload;
-    private final Warp warp;
-
-    public ChangeNameAnvil(WarpConfigPayload payload, Warp warp) {
-        this.payload = payload;
-        this.warp = warp;
-    }
+    private final WarpGroupConfigPayload payload;
 
     @Override
     public void build(AnvilGUI.Builder builder) {
-        builder.text(warp.getName())
-                .title("Rename Warp")
+        builder.text("Enter group name")
+                .title("Create a new warp group")
                 .plugin(Sledgehammer.getInstance());
 
         ItemStack warp = new ItemStack(Material.WOOL, 1, (byte) 4);
@@ -53,7 +52,7 @@ public class ChangeNameAnvil extends AnvilChild {
 
     @Override
     public void onLeftItemClick() {
-        GUIRegistry.register(new ManageWarpInventory.ManageWarpInventoryController(getController().getPlayer(), payload, warp));
+        GUIRegistry.register(new ManageWarpGroupViewInventory.ManageWarpGroupViewInventoryController(getController().getPlayer(), payload));
     }
 
     @Override
@@ -67,40 +66,38 @@ public class ChangeNameAnvil extends AnvilChild {
                 break;
             case RIGHT:
             case LEFT:
-                GUIRegistry.register(new ManageWarpInventory.ManageWarpInventoryController(getController().getPlayer(), payload, warp));
+                GUIRegistry.register(new ManageWarpGroupViewInventory.ManageWarpGroupViewInventoryController(getController().getPlayer(), payload));
                 break;
             case FINISH:
                 if (getText().equals("")) {
-                    GUIRegistry.register(new ChangeNameController(getController().getPlayer(), payload, warp));
+                    GUIRegistry.register(new CreateWarpGroupAnvil.CreateWarpGroupAnvilController(getController().getPlayer(), payload));
                 } else {
-                    warp.setName(getText());
-                    GUIRegistry.register(new ManageWarpInventory.ManageWarpInventoryController(getController().getPlayer(), payload, warp));
+                    JsonObject json = new JsonObject();
+                    json.addProperty("groupName", getText());
+                    NetworkHandler.getInstance().send(new S2PWarpGroupConfigPacket(S2PWarpGroupConfigPacket.ProxyConfigAction.CREATE_GROUP, getController().getPlayer(), payload.getSalt(), json));
                 }
                 break;
         }
     }
 
-    public static class ChangeNameController extends AnvilController {
-        private final WarpConfigPayload payload;
-        private final Warp warp;
+    public static class CreateWarpGroupAnvilController extends AnvilController {
+        private final WarpGroupConfigPayload payload;
 
-        public ChangeNameController(AnvilController controller, WarpConfigPayload payload, Warp warp) {
+        public CreateWarpGroupAnvilController(AnvilController controller, WarpGroupConfigPayload payload) {
             super(controller);
             this.payload = payload;
-            this.warp = warp;
             init();
         }
 
-        public ChangeNameController(Player player, WarpConfigPayload payload, Warp warp) {
+        public CreateWarpGroupAnvilController(Player player, WarpGroupConfigPayload payload) {
             super(player);
             this.payload = payload;
-            this.warp = warp;
             init();
         }
 
         @Override
         public void init() {
-            openChild(new ChangeNameAnvil(payload, warp));
+            openChild(new CreateWarpGroupAnvil(payload));
         }
     }
 }

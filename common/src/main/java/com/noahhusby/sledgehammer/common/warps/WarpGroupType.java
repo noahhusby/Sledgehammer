@@ -25,7 +25,7 @@ package com.noahhusby.sledgehammer.common.warps;
  * An enumeration of warp group type
  */
 public enum WarpGroupType {
-    GROUP,
+    WARP,
 
     SERVER
 }

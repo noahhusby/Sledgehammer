@@ -20,36 +20,20 @@
 
 package com.noahhusby.sledgehammer.server.gui.warp.config.confirmation;
 
-import com.noahhusby.sledgehammer.common.warps.Warp;
-import com.noahhusby.sledgehammer.common.warps.WarpConfigPayload;
 import com.noahhusby.sledgehammer.server.gui.GUIChild;
 import com.noahhusby.sledgehammer.server.gui.GUIController;
 import org.bukkit.entity.Player;
 
 public class ConfirmationController extends GUIController {
-    private final WarpConfigPayload payload;
+    private final GUIController c;
     private final Type type;
-    private Warp warp;
+    private final String message;
 
-    public ConfirmationController(Player player, WarpConfigPayload payload, Type type, Warp warp) {
+    public ConfirmationController(Player player, GUIController c, Type type, String message) {
         super(27, "Warp Confirmation", player);
-        this.payload = payload;
+        this.c = c;
         this.type = type;
-        this.warp = warp;
-        init();
-    }
-
-    public ConfirmationController(Player player, WarpConfigPayload payload, Type type) {
-        super(27, "Warp Confirmation", player);
-        this.payload = payload;
-        this.type = type;
-        init();
-    }
-
-    public ConfirmationController(GUIController controller, WarpConfigPayload payload, Type type) {
-        super(controller);
-        this.payload = payload;
-        this.type = type;
+        this.message = message;
         init();
     }
 
@@ -58,22 +42,22 @@ public class ConfirmationController extends GUIController {
         GUIChild child = null;
         switch (type) {
             case ADD_SUCCESSFUL:
-                child = new CreationSuccessInventory(payload);
+                child = new CreationSuccessInventory(c, message);
                 break;
             case ADD_FAILURE:
-                child = new CreationFailureInventory(payload);
+                child = new CreationFailureInventory(c, message);
                 break;
             case REMOVE_FAILURE:
-                child = new RemoveFailureInventory(payload);
+                child = new RemoveFailureInventory(c, message);
                 break;
             case REMOVE_SUCCESSFUL:
-                child = new RemoveSuccessInventory(payload);
+                child = new RemoveSuccessInventory(c, message);
                 break;
             case HEAD_UPDATE:
-                child = new HeadUpdateSuccessInventory(payload);
+                child = new UpdateSuccessInventory(c, message);
                 break;
             case LOCATION_UPDATE:
-                child = new LocationSuccessInventory(payload, warp);
+                child = new LocationSuccessInventory(c);
                 break;
         }
 

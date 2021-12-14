@@ -74,7 +74,7 @@ public class SledgehammerUtil extends CommonUtil {
         try {
             return setItemDisplayName(SkullUtil.itemWithUrlId(SkullUtil.createSkull(), urlId), name);
         } catch (StringIndexOutOfBoundsException | NullPointerException e) {
-            return getSkull(Constants.steveHead, name);
+            return getSkull(Constants.Heads.steve, name);
         }
     }
 

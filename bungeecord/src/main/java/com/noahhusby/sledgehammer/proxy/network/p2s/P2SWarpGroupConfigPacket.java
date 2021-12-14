@@ -18,38 +18,39 @@
  *
  */
 
-package com.noahhusby.sledgehammer.server.gui.warp.config.confirmation;
+package com.noahhusby.sledgehammer.proxy.network.p2s;
 
-import com.google.common.collect.Lists;
-import com.noahhusby.sledgehammer.server.Constants;
-import com.noahhusby.sledgehammer.server.SledgehammerUtil;
-import com.noahhusby.sledgehammer.server.gui.GUIChild;
-import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
-import com.noahhusby.sledgehammer.server.gui.IController;
+import com.google.gson.JsonObject;
+import com.noahhusby.sledgehammer.common.warps.WarpGroupConfigPayload;
+import com.noahhusby.sledgehammer.proxy.Constants;
+import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
+import com.noahhusby.sledgehammer.proxy.network.P2SPacket;
+import com.noahhusby.sledgehammer.proxy.network.PacketInfo;
+import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
+import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.ChatColor;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
 
 @RequiredArgsConstructor
-public class CreationSuccessInventory extends GUIChild {
-    private final IController c;
-    private final String message;
+public class P2SWarpGroupConfigPacket extends P2SPacket {
+
+    private final SledgehammerPlayer player;
+    private final WarpGroupConfigPayload.GroupConfigAction action;
+    private final boolean admin;
 
     @Override
-    public void init() {
-        ItemStack skull = SledgehammerUtil.getSkull(Constants.Heads.limeCheckmark, ChatColor.GREEN + "" + ChatColor.BOLD + message);
-        skull.setLore(Lists.newArrayList(ChatColor.BLUE + "Click to continue"));
-        fillInventory(skull);
+    public String getPacketID() {
+        return Constants.warpGroupConfigID;
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent e) {
-        e.setCancelled(true);
-        if (c != null) {
-            GUIRegistry.register(c);
-        } else {
-            controller.close();
-        }
+    public void getMessage(JsonObject data) {
+        WarpGroupConfigPayload payload = WarpHandler.getInstance().generateGroupConfigPayload(player, admin);
+        payload.setAction(action);
+        data.add("payload", SledgehammerUtil.GSON.toJsonTree(payload));
+    }
+
+    @Override
+    public PacketInfo getPacketInfo() {
+        return PacketInfo.build(getPacketID(), player, player.getServer().getInfo().getName());
     }
 }

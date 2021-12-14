@@ -31,6 +31,7 @@ import com.noahhusby.sledgehammer.server.network.p2s.P2STeleportPacket;
 import com.noahhusby.sledgehammer.server.network.p2s.P2STestLocationPacket;
 import com.noahhusby.sledgehammer.server.network.p2s.P2SWarpConfigPacket;
 import com.noahhusby.sledgehammer.server.network.p2s.P2SWarpGUIPacket;
+import com.noahhusby.sledgehammer.server.network.p2s.P2SWarpGroupConfigPacket;
 import com.noahhusby.sledgehammer.server.players.PlayerLocationTask;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -60,7 +61,8 @@ public final class Sledgehammer extends JavaPlugin implements Listener {
                 new P2STestLocationPacket(),
                 new P2SWarpGUIPacket(),
                 new P2SPermissionPacket(),
-                new P2SWarpConfigPacket()
+                new P2SWarpConfigPacket(),
+                new P2SWarpGroupConfigPacket()
         );
 
         Bukkit.getPluginManager().registerEvents(new GUIRegistry(), this);
