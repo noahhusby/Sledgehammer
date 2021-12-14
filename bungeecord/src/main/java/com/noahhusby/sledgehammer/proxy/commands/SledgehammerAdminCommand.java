@@ -33,7 +33,7 @@ import net.md_5.bungee.api.CommandSender;
 
 public class SledgehammerAdminCommand extends Command {
 
-    private final FragmentManager manager = new FragmentManager("/sha", ChatColor.BLUE + "Sledgehammer");
+    private final FragmentManager manager = new FragmentManager("/sha", ChatColor.BLUE + "" + ChatColor.BOLD + "Sledgehammer");
 
     public SledgehammerAdminCommand() {
         super("sha", "sledgehammer.admin");
