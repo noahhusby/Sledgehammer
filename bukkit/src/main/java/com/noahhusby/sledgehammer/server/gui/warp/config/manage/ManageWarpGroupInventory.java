@@ -62,20 +62,16 @@ public class ManageWarpGroupInventory extends GUIChild {
                                                                + "" + ChatColor.BOLD + cur.getName());
             List<String> lore = new ArrayList<>();
             lore.add(ChatColor.BLUE + "" + ChatColor.STRIKETHROUGH + "------------------");
-            lore.add(ChatColor.DARK_GRAY + "Type: " + cur.getType().name());
-            lore.add(ChatColor.BLUE + "" + ChatColor.STRIKETHROUGH + "------------------");
             lore.add(ChatColor.GRAY + "ID: " + cur.getId());
+            lore.add(ChatColor.BLUE + "" + ChatColor.STRIKETHROUGH + "------------------");
             item.setLore(lore);
             setItem(4, item);
         }
         setItem(11, createItem(Material.NAME_TAG, 1, ChatColor.RED + "" + ChatColor.BOLD + "Change Name"));
         setItem(12, SledgehammerUtil.getSkull(Constants.Heads.steve, ChatColor.AQUA + "" + ChatColor.BOLD + "Change Head"));
         if (payload.isAdmin()) {
-            {
-                String headType = cur.getType() == WarpGroupType.SERVER ? Constants.Heads.yellowWool : Constants.Heads.cyanWool;
-                String name = ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + (cur.getType() == WarpGroupType.SERVER ? "Edit servers" : "Edit warps");
-                setItem(14, SledgehammerUtil.getSkull(headType, name));
-            }
+            setItem(13, SledgehammerUtil.getSkull(Constants.Heads.cyanWool, ChatColor.AQUA + "" + ChatColor.BOLD + "Edit Warps"));
+            setItem(14, SledgehammerUtil.getSkull(Constants.Heads.yellowWool, ChatColor.GOLD + "" + ChatColor.BOLD + "Edit Servers"));
             setItem(15, SledgehammerUtil.getSkull(Constants.Heads.redTrashCan, ChatColor.RED + "" + ChatColor.BOLD + "Delete Group"));
         }
         setItem(18, SledgehammerUtil.getSkull(Constants.Heads.arrowLeft, ChatColor.RED + "" + ChatColor.BOLD + "Back"));
@@ -110,10 +106,13 @@ public class ManageWarpGroupInventory extends GUIChild {
             });
         }
 
+        if (e.getSlot() == 13) {
+            GUIRegistry.register(new EditWarpGroupWarpsInventory.EditWarpGroupWarpsInventoryController(getPlayer(), payload, cur));
+            return;
+        }
+
         if (e.getSlot() == 14) {
-            //TODO: Updating doesn't work?
-            //TODO: Logic
-            //GUIRegistry.register(new ManageServerViewInventory.ManageGroupInventoryController(getPlayer(), payload));
+            GUIRegistry.register(new EditWarpGroupServersInventory.EditWarpGroupServersInventoryController(getPlayer(), payload, cur));
             return;
         }
 

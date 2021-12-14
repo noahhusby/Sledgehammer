@@ -80,7 +80,6 @@ public class S2PWarpGroupConfigPacket extends S2PPacket {
                 warpGroup.setHeadId(incomingGroup.getHeadId());
                 warpGroup.setName(incomingGroup.getName());
                 warpGroup.setId(incomingGroup.getId());
-                warpGroup.setType(incomingGroup.getType());
                 warpGroup.setServers(incomingGroup.getServers());
                 warpGroup.setWarps(incomingGroup.getWarps());
                 WarpHandler.getInstance().getWarpGroups().saveAsync();

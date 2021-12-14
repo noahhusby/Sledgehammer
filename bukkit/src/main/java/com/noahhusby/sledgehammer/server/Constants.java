@@ -28,7 +28,7 @@ public class Constants extends CommonConstants {
     public static final int warpsPerPage = 27;
 
     public class Heads {
-        public static final String arrowRight = "956a3618459e43b287b22b7e235ec699594546c6fcd6dc84bfca4cf30ab9311==";
+        public static final String arrowRight = "956a3618459e43b287b22b7e235ec699594546c6fcd6dc84bfca4cf30ab9311";
         public static final String arrowLeft = "cdc9e4dcfa4221a1fadc1b5b2b11d8beeb57879af1c42362142bae1edd5";
         public static final String globe = "98daa1e3ed94ff3e33e1d4c6e43f024c47d78a57ba4d38e75e7c9264106";
         public static final String lamp = "35b51cc2e99d08dd2879a792f062e077832a0163f3d85c244e0ba1c392ab09de=";
@@ -42,6 +42,8 @@ public class Constants extends CommonConstants {
         public static final String redCheckmark = "ff9d9de62ecae9b798555fd23e8ca35e2605291939c1862fe79066698c9508a7";
         public static final String cyanWool = "1fadf741ab76cd3620ad161300202d7b59a33051e5967e4b6194bac40bb280ff";
         public static final String yellowWool = "4d905269accab24b11924eba8bd92991b8d85ce4276027a1636c931b6d06c89e";
+        public static final String redWool = "86d35a963d5987894b6bc214e328b39cd2382426ff9c8e082b0b6a6e044d3a3";
+        public static final String limeWool = "77472d608821f45a8805376ec0c6ffcb78117829ea5f960041c2a09d10e04cb4";
         public static final String redExclamationMark = "e7f9c6fef2ad96b3a5465642ba954671be1c4543e2e25e56aef0a47d5f1f";
         public static final String pocketPortal = "2c915db3fc40a79b63c2c453f0c490981e5227c5027501283272138533dea519";
         public static final String steve = "fe254c7ae50f39989cd63bd59b5966433be1ba8f1745040109132915e64e272e";

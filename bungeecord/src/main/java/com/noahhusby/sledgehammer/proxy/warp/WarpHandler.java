@@ -368,7 +368,7 @@ public class WarpHandler {
         for (Map.Entry<String, WarpGroup> g : warpGroups.entrySet()) {
             if (admin) {
                 groups.put(g.getKey(), g.getValue());
-            } else if (g.getValue().getType() == WarpGroupType.SERVER && g.getValue().getServers().contains(player.getServer().getInfo().getName())) {
+            } else if (g.getValue().getServers().contains(player.getServer().getInfo().getName())) {
                 groups.put(g.getKey(), g.getValue());
             }
         }
@@ -377,18 +377,15 @@ public class WarpHandler {
 
     public WarpGroupPayload toPayload(WarpGroup group) {
         List<Integer> payloadWarps = Lists.newArrayList();
-        if (group.getType() == WarpGroupType.WARP) {
-            for (Integer warpId : group.getWarps()) {
-                Warp warp = WarpHandler.getInstance().getWarp(warpId);
-                if (warp != null) {
-                    payloadWarps.add(warpId);
-                }
+        for (Integer warpId : group.getWarps()) {
+            Warp warp = WarpHandler.getInstance().getWarp(warpId);
+            if (warp != null) {
+                payloadWarps.add(warpId);
             }
-        } else {
-            for (Warp warp : WarpHandler.getInstance().getWarps().values()) {
-                if (group.getServers().contains(warp.getServer())) {
-                    payloadWarps.add(warp.getId());
-                }
+        }
+        for (Warp warp : WarpHandler.getInstance().getWarps().values()) {
+            if (group.getServers().contains(warp.getServer()) && !payloadWarps.contains(warp.getId())) {
+                payloadWarps.add(warp.getId());
             }
         }
         return new WarpGroupPayload(group.getId(), group.getName(), group.getHeadId(), payloadWarps);

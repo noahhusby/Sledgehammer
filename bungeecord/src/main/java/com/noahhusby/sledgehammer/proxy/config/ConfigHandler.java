@@ -169,7 +169,6 @@ public class ConfigHandler {
                                 .add("Id", Type.TEXT)
                                 .add("Name", Type.TEXT)
                                 .add("HeadId", Type.TEXT)
-                                .add("Type", Type.TEXT)
                                 .add("Warps", Type.TEXT)
                                 .add("Servers", Type.TEXT)
                                 .repair(true)

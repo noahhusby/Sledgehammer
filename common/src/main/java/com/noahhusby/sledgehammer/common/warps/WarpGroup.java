@@ -52,9 +52,6 @@ public class WarpGroup {
     @SerializedName("HeadId")
     private String headId;
     @Expose
-    @SerializedName("Type")
-    private WarpGroupType type = WarpGroupType.WARP;
-    @Expose
     @SerializedName("Warps")
     private List<Integer> warps = new ArrayList<>();
     @Expose
