@@ -146,10 +146,6 @@ public class SledgehammerConfig {
                 "If local is used, but no local warps are found, the GUI will default to showing all warps."
         })
         public String warpMenuPage = "";
-
-        public boolean showServersOption = true;
-
-        public boolean showGroupsOption = true;
     }
 
     @Comment({

@@ -45,12 +45,7 @@ public class ServerListLocationFragment implements ICommandFragment {
         }
 
         List<Location> locations = ServerHandler.getInstance().getLocationsFromServer(args[0]);
-        if (locations == null) {
-            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "No locations were found on that server!"));
-            return;
-        }
-
-        if (locations.isEmpty()) {
+        if (locations == null || locations.isEmpty()) {
             sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "No locations were found on that server!"));
             return;
         }

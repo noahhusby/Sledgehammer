@@ -27,8 +27,6 @@ import com.noahhusby.sledgehammer.proxy.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.proxy.network.p2s.P2SLocationPacket;
 import com.noahhusby.sledgehammer.proxy.players.Permission;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
-import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
-import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -134,7 +132,6 @@ public class TpllCommand extends Command {
                     return;
                 }
 
-                SledgehammerServer sledgehammerServer = ServerHandler.getInstance().getServer(recipient.getServer().getInfo().getName());
                 ServerInfo server = OpenStreetMaps.getInstance().getServerFromLocation(lon, lat);
 
                 if (server == null) {

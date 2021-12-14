@@ -134,8 +134,8 @@ public class ServerHandler implements Listener {
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onServerJoin(ServerConnectedEvent e) {
-        SledgehammerServer server = getServer(e.getPlayer().getServer().getInfo().getName());
-        if (server != null && !server.isInitialized()) {
+        SledgehammerServer server = getServer(e.getServer().getInfo().getName());
+        if (server == null || !server.isInitialized()) {
             new Thread(() -> NetworkHandler.getInstance().send(new P2SInitializationPacket(e.getPlayer().getName(), e.getServer().getInfo().getName()))).start();
         }
     }

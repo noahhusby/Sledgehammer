@@ -20,12 +20,10 @@
 
 package com.noahhusby.sledgehammer.common.warps;
 
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.noahhusby.lib.data.storage.Key;
-import com.noahhusby.sledgehammer.common.CommonUtil;
 import com.noahhusby.sledgehammer.common.WarpDeserializer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -63,10 +61,6 @@ public class Warp {
 
     public Warp copy() {
         return new Warp(id, name, point, server, headID, global);
-    }
-
-    public JsonObject toJson() {
-        return CommonUtil.GSON.toJsonTree(this).getAsJsonObject();
     }
 
     public Warp toWaypoint() {

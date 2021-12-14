@@ -81,14 +81,4 @@ public class PacketInfo {
     public static PacketInfo build(String id, CommandSender sender, String server) {
         return build(id, sender.getName(), server);
     }
-
-    /**
-     * Renews packet info to current time
-     *
-     * @param info Current {@link PacketInfo}
-     * @return New {@link PacketInfo}
-     */
-    public static PacketInfo renew(PacketInfo info) {
-        return new PacketInfo(info.id, info.sender, info.server, System.currentTimeMillis());
-    }
 }

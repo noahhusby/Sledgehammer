@@ -27,6 +27,7 @@ import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 
 public class ServerInfoFragment implements ICommandFragment {
@@ -35,33 +36,25 @@ public class ServerInfoFragment implements ICommandFragment {
         SledgehammerServer server = ServerHandler.getInstance().getServer(args[0]);
         ServerInfo info = ProxyServer.getInstance().getServerInfo(args[0]);
         ChatUtil.sendMessageBox(sender, ChatColor.YELLOW + "" + ChatColor.BOLD + "Server Report", () -> {
-            sender.sendMessage();
             sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Name: ", ChatColor.WHITE, info.getName()));
             if (server == null) {
                 sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Status: ", ChatColor.RED, "Unconfigured"));
-            } else if (!server.isInitialized()) {
-                sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Status: ", ChatColor.GREEN, "Configured",
-                        ChatColor.RED, " (Not Initialized)"));
-                sender.sendMessage();
-                sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Earth: ", (server.isEarthServer() ? ChatColor.GREEN + "Yes" : ChatColor.RED + "No")));
-                sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Friendly Name: ", ChatColor.WHITE, server.getFriendlyName()));
-                sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "X Offset: ", ChatColor.WHITE, server.getXOffset()));
-                sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Z Offset: ", ChatColor.WHITE, server.getZOffset()));
-                sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Tpll Mode: ", ChatColor.WHITE, server.getTpllMode().name()));
-            } else {
-                sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Status: ", ChatColor.GREEN, "Configured"));
-                sender.sendMessage();
-                sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Earth: ", (server.isEarthServer() ? ChatColor.GREEN + "Yes" : ChatColor.RED + "No")));
-                sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Friendly Name: ", ChatColor.WHITE, server.getFriendlyName()));
-                sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "X Offset: ", ChatColor.WHITE, server.getXOffset()));
-                sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Z Offset: ", ChatColor.WHITE, server.getZOffset()));
-                sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Tpll Mode: ", ChatColor.WHITE, server.getTpllMode().name()));
+                return;
+            }
+            TextComponent status = server.isInitialized() ? ChatUtil.combine(ChatColor.YELLOW, "Status: ", ChatColor.GREEN, "Configured") : ChatUtil.combine(ChatColor.YELLOW, "Status: ", ChatColor.GREEN, "Configured",
+                    ChatColor.RED, " (Not Initialized)");
+            sender.sendMessage(status);
+            sender.sendMessage();
+            sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Earth: ", (server.isEarthServer() ? ChatColor.GREEN + "Yes" : ChatColor.RED + "No")));
+            sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Friendly Name: ", ChatColor.WHITE, server.getFriendlyName()));
+            sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "X Offset: ", ChatColor.WHITE, server.getXOffset()));
+            sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Z Offset: ", ChatColor.WHITE, server.getZOffset()));
+            sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Tpll Mode: ", ChatColor.WHITE, server.getTpllMode().name()));
+            if (server.isInitialized()) {
                 sender.sendMessage();
                 sender.sendMessage(ChatUtil.combine(ChatColor.BLUE, "SH Version: ", ChatColor.WHITE, server.getSledgehammerVersion()));
             }
-            sender.sendMessage();
         });
-
     }
 
     @Override

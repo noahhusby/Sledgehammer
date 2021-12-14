@@ -27,6 +27,7 @@ import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.ReloadFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.ServerFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.SetupFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.TestLocationFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.VersionFragment;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 
@@ -40,6 +41,7 @@ public class SledgehammerAdminCommand extends Command {
         manager.register(new SetupFragment());
         manager.register(new ServerFragment());
         manager.register(new TestLocationFragment());
+        manager.register(new VersionFragment());
         manager.register(new MigrateFragment());
     }
 

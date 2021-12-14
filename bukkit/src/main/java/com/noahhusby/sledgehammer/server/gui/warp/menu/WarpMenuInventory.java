@@ -33,7 +33,6 @@ import com.noahhusby.sledgehammer.server.util.SkullUtil;
 import com.noahhusby.sledgehammer.server.util.WarpGUIUtil;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -163,20 +162,6 @@ public class WarpMenuInventory extends AbstractWarpInventory {
 
             GUIRegistry.register(new GroupWarpInventory.GroupWarpInventoryController(getController(), controller.getPayload(), id));
         }
-    }
-
-    private ItemStack generateCompass() {
-        ItemStack compass = new ItemStack(Material.COMPASS);
-        ItemMeta m = compass.getItemMeta();
-
-        m.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "All Warps");
-        List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.GRAY + "All Warps");
-        m.setLore(lore);
-
-        compass.setItemMeta(m);
-
-        return compass;
     }
 
     public int getPage() {

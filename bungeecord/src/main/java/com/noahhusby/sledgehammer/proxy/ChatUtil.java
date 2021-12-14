@@ -23,11 +23,8 @@ package com.noahhusby.sledgehammer.proxy;
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.Arrays;
 
@@ -123,10 +120,6 @@ public class ChatUtil {
     public static TextComponent getNotAvailable() {
         return combine(SledgehammerConfig.general.replaceNotAvailable ? (ChatColor.WHITE + "Unknown command. Type \"/help\" for help.") :
                 (ChatColor.RED + "That command is not available."));
-    }
-
-    public static void sendActionBar(ProxiedPlayer player, BaseComponent message) {
-        player.sendMessage(ChatMessageType.ACTION_BAR, message);
     }
 
     public static void sendMessageBox(CommandSender sender, String title, TextComponent text) {

@@ -44,7 +44,6 @@ public class P2SWarpGUIPacket extends P2SPacket {
     @Override
     public void getMessage(JsonObject data) {
         JsonObject payload = SledgehammerUtil.GSON.toJsonTree(WarpHandler.getInstance().generateGUIPayload(SledgehammerPlayer.getPlayer(sender), editAccess)).getAsJsonObject();
-        System.out.println(SledgehammerUtil.GSON.toJson(payload));
         data.add("payload", payload);
     }
 

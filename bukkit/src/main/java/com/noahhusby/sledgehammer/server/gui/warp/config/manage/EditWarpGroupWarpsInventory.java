@@ -98,6 +98,7 @@ public class EditWarpGroupWarpsInventory extends GUIChild {
         }
     }
 
+    @SuppressWarnings("RedundantCollectionOperation")
     @Override
     public void onInventoryClick(InventoryClickEvent e) {
         e.setCancelled(true);

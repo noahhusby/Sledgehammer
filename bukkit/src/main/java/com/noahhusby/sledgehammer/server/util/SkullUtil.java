@@ -25,7 +25,6 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -91,16 +90,6 @@ public class SkullUtil {
     }
 
     /**
-     * Creates a player skull item with the skin based on a player's UUID.
-     *
-     * @param id The Player's UUID.
-     * @return The head of the Player.
-     */
-    public static ItemStack itemFromUuid(UUID id) {
-        return itemWithUuid(createSkull(), id);
-    }
-
-    /**
      * Creates a player skull item with the skin at a Mojang URL.
      *
      * @param url The Mojang URL.
@@ -111,16 +100,6 @@ public class SkullUtil {
     }
 
     /**
-     * Creates a player skull item with the skin based on a base64 string.
-     *
-     * @param base64 The Mojang URL.
-     * @return The head of the Player.
-     */
-    public static ItemStack itemFromBase64(String base64) {
-        return itemWithBase64(createSkull(), base64);
-    }
-
-    /**
      * Creates a player skull item based on the number index
      *
      * @param index Number Head 0 - 20
@@ -128,21 +107,6 @@ public class SkullUtil {
      */
     public static ItemStack itemFromNumber(int index) {
         return numberHeads.get(index);
-    }
-
-    /**
-     * Modifies a skull to use the skin of the player with a given UUID.
-     *
-     * @param item The item to apply the name to. Must be a player skull.
-     * @param id   The Player's UUID.
-     * @return The head of the Player.
-     */
-    public static ItemStack itemWithUuid(@NonNull ItemStack item, @NonNull UUID id) {
-        SkullMeta meta = (SkullMeta) item.getItemMeta();
-        meta.setOwningPlayer(Bukkit.getOfflinePlayer(id));
-        item.setItemMeta(meta);
-
-        return item;
     }
 
     /**
@@ -198,7 +162,6 @@ public class SkullUtil {
     }
 
     private static GameProfile makeProfile(String b64) {
-        // random uuid based on the b64 string
         UUID id = new UUID(
                 b64.substring(b64.length() - 20).hashCode(),
                 b64.substring(b64.length() - 10).hashCode()

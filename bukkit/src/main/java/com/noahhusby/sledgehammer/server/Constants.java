@@ -31,11 +31,7 @@ public class Constants extends CommonConstants {
         public static final String arrowRight = "956a3618459e43b287b22b7e235ec699594546c6fcd6dc84bfca4cf30ab9311";
         public static final String arrowLeft = "cdc9e4dcfa4221a1fadc1b5b2b11d8beeb57879af1c42362142bae1edd5";
         public static final String globe = "98daa1e3ed94ff3e33e1d4c6e43f024c47d78a57ba4d38e75e7c9264106";
-        public static final String lamp = "35b51cc2e99d08dd2879a792f062e077832a0163f3d85c244e0ba1c392ab09de=";
         public static final String monitor = "70818a84e5e8890954ac6cbe9098b85a159444d4d82eac90663578bdda540=";
-        public static final String netherPortal = "b0bfc2577f6e26c6c6f7365c2c4076bccee653124989382ce93bca4fc9e39b";
-        public static final String oakBlank = "5db532b5cced46b4b535ece16eced7bbc5cac55594d61e8b8f8eac4299c9fc";
-        public static final String goldenBlank = "351137e11443a8fbb05fcd3ccc1af9bd2303918f35448185e3ed96ef184da";
         public static final String limePlus = "b056bc1244fcff99344f12aba42ac23fee6ef6e3351d27d273c1572531f";
         public static final String goldenExclamation = "24d67a3b4fbb671d845a9c842e9e86038acee17b95e6cacb2b02cb9c";
         public static final String limeCheckmark = "a92e31ffb59c90ab08fc9dc1fe26802035a3a47c42fee63423bcdb4262ecb9b6";
@@ -50,7 +46,6 @@ public class Constants extends CommonConstants {
         public static final String purpleExclamationMark = "d5d4c645eb42bee415658e1661889e62268b5cb3f1e1da33ac6cc1e00a7090ff";
         public static final String redTrashCan = "b465f80bf02b408885987b00957ca5e9eb874c3fa88305099597a333a336ee15";
         public static final String redLeft = "f84f597131bbe25dc058af888cb29831f79599bc67c95c802925ce4afba332fc";
-        public static final String keypad = "3e2d79612023e270bc89532729bc711f9b8fde0ceacdc59c979e1b4363374f";
         public static final String blackBook = "083df8f5a6876b352bc547551bbcbc8fb754731e77326365299169f2412de6";
     }
 }
