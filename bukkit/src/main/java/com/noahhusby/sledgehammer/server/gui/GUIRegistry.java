@@ -24,6 +24,7 @@ import com.google.common.collect.Maps;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 
 import java.util.Map;
 import java.util.UUID;
@@ -41,6 +42,15 @@ public class GUIRegistry implements Listener {
             return;
         }
         ((GUIController) controller).onInventoryClick(e);
+    }
+
+    public static void onInventoryClose(InventoryCloseEvent e) {
+        controllers.remove(e.getPlayer().getUniqueId());
+    }
+
+    @EventHandler
+    public void onInventoryCloseEvent(InventoryCloseEvent e) {
+        onInventoryClose(e);
     }
 
     @EventHandler

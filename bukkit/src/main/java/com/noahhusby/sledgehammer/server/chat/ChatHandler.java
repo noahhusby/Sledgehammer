@@ -62,7 +62,6 @@ public class ChatHandler implements Listener {
             return;
         }
         e.setCancelled(true);
-
         Sledgehammer.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(Sledgehammer.getInstance(), () -> {
             boolean cancelled = e.getMessage().equalsIgnoreCase("cancel");
             entries.get(e.getPlayer()).accept(!cancelled, e.getMessage());
