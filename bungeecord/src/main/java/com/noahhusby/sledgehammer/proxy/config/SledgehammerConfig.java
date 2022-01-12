@@ -221,6 +221,15 @@ public class SledgehammerConfig {
             Sledgehammer.logger.warning(validationError(databaseType, "database", "type", "Using local database instead."));
             database.type = "LOCAL";
         }
+        if (geography.useOfflineMode && !ConfigHandler.getInstance().getOfflineBin().exists()) {
+            Sledgehammer.logger.warning("Offline mode was enabled, but no location database exists! Please follow this guide to download the location database: https://github.com/noahhusby/Sledgehammer/wiki/Border-Offline-Database\n"
+                                        + "Disabling offline mode!");
+            geography.useOfflineMode = false;
+        }
+        if (geography.borderTeleportation && !geography.useOfflineMode) {
+            Sledgehammer.logger.warning("Border teleportation was enabled, but offline mode is disabled. Please make sure the offline database is configured correctly, and offline mode is enabled.");
+            geography.borderTeleportation = false;
+        }
     }
 
     private static String validationError(String value, String cat, String field, String result) {
