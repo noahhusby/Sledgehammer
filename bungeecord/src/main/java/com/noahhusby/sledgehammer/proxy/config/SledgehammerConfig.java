@@ -23,7 +23,9 @@ package com.noahhusby.sledgehammer.proxy.config;
 import com.noahhusby.lib.application.config.Config;
 import com.noahhusby.lib.application.config.Config.Comment;
 import com.noahhusby.lib.application.config.Config.Type;
+import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 
+import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -71,7 +73,7 @@ public class SledgehammerConfig {
                 "\"SQL\" for SQL",
                 "\"LOCAL\" for local storage only"
         })
-        public String databaseType = "LOCAL";
+        public String type = "LOCAL";
 
         @Comment({
                 "The host IP for the database."
@@ -210,5 +212,18 @@ public class SledgehammerConfig {
                 "A UUID v4 that will be used by Terramap clients to identify this network when saving settings. DO NOT PUT YOUR NETWORK AUTHENTIFICATION CODE IN HERE, THIS IS SHARED WITH CLIENTS! You want this to be the same on all your network's proxies. The default value is randomly generated."
         })
         public String terramapProxyUUID = UUID.randomUUID().toString();
+    }
+
+    public static void validate() {
+        // Validate Database Information
+        String databaseType = database.type.toLowerCase(Locale.ROOT);
+        if (!(databaseType.equals("mongo") || databaseType.equals("sql") || databaseType.equals("local"))) {
+            Sledgehammer.logger.warning(validationError(databaseType, "database", "type", "Using local database instead."));
+            database.type = "LOCAL";
+        }
+    }
+
+    private static String validationError(String value, String cat, String field, String result) {
+        return String.format("Invalid value \"%s\", for %s/%s. %s", value, cat, field, result);
     }
 }

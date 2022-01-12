@@ -87,6 +87,7 @@ public class ConfigHandler {
     public void load() {
         Configuration configuration = Configuration.of(SledgehammerConfig.class, dataFolder);
         configuration.sync(SledgehammerConfig.class);
+        SledgehammerConfig.validate();
         if (SledgehammerConfig.terramap.terramapEnabled) {
             File customMaps = new File(dataFolder + "/" + MapStyleRegistry.FILENAME);
             MapStyleRegistry.setConfigMapFile(customMaps);
@@ -119,7 +120,7 @@ public class ConfigHandler {
         warpGroups.clearHandlers();
         warpGroups.registerHandler(new LocalStorageHandler(ConfigHandler.warpGroupsFile));
 
-        if (SledgehammerConfig.database.databaseType.equals("SQL")) {
+        if (SledgehammerConfig.database.type.equals("SQL")) {
             Credentials credentials = new Credentials(SledgehammerConfig.database.host, SledgehammerConfig.database.port, SledgehammerConfig.database.user, SledgehammerConfig.database.password, SledgehammerConfig.database.database);
             {
                 SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(credentials), "Servers",
