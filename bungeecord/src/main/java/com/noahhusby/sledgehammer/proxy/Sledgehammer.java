@@ -41,6 +41,8 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -54,9 +56,10 @@ public class Sledgehammer extends Plugin implements Listener {
     public void onEnable() {
         instance = this;
         logger = getLogger();
+        Configurator.setLevel("org.mongodb.driver.cluster", Level.FATAL);
+        Configurator.setLevel("org.mongodb.driver.connection", Level.FATAL);
 
         ProxyServer.getInstance().registerChannel(Constants.serverChannel);
-
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerCommand());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerAdminCommand());
 

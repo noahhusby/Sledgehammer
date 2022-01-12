@@ -172,20 +172,27 @@ public class OpenStreetMaps implements Module {
                 JsonObject geocode = JsonUtils.parseString(response.toString()).getAsJsonObject();
                 JsonObject address = geocode.getAsJsonObject("address");
 
-                String city = address.get("city").getAsString();
-                if (city == null && (address.get("town") != null)) {
+                String city = null;
+                if (address.has("city")) {
+                    city = address.get("city").getAsString();
+                } else if (address.has("town")) {
                     city = address.get("town").getAsString();
                 }
-                String county = address.get("county").getAsString();
-                String state = address.get("state").getAsString();
-                if (state == null && (address.get("territory") != null)) {
+                String county = null;
+                if (address.has("county")) {
+                    county = address.get("county").getAsString();
+                }
+                String state = null;
+                if (address.has("state")) {
+                    state = address.get("state").getAsString();
+                } else if (address.has("territory")) {
                     state = address.get("territory").getAsString();
                 }
                 String country = address.get("country").getAsString();
 
                 return new Location(Location.Detail.none, city, county, state, country);
             }
-        } catch (IOException | NullPointerException e) {
+        } catch (IOException e) {
             return null;
         }
     }

@@ -63,7 +63,7 @@ public class ManageWarpInventory extends GUIChild {
             }
             ItemStack item = SledgehammerUtil.getSkull(headId, ChatColor.BLUE
                                                                + "" + ChatColor.BOLD + cur.getName());
-            ItemMeta meta  = item.getItemMeta();
+            ItemMeta meta = item.getItemMeta();
             List<String> lore = new ArrayList<>();
             lore.add(ChatColor.BLUE + "" + ChatColor.STRIKETHROUGH + "------------------");
             lore.add(ChatColor.DARK_GRAY + "Server: " + cur.getServer());

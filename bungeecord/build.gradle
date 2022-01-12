@@ -20,7 +20,9 @@
 
 dependencies {
     implementation "com.zaxxer:HikariCP:$hikariVersion"
+    implementation "org.mongodb:mongo-java-driver:$mongoVersion"
     implementation "com.noahhusby.lib:application:$husbyVersion"
     compileOnly "com.google.guava:guava:$guavaVersion"
     compileOnly "net.md-5:bungeecord-api:$bungeecordVersion"
+    compileOnly "org.apache.logging.log4j:log4j-core:$log4jVersion"
 }

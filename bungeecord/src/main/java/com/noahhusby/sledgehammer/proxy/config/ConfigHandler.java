@@ -20,6 +20,12 @@
 
 package com.noahhusby.sledgehammer.proxy.config;
 
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoCommandException;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoDatabase;
 import com.noahhusby.lib.application.config.Configuration;
 import com.noahhusby.lib.data.sql.Credentials;
 import com.noahhusby.lib.data.sql.MySQL;
@@ -27,6 +33,7 @@ import com.noahhusby.lib.data.sql.structure.Structure;
 import com.noahhusby.lib.data.sql.structure.Type;
 import com.noahhusby.lib.data.storage.Storage;
 import com.noahhusby.lib.data.storage.handlers.LocalStorageHandler;
+import com.noahhusby.lib.data.storage.handlers.MongoStorageHandler;
 import com.noahhusby.lib.data.storage.handlers.SQLStorageHandler;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
@@ -176,15 +183,69 @@ public class ConfigHandler {
                                 .build());
                 sqlStorageHandler.setPriority(100);
                 warpGroups.registerHandler(sqlStorageHandler);
-            }
-        }
 
-        ProxyServer.getInstance().getScheduler().schedule(Sledgehammer.getInstance(), () -> {
+                ProxyServer.getInstance().getScheduler().schedule(Sledgehammer.getInstance(), () -> {
+                    serverData.loadAsync();
+                    warpData.loadAsync();
+                    attributeData.loadAsync();
+                    warpGroups.loadAsync();
+                }, 10, TimeUnit.SECONDS);
+            }
+        } else if (SledgehammerConfig.database.type.equals("MONGO")) {
+            MongoCredential credential = MongoCredential.createCredential(SledgehammerConfig.database.user, "sledgehammer", SledgehammerConfig.database.password.toCharArray());
+            MongoClient client = new MongoClient(new ServerAddress(SledgehammerConfig.database.host, SledgehammerConfig.database.port), credential, MongoClientOptions.builder().build());
+            MongoDatabase database = client.getDatabase("sledgehammer");
+            boolean attemptEventUpdate = false;
+            {
+                MongoStorageHandler mongoStorageHandler = new MongoStorageHandler(database.getCollection("servers"));
+                mongoStorageHandler.setPriority(100);
+                try {
+                    mongoStorageHandler.enableEventUpdates();
+                    attemptEventUpdate = true;
+                } catch (MongoCommandException ignored) {
+                    Sledgehammer.logger.warning("Failed to enable event-driven updates for MongoDB. If sledgehammer is being used in a multi-proxy configuration, please set MongoDB up as a replica set.");
+                }
+                serverData.registerHandler(mongoStorageHandler);
+            }
+
+            {
+                MongoStorageHandler mongoStorageHandler = new MongoStorageHandler(database.getCollection("warps"));
+                mongoStorageHandler.setPriority(100);
+                if (attemptEventUpdate) {
+                    mongoStorageHandler.enableEventUpdates();
+                }
+                warpData.registerHandler(mongoStorageHandler);
+            }
+
+            {
+                MongoStorageHandler mongoStorageHandler = new MongoStorageHandler(database.getCollection("attributes"));
+                mongoStorageHandler.setPriority(100);
+                if (attemptEventUpdate) {
+                    mongoStorageHandler.enableEventUpdates();
+                }
+                attributeData.registerHandler(mongoStorageHandler);
+            }
+
+            {
+                MongoStorageHandler mongoStorageHandler = new MongoStorageHandler(database.getCollection("groups"));
+                mongoStorageHandler.setPriority(100);
+                if (attemptEventUpdate) {
+                    mongoStorageHandler.enableEventUpdates();
+                }
+                warpGroups.registerHandler(mongoStorageHandler);
+            }
             serverData.loadAsync();
             warpData.loadAsync();
             attributeData.loadAsync();
             warpGroups.loadAsync();
-        }, 10, TimeUnit.SECONDS);
+            ProxyServer.getInstance().getScheduler().schedule(Sledgehammer.getInstance(), () -> {
+                serverData.saveAsync();
+                warpData.saveAsync();
+                attributeData.saveAsync();
+                warpGroups.saveAsync();
+            }, 5, TimeUnit.SECONDS);
+        }
+
     }
 
     /**
