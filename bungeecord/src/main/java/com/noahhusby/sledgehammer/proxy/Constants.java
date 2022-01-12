@@ -31,5 +31,4 @@ public class Constants extends CommonConstants {
     public static final String adminMessagePrefix = "&9&lSH &8&l> ";
 
     public static final int borderZone = 500;
-    public static final int warpIdBuffer = 45;
 }

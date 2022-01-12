@@ -18,39 +18,43 @@
  *
  */
 
-package com.noahhusby.sledgehammer.proxy.commands;
+package com.noahhusby.sledgehammer.proxy.commands.fragments.admin.storage;
 
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
-import com.noahhusby.sledgehammer.proxy.commands.fragments.FragmentManager;
-import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.ReloadFragment;
-import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.ServerFragment;
-import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.SetupFragment;
-import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.StorageFragment;
-import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.TestLocationFragment;
-import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.VersionFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
+import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
+import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
+import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 
-public class SledgehammerAdminCommand extends Command {
-
-    private final FragmentManager manager = new FragmentManager("/sha", ChatColor.BLUE + "" + ChatColor.BOLD + "Sledgehammer");
-
-    public SledgehammerAdminCommand() {
-        super("sha", "sledgehammer.admin");
-        manager.register(new ReloadFragment());
-        manager.register(new SetupFragment());
-        manager.register(new ServerFragment());
-        manager.register(new TestLocationFragment());
-        manager.register(new VersionFragment());
-        manager.register(new StorageFragment());
-    }
+public class StorageSaveFragment implements ICommandFragment {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if (!hasPerms(sender)) {
-            sender.sendMessage(ChatUtil.getNotAvailable());
+        if (args.length < 1 || !args[0].equalsIgnoreCase("confirm")) {
+            sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Type ", ChatColor.YELLOW, "/sha storage save confirm ", ChatColor.GRAY, "to load data."));
             return;
         }
-        manager.execute(sender, args);
+        WarpHandler.getInstance().getWarps().save();
+        WarpHandler.getInstance().getWarpGroups().save();
+        ServerHandler.getInstance().getServers().save();
+        PlayerHandler.getInstance().getAttributes().save();
+        sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GREEN, "Successfully saved data."));
+    }
+
+    @Override
+    public String getName() {
+        return "save";
+    }
+
+    @Override
+    public String getPurpose() {
+        return "Save storage";
+    }
+
+    @Override
+    public String[] getArguments() {
+        return null;
     }
 }

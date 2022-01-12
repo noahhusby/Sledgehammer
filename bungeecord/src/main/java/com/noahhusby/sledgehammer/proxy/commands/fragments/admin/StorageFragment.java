@@ -18,39 +18,43 @@
  *
  */
 
-package com.noahhusby.sledgehammer.proxy.commands;
+package com.noahhusby.sledgehammer.proxy.commands.fragments.admin;
 
-import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.FragmentManager;
-import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.ReloadFragment;
-import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.ServerFragment;
-import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.SetupFragment;
-import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.StorageFragment;
-import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.TestLocationFragment;
-import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.VersionFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.storage.StorageLoadFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.storage.StorageMigrateFragment;
+import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.storage.StorageSaveFragment;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 
-public class SledgehammerAdminCommand extends Command {
+public class StorageFragment implements ICommandFragment {
 
-    private final FragmentManager manager = new FragmentManager("/sha", ChatColor.BLUE + "" + ChatColor.BOLD + "Sledgehammer");
+    private final FragmentManager manager = new FragmentManager("/sha storage", ChatColor.YELLOW + "Storage");
 
-    public SledgehammerAdminCommand() {
-        super("sha", "sledgehammer.admin");
-        manager.register(new ReloadFragment());
-        manager.register(new SetupFragment());
-        manager.register(new ServerFragment());
-        manager.register(new TestLocationFragment());
-        manager.register(new VersionFragment());
-        manager.register(new StorageFragment());
+    public StorageFragment() {
+        manager.register(new StorageLoadFragment());
+        manager.register(new StorageSaveFragment());
+        manager.register(new StorageMigrateFragment());
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if (!hasPerms(sender)) {
-            sender.sendMessage(ChatUtil.getNotAvailable());
-            return;
-        }
         manager.execute(sender, args);
+    }
+
+    @Override
+    public String getName() {
+        return "storage";
+    }
+
+    @Override
+    public String getPurpose() {
+        return "Storage operations";
+    }
+
+    @Override
+    public String[] getArguments() {
+        return null;
     }
 }

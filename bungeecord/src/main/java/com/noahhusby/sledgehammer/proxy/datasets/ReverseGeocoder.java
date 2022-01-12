@@ -235,7 +235,6 @@ public class ReverseGeocoder implements AutoCloseable {
     public void close() throws IOException {
         cache = null;
         if (buffer != null) {
-            // Restricted API, but e.g. the JMH benchmarks fail if we do not unmap.
             buffer = null;
         }
         if (file != null) {
