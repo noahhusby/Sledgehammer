@@ -26,6 +26,7 @@ import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.network.P2SPacket;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class P2SLocationPacket extends P2SPacket {
@@ -54,7 +55,14 @@ public class P2SLocationPacket extends P2SPacket {
         int x = (int) Math.floor(proj[0]) + xOffset;
         int z = (int) Math.floor(proj[1]) + zOffset;
         if (SledgehammerUtil.hasTerraPlusPlus()) {
-            SledgehammerUtil.getTerraConnector().getHeight(x, z).thenAccept(y -> Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), String.format("minecraft:tp %s %s %s %s", player.getName(), x, y, z)));
+            SledgehammerUtil.getTerraConnector().getHeight(x, z).thenAccept(y -> {
+                int height = y.intValue();
+                while (player.getWorld().getBlockAt(x, height, z).getType() != Material.AIR &&
+                       player.getWorld().getBlockAt(x, height - 1, z).getType() != Material.AIR) {
+                    height++;
+                }
+                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), String.format("minecraft:tp %s %s %s %s", player.getName(), x, height, z));
+            });
         } else {
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), String.format("minecraft:tp %s %s %s %s", player.getName(), x, player.getWorld().getHighestBlockYAt(x, z) + 1, z));
         }
