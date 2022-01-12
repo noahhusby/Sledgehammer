@@ -42,6 +42,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,12 +63,14 @@ public class ManageWarpInventory extends GUIChild {
             }
             ItemStack item = SledgehammerUtil.getSkull(headId, ChatColor.BLUE
                                                                + "" + ChatColor.BOLD + cur.getName());
+            ItemMeta meta  = item.getItemMeta();
             List<String> lore = new ArrayList<>();
             lore.add(ChatColor.BLUE + "" + ChatColor.STRIKETHROUGH + "------------------");
             lore.add(ChatColor.DARK_GRAY + "Server: " + cur.getServer());
             lore.add(ChatColor.BLUE + "" + ChatColor.STRIKETHROUGH + "------------------");
             lore.add(ChatColor.GRAY + "ID: " + cur.getId());
-            item.setLore(lore);
+            meta.setLore(lore);
+            item.setItemMeta(meta);
             setItem(4, item);
         }
         setItem(18, SledgehammerUtil.getSkull(Constants.Heads.arrowLeft, ChatColor.RED + "" + ChatColor.BOLD + "Back"));

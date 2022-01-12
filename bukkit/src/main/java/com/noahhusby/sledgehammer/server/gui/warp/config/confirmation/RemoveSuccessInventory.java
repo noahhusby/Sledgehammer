@@ -30,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 @RequiredArgsConstructor
 public class RemoveSuccessInventory extends GUIChild {
@@ -39,7 +40,9 @@ public class RemoveSuccessInventory extends GUIChild {
     @Override
     public void init() {
         ItemStack skull = SledgehammerUtil.getSkull(Constants.Heads.redCheckmark, ChatColor.GREEN + "" + ChatColor.BOLD + message);
-        skull.setLore(Lists.newArrayList(ChatColor.BLUE + "Click to continue"));
+        ItemMeta meta = skull.getItemMeta();
+        meta.setLore(Lists.newArrayList(ChatColor.BLUE + "Click to continue"));
+        skull.setItemMeta(meta);
         fillInventory(skull);
     }
 
