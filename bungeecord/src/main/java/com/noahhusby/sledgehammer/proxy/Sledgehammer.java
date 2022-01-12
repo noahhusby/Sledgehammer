@@ -119,7 +119,6 @@ public class Sledgehammer extends Plugin implements Listener {
 
     public void reload() {
         onDisable();
-        ConfigHandler.getInstance().reload();
         onEnable();
         Sledgehammer.logger.warning("Reloaded Sledgehammer!");
     }

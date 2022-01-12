@@ -259,14 +259,6 @@ public class ConfigHandler {
     }
 
     /**
-     * Reloads the config
-     */
-    public void reload() {
-        unload();
-        load();
-    }
-
-    /**
      * Migrates the data from local storage to databases
      */
     public void migrate() {
