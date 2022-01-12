@@ -119,8 +119,8 @@ public class ConfigHandler {
         warpGroups.clearHandlers();
         warpGroups.registerHandler(new LocalStorageHandler(ConfigHandler.warpGroupsFile));
 
-        if (SledgehammerConfig.database.useSql) {
-            Credentials credentials = new Credentials(SledgehammerConfig.database.sqlHost, SledgehammerConfig.database.sqlPort, SledgehammerConfig.database.sqlUser, SledgehammerConfig.database.sqlPassword, SledgehammerConfig.database.sqlDb);
+        if (SledgehammerConfig.database.databaseType.equals("SQL")) {
+            Credentials credentials = new Credentials(SledgehammerConfig.database.host, SledgehammerConfig.database.port, SledgehammerConfig.database.user, SledgehammerConfig.database.password, SledgehammerConfig.database.database);
             {
                 SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(credentials), "Servers",
                         Structure.builder()
@@ -177,12 +177,6 @@ public class ConfigHandler {
                 warpGroups.registerHandler(sqlStorageHandler);
             }
         }
-
-        long autoLoad = SledgehammerConfig.database.autoLoad;
-        serverData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
-        warpData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
-        attributeData.setAutoLoad(autoLoad, TimeUnit.SECONDS);
-        warpGroups.setAutoLoad(autoLoad, TimeUnit.SECONDS);
 
         ProxyServer.getInstance().getScheduler().schedule(Sledgehammer.getInstance(), () -> {
             serverData.loadAsync();

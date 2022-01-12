@@ -41,7 +41,6 @@ public class SledgehammerConfig {
     @SuppressWarnings("CanBeFinal")
     public static class GeneralOptions {
         @Comment({
-                "Generate a new key using https://uuidgenerator.net/version4",
                 "All corresponding sledgehammer clients must have the same code",
                 "Don't share this key with anyone you don't trust as it will allow anybody to run any command on connected servers." })
         public String authenticationCode = UUID.randomUUID().toString();
@@ -70,46 +69,44 @@ public class SledgehammerConfig {
     }
 
     @Comment({
-            "Settings for the MySQL Database"
+            "Settings for the database"
     })
     public static DatabaseOptions database = new DatabaseOptions();
 
     @SuppressWarnings("CanBeFinal")
     public static class DatabaseOptions {
         @Comment({
-                "Should SQL be used to synchronize/store data?"
+                "Which database should be used?",
+                "\"MONGO\" for MongoDB (Required for multi-proxy installations)",
+                "\"SQL\" for SQL",
+                "\"LOCAL\" for local storage only"
         })
-        public boolean useSql = false;
+        public String databaseType = "LOCAL";
 
         @Comment({
                 "The host IP for the database."
         })
-        public String sqlHost = "127.0.0.1";
+        public String host = "127.0.0.1";
 
         @Comment({
                 "The port for the database."
         })
-        public int sqlPort = 3306;
+        public int port = 3306;
 
         @Comment({
                 "The username for the database."
         })
-        public String sqlUser = "";
+        public String user = "";
 
         @Comment({
                 "The password for the database."
         })
-        public String sqlPassword = "";
+        public String password = "";
 
         @Comment({
                 "The name of the database."
         })
-        public String sqlDb = "";
-
-        @Comment({
-                "How often SH should automatically refresh storage data (in seconds)."
-        })
-        public long autoLoad = 30;
+        public String database = "";
     }
 
     @Comment({
