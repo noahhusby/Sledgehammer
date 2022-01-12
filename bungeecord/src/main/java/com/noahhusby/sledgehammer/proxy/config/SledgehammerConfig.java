@@ -44,16 +44,6 @@ public class SledgehammerConfig {
                 "All corresponding sledgehammer clients must have the same code",
                 "Don't share this key with anyone you don't trust as it will allow anybody to run any command on connected servers." })
         public String authenticationCode = UUID.randomUUID().toString();
-
-        @Comment({
-                "The Id of the proxy. The first proxy starts at zero. Leave at zero if this is a single-proxy configuration"
-        })
-        public int proxyId = 0;
-        @Comment({
-                "The total amount of proxies, if a multi-server setup. Zero includes first proxy.",
-                "Set this to -1 if this is a single-proxy configuration"
-        })
-        public int proxyTotal = -1;
         @Comment({
                 "The prefix of messages broadcast to players from the proxy."
         })

@@ -32,7 +32,6 @@ import com.noahhusby.sledgehammer.common.warps.WarpGroupConfigPayload;
 import com.noahhusby.sledgehammer.common.warps.WarpGroupPayload;
 import com.noahhusby.sledgehammer.common.warps.WarpPayload;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
-import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
@@ -396,39 +395,13 @@ public class WarpHandler {
      * @return New ID
      */
     private int generateWarpID() {
-        if (SledgehammerConfig.general.proxyTotal != -1) {
-            return generateMultiWarpID();
-        }
         int x = -1;
         for (Warp w : warps.values()) {
             if (w.getId() > x) {
                 x = w.getId();
             }
         }
-
         return x < 0 ? 0 : x + 1;
-    }
-
-    /**
-     * Generates a warp ID for multiserver networks
-     *
-     * @return New ID
-     */
-    private int generateMultiWarpID() {
-        int i = SledgehammerConfig.general.proxyId;
-        int min = i * Constants.warpIdBuffer;
-        int max = (min + Constants.warpIdBuffer) - 1;
-        while (true) {
-            for (int x = min; x < max; x++) {
-                if (getWarp(x) == null) {
-                    return x;
-                }
-            }
-
-            i += (SledgehammerConfig.general.proxyTotal + 1);
-            min = i * Constants.warpIdBuffer;
-            max = (min + Constants.warpIdBuffer) - 1;
-        }
     }
 
     private void refreshWarpGroupCache() {
