@@ -96,6 +96,7 @@ public class S2PWarpConfigPacket extends S2PPacket {
                 }
                 warp.setHeadId(incomingWarp.getHeadId());
                 warp.setName(incomingWarp.getName());
+                warp.setGlobal(incomingWarp.isGlobal());
                 WarpHandler.getInstance().getWarps().saveAsync();
                 break;
             case UPDATE_PLAYER_DEFAULT:

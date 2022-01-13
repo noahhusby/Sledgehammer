@@ -77,6 +77,9 @@ public class ManageWarpInventory extends GUIChild {
         setItem(26, SledgehammerUtil.getSkull(Constants.Heads.limeCheckmark, ChatColor.GREEN + "" + ChatColor.BOLD + "Save"));
         setItem(11, createItem(Material.NAME_TAG, 1, ChatColor.RED + "" + ChatColor.BOLD + "Change Name"));
         setItem(12, SledgehammerUtil.getSkull(Constants.Heads.pocketPortal, ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Move Location"));
+        if (payload.isAdmin() && payload.isLocal()) {
+            setItem(13, SledgehammerUtil.getSkull(cur.isGlobal() ? Constants.Heads.limeWool : Constants.Heads.redWool, ChatColor.GREEN + "" + ChatColor.BOLD + "Set Global"));
+        }
         setItem(14, SledgehammerUtil.getSkull(Constants.Heads.steve, ChatColor.AQUA + "" + ChatColor.BOLD + "Change Head"));
         setItem(15, SledgehammerUtil.getSkull(Constants.Heads.redTrashCan, ChatColor.RED + "" + ChatColor.BOLD + "Delete Warp"));
     }
@@ -111,6 +114,12 @@ public class ManageWarpInventory extends GUIChild {
             data.add("point", SledgehammerUtil.GSON.toJsonTree(point));
 
             NetworkHandler.getInstance().send(new S2PWarpConfigPacket(S2PWarpConfigPacket.ProxyConfigAction.WARP_UPDATE_LOCATION, getPlayer(), payload.getSalt(), data));
+        }
+
+        if (e.getSlot() == 13 && payload.isAdmin() && payload.isLocal()) {
+            cur.setGlobal(!cur.isGlobal());
+            GUIRegistry.register(new ManageWarpInventoryController(getController(), payload, cur));
+            return;
         }
 
         if (e.getSlot() == 14) {
