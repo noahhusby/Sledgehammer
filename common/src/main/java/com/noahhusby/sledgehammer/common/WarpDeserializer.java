@@ -47,12 +47,12 @@ public class WarpDeserializer implements JsonDeserializer<Warp> {
             convert(point, "yaw");
             convert(point, "pitch");
         }
-        return new Warp(object.get("Id").getAsInt(),
-                object.get("Name").getAsString(),
+        return new Warp(object.get("id").getAsInt(),
+                object.get("name").getAsString(),
                 point == null ? null : context.deserialize(point, Point.class),
-                object.get("Server").getAsString(),
-                (object.get("HeadId") == null || object.get("HeadId").isJsonNull()) ? null : object.get("HeadId").getAsString(),
-                object.get("Global").getAsBoolean());
+                object.get("server").getAsString(),
+                (object.get("headId") == null || object.get("headId").isJsonNull()) ? null : object.get("headId").getAsString(),
+                object.get("global").getAsBoolean());
     }
 
     private void convert(JsonObject json, String key) {
