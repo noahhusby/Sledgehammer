@@ -94,7 +94,7 @@ public class S2PTestLocationPacket extends S2PPacket {
     private TextComponent generateAddButton(PacketInfo info, Location location) {
         TextComponent add = new TextComponent(ChatColor.GREEN + " [+]");
         add.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Add location")));
-        add.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/sha server " + info.getServer() + " addlocation " + SledgehammerUtil.GSON.toJson(location)));
+        add.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/sha server " + info.getServer().getName() + " addlocation " + SledgehammerUtil.GSON.toJson(location)));
         return add;
     }
 }

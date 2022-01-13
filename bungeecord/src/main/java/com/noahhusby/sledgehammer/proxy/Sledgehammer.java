@@ -98,8 +98,8 @@ public class Sledgehammer extends Plugin implements Listener {
 
         if (SledgehammerConfig.geography.borderTeleportation) {
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new BorderCommand());
-            ProxyServer.getInstance().getScheduler().schedule(this, new BorderCheckerThread(), 0, 10, TimeUnit.SECONDS);
-            ProxyServer.getInstance().getScheduler().schedule(this, new FlaggedBorderCheckerThread(), 0, 10, TimeUnit.SECONDS);
+            ProxyServer.getInstance().getScheduler().schedule(this, new BorderCheckerThread(), 0, 5, TimeUnit.SECONDS);
+            ProxyServer.getInstance().getScheduler().schedule(this, new FlaggedBorderCheckerThread(), 0, 1, TimeUnit.SECONDS);
         }
 
         ModuleHandler.getInstance().enableAll();
