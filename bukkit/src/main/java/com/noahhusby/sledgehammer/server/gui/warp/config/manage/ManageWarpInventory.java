@@ -57,7 +57,7 @@ public class ManageWarpInventory extends GUIChild {
     public void init() {
         fillInventory(createItem(Material.STAINED_GLASS_PANE, 1, (byte) 15, null));
         {
-            String headId = cur.getHeadID();
+            String headId = cur.getHeadId();
             if (headId == null || headId.equals("")) {
                 headId = Constants.Heads.cyanWool;
             }
@@ -118,7 +118,7 @@ public class ManageWarpInventory extends GUIChild {
             ChatHandler.getInstance().startEntry(getPlayer(), ChatColor.BLUE + "Enter the Minecraft-URL value from " +
                                                               ChatColor.GRAY + "minecraft-heads.com", (success, text) -> {
                 if (success) {
-                    cur.setHeadID(text);
+                    cur.setHeadId(text);
                 }
                 GUIRegistry.register(new ManageWarpInventoryController(player, payload, cur));
             });

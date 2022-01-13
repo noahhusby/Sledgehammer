@@ -21,7 +21,6 @@
 package com.noahhusby.sledgehammer.proxy.players;
 
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import com.noahhusby.lib.data.storage.Key;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,14 +28,12 @@ import lombok.Getter;
 import java.util.Map;
 import java.util.UUID;
 
-@Key("UUID")
+@Key("uuid")
 @AllArgsConstructor
 @Getter
 public class Attribute {
     @Expose
-    @SerializedName("UUID")
     private final UUID uuid;
     @Expose
-    @SerializedName("Attributes")
     private final Map<String, Object> attributes;
 }

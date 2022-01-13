@@ -21,7 +21,6 @@
 package com.noahhusby.sledgehammer.proxy.servers;
 
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import com.noahhusby.lib.data.storage.Key;
 import com.noahhusby.sledgehammer.common.SledgehammerVersion;
 import com.noahhusby.sledgehammer.common.TpllMode;
@@ -38,34 +37,26 @@ import java.util.List;
 @Getter
 public class SledgehammerServer {
     @Expose
-    @SerializedName("Name")
     private String name;
     @Expose
-    @SerializedName("Nick")
     @Setter
-    private String friendlyName;
+    private String nick;
     @Expose
-    @SerializedName("EarthServer")
     @Setter
     private boolean earthServer;
     @Expose
-    @SerializedName("Locations")
     @Setter
     private List<Location> locations = new ArrayList<>();
     @Expose
-    @SerializedName("XOffset")
     @Setter
     private int xOffset;
     @Expose
-    @SerializedName("ZOffset")
     @Setter
     private int zOffset;
     @Expose
-    @SerializedName("StealthMode")
     @Setter
     private boolean stealthMode;
     @Expose
-    @SerializedName("TpllMode")
     @Setter
     private TpllMode tpllMode = TpllMode.NORMAL;
     private SledgehammerVersion sledgehammerVersion = null;
@@ -75,7 +66,7 @@ public class SledgehammerServer {
 
     public SledgehammerServer(String name) {
         this.name = name;
-        this.friendlyName = name;
+        this.nick = name;
     }
 
     /**

@@ -42,7 +42,7 @@ public class ServerSetFriendlyFragment implements ICommandFragment {
         }
 
         SledgehammerServer s = ServerHandler.getInstance().getServer(args[0]);
-        s.setFriendlyName(name.toString());
+        s.setNick(name.toString());
         ServerHandler.getInstance().getServers().saveAsync();
 
         sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Changed name of ", ChatColor.BLUE,

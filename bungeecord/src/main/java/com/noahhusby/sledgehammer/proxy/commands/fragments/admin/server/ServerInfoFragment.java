@@ -46,7 +46,7 @@ public class ServerInfoFragment implements ICommandFragment {
             sender.sendMessage(status);
             sender.sendMessage();
             sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Earth: ", (server.isEarthServer() ? ChatColor.GREEN + "Yes" : ChatColor.RED + "No")));
-            sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Friendly Name: ", ChatColor.WHITE, server.getFriendlyName()));
+            sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Friendly Name: ", ChatColor.WHITE, server.getNick()));
             sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "X Offset: ", ChatColor.WHITE, server.getXOffset()));
             sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Z Offset: ", ChatColor.WHITE, server.getZOffset()));
             sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Tpll Mode: ", ChatColor.WHITE, server.getTpllMode().name()));

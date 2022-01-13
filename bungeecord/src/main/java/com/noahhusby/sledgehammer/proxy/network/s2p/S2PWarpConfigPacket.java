@@ -94,7 +94,7 @@ public class S2PWarpConfigPacket extends S2PPacket {
                 if (warp == null) {
                     return;
                 }
-                warp.setHeadID(incomingWarp.getHeadID());
+                warp.setHeadId(incomingWarp.getHeadId());
                 warp.setName(incomingWarp.getName());
                 WarpHandler.getInstance().getWarps().saveAsync();
                 break;

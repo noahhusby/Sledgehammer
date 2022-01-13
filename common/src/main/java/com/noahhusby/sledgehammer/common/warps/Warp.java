@@ -22,7 +22,6 @@ package com.noahhusby.sledgehammer.common.warps;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.annotations.SerializedName;
 import com.noahhusby.lib.data.storage.Key;
 import com.noahhusby.sledgehammer.common.WarpDeserializer;
 import lombok.AllArgsConstructor;
@@ -37,22 +36,16 @@ import lombok.Data;
 @JsonAdapter(WarpDeserializer.class)
 public class Warp {
     @Expose
-    @SerializedName("Id")
     private int id;
     @Expose
-    @SerializedName("Name")
     private String name;
     @Expose
-    @SerializedName("Point")
     private Point point;
     @Expose
-    @SerializedName("Server")
     private String server;
     @Expose
-    @SerializedName("HeadId")
-    private String headID;
+    private String headId;
     @Expose
-    @SerializedName("Global")
     private boolean global;
 
     public Warp() {
@@ -60,7 +53,7 @@ public class Warp {
     }
 
     public Warp copy() {
-        return new Warp(id, name, point, server, headID, global);
+        return new Warp(id, name, point, server, headId, global);
     }
 
     public Warp toWaypoint() {

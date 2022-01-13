@@ -21,7 +21,6 @@
 package com.noahhusby.sledgehammer.common.warps;
 
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import com.noahhusby.lib.data.storage.Key;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -43,21 +42,15 @@ import java.util.TreeSet;
 @Key("Id")
 public class WarpGroup {
     @Expose
-    @SerializedName("Id")
     private String id;
     @Expose
-    @SerializedName("Name")
     private String name;
     @Expose
-    @SerializedName("HeadId")
     private String headId;
     @Expose
-    @SerializedName("Warps")
     private List<Integer> warps = new ArrayList<>();
     @Expose
-    @SerializedName("Servers")
     private Set<String> servers = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     @Expose
-    @SerializedName("Aliases")
     private List<String> aliases = new ArrayList<>();
 }

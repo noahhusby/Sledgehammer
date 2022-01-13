@@ -80,7 +80,7 @@ public class AllWarpInventory extends AbstractWarpInventory {
         for (int x = min; x < max; x++) {
             Warp warp = warps.get(x);
 
-            String headId = warp.getHeadID();
+            String headId = warp.getHeadId();
             if (headId == null || headId.equals("")) {
                 headId = Constants.Heads.yellowWool;
             }
