@@ -39,7 +39,7 @@ import java.util.TreeSet;
 @AllArgsConstructor
 @Getter
 @Setter
-@Key("Id")
+@Key("id")
 public class WarpGroup {
     @Expose
     private String id;

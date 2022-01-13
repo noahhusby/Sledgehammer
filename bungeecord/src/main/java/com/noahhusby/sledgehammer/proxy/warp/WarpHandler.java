@@ -191,7 +191,7 @@ public class WarpHandler {
         }
 
         WarpGroup serverWarpGroup = warpGroupByServer.get(server);
-        if (!local && warp.isGlobal()) {
+        if (local && warp.isGlobal()) {
             return WarpStatus.RESERVED;
         } else if (!local && serverWarpGroup != null && serverWarpGroup.getServers().contains(warp.getServer())) {
             return WarpStatus.EXISTS;

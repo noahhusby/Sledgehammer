@@ -33,7 +33,7 @@ import net.md_5.bungee.api.config.ServerInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-@Key("Name")
+@Key("name")
 @Getter
 public class SledgehammerServer {
     @Expose

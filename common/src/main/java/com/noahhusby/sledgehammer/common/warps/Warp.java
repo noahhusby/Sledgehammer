@@ -31,7 +31,7 @@ import lombok.Data;
  * @author Noah Husby
  */
 @Data
-@Key("Id")
+@Key("id")
 @AllArgsConstructor
 @JsonAdapter(WarpDeserializer.class)
 public class Warp {
