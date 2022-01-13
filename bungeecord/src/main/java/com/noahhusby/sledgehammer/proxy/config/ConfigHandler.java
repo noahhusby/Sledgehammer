@@ -86,7 +86,7 @@ public class ConfigHandler {
         warpFile = new File(localStorage, "warps.json");
         serverFile = new File(localStorage, "servers.json");
         attributeFile = new File(localStorage, "attributes.json");
-        warpGroupsFile = new File(localStorage, "warpgroups.json");
+        warpGroupsFile = new File(localStorage, "groups.json");
         offlineBin = new File(localStorage, "offline.bin");
     }
 
@@ -192,9 +192,9 @@ public class ConfigHandler {
                 }, 10, TimeUnit.SECONDS);
             }
         } else if (SledgehammerConfig.database.type.equals("MONGO")) {
-            MongoCredential credential = MongoCredential.createCredential(SledgehammerConfig.database.user, "sledgehammer", SledgehammerConfig.database.password.toCharArray());
+            MongoCredential credential = MongoCredential.createCredential(SledgehammerConfig.database.user, SledgehammerConfig.database.database, SledgehammerConfig.database.password.toCharArray());
             MongoClient client = new MongoClient(new ServerAddress(SledgehammerConfig.database.host, SledgehammerConfig.database.port), credential, MongoClientOptions.builder().build());
-            MongoDatabase database = client.getDatabase("sledgehammer");
+            MongoDatabase database = client.getDatabase(SledgehammerConfig.database.database);
             boolean attemptEventUpdate = false;
             {
                 MongoStorageHandler mongoStorageHandler = new MongoStorageHandler(database.getCollection("servers"));

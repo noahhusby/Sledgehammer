@@ -24,20 +24,18 @@ import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.datasets.Location;
 import com.noahhusby.sledgehammer.proxy.dialogs.components.DialogComponent;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
+import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 public class LocationRemovalComponent extends DialogComponent {
 
-    ServerInfo server;
-    List<Location> locations;
-
-    public LocationRemovalComponent(ServerInfo server) {
-        this.server = server;
-    }
+    private final ServerInfo server;
+    private List<Location> locations;
 
     @Override
     public String getKey() {
