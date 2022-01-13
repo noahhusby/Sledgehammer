@@ -132,13 +132,13 @@ public class ConfigHandler {
             {
                 SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(credentials), "Servers",
                         Structure.builder()
-                                .add("Name", Type.TEXT)
-                                .add("EarthServer", Type.TEXT)
-                                .add("Nick", Type.TEXT)
-                                .add("Locations", Type.TEXT)
-                                .add("XOffset", Type.INT)
-                                .add("ZOffset", Type.INT)
-                                .add("StealthMode", Type.TEXT)
+                                .add("name", Type.TEXT)
+                                .add("earthServer", Type.TEXT)
+                                .add("nick", Type.TEXT)
+                                .add("locations", Type.TEXT)
+                                .add("xOffset", Type.INT)
+                                .add("zOffset", Type.INT)
+                                .add("stealthMode", Type.TEXT)
                                 .repair(true)
                                 .build());
                 sqlStorageHandler.setPriority(100);
@@ -148,12 +148,12 @@ public class ConfigHandler {
             {
                 SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(credentials), "Warps",
                         Structure.builder()
-                                .add("Id", Type.INT)
-                                .add("Name", Type.TEXT)
-                                .add("Server", Type.TEXT)
-                                .add("Point", Type.TEXT)
-                                .add("HeadId", Type.TEXT)
-                                .add("Global", Type.TEXT)
+                                .add("id", Type.INT)
+                                .add("name", Type.TEXT)
+                                .add("server", Type.TEXT)
+                                .add("point", Type.TEXT)
+                                .add("headId", Type.TEXT)
+                                .add("global", Type.TEXT)
                                 .repair(true)
                                 .build());
                 sqlStorageHandler.setPriority(100);
@@ -172,13 +172,13 @@ public class ConfigHandler {
             }
 
             {
-                SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(credentials), "WarpGroups",
+                SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(credentials), "Groups",
                         Structure.builder()
-                                .add("Id", Type.TEXT)
-                                .add("Name", Type.TEXT)
-                                .add("HeadId", Type.TEXT)
-                                .add("Warps", Type.TEXT)
-                                .add("Servers", Type.TEXT)
+                                .add("id", Type.TEXT)
+                                .add("name", Type.TEXT)
+                                .add("headId", Type.TEXT)
+                                .add("warps", Type.TEXT)
+                                .add("servers", Type.TEXT)
                                 .repair(true)
                                 .build());
                 sqlStorageHandler.setPriority(100);
