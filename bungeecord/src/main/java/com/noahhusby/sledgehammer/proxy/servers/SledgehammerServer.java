@@ -1,26 +1,29 @@
 /*
- * Copyright (c) 2020 Noah Husby
- * Sledgehammer [Bungeecord] - SledgehammerServer.java
+ * MIT License
  *
- * Sledgehammer is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Copyright 2020-2022 noahhusby
  *
- * Sledgehammer is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
  *
- *  You should have received a copy of the GNU General Public License
- *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
  */
 
 package com.noahhusby.sledgehammer.proxy.servers;
 
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import com.noahhusby.lib.data.storage.Key;
+import com.noahhusby.sledgehammer.common.SledgehammerVersion;
+import com.noahhusby.sledgehammer.common.TpllMode;
 import com.noahhusby.sledgehammer.proxy.datasets.Location;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,47 +31,42 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-@Key("Name")
+@Key("name")
 @Getter
 public class SledgehammerServer {
     @Expose
-    @SerializedName("Name")
     private String name;
     @Expose
-    @SerializedName("Nick")
     @Setter
-    private String friendlyName;
+    private String nick;
     @Expose
-    @SerializedName("EarthServer")
     @Setter
     private boolean earthServer;
     @Expose
-    @SerializedName("Locations")
     @Setter
     private List<Location> locations = new ArrayList<>();
     @Expose
-    @SerializedName("XOffset")
     @Setter
     private int xOffset;
     @Expose
-    @SerializedName("ZOffset")
     @Setter
     private int zOffset;
     @Expose
-    @SerializedName("StealthMode")
     @Setter
     private boolean stealthMode;
-    private String sledgehammerVersion = null;
+    @Expose
+    @Setter
+    private TpllMode tpllMode = TpllMode.NORMAL;
+    private SledgehammerVersion sledgehammerVersion = null;
 
     public SledgehammerServer() {
     }
 
     public SledgehammerServer(String name) {
         this.name = name;
-        this.friendlyName = name;
+        this.nick = name;
     }
 
     /**
@@ -76,7 +74,7 @@ public class SledgehammerServer {
      *
      * @param version Sledgehammer Version
      */
-    public void initialize(String version) {
+    public void initialize(SledgehammerVersion version) {
         this.sledgehammerVersion = version;
     }
 
@@ -96,19 +94,5 @@ public class SledgehammerServer {
      */
     public ServerInfo getServerInfo() {
         return ProxyServer.getInstance().getServerInfo(name);
-    }
-
-    /**
-     * Gets the group assigned to this server
-     *
-     * @return Returns the associated group, or a new group if none exists
-     */
-    public ServerGroup getGroup() {
-        for (ServerGroup g : ServerHandler.getInstance().getGroups().values()) {
-            if (g.getServers().contains(name)) {
-                return g;
-            }
-        }
-        return new ServerGroup(name, "", friendlyName, Collections.singletonList(name), new ArrayList<>());
     }
 }

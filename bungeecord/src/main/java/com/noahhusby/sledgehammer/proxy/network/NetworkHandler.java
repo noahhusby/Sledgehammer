@@ -1,19 +1,21 @@
 /*
- * Copyright (c) 2020 Noah Husby
- * Sledgehammer [Bungeecord] - SledgehammerNetworkManager.java
+ * MIT License
  *
- * Sledgehammer is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Copyright 2020-2022 noahhusby
  *
- * Sledgehammer is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
  *
- *  You should have received a copy of the GNU General Public License
- *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
  */
 
 package com.noahhusby.sledgehammer.proxy.network;
@@ -26,13 +28,14 @@ import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.modules.Module;
-import com.noahhusby.sledgehammer.proxy.network.S2P.S2PInitializationPacket;
-import com.noahhusby.sledgehammer.proxy.network.S2P.S2PPermissionPacket;
-import com.noahhusby.sledgehammer.proxy.network.S2P.S2PPlayerUpdatePacket;
-import com.noahhusby.sledgehammer.proxy.network.S2P.S2PSetwarpPacket;
-import com.noahhusby.sledgehammer.proxy.network.S2P.S2PTestLocationPacket;
-import com.noahhusby.sledgehammer.proxy.network.S2P.S2PWarpConfigPacket;
-import com.noahhusby.sledgehammer.proxy.network.S2P.S2PWarpPacket;
+import com.noahhusby.sledgehammer.proxy.network.s2p.S2PInitializationPacket;
+import com.noahhusby.sledgehammer.proxy.network.s2p.S2PPermissionPacket;
+import com.noahhusby.sledgehammer.proxy.network.s2p.S2PPlayerUpdatePacket;
+import com.noahhusby.sledgehammer.proxy.network.s2p.S2PSetwarpPacket;
+import com.noahhusby.sledgehammer.proxy.network.s2p.S2PTestLocationPacket;
+import com.noahhusby.sledgehammer.proxy.network.s2p.S2PWarpConfigPacket;
+import com.noahhusby.sledgehammer.proxy.network.s2p.S2PWarpGroupConfigPacket;
+import com.noahhusby.sledgehammer.proxy.network.s2p.S2PWarpPacket;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.event.PluginMessageEvent;
@@ -129,6 +132,7 @@ public class NetworkHandler implements Listener, Module {
         register(new S2PPlayerUpdatePacket());
         register(new S2PPermissionPacket());
         register(new S2PWarpConfigPacket());
+        register(new S2PWarpGroupConfigPacket());
     }
 
     @Override

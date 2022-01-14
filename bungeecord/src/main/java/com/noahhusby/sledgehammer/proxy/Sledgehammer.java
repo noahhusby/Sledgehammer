@@ -1,19 +1,21 @@
 /*
- * Copyright (c) 2020 Noah Husby
- * Sledgehammer [Bungeecord] - Sledgehammer.java
+ * MIT License
  *
- * Sledgehammer is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Copyright 2020-2022 noahhusby
  *
- * Sledgehammer is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
  *
- *  You should have received a copy of the GNU General Public License
- *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
  */
 
 package com.noahhusby.sledgehammer.proxy;
@@ -26,19 +28,21 @@ import com.noahhusby.sledgehammer.proxy.commands.TpllCommand;
 import com.noahhusby.sledgehammer.proxy.commands.TplloCommand;
 import com.noahhusby.sledgehammer.proxy.commands.WarpCommand;
 import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
+import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.proxy.modules.ModuleHandler;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
-import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
 import com.noahhusby.sledgehammer.proxy.players.BorderCheckerThread;
 import com.noahhusby.sledgehammer.proxy.players.FlaggedBorderCheckerThread;
-import com.noahhusby.sledgehammer.proxy.players.PlayerManager;
+import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
 import com.noahhusby.sledgehammer.proxy.terramap.TerramapModule;
 import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -52,17 +56,18 @@ public class Sledgehammer extends Plugin implements Listener {
     public void onEnable() {
         instance = this;
         logger = getLogger();
+        Configurator.setLevel("org.mongodb.driver.cluster", Level.FATAL);
+        Configurator.setLevel("org.mongodb.driver.connection", Level.FATAL);
 
         ProxyServer.getInstance().registerChannel(Constants.serverChannel);
-
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerCommand());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SledgehammerAdminCommand());
 
         ConfigHandler.getInstance().init(getDataFolder());
-        ModuleHandler.getInstance().registerModules(PlayerManager.getInstance(), NetworkHandler.getInstance(), OpenStreetMaps.getInstance(), PermissionHandler.getInstance());
+        ModuleHandler.getInstance().registerModules(PlayerHandler.getInstance(), NetworkHandler.getInstance(), OpenStreetMaps.getInstance());
         ConfigHandler.getInstance().load();
 
-        if (!ConfigHandler.getInstance().isAuthCodeConfigured()) {
+        if (!ConfigHandler.getInstance().isAuthenticationConfigured()) {
             ChatUtil.sendMessageBox(ProxyServer.getInstance().getConsole(), ChatColor.DARK_RED + "WARNING", ChatUtil.combine(ChatColor.RED,
                     "The sledgehammer authentication code is not configured, or is configured incorrectly.\n" +
                     "Please generate a valid authentication code using https://www.uuidgenerator.net/version4\n"
@@ -71,30 +76,30 @@ public class Sledgehammer extends Plugin implements Listener {
         }
 
         // Manual module handling
-        if (ConfigHandler.terramapEnabled && TerramapModule.instance == null) {
+        if (SledgehammerConfig.terramap.terramapEnabled && (TerramapModule.instance == null || !ModuleHandler.getInstance().getModules().containsKey(TerramapModule.instance))) {
             ModuleHandler.getInstance().registerModule(new TerramapModule());
             ModuleHandler.getInstance().enable(TerramapModule.instance);
-        } else if (ConfigHandler.terramapEnabled) {
+        } else if (SledgehammerConfig.terramap.terramapEnabled) {
             ModuleHandler.getInstance().enable(TerramapModule.instance);
         } else if (TerramapModule.instance != null && ModuleHandler.getInstance().getModules().containsKey(TerramapModule.instance)) {
             ModuleHandler.getInstance().disable(TerramapModule.instance);
             ModuleHandler.getInstance().unregisterModule(TerramapModule.instance);
         }
 
-        if (!ConfigHandler.warpCommand.equals("")) {
-            ProxyServer.getInstance().getPluginManager().registerCommand(this, new WarpCommand(ConfigHandler.warpCommand));
+        if (!SledgehammerConfig.warps.warpCommand.equals("")) {
+            ProxyServer.getInstance().getPluginManager().registerCommand(this, new WarpCommand(SledgehammerConfig.warps.warpCommand));
         }
 
-        if (ConfigHandler.globalTpll) {
+        if (SledgehammerConfig.general.globalTpll) {
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new TpllCommand());
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new TplloCommand());
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new CsTpllCommand());
         }
 
-        if (ConfigHandler.borderTeleportation) {
+        if (SledgehammerConfig.geography.borderTeleportation) {
             ProxyServer.getInstance().getPluginManager().registerCommand(this, new BorderCommand());
-            ProxyServer.getInstance().getScheduler().schedule(this, new BorderCheckerThread(), 0, 10, TimeUnit.SECONDS);
-            ProxyServer.getInstance().getScheduler().schedule(this, new FlaggedBorderCheckerThread(), 0, 10, TimeUnit.SECONDS);
+            ProxyServer.getInstance().getScheduler().schedule(this, new BorderCheckerThread(), 0, 5, TimeUnit.SECONDS);
+            ProxyServer.getInstance().getScheduler().schedule(this, new FlaggedBorderCheckerThread(), 0, 1, TimeUnit.SECONDS);
         }
 
         ModuleHandler.getInstance().enableAll();
@@ -114,7 +119,6 @@ public class Sledgehammer extends Plugin implements Listener {
 
     public void reload() {
         onDisable();
-        ConfigHandler.getInstance().reload();
         onEnable();
         Sledgehammer.logger.warning("Reloaded Sledgehammer!");
     }

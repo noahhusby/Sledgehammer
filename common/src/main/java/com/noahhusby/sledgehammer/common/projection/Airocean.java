@@ -1,33 +1,33 @@
 /*
- * Copyright (c) 2020 Noah Husby
- * sledgehammer - Airocean.java
+ * MIT License
  *
- * Sledgehammer is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Copyright 2020-2022 noahhusby
  *
- * Sledgehammer is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
  *
- * You should have received a copy of the GNU General Public License
- * along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
  */
 
 package com.noahhusby.sledgehammer.common.projection;
 
 public class Airocean extends GeographicProjection {
 
-    protected static double ARC = 2 * Math.asin(Math.sqrt(5 - Math.sqrt(5)) / Math.sqrt(10));
+    protected static final double ARC = 2 * Math.asin(Math.sqrt(5 - Math.sqrt(5)) / Math.sqrt(10));
 
     protected static final double TO_RADIANS = Math.PI / 180.0;
     protected static final double ROOT3 = Math.sqrt(3);
 
-    private int newton = 5;
-
-    protected static double[] VERT = new double[]{
+    protected static final double[] VERT = new double[]{
             10.536199, 64.700000,
             -5.245390, 2.300882,
             58.157706, 10.447378,
@@ -67,7 +67,7 @@ public class Airocean extends GeographicProjection {
             3, 7, 8, //child of 15
     };
 
-    public static double[] CENTER_MAP = new double[]{
+    public static final double[] CENTER_MAP = new double[]{
             -3, 7,
             -2, 5,
             -1, 7,
@@ -92,7 +92,7 @@ public class Airocean extends GeographicProjection {
             -2, -7, //21 , pseudo triangle, child of 15
     };
 
-    public static byte[] FLIP_TRIANGLE = new byte[]{
+    public static final byte[] FLIP_TRIANGLE = new byte[]{
             1, 0, 1, 0, 0,
             1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
             1, 1, 1, 0, 0,
@@ -150,7 +150,7 @@ public class Airocean extends GeographicProjection {
 
         double sina = Math.sin(a), cosa = Math.cos(a), sinb = Math.sin(b), cosb = Math.cos(b), sinc = Math.sin(c), cosc = Math.cos(c);
 
-        out[offset + 0] = cosa * cosb * cosc - sinc * sina;
+        out[offset] = cosa * cosb * cosc - sinc * sina;
         out[offset + 1] = -sina * cosb * cosc - sinc * cosa;
         out[offset + 2] = cosc * sinb;
 
@@ -187,25 +187,6 @@ public class Airocean extends GeographicProjection {
                     return i;
                 }
 
-                face = i;
-                min = dissq;
-            }
-        }
-
-        return face;
-    }
-
-    protected static int findMapTriangle(double x, double y) {
-
-        double min = Double.MAX_VALUE;
-        int face = 0;
-
-        for (int i = 0; i < 20; i++) {
-            double xd = CENTER_MAP[2 * i] - x;
-            double yd = CENTER_MAP[2 * i + 1] - y;
-
-            double dissq = xd * xd + yd * yd;
-            if (dissq < min) {
                 face = i;
                 min = dissq;
             }
@@ -297,6 +278,7 @@ public class Airocean extends GeographicProjection {
 
         double adenom = 1, bdenom = 1;
 
+        int newton = 5;
         for (int i = 0; i < newton; i++) {
             double f = tana + tanb + tanc - R; //R = tana + tanb + tanc
             double fp = anumer * adenom * adenom + bnumer * bdenom * bdenom + 1; //derivative relative to tanc
@@ -311,86 +293,6 @@ public class Airocean extends GeographicProjection {
             tana = (tanc + tanaoff) * adenom;
             tanb = (tanc + tanboff) * bdenom;
         }
-
-        //simple reversal algebra based on tan values
-        double yp = ROOT3 * (DVE * tana + EL6) / 2;
-        double xp = DVE * tanb + yp / ROOT3 + EL6;
-
-        //x = z*xp/Z, y = z*yp/Z, x^2 + y^2 + z^2 = 1
-        double xpoZ = xp / Z;
-        double ypoZ = yp / Z;
-
-        double z = 1 / Math.sqrt(1 + xpoZ * xpoZ + ypoZ * ypoZ);
-
-        return new double[]{ z * xpoZ, z * ypoZ, z };
-    }
-
-    protected double[] inverseTriangleTransformCbrt(double xpp, double ypp) {
-        //a & b are linearly related to c, so using the tan of sum formula we know: tan(c+off) = (tanc + tanoff)/(1-tanc*tanoff)
-        double tanaoff = Math.tan(ROOT3 * ypp + xpp); // a = c + root3*y'' + x''
-        double tanboff = Math.tan(2 * xpp); // b = c + 2x''
-
-        //using a derived cubic equation and cubic formula
-        double l = tanboff * tanaoff;
-        double m = -(R * tanboff * tanaoff + 2 * tanboff + 2 * tanaoff);
-        double n = 3 + R * tanboff + R * tanaoff - 2 * tanboff * tanaoff;
-        double o = tanboff + tanaoff - R;
-
-        double p = -m / (3 * l);
-        double q = p * p * p + (m * n - 3 * l * o) / (6 * l * l);
-        double r = n / (3 * l);
-
-        double rmpp = r - p * p;
-        double imag = Math.sqrt(-(q * q + rmpp * rmpp * rmpp));
-        double mag = Math.sqrt(imag * imag + q * q);
-
-        double b = Math.atan2(imag, q);
-
-        double tanc = 2 * Math.cbrt(mag) * Math.cos((b / 3)) + p;
-
-        double tana = (tanc + tanaoff) / (1 - tanc * tanaoff);
-        double tanb = (tanc + tanboff) / (1 - tanc * tanboff);
-
-        //simple reversal algebra based on tan values
-        double yp = ROOT3 * (DVE * tana + EL6) / 2;
-        double xp = DVE * tanb + yp / ROOT3 + EL6;
-
-        //x = z*xp/Z, y = z*yp/Z, x^2 + y^2 + z^2 = 1
-        double xpoZ = xp / Z;
-        double ypoZ = yp / Z;
-
-        double z = 1 / Math.sqrt(1 + xpoZ * xpoZ + ypoZ * ypoZ);
-
-        return new double[]{ z * xpoZ, z * ypoZ, z };
-    }
-
-    protected double[] inverseTriangleTransformCbrtNewton(double xpp, double ypp) {
-        //a & b are linearly related to c, so using the tan of sum formula we know: tan(c+off) = (tanc + tanoff)/(1-tanc*tanoff)
-        double tanaoff = Math.tan(ROOT3 * ypp + xpp); // a = c + root3*y'' + x''
-        double tanboff = Math.tan(2 * xpp); // b = c + 2x''
-        double sumtmp = tanaoff + tanboff;
-
-        //using a derived cubic equation and cubic formula
-        double l = tanboff * tanaoff;
-        double m = -(R * l + 2 * tanboff + 2 * tanaoff);
-        double n = 3 + R * sumtmp - 2 * l;
-        double o = sumtmp - R;
-
-        double l3 = 3 * l, m2 = 2 * m;
-
-        double x = -o / n; //x = tanc
-
-        for (int i = 0; i < newton; i++) {
-            double x2 = x * x;
-
-            double f = l * x2 * x + m * x2 + n * x + o;
-            double fp = l3 * x2 + m2 * x + n;
-
-            x -= f / fp;
-        }
-
-        double tana = (x + tanaoff) / (1 - x * tanaoff);
-        double tanb = (x + tanboff) / (1 - x * tanboff);
 
         //simple reversal algebra based on tan values
         double yp = ROOT3 * (DVE * tana + EL6) / 2;
@@ -443,7 +345,7 @@ public class Airocean extends GeographicProjection {
 
         //apply rotation matrix (move triangle onto template triangle)
         int off = 9 * face;
-        double xp = x * ROTATION_MATRIX[off + 0] + y * ROTATION_MATRIX[off + 1] + z * ROTATION_MATRIX[off + 2];
+        double xp = x * ROTATION_MATRIX[off] + y * ROTATION_MATRIX[off + 1] + z * ROTATION_MATRIX[off + 2];
         double yp = x * ROTATION_MATRIX[off + 3] + y * ROTATION_MATRIX[off + 4] + z * ROTATION_MATRIX[off + 5];
         double zp = x * ROTATION_MATRIX[off + 6] + y * ROTATION_MATRIX[off + 7] + z * ROTATION_MATRIX[off + 8];
 
@@ -469,7 +371,7 @@ public class Airocean extends GeographicProjection {
         return out;
     }
 
-    public static double[] OUT_OF_BOUNDS = new double[]{ Double.NaN, Double.NaN };
+    public static final double[] OUT_OF_BOUNDS = new double[]{ Double.NaN, Double.NaN };
 
     public double[] toGeo(double x, double y) {
         int face = findTriangleGrid(x, y);
@@ -522,7 +424,7 @@ public class Airocean extends GeographicProjection {
 
         //apply inverse rotation matrix (move triangle from template triangle to correct position on globe)
         int off = 9 * face;
-        double xp = x * INVERSE_ROTATION_MATRIX[off + 0] + y * INVERSE_ROTATION_MATRIX[off + 1] + z * INVERSE_ROTATION_MATRIX[off + 2];
+        double xp = x * INVERSE_ROTATION_MATRIX[off] + y * INVERSE_ROTATION_MATRIX[off + 1] + z * INVERSE_ROTATION_MATRIX[off + 2];
         double yp = x * INVERSE_ROTATION_MATRIX[off + 3] + y * INVERSE_ROTATION_MATRIX[off + 4] + z * INVERSE_ROTATION_MATRIX[off + 5];
         double zp = x * INVERSE_ROTATION_MATRIX[off + 6] + y * INVERSE_ROTATION_MATRIX[off + 7] + z * INVERSE_ROTATION_MATRIX[off + 8];
 

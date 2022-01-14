@@ -1,19 +1,21 @@
 /*
- * Copyright (c) 2020 Noah Husby
- * Sledgehammer [Bungeecord] - SledgehammerPlayer.java
+ * MIT License
  *
- * Sledgehammer is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Copyright 2020-2022 noahhusby
  *
- * Sledgehammer is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
  *
- *  You should have received a copy of the GNU General Public License
- *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
  */
 
 package com.noahhusby.sledgehammer.proxy.players;
@@ -21,7 +23,10 @@ package com.noahhusby.sledgehammer.proxy.players;
 
 import com.google.common.collect.Maps;
 import com.noahhusby.sledgehammer.common.warps.Point;
+import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
+import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
+import com.noahhusby.sledgehammer.proxy.network.p2s.P2SPermissionPacket;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
 import com.noahhusby.sledgehammer.proxy.terramap.TerramapModule;
@@ -29,6 +34,7 @@ import com.noahhusby.sledgehammer.proxy.terramap.TerramapVersion;
 import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.ServerConnectRequest;
 import net.md_5.bungee.api.SkinConfiguration;
 import net.md_5.bungee.api.Title;
@@ -46,6 +52,8 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * An object representing a player on the network with Sledgehammer specific access.
@@ -63,6 +71,8 @@ public class SledgehammerPlayer implements ProxiedPlayer {
     Map<String, Object> attributes = Maps.newHashMap();
 
     private String trackSalt = null;
+
+    private PermissionRequest permissionRequest;
 
     public SledgehammerPlayer(ProxiedPlayer player) {
         this.player = player;
@@ -495,7 +505,44 @@ public class SledgehammerPlayer implements ProxiedPlayer {
      * @return True if valid, false if not
      */
     public boolean validateAction(String salt) {
+        if (this.trackSalt == null || salt == null) {
+            return false;
+        }
         return this.trackSalt.equals(salt);
+    }
+
+    public void validatePermission(String salt, boolean localPermission) {
+        if (validateAction(salt)) {
+            if (permissionRequest != null) {
+                String permission = permissionRequest.getPermission();
+                permissionRequest.getFuture().complete(new Permission(permissionRequest.getPermission(), this, this.hasPermission(permission), localPermission));
+            }
+        }
+    }
+
+    public CompletableFuture<Permission> getPermission(String permission) {
+        permissionRequest = new PermissionRequest(permission);
+        CompletableFuture<Permission> permissionFuture = permissionRequest.getFuture();
+        if (permission == null) {
+            permissionFuture.complete(new Permission(null, this, false, false));
+        }
+        if (PlayerHandler.getInstance().isAdmin(this)) {
+            permissionFuture.complete(new Permission(permission, this, true, true));
+        }
+        boolean global = hasPermission(permission);
+        if (!onSledgehammer()) {
+            permissionFuture.complete(new Permission(permission, this, global, false));
+        }
+        if (!permissionRequest.getFuture().isDone()) {
+            NetworkHandler.getInstance().send(new P2SPermissionPacket(player.getServer().getInfo(), this, permission, trackAction()));
+        }
+        ProxyServer.getInstance().getScheduler().schedule(Sledgehammer.getInstance(), () -> {
+            if (permissionRequest != null && !permissionRequest.getFuture().isDone()) {
+                permissionRequest.getFuture().complete(new Permission(permission, this, global, false));
+            }
+            permissionRequest = null;
+        }, 500, TimeUnit.MILLISECONDS);
+        return permissionFuture;
     }
 
     /**
@@ -505,7 +552,7 @@ public class SledgehammerPlayer implements ProxiedPlayer {
      * @return {@link SledgehammerPlayer}
      */
     public static SledgehammerPlayer getPlayer(String s) {
-        return PlayerManager.getInstance().getPlayer(s);
+        return PlayerHandler.getInstance().getPlayer(s);
     }
 
     /**
@@ -515,6 +562,16 @@ public class SledgehammerPlayer implements ProxiedPlayer {
      * @return {@link SledgehammerPlayer}
      */
     public static SledgehammerPlayer getPlayer(CommandSender s) {
-        return PlayerManager.getInstance().getPlayer(s);
+        return PlayerHandler.getInstance().getPlayer(s);
+    }
+
+    /**
+     * Gets a SledgehammerPlayer by {@link UUID}
+     *
+     * @param uuid {@link UUID}
+     * @return {@link SledgehammerPlayer}
+     */
+    public static SledgehammerPlayer getPlayer(UUID uuid) {
+        return PlayerHandler.getInstance().getPlayer(uuid);
     }
 }

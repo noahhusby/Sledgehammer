@@ -1,36 +1,38 @@
 /*
- * Copyright (c) 2020 Noah Husby
- * sledgehammer - SetServerWarpInventory.java
+ * MIT License
  *
- * Sledgehammer is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Copyright 2020-2022 noahhusby
  *
- * Sledgehammer is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
  *
- * You should have received a copy of the GNU General Public License
- * along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
  */
 
 package com.noahhusby.sledgehammer.server.gui.warp.menu;
 
-import com.noahhusby.sledgehammer.common.warps.WarpGroup;
+import com.google.common.collect.Lists;
+import com.noahhusby.sledgehammer.common.warps.WarpGroupPayload;
 import com.noahhusby.sledgehammer.common.warps.WarpPayload;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.gui.GUIController;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
-import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpConfigPacket;
+import com.noahhusby.sledgehammer.server.network.s2p.S2PWarpConfigPacket;
 import com.noahhusby.sledgehammer.server.util.SkullUtil;
 import com.noahhusby.sledgehammer.server.util.WarpGUIUtil;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -42,26 +44,23 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WarpMenuInventory extends AbstractWarpInventory {
     private final int page;
-    private final List<WarpGroup> groups;
+    private final List<WarpGroupPayload> groups;
 
     @Override
     public void init() {
         super.init();
-        inventory.setItem(4, SledgehammerUtil.getSkull(Constants.monitorHead, ChatColor.GREEN + "" + ChatColor.BOLD + "Warp Menu"));
-        inventory.setItem(45, WarpGUIUtil.generateWarpSort());
-        inventory.setItem(48, SledgehammerUtil.getSkull(Constants.lampHead, ChatColor.GOLD + "" + ChatColor.BOLD + "Pinned Warps"));
-        inventory.setItem(49, WarpGUIUtil.generateExit());
-        inventory.setItem(50, SledgehammerUtil.getSkull(Constants.globeHead, ChatColor.GREEN + "" + ChatColor.BOLD + "All Warps"));
-
+        setItem(4, SledgehammerUtil.getSkull(Constants.Heads.monitor, ChatColor.GREEN + "" + ChatColor.BOLD + "All Groups"));
+        setItem(45, WarpGUIUtil.generateWarpSort());
+        setItem(49, WarpGUIUtil.generateExit());
         boolean paged = false;
         if (page != 0) {
-            ItemStack head = SledgehammerUtil.getSkull(Constants.arrowLeftHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Previous Page");
+            ItemStack head = SledgehammerUtil.getSkull(Constants.Heads.arrowLeft, ChatColor.AQUA + "" + ChatColor.BOLD + "Previous Page");
             inventory.setItem(51, head);
             paged = true;
         }
 
         if (groups.size() > (page + 1) * Constants.warpsPerPage) {
-            ItemStack head = SledgehammerUtil.getSkull(Constants.arrowRightHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Next Page");
+            ItemStack head = SledgehammerUtil.getSkull(Constants.Heads.arrowRight, ChatColor.AQUA + "" + ChatColor.BOLD + "Next Page");
             inventory.setItem(53, head);
             paged = true;
         }
@@ -80,11 +79,11 @@ public class WarpMenuInventory extends AbstractWarpInventory {
 
         int current = 9;
         for (int x = min; x < max; x++) {
-            WarpGroup group = groups.get(x);
+            WarpGroupPayload group = groups.get(x);
 
             String headId = group.getHeadId();
             if (headId.equals("")) {
-                headId = Constants.cyanWoolHead;
+                headId = Constants.Heads.cyanWool;
             }
             ItemStack item = SledgehammerUtil.getSkull(headId, group.getName());
 
@@ -136,18 +135,8 @@ public class WarpMenuInventory extends AbstractWarpInventory {
             return;
         }
 
-        if (e.getSlot() == 48) {
-            GUIRegistry.register(new PinnedWarpInventory.PinnedWarpInventoryController(getController(), controller.getPayload()));
-            return;
-        }
-
         if (e.getSlot() == 49) {
             controller.close();
-            return;
-        }
-
-        if (e.getSlot() == 50) {
-            GUIRegistry.register(new AllWarpInventory.AllWarpInventoryController(getController(), controller.getPayload()));
             return;
         }
 
@@ -172,22 +161,7 @@ public class WarpMenuInventory extends AbstractWarpInventory {
             }
 
             GUIRegistry.register(new GroupWarpInventory.GroupWarpInventoryController(getController(), controller.getPayload(), id));
-            return;
         }
-    }
-
-    private ItemStack generateCompass() {
-        ItemStack compass = new ItemStack(Material.COMPASS);
-        ItemMeta m = compass.getItemMeta();
-
-        m.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "All Warps");
-        List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.GRAY + "All Warps");
-        m.setLore(lore);
-
-        compass.setItemMeta(m);
-
-        return compass;
     }
 
     public int getPage() {
@@ -208,7 +182,7 @@ public class WarpMenuInventory extends AbstractWarpInventory {
 
         @Override
         public void init() {
-            List<WarpGroup> groups = payload.getGroups();
+            List<WarpGroupPayload> groups = Lists.newArrayList(payload.getGroups().values());
 
             int total_pages = (int) Math.ceil(groups.size() / 27.0);
             if (total_pages == 0) {

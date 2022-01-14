@@ -1,24 +1,27 @@
 /*
- * Copyright (c) 2020 Noah Husby
- * Sledgehammer [Bungeecord] - WarpCommand.java
+ * MIT License
  *
- * Sledgehammer is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Copyright 2020-2022 noahhusby
  *
- * Sledgehammer is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
  *
- *  You should have received a copy of the GNU General Public License
- *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
  */
 
 package com.noahhusby.sledgehammer.proxy.commands;
 
 import com.noahhusby.sledgehammer.common.warps.Warp;
+import com.noahhusby.sledgehammer.common.warps.WarpGroup;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.warps.WarpFragmentManager;
@@ -26,15 +29,13 @@ import com.noahhusby.sledgehammer.proxy.commands.fragments.warps.WarpListFragmen
 import com.noahhusby.sledgehammer.proxy.commands.fragments.warps.WarpMenuFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.warps.WarpRemoveFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.warps.WarpSetFragment;
-import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
+import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
-import com.noahhusby.sledgehammer.proxy.network.P2S.P2STeleportPacket;
-import com.noahhusby.sledgehammer.proxy.network.P2S.P2SWarpGUIPacket;
-import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
-import com.noahhusby.sledgehammer.proxy.permissions.PermissionRequest;
+import com.noahhusby.sledgehammer.proxy.network.p2s.P2STeleportPacket;
+import com.noahhusby.sledgehammer.proxy.network.p2s.P2SWarpGUIPacket;
+import com.noahhusby.sledgehammer.proxy.players.Permission;
+import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
-import com.noahhusby.sledgehammer.proxy.servers.ServerGroup;
-import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
 import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 import net.md_5.bungee.api.ChatColor;
@@ -44,6 +45,7 @@ import net.md_5.bungee.api.plugin.TabExecutor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class WarpCommand extends WarpFragmentManager implements TabExecutor {
 
@@ -71,18 +73,19 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
             return;
         }
 
-        PermissionHandler.getInstance().check(SledgehammerPlayer.getPlayer(sender), "sledgehammer.warp", (code, global) -> {
-            if (code == PermissionRequest.PermissionCode.PERMISSION) {
+        CompletableFuture<Permission> permissionFuture = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp");
+        permissionFuture.thenAccept(permission -> {
+            if (permission.isLocal()) {
                 run(sender, args);
-                return;
+            } else {
+                sender.sendMessage(ChatUtil.getNoPermission());
             }
-            sender.sendMessage(ChatUtil.getNoPermission());
         });
     }
 
     private void run(CommandSender sender, String[] args) {
         if (args.length == 0) {
-            if (ConfigHandler.warpMenuDefault) {
+            if (SledgehammerConfig.warps.warpMenuDefault) {
                 SledgehammerServer server = SledgehammerPlayer.getPlayer(sender).getSledgehammerServer();
                 boolean openGUI = (server != null);
 
@@ -93,30 +96,28 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
                 }
 
                 if (openGUI) {
-                    PermissionHandler.getInstance().check(SledgehammerPlayer.getPlayer(sender), "sledgehammer.warp.edit", (code, global) -> NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(),
-                            SledgehammerUtil.getServerFromSender(sender).getName(),
-                            code == PermissionRequest.PermissionCode.PERMISSION)));
+                    CompletableFuture<Permission> permissionFuture = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp.edit");
+                    permissionFuture.thenAccept(permission -> NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName(), permission.isLocal())));
                     return;
                 }
             }
 
-            sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, String.format("Usage: /%s <warp>", ConfigHandler.warpCommand)));
+            sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, String.format("Usage: /%s <warp>", SledgehammerConfig.warps.warpCommand)));
             sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Use ", ChatColor.BLUE,
-                    String.format("/%s list", ConfigHandler.warpCommand), ChatColor.GRAY, " to see the available warps."));
+                    String.format("/%s list", SledgehammerConfig.warps.warpCommand), ChatColor.GRAY, " to see the available warps."));
             return;
         }
 
         List<String> aliases = new ArrayList<>();
-        for (ServerGroup group : ServerHandler.getInstance().getGroups().values()) {
+        for (WarpGroup group : WarpHandler.getInstance().getWarpGroups().values()) {
             aliases.addAll(group.getAliases());
         }
 
         if (aliases.contains(args[0])) {
-            for (ServerGroup g : ServerHandler.getInstance().getGroups().values()) {
+            for (WarpGroup g : WarpHandler.getInstance().getWarpGroups().values()) {
                 if (g.getAliases().contains(args[0])) {
-                    PermissionHandler.getInstance().check(SledgehammerPlayer.getPlayer(sender), "sledgehammer.warp.edit", (code, global) -> NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(),
-                            SledgehammerUtil.getServerFromSender(sender).getName(),
-                            code == PermissionRequest.PermissionCode.PERMISSION)));
+                    CompletableFuture<Permission> permissionFuture = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.warp.edit");
+                    permissionFuture.thenAccept(permission -> NetworkHandler.getInstance().send(new P2SWarpGUIPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender).getName(), permission.isLocal())));
                     return;
                 }
             }
@@ -124,7 +125,7 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
 
         List<Warp> warps = new ArrayList<>();
         for (Warp w : WarpHandler.getInstance().getWarps().values()) {
-            if (w.getPinned() == Warp.PinnedMode.GLOBAL || !ConfigHandler.localWarp
+            if (w.isGlobal() || !SledgehammerConfig.warps.localWarp
                 || w.getServer().equalsIgnoreCase(SledgehammerUtil.getServerFromSender(sender).getName())) {
                 warps.add(w);
             }
@@ -154,28 +155,26 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
 
     @Override
     public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
-        boolean tab = PermissionHandler.getInstance().isAdmin(sender) || sender.hasPermission("sledgehammer.warp");
+        boolean tab = PlayerHandler.getInstance().isAdmin(sender) || sender.hasPermission("sledgehammer.warp");
         if (tab) {
             SledgehammerServer s = SledgehammerPlayer.getPlayer(sender).getSledgehammerServer();
             if (s == null) {
                 return new ArrayList<>();
             }
-            ServerGroup group = s.getGroup();
+            WarpGroup warpGroup = WarpHandler.getInstance().getWarpGroupByServer().get(s.getName());
 
             List<String> tabbedWarps = new ArrayList<>();
             for (Warp w : WarpHandler.getInstance().getWarps().values()) {
-                if (group.getServers().contains(w.getServer())) {
+                if (warpGroup != null && warpGroup.getServers().contains(w.getServer())) {
                     tabbedWarps.add(w.getName());
                 }
             }
 
-            for (ServerGroup g : ServerHandler.getInstance().getGroups().values()) {
+            for (WarpGroup g : WarpHandler.getInstance().getWarpGroups().values()) {
                 tabbedWarps.addAll(g.getAliases());
             }
 
-            List<String> completion = new ArrayList<>();
-            SledgehammerUtil.copyPartialMatches(args[0], tabbedWarps, completion);
-            return completion;
+            return SledgehammerUtil.copyPartialMatches(args[0], tabbedWarps);
         }
 
         return new ArrayList<>();

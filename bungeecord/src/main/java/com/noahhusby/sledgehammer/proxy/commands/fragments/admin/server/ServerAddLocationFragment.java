@@ -1,19 +1,21 @@
 /*
- * Copyright (c) 2020 Noah Husby
- * Sledgehammer [Bungeecord] - ServerAddLocationFragment.java
+ * MIT License
  *
- * Sledgehammer is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Copyright 2020-2022 noahhusby
  *
- * Sledgehammer is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
  *
- *  You should have received a copy of the GNU General Public License
- *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
  */
 
 package com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server;
@@ -37,6 +39,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public class ServerAddLocationFragment implements ICommandFragment {
 
@@ -58,7 +61,7 @@ public class ServerAddLocationFragment implements ICommandFragment {
         }
 
         if (args.length > 2) {
-            String arg = SledgehammerUtil.getRawArguments(SledgehammerUtil.selectArray(args, 2));
+            String arg = SledgehammerUtil.getRawArguments(Arrays.copyOfRange(args, 2, args.length));
             if (arg.equalsIgnoreCase("city")) {
                 DialogHandler.getInstance().startDialog(sender, new CityScene(ProxyServer.getInstance().getServerInfo(args[0])));
                 return;
@@ -89,24 +92,10 @@ public class ServerAddLocationFragment implements ICommandFragment {
                 SledgehammerServer s = ServerHandler.getInstance().getServer(args[0]);
                 s.getLocations().add(l);
                 ServerHandler.getInstance().getServers().saveAsync();
-
-                String x = "";
-                if (!l.city.equals("")) {
-                    x += ChatUtil.capitalize(l.city) + ", ";
-                }
-                if (!l.county.equals("")) {
-                    x += ChatUtil.capitalize(l.county) + ", ";
-                }
-                if (!l.state.equals("")) {
-                    x += ChatUtil.capitalize(l.state) + ", ";
-                }
-                if (!l.country.equals("")) {
-                    x += ChatUtil.capitalize(l.country);
-                }
-                sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Successfully added ", ChatColor.BLUE, l.detailType.name() + ": ", ChatColor.RED, x));
+                sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Successfully added ", ChatColor.BLUE, l.detailType.name() + ": ", ChatColor.RED, l));
                 return;
             } else if (arg.contains("{")) {
-                sender.sendMessage(ChatColor.RED + "Unable to parse json location! Please try again.");
+                sender.sendMessage(ChatUtil.combine(ChatColor.RED, "Unable to parse json location! Please try again."));
                 return;
             }
 

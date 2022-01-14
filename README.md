@@ -1,6 +1,9 @@
 # Sledgehammer
 
 [![Build Status](https://jenkins.noahhusby.com/buildStatus/icon?job=Sledgehammer)](https://jenkins.noahhusby.com/job/Sledgehammer/)
+![GitHub](https://img.shields.io/github/license/noahhusby/sledgehammer)
+![Lines of code](https://img.shields.io/tokei/lines/github/noahhusby/sledgehammer)
+![GitHub repo size](https://img.shields.io/github/repo-size/noahhusby/sledgehammer)
 
 A set of tools for multi-server Build the Earth networks
 
@@ -10,9 +13,7 @@ A set of tools for multi-server Build the Earth networks
 
 * Region Assigning - /tpll will automatically teleport between servers based upon region configuration
 * Global Warps - Set warps and teleport across the network
-* Warp Map - Online map vizualizer with warps. Check
-  out [Sledgehammer Map](https://github.com/noahhusby/Sledgehammer-Map/releases)
-* Border Teleportation (WIP) - Teleport automatically between servers when passing through region borders
+* Border Teleportation - Teleport automatically between servers when passing through region borders
 
 #### Future Plans
 

@@ -1,11 +1,33 @@
+/*
+ * MIT License
+ *
+ * Copyright 2020-2022 noahhusby
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+
 package com.noahhusby.sledgehammer.server.gui.warp.config;
 
+import com.noahhusby.sledgehammer.common.warps.WarpConfigPayload;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
-import com.noahhusby.sledgehammer.server.data.warp.WarpConfigPayload;
 import com.noahhusby.sledgehammer.server.gui.GUIChild;
 import com.noahhusby.sledgehammer.server.gui.GUIController;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
+import com.noahhusby.sledgehammer.server.network.NetworkHandler;
+import com.noahhusby.sledgehammer.server.network.s2p.S2PWarpGroupConfigPacket;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -19,8 +41,9 @@ public class ConfigMenu extends GUIChild {
     @Override
     public void init() {
         fillInventory(createItem(Material.STAINED_GLASS_PANE, 1, (byte) 15, null));
-        inventory.setItem(13, SledgehammerUtil.getSkull(Constants.limePlusHead, ChatColor.GREEN + "" + ChatColor.BOLD + "Create new warp"));
-        inventory.setItem(15, SledgehammerUtil.getSkull(Constants.goldenExclamationHead, ChatColor.GOLD + "" + ChatColor.BOLD + "Manage Warps"));
+        inventory.setItem(11, SledgehammerUtil.getSkull(Constants.Heads.blackBook, ChatColor.YELLOW + "" + ChatColor.BOLD + "Manage Groups"));
+        inventory.setItem(13, SledgehammerUtil.getSkull(Constants.Heads.limePlus, ChatColor.GREEN + "" + ChatColor.BOLD + "Create new warp"));
+        inventory.setItem(15, SledgehammerUtil.getSkull(Constants.Heads.goldenExclamation, ChatColor.GOLD + "" + ChatColor.BOLD + "Manage Warps"));
     }
 
     @Override
@@ -35,13 +58,17 @@ public class ConfigMenu extends GUIChild {
         if (e.getCurrentItem().getItemMeta().getDisplayName() == null) {
             return;
         }
+        if (e.getSlot() == 11) {
+            controller.close();
+            NetworkHandler.getInstance().send(new S2PWarpGroupConfigPacket(S2PWarpGroupConfigPacket.ProxyConfigAction.OPEN_CONFIG, getPlayer(), ((ConfigMenuController) controller).getPayload().getSalt()));
+            return;
+        }
         if (e.getSlot() == 13) {
             GUIRegistry.register(new WarpNameEntryAnvil.WarpNameEntryController(getPlayer(), ((ConfigMenuController) controller).getPayload()));
             return;
         }
         if (e.getSlot() == 15) {
-            GUIRegistry.register(new ManageGroupInventory.ManageGroupInventoryController(getPlayer(), ((ConfigMenuController) controller).getPayload()));
-            return;
+            GUIRegistry.register(new ManageServerViewInventory.ManageGroupInventoryController(getPlayer(), ((ConfigMenuController) controller).getPayload()));
         }
     }
 

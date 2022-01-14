@@ -1,13 +1,30 @@
+/*
+ * MIT License
+ *
+ * Copyright 2020-2022 noahhusby
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+
 package com.noahhusby.sledgehammer.proxy;
 
-import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
+import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.Arrays;
 
@@ -20,7 +37,7 @@ public class ChatUtil {
             ChatColor.BLUE, " /sha server <server name> setearth true ", ChatColor.GRAY, "to enable it.");
 
     public static TextComponent title() {
-        return new TextComponent(ConfigHandler.messagePrefix.replace("&", "\u00A7"));
+        return new TextComponent(SledgehammerConfig.general.messagePrefix.replace("&", "\u00A7"));
     }
 
     public static TextComponent adminTitle() {
@@ -82,7 +99,7 @@ public class ChatUtil {
     }
 
     public static TextComponent getVersionMessage() {
-        return titleAndCombine(ChatColor.RED, String.format("Sledgehammer %s", Constants.VERSION),
+        return adminAndCombine(ChatColor.RED, String.format("Sledgehammer %s", Constants.VERSION),
                 ChatColor.GRAY, " by ", ChatColor.BLUE + "Noah Husby");
     }
 
@@ -101,12 +118,8 @@ public class ChatUtil {
     }
 
     public static TextComponent getNotAvailable() {
-        return combine(ConfigHandler.replaceNotAvailable ? (ChatColor.WHITE + "Unknown command. Type \"/help\" for help.") :
+        return combine(SledgehammerConfig.general.replaceNotAvailable ? (ChatColor.WHITE + "Unknown command. Type \"/help\" for help.") :
                 (ChatColor.RED + "That command is not available."));
-    }
-
-    public static void sendActionBar(ProxiedPlayer player, BaseComponent message) {
-        player.sendMessage(ChatMessageType.ACTION_BAR, message);
     }
 
     public static void sendMessageBox(CommandSender sender, String title, TextComponent text) {

@@ -1,3 +1,23 @@
+/*
+ * MIT License
+ *
+ * Copyright 2020-2022 noahhusby
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+
 package com.noahhusby.sledgehammer.server.util;
 
 import com.google.common.collect.Maps;
@@ -5,7 +25,6 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -36,12 +55,6 @@ public class SkullUtil {
     private static final Map<Integer, ItemStack> numberHeads = Maps.newHashMap();
 
     static {
-        try {
-            Material.class.getDeclaredField("PLAYER_HEAD");
-            Material.valueOf("SKULL");
-        } catch (NoSuchFieldException | IllegalArgumentException ignored) {
-        }
-
         numberHeads.put(0, itemFromTextureId("3f09018f46f349e553446946a38649fcfcf9fdfd62916aec33ebca96bb21b5"));
         numberHeads.put(1, itemFromTextureId("ca516fbae16058f251aef9a68d3078549f48f6d5b683f19cf5a1745217d72cc"));
         numberHeads.put(2, itemFromTextureId("4698add39cf9e4ea92d42fadefdec3be8a7dafa11fb359de752e9f54aecedc9a"));
@@ -77,16 +90,6 @@ public class SkullUtil {
     }
 
     /**
-     * Creates a player skull item with the skin based on a player's UUID.
-     *
-     * @param id The Player's UUID.
-     * @return The head of the Player.
-     */
-    public static ItemStack itemFromUuid(UUID id) {
-        return itemWithUuid(createSkull(), id);
-    }
-
-    /**
      * Creates a player skull item with the skin at a Mojang URL.
      *
      * @param url The Mojang URL.
@@ -94,16 +97,6 @@ public class SkullUtil {
      */
     public static ItemStack itemFromUrl(String url) {
         return itemWithUrl(createSkull(), url);
-    }
-
-    /**
-     * Creates a player skull item with the skin based on a base64 string.
-     *
-     * @param base64 The Mojang URL.
-     * @return The head of the Player.
-     */
-    public static ItemStack itemFromBase64(String base64) {
-        return itemWithBase64(createSkull(), base64);
     }
 
     /**
@@ -117,18 +110,14 @@ public class SkullUtil {
     }
 
     /**
-     * Modifies a skull to use the skin of the player with a given UUID.
+     * Modifies a skull to use the skin at the given Mojang URL.
      *
-     * @param item The item to apply the name to. Must be a player skull.
-     * @param id   The Player's UUID.
-     * @return The head of the Player.
+     * @param item The item to apply the skin to. Must be a player skull.
+     * @param url  The URL of the Mojang skin.
+     * @return The head associated with the URL.
      */
-    public static ItemStack itemWithUuid(@NonNull ItemStack item, @NonNull UUID id) {
-        SkullMeta meta = (SkullMeta) item.getItemMeta();
-        meta.setOwningPlayer(Bukkit.getOfflinePlayer(id));
-        item.setItemMeta(meta);
-
-        return item;
+    public static ItemStack itemWithUrlId(@NonNull ItemStack item, @NonNull String url) {
+        return itemWithBase64(item, urlToBase64("https://textures.minecraft.net/texture/" + url));
     }
 
     /**
@@ -168,12 +157,11 @@ public class SkullUtil {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
-        String toEncode = "{\"textures\":{\"SKIN\":{\"url\":\"" + actualUrl.toString() + "\"}}}";
+        String toEncode = "{\"textures\":{\"SKIN\":{\"url\":\"" + actualUrl + "\"}}}";
         return Base64.getEncoder().encodeToString(toEncode.getBytes());
     }
 
     private static GameProfile makeProfile(String b64) {
-        // random uuid based on the b64 string
         UUID id = new UUID(
                 b64.substring(b64.length() - 20).hashCode(),
                 b64.substring(b64.length() - 10).hashCode()
@@ -205,6 +193,6 @@ public class SkullUtil {
     }
 
     private static ItemStack itemFromTextureId(String textureId) {
-        return itemFromUrl("http://textures.minecraft.net/texture/" + textureId);
+        return itemFromUrl("https://textures.minecraft.net/texture/" + textureId);
     }
 }

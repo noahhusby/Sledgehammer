@@ -1,19 +1,47 @@
+/*
+ * MIT License
+ *
+ * Copyright 2020-2022 noahhusby
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+
+//file:noinspection GroovyAssignabilityCheck
+//file:noinspection GrUnresolvedAccess
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
-
-def versionDir = "${buildDir}/generated-version"
 
 allprojects {
     apply plugin: "java"
 
     ext {
-        sledgehammerVersion = "0.5.0." + ('git rev-list --count HEAD'.execute().text.trim()) + "-1.12.2"
+        sledgehammerVersion = "0.5." + ('git rev-list --count HEAD'.execute().text.trim())
 
-        husbyVersion = "3c6ad811b2"
-        guavaVersion = "30.1.1-jre"
-        lombokVersion = "1.18.20"
+        gsonVersion = "2.8.9"
+        hikariVersion = "4.0.3"
+        lombokVersion = "1.18.22"
+        husbyVersion = "0.1.92"
+        mongoVersion = "3.12.10"
+        guavaVersion = "31.0.1-jre"
+        log4jVersion = "2.17.1"
+        anvilGuiVersion = "1.5.3-SNAPSHOT"
+        paperVersion = "1.12.2-R0.1-SNAPSHOT"
+        bungeecordVersion = "1.18-R0.1-SNAPSHOT"
+        terraplusplusVersion = "74449c4af349fd9b77b10e1041ed2c09f2d78518"
     }
 
     group "com.noahhusby"
@@ -26,9 +54,10 @@ allprojects {
     repositories {
         mavenCentral()
         maven { url 'https://papermc.io/repo/repository/maven-public/' }
-        maven { url 'https://repo.codemc.io/repository/maven-snapshots' }
         maven { url 'https://jitpack.io/' }
-        maven { url 'https://maven.daporkchop.net/'}
+        maven { url 'https://maven.daporkchop.net/' }
+        maven { url 'https://maven.noahhusby.com/releases' }
+        maven { url 'https://repo.codemc.io/repository/maven-snapshots' }
     }
 
     dependencies {
@@ -36,7 +65,8 @@ allprojects {
             implementation project(":common")
         }
 
-        implementation "com.github.noahhusby.HusbyLib:data:$husbyVersion"
+        implementation "com.noahhusby.lib:data:$husbyVersion"
+        implementation "com.noahhusby.lib:application:$husbyVersion"
 
         compileOnly "org.projectlombok:lombok:$lombokVersion"
         testCompileOnly "org.projectlombok:lombok:$lombokVersion"
@@ -53,21 +83,16 @@ dependencies {
     }
 }
 
-sourceSets {
-    main {
-        output.dir(versionDir, builtBy: 'generateVersionProperties')
+shadowJar {
+    archiveFileName = "Sledgehammer-${sledgehammerVersion}.jar"
+    manifest {
+        attributes('Implementation-Version': "${sledgehammerVersion}")
     }
-}
-
-task generateVersionProperties {
-    doLast {
-        def propertiesFile = file "$versionDir/version.properties"
-        propertiesFile.parentFile.mkdirs()
-        def properties = new Properties()
-        properties.setProperty("version", sledgehammerVersion.toString())
-        propertiesFile.withWriter { properties.store(it, null) }
+    dependencies {
+        exclude(dependency("com.google.code.gson:gson"))
+        exclude(dependency("org.yaml:snakeyaml"))
+        exclude(dependency("org.slf4j:slf4j-api"))
     }
 }
 
 build.dependsOn shadowJar
-processResources.dependsOn generateVersionProperties

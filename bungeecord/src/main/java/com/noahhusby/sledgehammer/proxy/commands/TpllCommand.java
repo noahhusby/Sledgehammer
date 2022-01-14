@@ -1,38 +1,42 @@
 /*
- * Copyright (c) 2020 Noah Husby
- * Sledgehammer [Bungeecord] - TpllCommand.java
+ * MIT License
  *
- * Sledgehammer is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Copyright 2020-2022 noahhusby
  *
- * Sledgehammer is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
  *
- *  You should have received a copy of the GNU General Public License
- *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
  */
 
 package com.noahhusby.sledgehammer.proxy.commands;
 
+import com.noahhusby.sledgehammer.common.TpllMode;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.datasets.OpenStreetMaps;
-import com.noahhusby.sledgehammer.proxy.network.P2S.P2SLocationPacket;
-import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
-import com.noahhusby.sledgehammer.proxy.permissions.PermissionRequest;
+import com.noahhusby.sledgehammer.proxy.network.p2s.P2SLocationPacket;
+import com.noahhusby.sledgehammer.proxy.players.Permission;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+
+import java.util.concurrent.CompletableFuture;
 
 public class TpllCommand extends Command {
 
@@ -51,10 +55,14 @@ public class TpllCommand extends Command {
             sender.sendMessage(ChatUtil.getNotAvailable());
             return;
         }
-
-
-        PermissionHandler.getInstance().check(SledgehammerPlayer.getPlayer(sender), "sledgehammer.tpll", (code, global) -> {
-            if (code == PermissionRequest.PermissionCode.PERMISSION) {
+        SledgehammerPlayer player = SledgehammerPlayer.getPlayer(sender);
+        if (player.getSledgehammerServer() != null && player.getSledgehammerServer().getTpllMode() == TpllMode.PASSTHROUGH) {
+            player.chat("/tpll " + SledgehammerUtil.getRawArguments(args));
+            return;
+        }
+        CompletableFuture<Permission> permissionFuture = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.tpll");
+        permissionFuture.thenAccept(permission -> {
+            if (permission.isLocal()) {
                 if (args.length == 0) {
                     if (hasPerms(sender, "admin")) {
                         adminUsage(sender);
@@ -70,7 +78,7 @@ public class TpllCommand extends Command {
 
                     TextComponent interaction = new TextComponent(ChatColor.YELLOW + "Click here");
                     interaction.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://giant.gfycat.com/JitteryTerrificChimpanzee.webm"));
-                    interaction.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("View the tpll guide").create()));
+                    interaction.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("View the tpll guide")));
 
                     text.addExtra(interaction);
                     text.addExtra(new TextComponent(ChatColor.GRAY + " to see how to use " + ChatColor.BLUE + "/tpll"
@@ -182,7 +190,7 @@ public class TpllCommand extends Command {
 
                     TextComponent interaction = new TextComponent(ChatColor.YELLOW + "Click here");
                     interaction.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://giant.gfycat.com/JitteryTerrificChimpanzee.webm"));
-                    interaction.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("View the tpll guide").create()));
+                    interaction.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("View the tpll guide")));
 
                     text.addExtra(interaction);
                     text.addExtra(new TextComponent(ChatColor.GRAY + " to see how to use " + ChatColor.BLUE + "/tpll"

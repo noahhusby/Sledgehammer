@@ -1,19 +1,21 @@
 /*
- * Copyright (c) 2020 Noah Husby
- * Sledgehammer [Bungeecord] - LocationListComponent.java
+ * MIT License
  *
- * Sledgehammer is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Copyright 2020-2022 noahhusby
  *
- * Sledgehammer is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
  *
- *  You should have received a copy of the GNU General Public License
- *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
  */
 
 package com.noahhusby.sledgehammer.proxy.dialogs.components.location;
@@ -30,7 +32,7 @@ import java.util.List;
 
 public class LocationListComponent extends DialogComponent {
 
-    ServerInfo server;
+    private final ServerInfo server;
     List<Location> locations;
 
     public LocationListComponent(ServerInfo server) {
@@ -51,26 +53,9 @@ public class LocationListComponent extends DialogComponent {
     public TextComponent getExplanation() {
         TextComponent explanation = ChatUtil.combine(ChatColor.GRAY, "Type anything to continue");
         locations = ServerHandler.getInstance().getLocationsFromServer(server.getName());
-        int v = 0;
-        for (Location l : locations) {
-            String x = "";
-            if (!l.city.equals("")) {
-                x += ChatUtil.capitalize(l.city) + ", ";
-            }
-            if (!l.county.equals("")) {
-                x += ChatUtil.capitalize(l.county) + ", ";
-            }
-            if (!l.state.equals("")) {
-                x += ChatUtil.capitalize(l.state) + ", ";
-            }
-            if (!l.country.equals("")) {
-                x += ChatUtil.capitalize(l.country);
-            }
-            explanation.addExtra(ChatUtil.combine(ChatColor.RED, "\n" + v + ". ", ChatColor.GOLD,
-                    ChatUtil.capitalize(l.detailType.name()), " - ", ChatColor.RED, x));
-            v++;
+        for (int i = 0; i < locations.size(); i++) {
+            explanation.addExtra(ChatUtil.combine(ChatColor.RED, "\n" + i + ". ", ChatColor.GOLD, ChatUtil.capitalize(locations.get(i).detailType.name()), " - ", ChatColor.RED, locations.get(i)));
         }
-
         return explanation;
     }
 

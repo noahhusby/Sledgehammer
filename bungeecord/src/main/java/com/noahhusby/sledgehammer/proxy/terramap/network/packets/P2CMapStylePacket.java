@@ -1,3 +1,23 @@
+/*
+ * MIT License
+ *
+ * Copyright 2020-2022 noahhusby
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+
 package com.noahhusby.sledgehammer.proxy.terramap.network.packets;
 
 import java.util.Map;
@@ -13,7 +33,6 @@ import net.md_5.bungee.api.connection.Server;
  * Sent to players joining the network to give them access to this proxy's custom map styles.
  *
  * @author SmylerMC
- * @see MapStyleRegistry
  */
 public class P2CMapStylePacket implements IForgePacket {
 
@@ -33,7 +52,7 @@ public class P2CMapStylePacket implements IForgePacket {
 
     public P2CMapStylePacket() {
     }
-    
+
     public P2CMapStylePacket(MapStyle style) {
         this(style, false); // We have no way to reliably know the client's TM version at the time we send the packet
     }
@@ -67,12 +86,12 @@ public class P2CMapStylePacket implements IForgePacket {
         String singleUrl = this.backwardCompat ? this.urlPatterns[0]: "";
         ForgeChannel.writeStringToBuf(singleUrl, buf);
         buf.writeInt(this.names.size());
-        for(String key: this.names.keySet()) {
+        for (String key : this.names.keySet()) {
             ForgeChannel.writeStringToBuf(key, buf);
             ForgeChannel.writeStringToBuf(this.names.get(key), buf);
         }
         buf.writeInt(this.copyrights.size());
-        for(String key: this.copyrights.keySet()) {
+        for (String key : this.copyrights.keySet()) {
             ForgeChannel.writeStringToBuf(key, buf);
             ForgeChannel.writeStringToBuf(this.copyrights.get(key), buf);
         }
@@ -81,7 +100,7 @@ public class P2CMapStylePacket implements IForgePacket {
         buf.writeInt(this.displayPriority);
         buf.writeBoolean(this.isAllowedOnMinimap);
         ForgeChannel.writeStringToBuf(this.comment, buf);
-        if(!this.backwardCompat) {
+        if (!this.backwardCompat) {
             buf.writeInt(this.maxConcurrentConnections);
             ForgeChannel.writeStringArrayToByteBuf(this.urlPatterns, buf);
             buf.writeBoolean(this.debug);

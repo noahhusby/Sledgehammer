@@ -1,40 +1,29 @@
 /*
- * Copyright (c) 2020 Noah Husby
- * sledgehammer - GeographicProjection.java
+ * MIT License
  *
- * Sledgehammer is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Copyright 2020-2022 noahhusby
  *
- * Sledgehammer is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
  *
- * You should have received a copy of the GNU General Public License
- * along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
  */
 
 package com.noahhusby.sledgehammer.common.projection;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class GeographicProjection {
 
-    public static double EARTH_CIRCUMFERENCE = 40075017;
-    public static double EARTH_POLAR_CIRCUMFERENCE = 40008000;
-
-    public static Map<String, GeographicProjection> projections;
-
-    static {
-        projections = new HashMap<>();
-        projections.put("equirectangular", new GeographicProjection());
-        projections.put("airocean", new Airocean());
-        projections.put("conformal", new ConformalEstimate());
-        projections.put("bteairocean", new ModifiedAirocean());
-    }
+    public static final double EARTH_CIRCUMFERENCE = 40075017;
+    public static final double EARTH_POLAR_CIRCUMFERENCE = 40008000;
 
     public static GeographicProjection orientProjection(GeographicProjection base, Orientation o) {
         if (base.upright()) {
@@ -106,35 +95,5 @@ public class GeographicProjection {
                 geo[1] + north * 360.0 / EARTH_POLAR_CIRCUMFERENCE);
 
         return new double[]{ off[0] - x, off[1] - y };
-    }
-
-    public double[] tissot(double lon, double lat, double d) {
-
-        double R = EARTH_CIRCUMFERENCE / (2 * Math.PI);
-
-        double ddeg = d * 180.0 / Math.PI;
-
-        double[] base = fromGeo(lon, lat);
-        double[] lonoff = fromGeo(lon + ddeg, lat);
-        double[] latoff = fromGeo(lon, lat + ddeg);
-
-        double dxdl = (lonoff[0] - base[0]) / d;
-        double dxdp = (latoff[0] - base[0]) / d;
-        double dydl = (lonoff[1] - base[1]) / d;
-        double dydp = (latoff[1] - base[1]) / d;
-
-        double cosp = Math.cos(lat * Math.PI / 180.0);
-
-        double h = Math.sqrt(dxdp * dxdp + dydp * dydp) / R;
-        double k = Math.sqrt(dxdl * dxdl + dydl * dydl) / (cosp * R);
-
-        double sint = Math.abs(dydp * dxdl - dxdp * dydl) / (R * R * cosp * h * k);
-        double ap = Math.sqrt(h * h + k * k + 2 * h * k * sint);
-        double bp = Math.sqrt(h * h + k * k - 2 * h * k * sint);
-
-        double a = (ap + bp) / 2;
-        double b = (ap - bp) / 2;
-
-        return new double[]{ h * k * sint, 2 * Math.asin(bp / ap), a, b };
     }
 }

@@ -1,35 +1,36 @@
 /*
- * Copyright (c) 2020 Noah Husby
- * sledgehammer - WarpInventory.java
+ * MIT License
  *
- * Sledgehammer is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Copyright 2020-2022 noahhusby
  *
- * Sledgehammer is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
  *
- * You should have received a copy of the GNU General Public License
- * along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
  */
 
 package com.noahhusby.sledgehammer.server.gui.warp.menu;
 
+import com.google.common.collect.Lists;
 import com.noahhusby.sledgehammer.common.warps.Warp;
-import com.noahhusby.sledgehammer.common.warps.WarpGroup;
 import com.noahhusby.sledgehammer.common.warps.WarpPayload;
 import com.noahhusby.sledgehammer.server.Constants;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.gui.GUIController;
 import com.noahhusby.sledgehammer.server.gui.GUIRegistry;
 import com.noahhusby.sledgehammer.server.network.NetworkHandler;
-import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpConfigPacket;
-import com.noahhusby.sledgehammer.server.network.S2P.S2PWarpPacket;
+import com.noahhusby.sledgehammer.server.network.s2p.S2PWarpConfigPacket;
+import com.noahhusby.sledgehammer.server.network.s2p.S2PWarpPacket;
 import com.noahhusby.sledgehammer.server.util.SkullUtil;
-import com.noahhusby.sledgehammer.server.util.WarpGUIUtil;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -48,18 +49,17 @@ public class AllWarpInventory extends AbstractWarpInventory {
     @Override
     public void init() {
         super.init();
-        setItem(4, SledgehammerUtil.getSkull(Constants.globeHead, ChatColor.GREEN + "" + ChatColor.BOLD + "All Warps"));
-        setItem(40, WarpGUIUtil.generateCompass());
+        setItem(4, SledgehammerUtil.getSkull(Constants.Heads.globe, ChatColor.GREEN + "" + ChatColor.BOLD + "All Warps"));
 
         boolean paged = false;
         if (page != 0) {
-            ItemStack head = SledgehammerUtil.getSkull(Constants.arrowLeftHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Previous Page");
+            ItemStack head = SledgehammerUtil.getSkull(Constants.Heads.arrowLeft, ChatColor.AQUA + "" + ChatColor.BOLD + "Previous Page");
             setItem(51, head);
             paged = true;
         }
 
         if (warps.size() > (page + 1) * Constants.warpsPerPage) {
-            ItemStack head = SledgehammerUtil.getSkull(Constants.arrowRightHead, ChatColor.AQUA + "" + ChatColor.BOLD + "Next Page");
+            ItemStack head = SledgehammerUtil.getSkull(Constants.Heads.arrowRight, ChatColor.AQUA + "" + ChatColor.BOLD + "Next Page");
             setItem(53, head);
             paged = true;
         }
@@ -80,12 +80,11 @@ public class AllWarpInventory extends AbstractWarpInventory {
         for (int x = min; x < max; x++) {
             Warp warp = warps.get(x);
 
-            String headId = warp.getHeadID();
-            if (headId.equals("")) {
-                headId = Constants.yellowWoolHead;
+            String headId = warp.getHeadId();
+            if (headId == null || headId.equals("")) {
+                headId = Constants.Heads.yellowWool;
             }
-            ItemStack item = SledgehammerUtil.getSkull(headId, ((warp.getPinned() == Warp.PinnedMode.GLOBAL
-                                                                 || warp.getPinned() == Warp.PinnedMode.LOCAL) ? ChatColor.GOLD : ChatColor.BLUE)
+            ItemStack item = SledgehammerUtil.getSkull(headId, (ChatColor.BLUE)
                                                                + "" + ChatColor.BOLD + warp.getName());
 
             ItemMeta meta = item.getItemMeta();
@@ -168,7 +167,6 @@ public class AllWarpInventory extends AbstractWarpInventory {
             }
             NetworkHandler.getInstance().send(new S2PWarpPacket(player, controller.getPayload(), id));
             controller.close();
-            return;
         }
     }
 
@@ -180,19 +178,17 @@ public class AllWarpInventory extends AbstractWarpInventory {
     public static class AllWarpInventoryController extends AbstractWarpInventoryController<AllWarpInventory> {
         public AllWarpInventoryController(Player player, WarpPayload payload) {
             super("Warps", player, payload);
+            init();
         }
 
         public AllWarpInventoryController(GUIController controller, WarpPayload payload) {
             super(controller, payload);
+            init();
         }
 
         @Override
         public void init() {
-            List<Warp> warps = new ArrayList<>();
-            for (WarpGroup wg : payload.getGroups()) {
-                warps.addAll(wg.getWarps());
-            }
-
+            List<Warp> warps = Lists.newArrayList(payload.getWaypoints().values());
             int total_pages = (int) Math.ceil(warps.size() / 27.0);
             if (total_pages == 0) {
                 total_pages = 1;

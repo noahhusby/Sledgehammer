@@ -1,30 +1,31 @@
 /*
- * Copyright (c) 2020 Noah Husby
- * Sledgehammer [Bungeecord] - ServerConfig.java
+ * MIT License
  *
- * Sledgehammer is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Copyright 2020-2022 noahhusby
  *
- * Sledgehammer is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
  *
- *  You should have received a copy of the GNU General Public License
- *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
  */
 
 package com.noahhusby.sledgehammer.proxy.servers;
 
-import com.google.common.collect.Maps;
-import com.noahhusby.lib.data.storage.StorageHashMap;
 import com.noahhusby.lib.data.storage.StorageTreeMap;
+import com.noahhusby.sledgehammer.common.SledgehammerVersion;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.datasets.Location;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
-import com.noahhusby.sledgehammer.proxy.network.P2S.P2SInitializationPacket;
+import com.noahhusby.sledgehammer.proxy.network.p2s.P2SInitializationPacket;
 import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -45,11 +46,6 @@ public class ServerHandler implements Listener {
     @Getter
     private final StorageTreeMap<String, SledgehammerServer> servers = new StorageTreeMap<>(String.class, SledgehammerServer.class, String.CASE_INSENSITIVE_ORDER);
 
-    @Getter
-    private final StorageHashMap<String, ServerGroup> groups = new StorageHashMap<>(String.class, ServerGroup.class);
-
-    private final Map<String, String> initialized = Maps.newHashMap();
-
     private ServerHandler() {
         Sledgehammer.addListener(this);
     }
@@ -60,7 +56,7 @@ public class ServerHandler implements Listener {
      * @param serverInfo {@link ServerInfo}
      * @param version    Version of initialized server
      */
-    public void initialize(ServerInfo serverInfo, String version) {
+    public void initialize(ServerInfo serverInfo, SledgehammerVersion version) {
         String name = serverInfo.getName();
         SledgehammerServer s = getServer(name);
         if (s == null) {
@@ -68,13 +64,10 @@ public class ServerHandler implements Listener {
             servers.put(name, s);
             servers.saveAsync();
         }
-
         if (s.isInitialized()) {
             return;
         }
-
         s.initialize(version);
-        initialized.put(s.getName(), version);
     }
 
     /**
@@ -135,21 +128,15 @@ public class ServerHandler implements Listener {
     }
 
     /**
-     * Gets map of initialized servers with SH versions
-     *
-     * @return Map of initialized servers
-     */
-    public Map<String, String> getInitializedMap() {
-        return initialized;
-    }
-
-    /**
      * Sends initialization packet on join
      *
      * @param e {@link net.md_5.bungee.api.event.ServerConnectedEvent}
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onServerJoin(ServerConnectedEvent e) {
-        NetworkHandler.getInstance().send(new P2SInitializationPacket(e.getPlayer().getName(), e.getServer().getInfo().getName()));
+        SledgehammerServer server = getServer(e.getServer().getInfo().getName());
+        if (server == null || !server.isInitialized()) {
+            new Thread(() -> NetworkHandler.getInstance().send(new P2SInitializationPacket(e.getPlayer().getName(), e.getServer().getInfo().getName()))).start();
+        }
     }
 }

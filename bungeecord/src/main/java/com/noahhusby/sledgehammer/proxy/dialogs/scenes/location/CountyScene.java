@@ -1,24 +1,25 @@
 /*
- * Copyright (c) 2020 Noah Husby
- * Sledgehammer [Bungeecord] - CountyScene.java
+ * MIT License
  *
- * Sledgehammer is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Copyright 2020-2022 noahhusby
  *
- * Sledgehammer is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
  *
- *  You should have received a copy of the GNU General Public License
- *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
  */
 
 package com.noahhusby.sledgehammer.proxy.dialogs.scenes.location;
 
-import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.datasets.Location;
 import com.noahhusby.sledgehammer.proxy.dialogs.DialogHandler;
 import com.noahhusby.sledgehammer.proxy.dialogs.components.location.CountryComponent;
@@ -27,9 +28,6 @@ import com.noahhusby.sledgehammer.proxy.dialogs.components.location.StateCompone
 import com.noahhusby.sledgehammer.proxy.dialogs.scenes.DialogScene;
 import com.noahhusby.sledgehammer.proxy.dialogs.toolbars.ExitSkipToolbar;
 import com.noahhusby.sledgehammer.proxy.dialogs.toolbars.IToolbar;
-import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
-import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.config.ServerInfo;
 
 public class CountyScene extends DialogScene {
@@ -52,32 +50,7 @@ public class CountyScene extends DialogScene {
     @Override
     public void onFinish() {
         Location l = new Location(Location.Detail.state, "", getValue("county"), getValue("state"), getValue("country"));
-
-        SledgehammerServer s = ServerHandler.getInstance().getServers().containsKey(server.getName()) ? ServerHandler.getInstance().getServer(server.getName()) : new SledgehammerServer(server.getName());
-        s.getLocations().add(l);
-        ServerHandler.getInstance().getServers().put(server.getName(), s);
-        ServerHandler.getInstance().getServers().saveAsync();
-        if (scene != null) {
-            DialogHandler.getInstance().discardDialog(this);
-            DialogHandler.getInstance().startDialog(getCommandSender(), scene);
-            return;
-        }
-
-        String x = "";
-        if (!l.city.equals("")) {
-            x += ChatUtil.capitalize(l.city) + ", ";
-        }
-        if (!l.county.equals("")) {
-            x += ChatUtil.capitalize(l.county) + ", ";
-        }
-        if (!l.state.equals("")) {
-            x += ChatUtil.capitalize(l.state) + ", ";
-        }
-        if (!l.country.equals("")) {
-            x += ChatUtil.capitalize(l.country);
-        }
-        sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Successfully added ",
-                ChatColor.RED, ChatUtil.capitalize(l.detailType.name()) + " - ", ChatColor.GOLD, x));
+        LocationSceneUtil.completeScene(this, server, l, scene);
     }
 
     @Override

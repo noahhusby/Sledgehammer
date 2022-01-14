@@ -1,6 +1,26 @@
+/*
+ * MIT License
+ *
+ * Copyright 2020-2022 noahhusby
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+
 package com.noahhusby.sledgehammer.proxy.terramap;
 
-import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
+import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.terramap.MapStyleLibrary.MapStyle;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.P2CMapStylePacket;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.P2CSledgehammerHelloPacket;
@@ -33,20 +53,20 @@ public class TerramapModuleEventHandler implements Listener {
         }
 
         String version = ProxyServer.getInstance().getPluginManager().getPlugin("Sledgehammer").getDescription().getVersion();
-        boolean playerSync = ConfigHandler.terramapSyncPlayers && RemoteSynchronizer.hasSyncPermission(event.getPlayer());
+        boolean playerSync = SledgehammerConfig.terramap.terramapSyncPlayers && RemoteSynchronizer.hasSyncPermission(event.getPlayer());
         PlayerSyncStatus syncStatus = PlayerSyncStatus.getFromBoolean(playerSync);
         TerramapModule.instance.sledgehammerChannel.send(new P2CSledgehammerHelloPacket(
                 version,
                 syncStatus,
                 syncStatus,
-                ConfigHandler.terramapGlobalMap,
-                ConfigHandler.terramapGlobalSettings,
+                SledgehammerConfig.terramap.terramapGlobalMap,
+                SledgehammerConfig.terramap.terramapGlobalSettings,
                 false, // We do not have warp support yet
                 TerramapModule.instance.getProxyUUID()
         ), event.getPlayer());
-        if (ConfigHandler.terramapSendCustomMapsToClient) {
-            for (MapStyle style : MapStyleLibrary.getMaps().values()) {
-                TerramapModule.instance.sledgehammerChannel.send(new P2CMapStylePacket(style), event.getPlayer());
+        if (SledgehammerConfig.terramap.terramapSendCustomMapsToClient) {
+            for (P2CMapStylePacket packet : MapStyleRegistry.getMaps().values()) {
+                TerramapModule.instance.sledgehammerChannel.send(packet, event.getPlayer());
             }
         }
     }

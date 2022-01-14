@@ -1,9 +1,28 @@
+/*
+ * MIT License
+ *
+ * Copyright 2020-2022 noahhusby
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+
 package com.noahhusby.sledgehammer.proxy.terramap.commands;
 
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.Command;
-import com.noahhusby.sledgehammer.proxy.permissions.PermissionHandler;
-import com.noahhusby.sledgehammer.proxy.players.PlayerManager;
+import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.terramap.PlayerDisplayPreferences;
 import com.noahhusby.sledgehammer.proxy.terramap.TerramapModule;
@@ -68,7 +87,7 @@ public class TerrashowCommand extends Command implements TabExecutor {
         }
 
         if (args.length == 2) {
-            player = PlayerManager.getInstance().getPlayer(args[1]);
+            player = PlayerHandler.getInstance().getPlayer(args[1]);
         } else if (sender instanceof ProxiedPlayer) {
             player = (ProxiedPlayer) sender;
         } else {
@@ -77,7 +96,7 @@ public class TerrashowCommand extends Command implements TabExecutor {
         }
 
         if (player != null && player.equals(senderPlayer)) {
-            if (senderPlayer != null && !this.canPlayerHideSelf(senderPlayer)) {
+            if (!this.canPlayerHideSelf(senderPlayer)) {
                 context.sendError("terramap.commands.terrashow.cannot_change_own_visibility");
                 return;
             }
@@ -93,7 +112,7 @@ public class TerrashowCommand extends Command implements TabExecutor {
             return;
         }
 
-        SledgehammerPlayer shPlayer = PlayerManager.getInstance().getPlayer(player);
+        SledgehammerPlayer shPlayer = PlayerHandler.getInstance().getPlayer(player);
         switch (args[0]) {
             case "status":
                 String key = PlayerDisplayPreferences.shouldDisplayPlayer(shPlayer) ? "terramap.commands.terrashow.getvisible" : "terramap.commands.terrashow.gethidden";
@@ -129,17 +148,16 @@ public class TerrashowCommand extends Command implements TabExecutor {
                 break;
             default:
                 context.sendError("terramap.commands.terrashow.invalid_action");
-                return;
         }
 
     }
 
     private boolean canPlayerHideOthers(ProxiedPlayer player) {
-        return player.hasPermission(TerramapModule.TERRASHOW_OTHERS_PERMISSION_NODE) || PermissionHandler.getInstance().isAdmin(player);
+        return player.hasPermission(TerramapModule.TERRASHOW_OTHERS_PERMISSION_NODE) || PlayerHandler.getInstance().isAdmin(player);
     }
 
     private boolean canPlayerHideSelf(ProxiedPlayer player) {
-        return player.hasPermission(TerramapModule.TERRASHOW_SELF_PERMISSION_NODE) || PermissionHandler.getInstance().isAdmin(player);
+        return player.hasPermission(TerramapModule.TERRASHOW_SELF_PERMISSION_NODE) || PlayerHandler.getInstance().isAdmin(player);
     }
 
     @Override
@@ -153,7 +171,7 @@ public class TerrashowCommand extends Command implements TabExecutor {
             return l;
         } else if (args.length == 2) {
             List<String> l = new ArrayList<>();
-            PlayerManager.getInstance().getPlayers().forEach((u, p) -> l.add(p.getName()));
+            PlayerHandler.getInstance().getPlayers().forEach((u, p) -> l.add(p.getName()));
             this.filterListWithMatching(l, args[1]);
             return l;
         }

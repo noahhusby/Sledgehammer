@@ -1,19 +1,21 @@
 /*
- * Copyright (c) 2020 Noah Husby
- * Sledgehammer [Bungeecord] - ServerInfoFragment.java
+ * MIT License
  *
- * Sledgehammer is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Copyright 2020-2022 noahhusby
  *
- * Sledgehammer is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
  *
- *  You should have received a copy of the GNU General Public License
- *  along with Sledgehammer.  If not, see <https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE/>.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
  */
 
 package com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server;
@@ -25,6 +27,7 @@ import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 
 public class ServerInfoFragment implements ICommandFragment {
@@ -32,29 +35,26 @@ public class ServerInfoFragment implements ICommandFragment {
     public void execute(CommandSender sender, String[] args) {
         SledgehammerServer server = ServerHandler.getInstance().getServer(args[0]);
         ServerInfo info = ProxyServer.getInstance().getServerInfo(args[0]);
-        sender.sendMessage();
-        sender.sendMessage(ChatUtil.adminAndCombine(ChatColor.GRAY, "Server Info - ", ChatColor.BLUE, info.getName()));
-        sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Name: ", ChatColor.BLUE, info.getName()));
-        if (server == null) {
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Status: ", ChatColor.RED, "Unconfigured"));
-        } else if (!server.isInitialized()) {
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Status: ", ChatColor.GREEN, "Configured",
-                    ChatColor.RED, " (Not Initialized)"));
+        ChatUtil.sendMessageBox(sender, ChatColor.YELLOW + "" + ChatColor.BOLD + "Server Report", () -> {
+            sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Name: ", ChatColor.WHITE, info.getName()));
+            if (server == null) {
+                sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Status: ", ChatColor.RED, "Unconfigured"));
+                return;
+            }
+            TextComponent status = server.isInitialized() ? ChatUtil.combine(ChatColor.YELLOW, "Status: ", ChatColor.GREEN, "Configured") : ChatUtil.combine(ChatColor.YELLOW, "Status: ", ChatColor.GREEN, "Configured",
+                    ChatColor.RED, " (Not Initialized)");
+            sender.sendMessage(status);
             sender.sendMessage();
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Earth: ", (server.isEarthServer() ? ChatColor.GREEN + "Yes" : ChatColor.RED + "No")));
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Friendly Name: ", ChatColor.BLUE, server.getFriendlyName()));
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "X Offset: ", ChatColor.BLUE, server.getXOffset()));
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Z Offset: ", ChatColor.BLUE, server.getZOffset()));
-        } else {
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Status: ", ChatColor.GREEN, "Configured"));
-            sender.sendMessage();
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Earth: ", (server.isEarthServer() ? ChatColor.GREEN + "Yes" : ChatColor.RED + "No")));
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Friendly Name: ", ChatColor.BLUE, server.getFriendlyName()));
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "X Offset: ", ChatColor.BLUE, server.getXOffset()));
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "Z Offset: ", ChatColor.BLUE, server.getZOffset()));
-            sender.sendMessage();
-            sender.sendMessage(ChatUtil.combine(ChatColor.GRAY, "SH Version: ", ChatColor.BLUE, server.getSledgehammerVersion()));
-        }
+            sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Earth: ", (server.isEarthServer() ? ChatColor.GREEN + "Yes" : ChatColor.RED + "No")));
+            sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Friendly Name: ", ChatColor.WHITE, server.getNick()));
+            sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "X Offset: ", ChatColor.WHITE, server.getXOffset()));
+            sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Z Offset: ", ChatColor.WHITE, server.getZOffset()));
+            sender.sendMessage(ChatUtil.combine(ChatColor.YELLOW, "Tpll Mode: ", ChatColor.WHITE, server.getTpllMode().name()));
+            if (server.isInitialized()) {
+                sender.sendMessage();
+                sender.sendMessage(ChatUtil.combine(ChatColor.BLUE, "SH Version: ", ChatColor.WHITE, server.getSledgehammerVersion()));
+            }
+        });
     }
 
     @Override
