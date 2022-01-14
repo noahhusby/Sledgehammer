@@ -42,6 +42,7 @@ allprojects {
         paperVersion = "1.12.2-R0.1-SNAPSHOT"
         bungeecordVersion = "1.18-R0.1-SNAPSHOT"
         terraplusplusVersion = "74449c4af349fd9b77b10e1041ed2c09f2d78518"
+        bungee2forgechannelsVersion = "e9514b9843fca06b2d5d209386d4f2b2f40ee36f"
     }
 
     group "com.noahhusby"

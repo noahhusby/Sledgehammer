@@ -25,7 +25,7 @@ import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.terramap.RemoteSynchronizer;
 import com.noahhusby.sledgehammer.proxy.terramap.TerramapModule;
-import com.noahhusby.sledgehammer.proxy.terramap.network.packets.IForgePacket;
+import fr.thesmyler.bungee2forge.api.ForgePacket;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
@@ -36,7 +36,7 @@ import net.md_5.bungee.api.connection.Server;
  * @author SmylerMC
  * @see com.noahhusby.sledgehammer.proxy.terramap.RemoteSynchronizer
  */
-public class C2PRegisterForUpdatePacket implements IForgePacket {
+public class C2PRegisterForUpdatePacket implements ForgePacket {
 
     public boolean register;
 

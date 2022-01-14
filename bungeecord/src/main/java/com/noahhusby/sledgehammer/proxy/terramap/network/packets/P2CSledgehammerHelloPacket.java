@@ -21,8 +21,9 @@
 package com.noahhusby.sledgehammer.proxy.terramap.network.packets;
 
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
-import com.noahhusby.sledgehammer.proxy.terramap.network.ForgeChannel;
+import com.noahhusby.sledgehammer.proxy.terramap.network.NetworkUtil;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync.PlayerSyncStatus;
+import fr.thesmyler.bungee2forge.api.ForgePacket;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
@@ -42,7 +43,7 @@ import java.util.UUID;
  *
  * @author SmylerMC
  */
-public class P2CSledgehammerHelloPacket implements IForgePacket {
+public class P2CSledgehammerHelloPacket implements ForgePacket {
 
     public String version = "";
     public PlayerSyncStatus syncPlayers = PlayerSyncStatus.DISABLED;
@@ -67,7 +68,7 @@ public class P2CSledgehammerHelloPacket implements IForgePacket {
 
     @Override
     public void encode(ByteBuf buf) {
-        ForgeChannel.writeStringToBuf(this.version, buf);
+        NetworkUtil.writeStringToBuf(this.version, buf);
         buf.writeByte(this.syncPlayers.VALUE);
         buf.writeByte(this.syncSpectators.VALUE);
         buf.writeBoolean(this.globalmap);
@@ -79,7 +80,7 @@ public class P2CSledgehammerHelloPacket implements IForgePacket {
 
     @Override
     public void decode(ByteBuf buf) {
-        this.version = ForgeChannel.readStringFromBuf(buf);
+        this.version = NetworkUtil.readStringFromBuf(buf);
         this.syncPlayers = PlayerSyncStatus.getFromNetworkCode(buf.readByte());
         this.syncSpectators = PlayerSyncStatus.getFromNetworkCode(buf.readByte());
         this.globalmap = buf.readBoolean();

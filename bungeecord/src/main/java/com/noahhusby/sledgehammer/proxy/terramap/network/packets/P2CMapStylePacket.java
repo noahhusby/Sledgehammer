@@ -20,21 +20,22 @@
 
 package com.noahhusby.sledgehammer.proxy.terramap.network.packets;
 
-import java.util.Map;
-
 import com.noahhusby.sledgehammer.proxy.terramap.MapStyleLibrary.MapStyle;
-import com.noahhusby.sledgehammer.proxy.terramap.network.ForgeChannel;
-
+import com.noahhusby.sledgehammer.proxy.terramap.network.NetworkUtil;
+import fr.thesmyler.bungee2forge.api.ForgePacket;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Sent to players joining the network to give them access to this proxy's custom map styles.
  *
  * @author SmylerMC
  */
-public class P2CMapStylePacket implements IForgePacket {
+public class P2CMapStylePacket implements ForgePacket {
 
     private String id;
     private long providerVersion;
@@ -81,28 +82,28 @@ public class P2CMapStylePacket implements IForgePacket {
 
     @Override
     public void encode(ByteBuf buf) {
-        ForgeChannel.writeStringToBuf(this.id, buf);
+        NetworkUtil.writeStringToBuf(this.id, buf);
         buf.writeLong(this.providerVersion);
         String singleUrl = this.backwardCompat ? this.urlPatterns[0]: "";
-        ForgeChannel.writeStringToBuf(singleUrl, buf);
+        NetworkUtil.writeStringToBuf(singleUrl, buf);
         buf.writeInt(this.names.size());
         for (String key : this.names.keySet()) {
-            ForgeChannel.writeStringToBuf(key, buf);
-            ForgeChannel.writeStringToBuf(this.names.get(key), buf);
+            NetworkUtil.writeStringToBuf(key, buf);
+            NetworkUtil.writeStringToBuf(this.names.get(key), buf);
         }
         buf.writeInt(this.copyrights.size());
         for (String key : this.copyrights.keySet()) {
-            ForgeChannel.writeStringToBuf(key, buf);
-            ForgeChannel.writeStringToBuf(this.copyrights.get(key), buf);
+            NetworkUtil.writeStringToBuf(key, buf);
+            NetworkUtil.writeStringToBuf(this.copyrights.get(key), buf);
         }
         buf.writeInt(this.minZoom);
         buf.writeInt(this.maxZoom);
         buf.writeInt(this.displayPriority);
         buf.writeBoolean(this.isAllowedOnMinimap);
-        ForgeChannel.writeStringToBuf(this.comment, buf);
+        NetworkUtil.writeStringToBuf(this.comment, buf);
         if (!this.backwardCompat) {
             buf.writeInt(this.maxConcurrentConnections);
-            ForgeChannel.writeStringArrayToByteBuf(this.urlPatterns, buf);
+            NetworkUtil.writeStringArrayToByteBuf(this.urlPatterns, buf);
             buf.writeBoolean(this.debug);
         }
     }

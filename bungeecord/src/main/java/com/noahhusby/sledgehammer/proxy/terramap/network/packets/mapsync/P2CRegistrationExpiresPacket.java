@@ -21,8 +21,7 @@
 package com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync;
 
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
-import com.noahhusby.sledgehammer.proxy.terramap.network.packets.IForgePacket;
-import io.netty.buffer.ByteBuf;
+import fr.thesmyler.bungee2forge.api.ForgePacket;import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 
@@ -34,7 +33,7 @@ import net.md_5.bungee.api.connection.Server;
  * @author SmylerMC
  * @see com.noahhusby.sledgehammer.proxy.terramap.RemoteSynchronizer
  */
-public class P2CRegistrationExpiresPacket implements IForgePacket {
+public class P2CRegistrationExpiresPacket implements ForgePacket {
 
     public P2CRegistrationExpiresPacket() {
     }
