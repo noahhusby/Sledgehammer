@@ -46,7 +46,6 @@ import java.util.List;
 public class TerrashowCommand extends Command implements TabExecutor {
 
     public static final String CMD_NAME = "terrashow";
-    public static final String USAGE = "/terrashow <show|hide|status> [playername (optional)]";
 
     private final TranslationContextBuilder translation;
 

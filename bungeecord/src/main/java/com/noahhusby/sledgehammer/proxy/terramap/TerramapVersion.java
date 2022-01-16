@@ -63,14 +63,14 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
     /**
      * Creates a new version object
      *
-     * @param majorTarget
-     * @param minorTarget
-     * @param buildTarget
-     * @param releaseType
-     * @param build
-     * @param revision
-     * @param devBuild
-     * @param mcVersion
+     * @param majorTarget major version number of the target version
+     * @param minorTarget minor version number of the target version
+     * @param buildTarget build version number of the target version
+     * @param releaseType release type (release, release candidate, beta, alpha, or development)
+     * @param build       build number of the release part specific part of the version
+     * @param revision    revision number of the release part specific part of the version
+     * @param devBuild    whether this is a development build
+     * @param mcVersion   the minecraft version String
      */
     public TerramapVersion(
             int majorTarget,
@@ -94,12 +94,12 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
     }
 
     /**
-     * @param majorTarget
-     * @param minorTarget
-     * @param buildTarget
-     * @param type
-     * @param build
-     * @param revision
+     * @param majorTarget major version number of the target version
+     * @param minorTarget minor version number of the target version
+     * @param buildTarget build version number of the target version
+     * @param type        release type (release, release candidate, beta, alpha, or development)
+     * @param build       build number of the release part specific part of the version
+     * @param revision    revision number of the release part specific part of the version
      */
     public TerramapVersion(int majorTarget, int minorTarget, int buildTarget, ReleaseType type, int build, int revision) {
         this(majorTarget, minorTarget, buildTarget, type, build, revision, false, "");
@@ -311,7 +311,7 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
             return buildComp;
         }
 
-        int typeComp = 0;
+        int typeComp = this.releaseType.priority - other.releaseType.priority;
         if (typeComp != 0) {
             return typeComp;
         }
@@ -366,8 +366,7 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
     }
     
     /**
-     * 
-     * @return
+     * @return whether this version depends on Terra++ or Terra121
      */
     public TerraDependency getTerraDependency() {
         if(this.isNewer(TerramapModule.OLDEST_TERRA121_TERRAMAP_VERSION)) {
@@ -378,7 +377,7 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
     }
 
     /**
-     * Get's the given player's Terramap version.
+     * Gets the given player's Terramap version.
      * The player needs to have logged onto a Forge server at least once for this to work.
      * If it's not the case then this will return null, even though that may be wrong.
      *
@@ -432,7 +431,7 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
 
         public final String MODID;
 
-        private TerraDependency(String modid) {
+        TerraDependency(String modid) {
             this.MODID = modid;
         }
     }

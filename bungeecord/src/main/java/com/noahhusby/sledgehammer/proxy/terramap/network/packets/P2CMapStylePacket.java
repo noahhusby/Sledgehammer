@@ -27,7 +27,6 @@ import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -52,6 +51,7 @@ public class P2CMapStylePacket implements ForgePacket {
     private boolean backwardCompat;
 
     public P2CMapStylePacket() {
+        // Needed so this class can be instanced by the channel in case someone sends us such a packet
     }
 
     public P2CMapStylePacket(MapStyle style) {

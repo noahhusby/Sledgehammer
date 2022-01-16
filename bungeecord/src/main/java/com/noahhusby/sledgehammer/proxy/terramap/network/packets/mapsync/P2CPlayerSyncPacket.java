@@ -48,6 +48,7 @@ public class P2CPlayerSyncPacket implements ForgePacket {
     }
 
     public P2CPlayerSyncPacket() {
+        // Needed so this class can be instanced by the channel in case someone sends us such a packet
         this.players = new SledgehammerPlayer[0];
     }
 

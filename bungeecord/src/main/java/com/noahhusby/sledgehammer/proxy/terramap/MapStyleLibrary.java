@@ -1,3 +1,22 @@
+/*
+ * MIT License
+ *
+ * Copyright 2020-2022 noahhusby
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
 package com.noahhusby.sledgehammer.proxy.terramap;
 
 import java.io.File;
@@ -18,7 +37,6 @@ import com.noahhusby.sledgehammer.proxy.Sledgehammer;
  *
  * @author SmylerMC
  */
-//TODO Better handling so errors are visible in /reloadmapstyles
 public class MapStyleLibrary {
 
     public static final String FILENAME = "terramap_user_styles.json";
@@ -103,7 +121,7 @@ public class MapStyleLibrary {
     /**
      * Set the map styles config file
      *
-     * @param file
+     * @param file the file to load the styles from
      */
     public static void setConfigMapFile(File file) {
         configMapsFile = file;
@@ -141,16 +159,16 @@ public class MapStyleLibrary {
         
         public MapStyle(String id, String[] urls, long version, String comment,
                 Map<String, String> name, Map<String, String> copyright, int min_zoom, int max_zoom,
-                int display_priority, boolean allow_on_minimap, int maxConcurentRequests, boolean debug) {
+                int display_priority, boolean allow_on_minimap, int maxConcurrentRequests, boolean debug) {
             Preconditions.checkArgument(urls.length > 0, "At least one url pattern needed");
             Preconditions.checkArgument(min_zoom >= 0, "Zoom level must be at least 0");
             Preconditions.checkArgument(max_zoom >= 0 && max_zoom <= 25, "Zoom level must be at most 25");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(id), "A valid map id needs to be provided");
             Preconditions.checkArgument(name != null, "Valid map names needs to be provided");
-            Preconditions.checkArgument(copyright != null, "Valid map coprights needs to be provided");
+            Preconditions.checkArgument(copyright != null, "Valid map copyrights needs to be provided");
             Preconditions.checkArgument(version >= 0, "Map version number must be positive");
             Preconditions.checkArgument(comment != null, "A valid map comment needs to be provided");
-            Preconditions.checkArgument(maxConcurentRequests > 0 ,"Max concurent downloads must be at least 1");
+            Preconditions.checkArgument(maxConcurrentRequests > 0 ,"Max concurrent downloads must be at least 1");
             this.id = id;
             this.urls = urls;
             this.version = version;
@@ -161,7 +179,7 @@ public class MapStyleLibrary {
             this.maxZoom = max_zoom;
             this.displayPriority = display_priority;
             this.allowOnMinimap = allow_on_minimap;
-            this.maxConcurrentRequests = maxConcurentRequests;
+            this.maxConcurrentRequests = maxConcurrentRequests;
             this.debug = debug;
         }
 
@@ -177,10 +195,6 @@ public class MapStyleLibrary {
             this.maps = new HashMap<>();
         }
 
-        MapStyleFile() {
-            this(new MapFileMetadata());
-        }
-
     }
 
     static class MapFileMetadata {
@@ -191,10 +205,6 @@ public class MapStyleLibrary {
         MapFileMetadata(long version, String comment) {
             this.comment = comment;
             this.version = version;
-        }
-
-        MapFileMetadata() {
-            this(0, "");
         }
 
     }

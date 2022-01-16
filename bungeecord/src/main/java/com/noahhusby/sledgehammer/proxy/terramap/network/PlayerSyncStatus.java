@@ -21,7 +21,7 @@
 package com.noahhusby.sledgehammer.proxy.terramap.network;
 
 /**
- * Indicates how a Terramap server or proxy supports player synchronization.
+ * Indicates how a Terramap server or proxy has support for player synchronization.
  *
  * @author SmylerMC
  */

@@ -21,14 +21,12 @@
 package com.noahhusby.sledgehammer.proxy.terramap;
 
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
-import com.noahhusby.sledgehammer.proxy.terramap.MapStyleLibrary.MapStyle;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.P2CMapStylePacket;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.P2CSledgehammerHelloPacket;
-import com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync.PlayerSyncStatus;
+import com.noahhusby.sledgehammer.proxy.terramap.network.PlayerSyncStatus;
 
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
-import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -65,8 +63,8 @@ public class TerramapModuleEventHandler implements Listener {
                 TerramapModule.instance.getProxyUUID()
         ), event.getPlayer());
         if (SledgehammerConfig.terramap.terramapSendCustomMapsToClient) {
-            for (P2CMapStylePacket packet : MapStyleRegistry.getMaps().values()) {
-                TerramapModule.instance.sledgehammerChannel.send(packet, event.getPlayer());
+            for (MapStyleLibrary.MapStyle map : MapStyleLibrary.getMaps().values()) {
+                TerramapModule.instance.sledgehammerChannel.send(new P2CMapStylePacket(map), event.getPlayer());
             }
         }
     }
@@ -76,12 +74,4 @@ public class TerramapModuleEventHandler implements Listener {
         TerramapModule.instance.synchronizer.unregisterPlayer(event.getPlayer());
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPluginMessage(PluginMessageEvent event) {
-        if (event.getTag().equals(TerramapModule.MAPSYNC_CHANNEL_NAME)) {
-            TerramapModule.instance.mapSyncChannel.process(event);
-        } else if (event.getTag().equals(TerramapModule.SLEDGEHAMMER_CHANNEL_NAME)) {
-            TerramapModule.instance.sledgehammerChannel.process(event);
-        }
-    }
 }
