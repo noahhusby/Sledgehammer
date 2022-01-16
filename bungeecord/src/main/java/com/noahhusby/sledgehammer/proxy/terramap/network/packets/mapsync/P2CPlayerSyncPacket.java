@@ -23,8 +23,8 @@ package com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
-import com.noahhusby.sledgehammer.proxy.terramap.network.ForgeChannel;
-import com.noahhusby.sledgehammer.proxy.terramap.network.packets.IForgePacket;
+import com.noahhusby.sledgehammer.proxy.terramap.network.NetworkUtil;
+import fr.thesmyler.bungee2forge.api.ForgePacket;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -39,7 +39,7 @@ import net.md_5.bungee.chat.ComponentSerializer;
  * @author SmylerMC
  * @see com.noahhusby.sledgehammer.proxy.terramap.RemoteSynchronizer
  */
-public class P2CPlayerSyncPacket implements IForgePacket {
+public class P2CPlayerSyncPacket implements ForgePacket {
 
     public final SledgehammerPlayer[] players;
 
@@ -48,6 +48,7 @@ public class P2CPlayerSyncPacket implements IForgePacket {
     }
 
     public P2CPlayerSyncPacket() {
+        // Needed so this class can be instanced by the channel in case someone sends us such a packet
         this.players = new SledgehammerPlayer[0];
     }
 
@@ -71,11 +72,11 @@ public class P2CPlayerSyncPacket implements IForgePacket {
             buf.writeLong(player.getUniqueId().getLeastSignificantBits());
             buf.writeLong(player.getUniqueId().getMostSignificantBits());
             String playerDisplayName = ComponentSerializer.toString(TextComponent.fromLegacyText(player.getDisplayName()));
-            ForgeChannel.writeStringToBuf(playerDisplayName, buf);
+            NetworkUtil.writeStringToBuf(playerDisplayName, buf);
             buf.writeDouble(coordinates[0]);
             buf.writeDouble(coordinates[1]);
             buf.writeFloat(azimuth);
-            ForgeChannel.writeStringToBuf(player.getGameMode().toString(), buf);
+            NetworkUtil.writeStringToBuf(player.getGameMode().toString(), buf);
         }
 
     }

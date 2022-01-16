@@ -25,7 +25,7 @@ import com.noahhusby.sledgehammer.proxy.commands.Command;
 import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.terramap.PlayerDisplayPreferences;
-import com.noahhusby.sledgehammer.proxy.terramap.TerramapAddon;
+import com.noahhusby.sledgehammer.proxy.terramap.TerramapModule;
 import com.noahhusby.sledgehammer.proxy.terramap.TerramapVersion;
 import com.noahhusby.sledgehammer.proxy.terramap.TerramapVersion.ReleaseType;
 import net.md_5.bungee.api.CommandSender;
@@ -46,12 +46,11 @@ import java.util.List;
 public class TerrashowCommand extends Command implements TabExecutor {
 
     public static final String CMD_NAME = "terrashow";
-    public static final String USAGE = "/terrashow <show|hide|status> [playername (optional)]";
 
     private final TranslationContextBuilder translation;
 
     public TerrashowCommand() {
-        super(CMD_NAME, TerramapAddon.TERRASHOW_BASE_PERMISSION_NODE);
+        super(CMD_NAME, TerramapModule.TERRASHOW_BASE_PERMISSION_NODE);
         this.translation = new TranslationContextBuilder()
                 .setMinimumVersion(new TerramapVersion(1, 0, 0, ReleaseType.BETA, 6, 3))
                 .addTranslation("terramap.commands.terrashow.usage", "/terrashow <show|hide|status> [player name (optional)]")
@@ -153,11 +152,11 @@ public class TerrashowCommand extends Command implements TabExecutor {
     }
 
     private boolean canPlayerHideOthers(ProxiedPlayer player) {
-        return player.hasPermission(TerramapAddon.TERRASHOW_OTHERS_PERMISSION_NODE) || PlayerHandler.getInstance().isAdmin(player);
+        return player.hasPermission(TerramapModule.TERRASHOW_OTHERS_PERMISSION_NODE) || PlayerHandler.getInstance().isAdmin(player);
     }
 
     private boolean canPlayerHideSelf(ProxiedPlayer player) {
-        return player.hasPermission(TerramapAddon.TERRASHOW_SELF_PERMISSION_NODE) || PlayerHandler.getInstance().isAdmin(player);
+        return player.hasPermission(TerramapModule.TERRASHOW_SELF_PERMISSION_NODE) || PlayerHandler.getInstance().isAdmin(player);
     }
 
     @Override

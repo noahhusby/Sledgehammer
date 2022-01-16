@@ -20,108 +20,92 @@
 
 package com.noahhusby.sledgehammer.proxy.terramap.network.packets;
 
-import com.noahhusby.sledgehammer.proxy.terramap.network.ForgeChannel;
+import com.noahhusby.sledgehammer.proxy.terramap.MapStyleLibrary.MapStyle;
+import com.noahhusby.sledgehammer.proxy.terramap.network.NetworkUtil;
+import fr.thesmyler.bungee2forge.api.ForgePacket;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Sent to players joining the network to give them access to this proxy's custom map styles.
  *
  * @author SmylerMC
- * @see com.noahhusby.sledgehammer.proxy.terramap.MapStyleRegistry
  */
-public class P2CMapStylePacket implements IForgePacket {
+public class P2CMapStylePacket implements ForgePacket {
 
-    public String id;
-    public long providerVersion;
-    public String urlPattern;
-    public Map<String, String> names;
-    public Map<String, String> copyrights;
-    public int minZoom;
-    public int maxZoom;
-    public int displayPriority;
-    public boolean isAllowedOnMinimap;
-    public String comment;
+    private String id;
+    private long providerVersion;
+    private String[] urlPatterns;
+    private Map<String, String> names;
+    private Map<String, String> copyrights;
+    private int minZoom;
+    private int maxZoom;
+    private int displayPriority;
+    private boolean isAllowedOnMinimap;
+    private String comment;
+    private int maxConcurrentConnections;
+    private boolean debug;
+    private boolean backwardCompat;
 
     public P2CMapStylePacket() {
+        // Needed so this class can be instanced by the channel in case someone sends us such a packet
     }
 
-    public P2CMapStylePacket(
-            String id,
-            long providerVersion,
-            String urlPattern,
-            Map<String, String> names,
-            Map<String, String> copyrights,
-            int minZoom,
-            int maxZoom,
-            int displayPriority,
-            boolean isAllowedOnMinimap,
-            String comment) {
-        this.id = id;
-        this.providerVersion = providerVersion;
-        this.urlPattern = urlPattern;
-        this.names = names;
-        this.copyrights = copyrights;
-        this.minZoom = minZoom;
-        this.maxZoom = maxZoom;
-        this.displayPriority = displayPriority;
-        this.isAllowedOnMinimap = isAllowedOnMinimap;
-        this.comment = comment;
+    public P2CMapStylePacket(MapStyle style) {
+        this(style, false); // We have no way to reliably know the client's TM version at the time we send the packet
+    }
+
+    public P2CMapStylePacket(MapStyle style, boolean backwardCompat) {
+        this.id = style.id;
+        this.providerVersion = style.version;
+        this.urlPatterns = style.urls;
+        this.names = style.name;
+        this.copyrights = style.copyright;
+        this.minZoom = style.minZoom;
+        this.maxZoom = style.maxZoom;
+        this.displayPriority = style.displayPriority;
+        this.isAllowedOnMinimap = style.allowOnMinimap;
+        this.comment = style.comment;
+        this.maxConcurrentConnections = style.maxConcurrentRequests;
+        this.debug = style.debug;
+        this.backwardCompat = backwardCompat;
     }
 
 
     @Override
     public void decode(ByteBuf buf) {
-        this.id = ForgeChannel.readStringFromBuf(buf);
-        this.providerVersion = buf.readLong();
-        this.urlPattern = ForgeChannel.readStringFromBuf(buf);
-        int nameCount = buf.readInt();
-        Map<String, String> names = new HashMap<>();
-        for (int i = 0; i < nameCount; i++) {
-            String key = ForgeChannel.readStringFromBuf(buf);
-            String name = ForgeChannel.readStringFromBuf(buf);
-            names.put(key, name);
-        }
-        this.names = names;
-        int copyrightCount = buf.readInt();
-        Map<String, String> copyrights = new HashMap<>();
-        for (int i = 0; i < copyrightCount; i++) {
-            String key = ForgeChannel.readStringFromBuf(buf);
-            String copyright = ForgeChannel.readStringFromBuf(buf);
-            copyrights.put(key, copyright);
-        }
-        this.copyrights = copyrights;
-        this.minZoom = buf.readInt();
-        this.maxZoom = buf.readInt();
-        this.displayPriority = buf.readInt();
-        this.isAllowedOnMinimap = buf.readBoolean();
-        this.comment = ForgeChannel.readStringFromBuf(buf);
+        // We shouldn't receive this, so we don't need to decode it if we do
     }
 
     @Override
     public void encode(ByteBuf buf) {
-        ForgeChannel.writeStringToBuf(this.id, buf);
+        NetworkUtil.writeStringToBuf(this.id, buf);
         buf.writeLong(this.providerVersion);
-        ForgeChannel.writeStringToBuf(this.urlPattern, buf);
+        String singleUrl = this.backwardCompat ? this.urlPatterns[0]: "";
+        NetworkUtil.writeStringToBuf(singleUrl, buf);
         buf.writeInt(this.names.size());
         for (String key : this.names.keySet()) {
-            ForgeChannel.writeStringToBuf(key, buf);
-            ForgeChannel.writeStringToBuf(this.names.get(key), buf);
+            NetworkUtil.writeStringToBuf(key, buf);
+            NetworkUtil.writeStringToBuf(this.names.get(key), buf);
         }
         buf.writeInt(this.copyrights.size());
         for (String key : this.copyrights.keySet()) {
-            ForgeChannel.writeStringToBuf(key, buf);
-            ForgeChannel.writeStringToBuf(this.copyrights.get(key), buf);
+            NetworkUtil.writeStringToBuf(key, buf);
+            NetworkUtil.writeStringToBuf(this.copyrights.get(key), buf);
         }
         buf.writeInt(this.minZoom);
         buf.writeInt(this.maxZoom);
         buf.writeInt(this.displayPriority);
         buf.writeBoolean(this.isAllowedOnMinimap);
-        ForgeChannel.writeStringToBuf(this.comment, buf);
+        NetworkUtil.writeStringToBuf(this.comment, buf);
+        if (!this.backwardCompat) {
+            buf.writeInt(this.maxConcurrentConnections);
+            NetworkUtil.writeStringArrayToByteBuf(this.urlPatterns, buf);
+            buf.writeBoolean(this.debug);
+        }
     }
 
     @Override

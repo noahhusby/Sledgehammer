@@ -189,11 +189,6 @@ public class SledgehammerConfig {
         public int terramapSyncTimeout = 120000;
 
         @Comment({
-                "If player sync is enabled, should players be displayed by default (true) or should they explicitly opt-in with /terrashow (false)"
-        })
-        public boolean terramapPlayersDisplayDefault = true;
-
-        @Comment({
                 "Set to false if you do not want to send custom maps to clients. This is only for testing, as if you don't want to send map styles to client, the first thing to do is to not configure any."
         })
         public boolean terramapSendCustomMapsToClient = true;

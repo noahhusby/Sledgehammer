@@ -38,7 +38,7 @@ import com.noahhusby.lib.data.storage.handlers.SQLStorageHandler;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
-import com.noahhusby.sledgehammer.proxy.terramap.MapStyleRegistry;
+import com.noahhusby.sledgehammer.proxy.terramap.MapStyleLibrary;
 import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -96,9 +96,9 @@ public class ConfigHandler {
         configuration.sync(SledgehammerConfig.class);
         SledgehammerConfig.validate();
         if (SledgehammerConfig.terramap.terramapEnabled) {
-            File customMaps = new File(dataFolder + "/" + MapStyleRegistry.FILENAME);
-            MapStyleRegistry.setConfigMapFile(customMaps);
-            MapStyleRegistry.loadFromConfigFile();
+            File customMaps = new File(dataFolder + "/" + MapStyleLibrary.FILENAME);
+            MapStyleLibrary.setConfigMapFile(customMaps);
+            MapStyleLibrary.loadFromConfigFile();
         }
         loadHandlers();
     }

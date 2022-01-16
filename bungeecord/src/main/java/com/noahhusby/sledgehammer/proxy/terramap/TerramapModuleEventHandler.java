@@ -23,10 +23,10 @@ package com.noahhusby.sledgehammer.proxy.terramap;
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.P2CMapStylePacket;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.P2CSledgehammerHelloPacket;
-import com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync.PlayerSyncStatus;
+import com.noahhusby.sledgehammer.proxy.terramap.network.PlayerSyncStatus;
+
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
-import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -37,7 +37,7 @@ import net.md_5.bungee.event.EventPriority;
  *
  * @author SmylerMC
  */
-public class TerramapAddonEventHandler implements Listener {
+public class TerramapModuleEventHandler implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPostLogin(PostLoginEvent event) {
@@ -53,33 +53,25 @@ public class TerramapAddonEventHandler implements Listener {
         String version = ProxyServer.getInstance().getPluginManager().getPlugin("Sledgehammer").getDescription().getVersion();
         boolean playerSync = SledgehammerConfig.terramap.terramapSyncPlayers && RemoteSynchronizer.hasSyncPermission(event.getPlayer());
         PlayerSyncStatus syncStatus = PlayerSyncStatus.getFromBoolean(playerSync);
-        TerramapAddon.instance.sledgehammerChannel.send(new P2CSledgehammerHelloPacket(
+        TerramapModule.instance.sledgehammerChannel.send(new P2CSledgehammerHelloPacket(
                 version,
                 syncStatus,
                 syncStatus,
                 SledgehammerConfig.terramap.terramapGlobalMap,
                 SledgehammerConfig.terramap.terramapGlobalSettings,
                 false, // We do not have warp support yet
-                TerramapAddon.instance.getProxyUUID()
+                TerramapModule.instance.getProxyUUID()
         ), event.getPlayer());
         if (SledgehammerConfig.terramap.terramapSendCustomMapsToClient) {
-            for (P2CMapStylePacket packet : MapStyleRegistry.getMaps().values()) {
-                TerramapAddon.instance.sledgehammerChannel.send(packet, event.getPlayer());
+            for (MapStyleLibrary.MapStyle map : MapStyleLibrary.getMaps().values()) {
+                TerramapModule.instance.sledgehammerChannel.send(new P2CMapStylePacket(map), event.getPlayer());
             }
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerLeave(PlayerDisconnectEvent event) {
-        TerramapAddon.instance.synchronizer.unregisterPlayer(event.getPlayer());
+        TerramapModule.instance.synchronizer.unregisterPlayer(event.getPlayer());
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPluginMessage(PluginMessageEvent event) {
-        if (event.getTag().equals(TerramapAddon.MAPSYNC_CHANNEL_NAME)) {
-            TerramapAddon.instance.mapSyncChannel.process(event);
-        } else if (event.getTag().equals(TerramapAddon.SLEDGEHAMMER_CHANNEL_NAME)) {
-            TerramapAddon.instance.sledgehammerChannel.process(event);
-        }
-    }
 }

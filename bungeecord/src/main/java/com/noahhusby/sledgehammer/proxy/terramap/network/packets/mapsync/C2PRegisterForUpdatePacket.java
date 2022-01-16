@@ -24,8 +24,8 @@ import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.terramap.RemoteSynchronizer;
-import com.noahhusby.sledgehammer.proxy.terramap.TerramapAddon;
-import com.noahhusby.sledgehammer.proxy.terramap.network.packets.IForgePacket;
+import com.noahhusby.sledgehammer.proxy.terramap.TerramapModule;
+import fr.thesmyler.bungee2forge.api.ForgePacket;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
@@ -36,7 +36,7 @@ import net.md_5.bungee.api.connection.Server;
  * @author SmylerMC
  * @see com.noahhusby.sledgehammer.proxy.terramap.RemoteSynchronizer
  */
-public class C2PRegisterForUpdatePacket implements IForgePacket {
+public class C2PRegisterForUpdatePacket implements ForgePacket {
 
     public boolean register;
 
@@ -64,10 +64,10 @@ public class C2PRegisterForUpdatePacket implements IForgePacket {
         SledgehammerPlayer player = PlayerHandler.getInstance().getPlayer(fromPlayer.getName());
         if (this.register) {
             if (RemoteSynchronizer.hasSyncPermission(player)) {
-                TerramapAddon.instance.synchronizer.registerPlayer(player);
+                TerramapModule.instance.synchronizer.registerPlayer(player);
             }
         } else {
-            TerramapAddon.instance.synchronizer.unregisterPlayer(player);
+            TerramapModule.instance.synchronizer.unregisterPlayer(player);
         }
         return true; // Do not send to server
     }

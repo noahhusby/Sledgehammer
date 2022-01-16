@@ -70,7 +70,7 @@ public class TranslationContextBuilder {
     /**
      * Creates a translation context for the given client using this builder's settings.
      *
-     * @param sender
+     * @param sender the sender that will receive messages from this context
      * @return a {@link TranslationContext} for the given client
      */
     public TranslationContext createContext(CommandSender sender) {
@@ -99,29 +99,29 @@ public class TranslationContextBuilder {
         }
 
         /**
-         * @return whether or not the client supports translation in this context
+         * @return whether the client supports translation in this context
          */
         public boolean doesSupportTranslation() {
             return this.remoteSupportsTranslation;
         }
 
         /**
-         * Indicates whether or not the client supports formatting.
+         * Indicates whether the client supports formatting.
          * A player supports text formatting, the proxy's console does not.
          *
-         * @return whether or not the client supports text formatting codes
+         * @return whether the client supports text formatting codes
          */
         public boolean doesSupportFormatting() {
             return this.remotePlayer != null; //i.e. not console
         }
 
         /**
-         * Indicate whether or not the given key would be translated by this context.
+         * Indicate whether the given key would be translated by this context.
          * It will only be so if this context has translated text for this key,
          * and the client cannot translate it by itself.
          *
          * @param key - The key to translate
-         * @return whether or not the given key will be translated
+         * @return whether the given key will be translated
          */
         public boolean willTranslateHere(String key) {
             return !this.remoteSupportsTranslation && TranslationContextBuilder.this.texts.containsKey(key);
@@ -143,7 +143,7 @@ public class TranslationContextBuilder {
         /**
          * Gets a text component for this key and format parameters.
          * This component will either be a {@link TranslatableComponent} or a translated {@link TextComponent}},
-         * depending the client capability to do translation by itself.
+         * depending on the client's capability to do translation by itself.
          *
          * @param key     - The key to translate
          * @param objects - format parameters

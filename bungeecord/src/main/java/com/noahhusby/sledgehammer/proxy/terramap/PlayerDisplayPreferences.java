@@ -29,27 +29,26 @@ import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
  */
 public final class PlayerDisplayPreferences {
 
-    private final static String SHOW_ATTRIBUTE = "TerraShow";
-    private final static String HIDE_ATTRIBUTE = "TerraHide";
+    private static final String TERRA_HIDE_ATTRIBUTE = "TERRA_HIDE";
 
     /**
      * Indicates if the player should be visible on the map to others
      *
-     * @param player - the player
+     * @param player the player
      * @return a boolean
      */
     public static boolean shouldDisplayPlayer(SledgehammerPlayer player) {
-        return !player.checkAttribute("TERRA_HIDE", false);
+        return !player.checkAttribute(TERRA_HIDE_ATTRIBUTE, true);
     }
 
     /**
-     * Set whether or not a player should be visible on the map to others
+     * Set whether a player should be visible on the map to others
      *
-     * @param player - the player
-     * @param yesNo
+     * @param player the player
+     * @param yesNo whether the player should be visible
      */
     public static void setShouldDisplayPlayer(SledgehammerPlayer player, boolean yesNo) {
-        player.getAttributes().put("TERRA_HIDE", !yesNo);
+        player.getAttributes().put(TERRA_HIDE_ATTRIBUTE, !yesNo);
     }
 
 }

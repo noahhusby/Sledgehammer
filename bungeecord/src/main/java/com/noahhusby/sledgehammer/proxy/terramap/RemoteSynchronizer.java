@@ -72,11 +72,11 @@ public class RemoteSynchronizer {
                 players2send2[i++] = player.player;
             }
             P2CPlayerSyncPacket pkt = new P2CPlayerSyncPacket(playersToSend.toArray(new SledgehammerPlayer[0]));
-            TerramapAddon.instance.mapSyncChannel.send(pkt, players2send2);
+            TerramapModule.instance.mapSyncChannel.send(pkt, players2send2);
             for (RegisteredForUpdatePlayer player : this.playersToUpdate.values()) {
                 if (ctime - player.lastRegisterTime > SledgehammerConfig.terramap.terramapSyncTimeout - 10000 && !player.noticeSent) {
                     Sledgehammer.logger.fine("Sending registration expires notice to " + player.player.getName());
-                    TerramapAddon.instance.mapSyncChannel.send(new P2CRegistrationExpiresPacket(), player.player);
+                    TerramapModule.instance.mapSyncChannel.send(new P2CRegistrationExpiresPacket(), player.player);
                     player.noticeSent = true;
                 }
             }
@@ -84,7 +84,7 @@ public class RemoteSynchronizer {
                 if (ctime - player.lastRegisterTime > SledgehammerConfig.terramap.terramapSyncTimeout) {
                     Sledgehammer.logger.fine("Unregistering " + player.player.getName() + " from map update as it did not renew its registration");
                     this.playersToUpdate.remove(player.player.getUniqueId());
-                    TerramapAddon.instance.mapSyncChannel.send(new P2CRegistrationExpiresPacket(), player.player);
+                    TerramapModule.instance.mapSyncChannel.send(new P2CRegistrationExpiresPacket(), player.player);
                 }
             }
         }
@@ -98,7 +98,7 @@ public class RemoteSynchronizer {
     public void registerPlayer(SledgehammerPlayer player) {
         Sledgehammer.logger.fine("Registering player for map updates: " + player.getName());
         synchronized (this.playersToUpdate) {
-            TerramapAddon.instance.synchronizer.playersToUpdate.put(player.getUniqueId(), new RegisteredForUpdatePlayer(player, System.currentTimeMillis()));
+            TerramapModule.instance.synchronizer.playersToUpdate.put(player.getUniqueId(), new RegisteredForUpdatePlayer(player, System.currentTimeMillis()));
         }
     }
 
@@ -110,7 +110,7 @@ public class RemoteSynchronizer {
     public void unregisterPlayer(ProxiedPlayer player) {
         Sledgehammer.logger.fine("Unregistering player for map updates: " + player.getName());
         synchronized (this.playersToUpdate) {
-            TerramapAddon.instance.synchronizer.playersToUpdate.remove(player.getUniqueId());
+            TerramapModule.instance.synchronizer.playersToUpdate.remove(player.getUniqueId());
         }
     }
 
@@ -124,7 +124,7 @@ public class RemoteSynchronizer {
     }
 
     public static boolean hasSyncPermission(ProxiedPlayer player) {
-        return player.hasPermission(TerramapAddon.PLAYER_SYNC_PERMISSION_NODE) || PlayerHandler.getInstance().isAdmin(player);
+        return player.hasPermission(TerramapModule.PLAYER_SYNC_PERMISSION_NODE) || PlayerHandler.getInstance().isAdmin(player);
     }
 
     private static class RegisteredForUpdatePlayer {

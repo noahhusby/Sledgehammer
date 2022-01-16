@@ -21,8 +21,9 @@
 package com.noahhusby.sledgehammer.proxy.terramap.network.packets;
 
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
-import com.noahhusby.sledgehammer.proxy.terramap.network.ForgeChannel;
-import com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync.PlayerSyncStatus;
+import com.noahhusby.sledgehammer.proxy.terramap.network.NetworkUtil;
+import com.noahhusby.sledgehammer.proxy.terramap.network.PlayerSyncStatus;
+import fr.thesmyler.bungee2forge.api.ForgePacket;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
@@ -42,12 +43,12 @@ import java.util.UUID;
  *
  * @author SmylerMC
  */
-public class P2CSledgehammerHelloPacket implements IForgePacket {
+public class P2CSledgehammerHelloPacket implements ForgePacket {
 
     public String version = "";
     public PlayerSyncStatus syncPlayers = PlayerSyncStatus.DISABLED;
     public PlayerSyncStatus syncSpectators = PlayerSyncStatus.DISABLED;
-    public boolean globalmap = true; // If true, the Terramap allows users to open the map on non-terra worlds
+    public boolean globalMap = true; // If true, Terramap allows users to open the map on non-terra worlds
     public boolean globalSettings = false; // Should settings and preferences be saved for the whole network (true) or per server (false)
     public boolean hasWarpSupport = false; // Do this server have warp support
     public UUID proxyUUID = new UUID(0, 0);
@@ -56,21 +57,22 @@ public class P2CSledgehammerHelloPacket implements IForgePacket {
         this.version = version;
         this.syncPlayers = syncPlayers;
         this.syncSpectators = syncSpectators;
-        this.globalmap = globalMap;
+        this.globalMap = globalMap;
         this.globalSettings = globalSettings;
         this.hasWarpSupport = hasWarpSupport;
         this.proxyUUID = proxyUUID;
     }
 
     public P2CSledgehammerHelloPacket() {
+        // Needed so this class can be instanced by the channel in case someone sends us such a packet
     }
 
     @Override
     public void encode(ByteBuf buf) {
-        ForgeChannel.writeStringToBuf(this.version, buf);
+        NetworkUtil.writeStringToBuf(this.version, buf);
         buf.writeByte(this.syncPlayers.VALUE);
         buf.writeByte(this.syncSpectators.VALUE);
-        buf.writeBoolean(this.globalmap);
+        buf.writeBoolean(this.globalMap);
         buf.writeBoolean(this.globalSettings);
         buf.writeBoolean(this.hasWarpSupport);
         buf.writeLong(this.proxyUUID.getLeastSignificantBits());
@@ -79,10 +81,10 @@ public class P2CSledgehammerHelloPacket implements IForgePacket {
 
     @Override
     public void decode(ByteBuf buf) {
-        this.version = ForgeChannel.readStringFromBuf(buf);
+        this.version = NetworkUtil.readStringFromBuf(buf);
         this.syncPlayers = PlayerSyncStatus.getFromNetworkCode(buf.readByte());
         this.syncSpectators = PlayerSyncStatus.getFromNetworkCode(buf.readByte());
-        this.globalmap = buf.readBoolean();
+        this.globalMap = buf.readBoolean();
         this.globalSettings = buf.readBoolean();
         this.hasWarpSupport = buf.readBoolean();
         long leastUUID = buf.readLong();
