@@ -30,6 +30,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -80,10 +81,12 @@ public class RemoteSynchronizer {
                     player.noticeSent = true;
                 }
             }
-            for (RegisteredForUpdatePlayer player : this.playersToUpdate.values()) {
+            Iterator<RegisteredForUpdatePlayer> iterator = this.playersToUpdate.values().iterator();
+            while(iterator.hasNext()) {
+                RegisteredForUpdatePlayer player = iterator.next();
                 if (ctime - player.lastRegisterTime > SledgehammerConfig.terramap.terramapSyncTimeout) {
                     Sledgehammer.logger.fine("Unregistering " + player.player.getName() + " from map update as it did not renew its registration");
-                    this.playersToUpdate.remove(player.player.getUniqueId());
+                    iterator.remove();
                     TerramapModule.instance.mapSyncChannel.send(new P2CRegistrationExpiresPacket(), player.player);
                 }
             }
