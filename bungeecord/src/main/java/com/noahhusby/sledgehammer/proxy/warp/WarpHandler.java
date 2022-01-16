@@ -37,6 +37,7 @@ import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
 import com.noahhusby.sledgehammer.proxy.network.p2s.P2SSetwarpPacket;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
+import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
 import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
@@ -47,6 +48,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -406,6 +408,12 @@ public class WarpHandler {
 
     private void refreshWarpGroupCache() {
         TreeMap<String, WarpGroup> temp = Maps.newTreeMap(String.CASE_INSENSITIVE_ORDER);
+        for (String server : ServerHandler.getInstance().getServers().keySet()) {
+            WarpGroup warpGroup = new WarpGroup();
+            warpGroup.setId(server);
+            warpGroup.setServers(Collections.singleton(server));
+            temp.put(server, warpGroup);
+        }
         for (WarpGroup group : warpGroups.values()) {
             for (String server : group.getServers()) {
                 temp.put(server, group);
