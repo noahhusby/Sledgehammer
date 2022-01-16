@@ -21,6 +21,7 @@
 package com.noahhusby.sledgehammer.common;
 
 import com.google.gson.Gson;
+import com.noahhusby.sledgehammer.common.exceptions.InvalidCoordinatesException;
 import com.noahhusby.sledgehammer.common.projection.GeographicProjection;
 import com.noahhusby.sledgehammer.common.projection.ModifiedAirocean;
 import com.noahhusby.sledgehammer.common.projection.ScaleProjection;
@@ -65,5 +66,32 @@ public abstract class CommonUtil {
      */
     public static GeographicProjection getBTEProjection() {
         return scaleProj;
+    }
+
+    public static double[] parseCoordinates(String[] c) throws InvalidCoordinatesException {
+        String[] splitCoords = c[0].split(",");
+        if (splitCoords.length == 2 && c.length < 3) { // lat and long in single arg
+            c = splitCoords;
+        }
+
+        if (c[0].endsWith(",")) {
+            c[0] = c[0].substring(0, c[0].length() - 1);
+        }
+        if (c.length > 1 && c[1].endsWith(",")) {
+            c[1] = c[1].substring(0, c[1].length() - 1);
+        }
+        if (c.length != 2 && c.length != 3) {
+            throw new InvalidCoordinatesException();
+        }
+
+        double[] coordinates = new double[2];
+
+        try {
+            coordinates[0] = Double.parseDouble(c[0]);
+            coordinates[1] = Double.parseDouble(c[1]);
+        } catch (Exception e) {
+            throw new InvalidCoordinatesException();
+        }
+        return coordinates;
     }
 }

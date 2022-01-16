@@ -21,6 +21,7 @@
 package com.noahhusby.sledgehammer.proxy.commands;
 
 import com.noahhusby.sledgehammer.common.TpllMode;
+import com.noahhusby.sledgehammer.common.exceptions.InvalidCoordinatesException;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.datasets.OpenStreetMaps;
@@ -98,70 +99,40 @@ public class TpllCommand extends Command {
                     }
                 }
 
-                String[] splitCoords = parseArgs[0].split(",");
-                if (splitCoords.length == 2 && parseArgs.length < 3) {
-                    parseArgs = splitCoords;
-                }
-                if (parseArgs[0].endsWith(",")) {
-                    parseArgs[0] = parseArgs[0].substring(0, parseArgs[0].length() - 1);
-                }
-                if (parseArgs.length > 1 && parseArgs[1].endsWith(",")) {
-                    parseArgs[1] = parseArgs[1].substring(0, parseArgs[1].length() - 1);
-                }
-                if (parseArgs.length != 2 && parseArgs.length != 3) {
-                    if (hasPerms(sender, "admin")) {
-                        adminUsage(sender);
-                    } else {
-                        regularUsage(sender);
-                    }
-                    return;
-                }
-
-                double lon;
-                double lat;
-
                 try {
-                    lat = Double.parseDouble(parseArgs[0]);
-                    lon = Double.parseDouble(parseArgs[1]);
-                } catch (Exception e) {
+                    double[] coordinates = SledgehammerUtil.parseCoordinates(parseArgs);
+                    ServerInfo server = OpenStreetMaps.getInstance().getServerFromLocation(coordinates[1], coordinates[0]);
+                    if (server == null) {
+                        sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "That location could not be found, or is not available on this server!"));
+                        return;
+                    }
+                    if (!hasPerms(sender, "admin") && !(hasPerms(sender, server.getName()) || hasPerms(sender, "all"))) {
+                        sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "You don't have permission to tpll to ", ChatColor.DARK_RED, sender.getName()));
+                        return;
+                    }
+                    if (SledgehammerUtil.getServerFromSender(recipient) != server) {
+                        if (!sender.getName().equals(recipient.getName())) {
+                            recipient.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "You were summoned to ",
+                                    ChatColor.RED, server.getName(), ChatColor.GRAY, " by ", ChatColor.DARK_RED, sender.getName()));
+                        } else {
+                            sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Sending you to ", ChatColor.RED, sender.getName()));
+                        }
+                        recipient.connect(server);
+                    }
+                    if (!recipient.equals(sender)) {
+                        recipient.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Teleporting to ", ChatColor.RED, String.format("%s, %s", coordinates[0], coordinates[1])));
+                    } else {
+                        sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Teleporting to ", ChatColor.RED, String.format("%s, %s", coordinates[0], coordinates[1])));
+                    }
+                    getNetworkManager().send(new P2SLocationPacket(recipient.getName(), server.getName(), coordinates));
+                    SledgehammerPlayer.getPlayer(sender).getAttributes().put("TPLL_FAILS", 0);
+                } catch (InvalidCoordinatesException e) {
                     if (hasPerms(sender, "admin")) {
                         adminUsage(sender);
                     } else {
                         regularUsage(sender);
                     }
-                    return;
                 }
-
-                ServerInfo server = OpenStreetMaps.getInstance().getServerFromLocation(lon, lat);
-
-                if (server == null) {
-                    sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "That location could not be found, or is not available on this server!"));
-                    return;
-                }
-
-                if (!hasPerms(sender, "admin") && !(hasPerms(sender, server.getName()) || hasPerms(sender, "all"))) {
-                    sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "You don't have permission to tpll to ", ChatColor.DARK_RED, sender.getName()));
-                    return;
-                }
-
-                if (SledgehammerUtil.getServerFromSender(recipient) != server) {
-                    if (!sender.getName().equals(recipient.getName())) {
-                        recipient.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "You were summoned to ",
-                                ChatColor.RED, server.getName(), ChatColor.GRAY, " by ", ChatColor.DARK_RED, sender.getName()));
-                    } else {
-                        sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Sending you to ", ChatColor.RED, sender.getName()));
-                    }
-                    recipient.connect(server);
-                }
-
-                if (!recipient.equals(sender)) {
-                    recipient.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Teleporting to ", ChatColor.RED, String.format("%s, %s", lat, lon)));
-                } else {
-                    sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Teleporting to ", ChatColor.RED, String.format("%s, %s", lat, lon)));
-                }
-                double[] geo = { lat, lon };
-                getNetworkManager().send(new P2SLocationPacket(recipient.getName(), server.getName(), geo));
-                SledgehammerPlayer.getPlayer(sender).getAttributes().put("TPLL_FAILS", 0);
                 return;
             }
             sender.sendMessage(ChatUtil.getNoPermission());

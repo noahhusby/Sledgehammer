@@ -20,7 +20,9 @@
 
 package com.noahhusby.sledgehammer.proxy.commands;
 
+import com.noahhusby.sledgehammer.common.exceptions.InvalidCoordinatesException;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.network.p2s.P2SLocationPacket;
 import com.noahhusby.sledgehammer.proxy.players.Permission;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
@@ -52,48 +54,20 @@ public class TplloCommand extends Command {
         CompletableFuture<Permission> permissionFuture = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.tpll");
         permissionFuture.thenAccept(permission -> {
             if (permission.isLocal()) {
-                String[] args = a;
-                if (args.length == 0) {
+                if (a.length == 0) {
                     sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "Usage: /tpllo <lat> <lon>"));
                     return;
                 }
-
-                String[] splitCoords = args[0].split(",");
-                if (splitCoords.length == 2 && args.length < 3) { // lat and long in single arg
-                    args = splitCoords;
-                }
-
-                if (args[0].endsWith(",")) {
-                    args[0] = args[0].substring(0, args[0].length() - 1);
-                }
-                if (args.length > 1 && args[1].endsWith(",")) {
-                    args[1] = args[1].substring(0, args[1].length() - 1);
-                }
-                if (args.length != 2 && args.length != 3) {
-                    sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "Usage: /tpllo <lat> <lon>"));
-                    return;
-                }
-
-                double lon;
-                double lat;
 
                 try {
-                    lat = Double.parseDouble(args[0]);
-                    lon = Double.parseDouble(args[1]);
-                } catch (Exception e) {
+                    double[] coordinates = SledgehammerUtil.parseCoordinates(a);
+                    ServerInfo server = ((ProxiedPlayer) sender).getServer().getInfo();
+                    sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "(Override) Teleporting to ",
+                            ChatColor.RED, String.format("%s, %s", coordinates[0], coordinates[1])));
+                    getNetworkManager().send(new P2SLocationPacket(sender.getName(), server.getName(), coordinates));
+                } catch (InvalidCoordinatesException e) {
                     sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "Usage: /tpllo <lat> <lon>"));
-                    return;
                 }
-
-                ServerInfo server = ((ProxiedPlayer) sender).getServer().getInfo();
-
-                sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "(Override) Teleporting to ",
-                        ChatColor.RED, String.format("%s, %s", lat, lon)));
-
-                double[] geo = { lat, lon };
-
-                getNetworkManager().send(new P2SLocationPacket(sender.getName(), server.getName(), geo));
-                return;
             }
             sender.sendMessage(ChatUtil.getNoPermission());
         });
