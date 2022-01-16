@@ -234,18 +234,17 @@ public class ConfigHandler {
                 }
                 warpGroups.registerHandler(mongoStorageHandler);
             }
-            serverData.loadAsync();
-            warpData.loadAsync();
-            attributeData.loadAsync();
-            warpGroups.loadAsync();
-            ProxyServer.getInstance().getScheduler().schedule(Sledgehammer.getInstance(), () -> {
-                serverData.saveAsync();
-                warpData.saveAsync();
-                attributeData.saveAsync();
-                warpGroups.saveAsync();
-            }, 5, TimeUnit.SECONDS);
         }
-
+        serverData.loadAsync();
+        warpData.loadAsync();
+        attributeData.loadAsync();
+        warpGroups.loadAsync();
+        ProxyServer.getInstance().getScheduler().schedule(Sledgehammer.getInstance(), () -> {
+            serverData.saveAsync();
+            warpData.saveAsync();
+            attributeData.saveAsync();
+            warpGroups.saveAsync();
+        }, 5, TimeUnit.SECONDS);
     }
 
     /**
