@@ -101,6 +101,7 @@ public class NetworkHandler implements Listener, Module {
      *
      * @param e {@link PluginMessageEvent}
      */
+    @SuppressWarnings("UnstableApiUsage")
     @EventHandler
     public void onIncomingPacket(PluginMessageEvent e) {
         if (!e.getTag().equalsIgnoreCase(Constants.serverChannel)) {

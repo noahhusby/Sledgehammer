@@ -80,21 +80,21 @@ public class TranslationContextBuilder {
     public class TranslationContext {
 
         private final ProxiedPlayer remotePlayer;
-        private final TerramapVersion remoteVersion;
         private final boolean remoteSupportsTranslation;
 
         private TranslationContext(CommandSender remote) {
+            TerramapVersion remoteVersion;
             if (remote instanceof ProxiedPlayer) {
                 this.remotePlayer = (ProxiedPlayer) remote;
-                this.remoteVersion = TerramapVersion.getClientVersion(this.remotePlayer);
+                remoteVersion = TerramapVersion.getClientVersion(this.remotePlayer);
             } else {
-                this.remoteVersion = null;
+                remoteVersion = null;
                 this.remotePlayer = null;
             }
             if (TranslationContextBuilder.this.minTranslationVersion == null) {
                 this.remoteSupportsTranslation = false;
             } else {
-                this.remoteSupportsTranslation = TranslationContextBuilder.this.minTranslationVersion.isOlderOrSame(this.remoteVersion);
+                this.remoteSupportsTranslation = TranslationContextBuilder.this.minTranslationVersion.isOlderOrSame(remoteVersion);
             }
         }
 

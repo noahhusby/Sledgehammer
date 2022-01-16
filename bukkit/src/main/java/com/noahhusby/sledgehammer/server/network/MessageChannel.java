@@ -65,6 +65,7 @@ public class MessageChannel implements PluginMessageListener {
         this.messageReceivers.add(consumer);
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] message) {
         if (!this.channel.equalsIgnoreCase(channel)) {
