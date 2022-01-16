@@ -21,10 +21,9 @@
 package com.noahhusby.sledgehammer.proxy.terramap;
 
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
+import com.noahhusby.sledgehammer.proxy.terramap.network.PlayerSyncStatus;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.P2CMapStylePacket;
 import com.noahhusby.sledgehammer.proxy.terramap.network.packets.P2CSledgehammerHelloPacket;
-import com.noahhusby.sledgehammer.proxy.terramap.network.PlayerSyncStatus;
-
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;

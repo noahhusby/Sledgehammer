@@ -20,13 +20,12 @@
 
 package com.noahhusby.sledgehammer.proxy.terramap;
 
-import java.util.Arrays;
-import java.util.Map;
-
 import com.google.common.base.Strings;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
-
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+
+import java.util.Arrays;
+import java.util.Map;
 
 /**
  * Represents a version of Terramap.
@@ -121,7 +120,7 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
      *                              See other constructors to safely create version numbers if you don't need to do it by parsing a version String.
      */
     public TerramapVersion(String versionString) throws InvalidVersionString {
-        if("${version}".equals(versionString)) {
+        if ("${version}".equals(versionString)) {
             this.majorTarget = this.minorTarget = this.buildTarget = this.build = this.revision = 0;
             this.devBuild = false;
             this.devRun = true;
@@ -130,60 +129,64 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
         } else {
             String[] versions = versionString.split("\\_");
             String mcVersion;
-            if(versions.length == 2) {
+            if (versions.length == 2) {
                 mcVersion = versions[1];
-            } else  if(versions.length == 1) {
+            } else if (versions.length == 1) {
                 mcVersion = "";
             } else {
                 throw new InvalidVersionString("Invalid version string " + versionString);
             }
             this.mcVersion = mcVersion;
             String[] parts = versions[0].split("-");
-            if(parts.length > 3) {
+            if (parts.length > 3) {
                 throw new InvalidVersionString("Invalid version string " + versionString);
             }
-            if(parts.length > 0) {
-                if("dev".equals(parts[parts.length - 1])) {
+            if (parts.length > 0) {
+                if ("dev".equals(parts[parts.length - 1])) {
                     this.devBuild = true;
                     parts = Arrays.copyOfRange(parts, 0, parts.length - 1);
                 } else {
                     this.devBuild = false;
                 }
                 String[] target = parts[0].split("\\.");
-                if(target.length != 3) throw new InvalidVersionString("Invalid target version " + parts[0]);
+                if (target.length != 3) {
+                    throw new InvalidVersionString("Invalid target version " + parts[0]);
+                }
                 devRun = false;
                 try {
                     this.majorTarget = Integer.parseInt(target[0]);
-                } catch(NumberFormatException e) {
+                } catch (NumberFormatException e) {
                     throw new InvalidVersionString("Invalid target major version: " + target[0]);
                 }
                 try {
                     this.minorTarget = Integer.parseInt(target[1]);
-                } catch(NumberFormatException e) {
+                } catch (NumberFormatException e) {
                     throw new InvalidVersionString("Invalid target minor version: " + target[1]);
                 }
                 try {
                     this.buildTarget = Integer.parseInt(target[2]);
-                } catch(NumberFormatException e) {
+                } catch (NumberFormatException e) {
                     throw new InvalidVersionString("Invalid target build version: " + target[2]);
                 }
-                if(parts.length > 1) {
-                    for(ReleaseType type: ReleaseType.values()) {
-                        if(type.equals(ReleaseType.RELEASE)) continue;
-                        if(parts[1].startsWith(type.name)) {
+                if (parts.length > 1) {
+                    for (ReleaseType type : ReleaseType.values()) {
+                        if (type.equals(ReleaseType.RELEASE)) {
+                            continue;
+                        }
+                        if (parts[1].startsWith(type.name)) {
                             this.releaseType = type;
                             parts[1] = parts[1].substring(type.name.length());
                             String[] build = parts[1].split("\\.");
-                            if(build.length > 0) {
+                            if (build.length > 0) {
                                 try {
                                     this.build = Integer.parseInt(build[0]);
-                                } catch(NumberFormatException e) {
+                                } catch (NumberFormatException e) {
                                     throw new InvalidVersionString("Invalid build version: " + build[0]);
                                 }
-                                if(build.length > 1) {
+                                if (build.length > 1) {
                                     try {
                                         this.revision = Integer.parseInt(build[1]);
-                                    } catch(NumberFormatException e) {
+                                    } catch (NumberFormatException e) {
                                         throw new InvalidVersionString("Invalid revision version: " + build[1]);
                                     }
                                 } else {
@@ -213,28 +216,28 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
     @Override
     public String toString() {
         String str = this.getTerramapVersionString();
-        if(!Strings.isNullOrEmpty(this.mcVersion)) {
+        if (!Strings.isNullOrEmpty(this.mcVersion)) {
             str += "_" + this.mcVersion;
         }
         return str;
     }
 
     public String getTerramapVersionString() {
-        if(this.isDev()) {
+        if (this.isDev()) {
             return "${version}";
         }
         String str = "";
         str += this.majorTarget;
         str += "." + this.minorTarget;
         str += "." + this.buildTarget;
-        if(!this.releaseType.equals(ReleaseType.RELEASE)) {
+        if (!this.releaseType.equals(ReleaseType.RELEASE)) {
             str += "-" + this.releaseType.name;
             str += this.build;
-            if(this.revision != 0) {
+            if (this.revision != 0) {
                 str += "." + this.revision;
             }
         }
-        if(this.devBuild) {
+        if (this.devBuild) {
             str += "-dev";
         }
         return str;
@@ -364,12 +367,12 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
     public boolean isOlder(TerramapVersion other) {
         return this.compareTo(other) < 0;
     }
-    
+
     /**
      * @return whether this version depends on Terra++ or Terra121
      */
     public TerraDependency getTerraDependency() {
-        if(this.isNewer(TerramapModule.OLDEST_TERRA121_TERRAMAP_VERSION)) {
+        if (this.isNewer(TerramapModule.OLDEST_TERRA121_TERRAMAP_VERSION)) {
             return TerraDependency.TERRAPLUSPLUS;
         } else {
             return TerraDependency.TERRA121;
@@ -419,12 +422,11 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
         }
 
     }
-    
+
     /**
      * Terramap's version dependent dependencies
-     * 
-     * @author SmylerMC
      *
+     * @author SmylerMC
      */
     public enum TerraDependency {
         TERRA121("terra121"), TERRAPLUSPLUS("terraplusplus");

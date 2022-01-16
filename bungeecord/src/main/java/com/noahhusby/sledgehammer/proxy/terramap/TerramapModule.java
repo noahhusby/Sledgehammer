@@ -20,9 +20,6 @@
 
 package com.noahhusby.sledgehammer.proxy.terramap;
 
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.modules.Module;
@@ -39,6 +36,9 @@ import fr.thesmyler.bungee2forge.api.ForgeChannelRegistry;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
+
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Main Terramap module class

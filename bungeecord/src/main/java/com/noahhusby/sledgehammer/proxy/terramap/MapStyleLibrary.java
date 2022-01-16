@@ -19,18 +19,18 @@
  */
 package com.noahhusby.sledgehammer.proxy.terramap;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.noahhusby.sledgehammer.proxy.Sledgehammer;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 
 /**
  * Handles loading map styles
@@ -94,14 +94,16 @@ public class MapStyleLibrary {
         }
         return styles;
     }
-    
+
     private static MapStyle readFromSaved(String id, SavedMapStyle style, long version, String comment) {
         String[] patterns = style.urls;
-        if(patterns == null || patterns.length <= 0) {
-            if(style.url != null) {
+        if (patterns == null || patterns.length <= 0) {
+            if (style.url != null) {
                 // This is a legacy source, it only has one url
-                patterns = new String[] {style.url};
-            } else throw new IllegalArgumentException("Could not find any valid url for map style " + id + "v" + version);
+                patterns = new String[]{ style.url };
+            } else {
+                throw new IllegalArgumentException("Could not find any valid url for map style " + id + "v" + version);
+            }
         }
         return new MapStyle(
                 id,
@@ -141,9 +143,9 @@ public class MapStyleLibrary {
         boolean debug;
 
     }
-    
+
     public static class MapStyle {
-        
+
         public final String id;
         public final String[] urls;
         public final long version;
@@ -154,12 +156,12 @@ public class MapStyleLibrary {
         public final int maxZoom;
         public final int displayPriority;
         public final boolean allowOnMinimap;
-        public final int maxConcurrentRequests ;
+        public final int maxConcurrentRequests;
         public final boolean debug;
-        
+
         public MapStyle(String id, String[] urls, long version, String comment,
-                Map<String, String> name, Map<String, String> copyright, int min_zoom, int max_zoom,
-                int display_priority, boolean allow_on_minimap, int maxConcurrentRequests, boolean debug) {
+                        Map<String, String> name, Map<String, String> copyright, int min_zoom, int max_zoom,
+                        int display_priority, boolean allow_on_minimap, int maxConcurrentRequests, boolean debug) {
             Preconditions.checkArgument(urls.length > 0, "At least one url pattern needed");
             Preconditions.checkArgument(min_zoom >= 0, "Zoom level must be at least 0");
             Preconditions.checkArgument(max_zoom >= 0 && max_zoom <= 25, "Zoom level must be at most 25");
@@ -168,7 +170,7 @@ public class MapStyleLibrary {
             Preconditions.checkArgument(copyright != null, "Valid map copyrights needs to be provided");
             Preconditions.checkArgument(version >= 0, "Map version number must be positive");
             Preconditions.checkArgument(comment != null, "A valid map comment needs to be provided");
-            Preconditions.checkArgument(maxConcurrentRequests > 0 ,"Max concurrent downloads must be at least 1");
+            Preconditions.checkArgument(maxConcurrentRequests > 0, "Max concurrent downloads must be at least 1");
             this.id = id;
             this.urls = urls;
             this.version = version;

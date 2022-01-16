@@ -24,7 +24,8 @@ import net.md_5.bungee.protocol.DefinedPacket;
 
 public class NetworkUtil {
 
-    private NetworkUtil() {}
+    private NetworkUtil() {
+    }
 
     /**
      * Encodes a String to a byte buffer using the [size (varint) | string (utf-8)] format
@@ -50,11 +51,13 @@ public class NetworkUtil {
      * Writes a String array to a buffer by writing the size of the array as a varint followed by the strings themselves
      *
      * @param strings an array of Strings to write to the buffer
-     * @param buf a buffer to write to
+     * @param buf     a buffer to write to
      */
     public static void writeStringArrayToByteBuf(String[] strings, ByteBuf buf) {
         DefinedPacket.writeVarInt(strings.length, buf);
-        for(String str: strings) DefinedPacket.writeString(str, buf);
+        for (String str : strings) {
+            DefinedPacket.writeString(str, buf);
+        }
     }
 
 }

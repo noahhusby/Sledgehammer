@@ -45,7 +45,7 @@ public final class PlayerDisplayPreferences {
      * Set whether a player should be visible on the map to others
      *
      * @param player the player
-     * @param yesNo whether the player should be visible
+     * @param yesNo  whether the player should be visible
      */
     public static void setShouldDisplayPlayer(SledgehammerPlayer player, boolean yesNo) {
         player.getAttributes().put(TERRA_HIDE_ATTRIBUTE, !yesNo);

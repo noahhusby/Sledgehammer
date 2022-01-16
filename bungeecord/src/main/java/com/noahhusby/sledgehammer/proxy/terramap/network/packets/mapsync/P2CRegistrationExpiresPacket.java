@@ -21,7 +21,8 @@
 package com.noahhusby.sledgehammer.proxy.terramap.network.packets.mapsync;
 
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
-import fr.thesmyler.bungee2forge.api.ForgePacket;import io.netty.buffer.ByteBuf;
+import fr.thesmyler.bungee2forge.api.ForgePacket;
+import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 

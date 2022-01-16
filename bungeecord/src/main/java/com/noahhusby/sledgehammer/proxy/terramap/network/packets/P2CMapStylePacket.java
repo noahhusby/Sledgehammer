@@ -84,7 +84,7 @@ public class P2CMapStylePacket implements ForgePacket {
     public void encode(ByteBuf buf) {
         NetworkUtil.writeStringToBuf(this.id, buf);
         buf.writeLong(this.providerVersion);
-        String singleUrl = this.backwardCompat ? this.urlPatterns[0]: "";
+        String singleUrl = this.backwardCompat ? this.urlPatterns[0] : "";
         NetworkUtil.writeStringToBuf(singleUrl, buf);
         buf.writeInt(this.names.size());
         for (String key : this.names.keySet()) {
