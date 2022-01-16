@@ -133,14 +133,25 @@ public class WarpHandler {
         NetworkHandler.getInstance().send(new P2SSetwarpPacket(sender.getName(), SledgehammerUtil.getServerFromSender(sender)));
     }
 
-    public void removeWarp(int warpID, CommandSender sender) {
-        Warp warp = warps.remove(warpID);
+    /**
+     * Removes a warp by its id.
+     *
+     * @param id ID of warp
+     * @return True if warp was removed, false if warp didn't exist
+     */
+    public boolean removeWarp(int id) {
+        Warp warp = warps.remove(id);
         if (warp == null) {
-            return;
+            return false;
         }
-        sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Successfully removed ",
-                ChatColor.RED, warp.getName(), ChatColor.GRAY, " from ", ChatColor.BLUE, warp.getServer()));
+        for (WarpGroup group : warpGroups.values()) {
+            if (group.getWarps().contains(id)) {
+                group.getWarps().remove(id);
+            }
+        }
         warps.saveAsync();
+        warpGroups.save();
+        return true;
     }
 
     /**

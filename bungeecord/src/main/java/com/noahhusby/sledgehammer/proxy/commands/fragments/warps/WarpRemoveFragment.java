@@ -75,7 +75,11 @@ public class WarpRemoveFragment implements ICommandFragment {
         }
 
         if (warps.size() == 1) {
-            WarpHandler.getInstance().removeWarp(warps.get(0).getId(), sender);
+            Warp warp = warps.get(0);
+            if (WarpHandler.getInstance().removeWarp(warp.getId())) {
+                sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Successfully removed ",
+                        ChatColor.RED, warp.getName(), ChatColor.GRAY, " from ", ChatColor.BLUE, warp.getServer()));
+            }
             return;
         }
 
@@ -104,8 +108,11 @@ public class WarpRemoveFragment implements ICommandFragment {
             return;
         }
 
-        int val = Integer.parseInt(args[1]);
-        WarpHandler.getInstance().removeWarp(warps.get(val).getId(), sender);
+        Warp warp = warps.get(Integer.parseInt(args[1]));
+        if (WarpHandler.getInstance().removeWarp(warp.getId())) {
+            sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Successfully removed ",
+                    ChatColor.RED, warp.getName(), ChatColor.GRAY, " from ", ChatColor.BLUE, warp.getServer()));
+        }
     }
 
     @Override
