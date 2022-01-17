@@ -37,7 +37,6 @@ import com.noahhusby.sledgehammer.proxy.players.FlaggedBorderCheckerThread;
 import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
 import com.noahhusby.sledgehammer.proxy.terramap.TerramapModule;
 import lombok.Getter;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -66,14 +65,6 @@ public class Sledgehammer extends Plugin implements Listener {
         ConfigHandler.getInstance().init(getDataFolder());
         ModuleHandler.getInstance().registerModules(PlayerHandler.getInstance(), NetworkHandler.getInstance(), OpenStreetMaps.getInstance());
         ConfigHandler.getInstance().load();
-
-        if (!ConfigHandler.getInstance().isAuthenticationConfigured()) {
-            ChatUtil.sendMessageBox(ProxyServer.getInstance().getConsole(), ChatColor.DARK_RED + "WARNING", ChatUtil.combine(ChatColor.RED,
-                    "The sledgehammer authentication code is not configured, or is configured incorrectly.\n" +
-                    "Please generate a valid authentication code using https://www.uuidgenerator.net/version4\n"
-                    + "Most Sledgehammer features will now be disabled."));
-            return;
-        }
 
         // Manual module handling
         if (SledgehammerConfig.terramap.terramapEnabled && (TerramapModule.instance == null || !ModuleHandler.getInstance().getModules().containsKey(TerramapModule.instance))) {

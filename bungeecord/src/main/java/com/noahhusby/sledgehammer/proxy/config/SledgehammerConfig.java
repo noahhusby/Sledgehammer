@@ -43,10 +43,6 @@ public class SledgehammerConfig {
     @SuppressWarnings("CanBeFinal")
     public static class GeneralOptions {
         @Comment({
-                "All corresponding sledgehammer clients must have the same code",
-                "Don't share this key with anyone you don't trust as it will allow anybody to run any command on connected servers." })
-        public String authenticationCode = UUID.randomUUID().toString();
-        @Comment({
                 "The prefix of messages broadcast to players from the proxy."
         })
         public String messagePrefix = "&9&lBTE &8&l> ";

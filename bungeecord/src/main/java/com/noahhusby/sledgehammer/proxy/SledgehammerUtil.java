@@ -22,7 +22,6 @@ package com.noahhusby.sledgehammer.proxy;
 
 import com.google.common.collect.Lists;
 import com.noahhusby.sledgehammer.common.CommonUtil;
-import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import lombok.NonNull;
@@ -83,21 +82,6 @@ public class SledgehammerUtil extends CommonUtil {
         }
         double[] geo = toGeo(player.getLocation().getX(), player.getLocation().getZ());
         return !(geo == null || geo.length < 1 || Double.isNaN(geo[0]) || Double.isNaN(geo[1]));
-    }
-
-    /**
-     * Checks if an incoming request matches the Sledgehammer authentication code
-     *
-     * @param u The incoming authentication code
-     * @return True if codes math, false if not
-     */
-    public static boolean isGenuineRequest(String u) {
-        try {
-            return u.equals(SledgehammerConfig.general.authenticationCode);
-        } catch (Exception e) {
-            Sledgehammer.logger.info("Error occurred while parsing incoming authentication command!");
-            return false;
-        }
     }
 
     /**

@@ -82,7 +82,7 @@ public class RemoteSynchronizer {
                 }
             }
             Iterator<RegisteredForUpdatePlayer> iterator = this.playersToUpdate.values().iterator();
-            while(iterator.hasNext()) {
+            while (iterator.hasNext()) {
                 RegisteredForUpdatePlayer player = iterator.next();
                 if (ctime - player.lastRegisterTime > SledgehammerConfig.terramap.terramapSyncTimeout) {
                     Sledgehammer.logger.fine("Unregistering " + player.player.getName() + " from map update as it did not renew its registration");

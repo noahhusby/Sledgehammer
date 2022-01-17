@@ -107,11 +107,6 @@ public class ChatUtil {
         return titleAndCombine(ChatColor.RED, "That is not a valid location in the projection!");
     }
 
-    public static void sendAuthCodeWarning(CommandSender sender) {
-        sendMessageBox(sender, ChatColor.DARK_RED + "Warning", combine(ChatColor.RED, "The sledgehammer authentication code is not properly configured. " +
-                                                                                      "Please check the console for more details!\n", ChatColor.GRAY, "Most sledgehammer features will be disabled"));
-    }
-
     public static TextComponent getValueMessage(String key, String value, String where) {
         return adminAndCombine(ChatColor.GRAY, "set value ", ChatColor.GOLD, key, ChatColor.GRAY,
                 " to ", ChatColor.RED, value, ChatColor.GRAY, " on ", ChatColor.GOLD, where);

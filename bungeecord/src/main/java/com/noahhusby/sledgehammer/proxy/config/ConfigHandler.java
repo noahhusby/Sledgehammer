@@ -46,7 +46,6 @@ import net.md_5.bungee.api.ProxyServer;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 
 public class ConfigHandler {
     private static ConfigHandler instance = null;
@@ -245,16 +244,6 @@ public class ConfigHandler {
             attributeData.saveAsync();
             warpGroups.saveAsync();
         }, 5, TimeUnit.SECONDS);
-    }
-
-    /**
-     * Gets whether the authentication code is configured correctly
-     *
-     * @return True if configured correctly, false if not
-     */
-    public boolean isAuthenticationConfigured() {
-        Pattern p = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
-        return p.matcher(SledgehammerConfig.general.authenticationCode).matches();
     }
 
     /**
