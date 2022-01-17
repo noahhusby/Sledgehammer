@@ -490,6 +490,19 @@ public class SledgehammerPlayer implements ProxiedPlayer {
     }
 
     /**
+     * Checks if player is within a build region
+     *
+     * @return True if they are within the region, false if not
+     */
+    public boolean inEarthRegion() {
+        if (getLocation() == null) {
+            return false;
+        }
+        double[] geo = SledgehammerUtil.toGeo(getLocation().getX(), getLocation().getZ());
+        return !(geo == null || geo.length < 1 || Double.isNaN(geo[0]) || Double.isNaN(geo[1]));
+    }
+
+    /**
      * Creates a one time use tracking code
      *
      * @return Tracking Salt Code

@@ -23,7 +23,7 @@ package com.noahhusby.sledgehammer.server.network;
 import com.google.gson.JsonObject;
 
 public abstract class S2PPacket {
-    public NetworkHandler getManager() {
+    public NetworkHandler getHandler() {
         return NetworkHandler.getInstance();
     }
 

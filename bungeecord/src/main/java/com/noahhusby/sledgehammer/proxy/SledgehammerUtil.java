@@ -71,20 +71,6 @@ public class SledgehammerUtil extends CommonUtil {
     }
 
     /**
-     * Checks if player is within a build region
-     *
-     * @param player The player
-     * @return True if they are within the region, false if not
-     */
-    public static boolean inEarthRegion(SledgehammerPlayer player) {
-        if (player == null || player.getLocation() == null) {
-            return false;
-        }
-        double[] geo = toGeo(player.getLocation().getX(), player.getLocation().getZ());
-        return !(geo == null || geo.length < 1 || Double.isNaN(geo[0]) || Double.isNaN(geo[1]));
-    }
-
-    /**
      * Gets a space seperated string from an array
      *
      * @param args A string array

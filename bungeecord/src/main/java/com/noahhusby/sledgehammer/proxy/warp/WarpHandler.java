@@ -57,25 +57,22 @@ import java.util.function.Consumer;
 
 public class WarpHandler {
     private static WarpHandler instance;
-
-    public static WarpHandler getInstance() {
-        return instance == null ? instance = new WarpHandler() : instance;
-    }
-
     @Getter
     private final StorageHashMap<Integer, Warp> warps = new StorageHashMap<>(Integer.class, Warp.class);
-
     @Getter
     private final StorageHashMap<String, WarpGroup> warpGroups = new StorageHashMap<>(String.class, WarpGroup.class);
-
-    @Getter
-    private TreeMap<String, WarpGroup> warpGroupByServer = Maps.newTreeMap(String.CASE_INSENSITIVE_ORDER);
     private final Map<UUID, Warp> warpRequests = Maps.newHashMap();
     private final Map<Warp, Consumer<Warp>> warpConsumers = Maps.newHashMap();
+    @Getter
+    private TreeMap<String, WarpGroup> warpGroupByServer = Maps.newTreeMap(String.CASE_INSENSITIVE_ORDER);
 
     private WarpHandler() {
         warpGroups.onLoadEvent(this::refreshWarpGroupCache);
         warpGroups.onSaveEvent(this::refreshWarpGroupCache);
+    }
+
+    public static WarpHandler getInstance() {
+        return instance == null ? instance = new WarpHandler() : instance;
     }
 
     /**
