@@ -85,7 +85,7 @@ public class WarpCommand extends WarpFragmentManager implements TabExecutor {
 
     private void run(CommandSender sender, String[] args) {
         if (args.length == 0) {
-            if (SledgehammerConfig.warps.warpMenuDefault) {
+            if (SledgehammerConfig.warps.guiMenuDefault) {
                 SledgehammerServer server = SledgehammerPlayer.getPlayer(sender).getSledgehammerServer();
                 boolean openGUI = (server != null);
 

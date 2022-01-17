@@ -46,19 +46,15 @@ public class S2PWarpPacket extends S2PPacket {
             return;
         }
         int warpId = data.get("warpId").getAsInt();
-
         Warp warp = WarpHandler.getInstance().getWarp(warpId);
-
         if (warp == null) {
             player.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "That warp does not exist!"));
             return;
         }
-
         if (SledgehammerUtil.getServerFromSender(player) != SledgehammerUtil.getServerByName(warp.getServer())) {
             player.connect(SledgehammerUtil.getServerByName(warp.getServer()));
             player.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Sending you to ", ChatColor.RED, warp.getServer()));
         }
-
         player.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Warping to ", ChatColor.RED, warp.getName()));
         NetworkHandler.getInstance().send(new P2STeleportPacket(player.getName(), warp.getServer(), warp.getPoint()));
     }

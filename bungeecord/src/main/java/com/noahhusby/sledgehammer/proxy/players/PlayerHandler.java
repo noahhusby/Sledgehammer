@@ -70,12 +70,10 @@ public class PlayerHandler implements Listener, Module {
      */
     private SledgehammerPlayer onPlayerJoin(ProxiedPlayer p) {
         SledgehammerPlayer newPlayer = new SledgehammerPlayer(p);
-
         Attribute attribute = attributes.get(p.getUniqueId());
         if (attribute != null) {
             newPlayer.setAttributes(attribute.getAttributes());
         }
-
         players.put(newPlayer.getUniqueId(), newPlayer);
         return newPlayer;
     }

@@ -114,7 +114,7 @@ public class SledgehammerConfig {
         public String warpCommand = "nwarp";
 
         @Comment({
-                "Local warp allows for each individual server to set their own warps.",
+                "Local warp allows for each individual server (or group) to set their own warps.",
                 "Standard warp [false] is a shared pool of warps for the entire network.",
                 "All warps are accessible regardless of warp mode."
         })
@@ -124,7 +124,7 @@ public class SledgehammerConfig {
                 "This will open the interactive GUI by default when the warp command is called.",
                 "Otherwise `/[warp command] menu` is required to open the menu."
         })
-        public boolean warpMenuDefault = false;
+        public boolean guiMenuDefault = false;
 
         @Comment({
                 "This is the main page that will be shown upon the warp menu opening.",
