@@ -88,25 +88,25 @@ public class OpenStreetMaps implements Module {
                 switch (l.detailType) {
                     case city:
                         if (l.compare(location, Location.Detail.city)) {
-                            serverInfoMap.put(l.detailType, s.getServerInfo());
+                            serverInfoMap.put(l.detailType, s.getInfo());
                             continue;
                         }
                         break;
                     case county:
                         if (l.compare(location, Location.Detail.county)) {
-                            serverInfoMap.put(l.detailType, s.getServerInfo());
+                            serverInfoMap.put(l.detailType, s.getInfo());
                             continue;
                         }
                         break;
                     case state:
                         if (l.compare(location, Location.Detail.state)) {
-                            serverInfoMap.put(l.detailType, s.getServerInfo());
+                            serverInfoMap.put(l.detailType, s.getInfo());
                             continue;
                         }
                         break;
                     case country:
                         if (l.compare(location, Location.Detail.country)) {
-                            serverInfoMap.put(l.detailType, s.getServerInfo());
+                            serverInfoMap.put(l.detailType, s.getInfo());
                             continue;
                         }
                         break;

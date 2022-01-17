@@ -64,7 +64,7 @@ public class ServerHandler implements Listener {
             s = new SledgehammerServer(name);
             addServer(s);
         }
-        s.initialize(version);
+        s.setSledgehammerVersion(version);
     }
 
     /**
@@ -97,9 +97,9 @@ public class ServerHandler implements Listener {
     public void removeServer(SledgehammerServer server) {
         servers.remove(server.getName());
         WarpHandler.getInstance().getWarpGroups().values()
-                                .stream()
-                                .filter(g -> g.getServers().contains(server.getName()))
-                                .forEach(g -> g.getServers().remove(server.getName()));
+                .stream()
+                .filter(g -> g.getServers().contains(server.getName()))
+                .forEach(g -> g.getServers().remove(server.getName()));
         servers.saveAsync();
     }
 

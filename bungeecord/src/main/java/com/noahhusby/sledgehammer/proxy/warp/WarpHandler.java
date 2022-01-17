@@ -320,7 +320,7 @@ public class WarpHandler {
             return null;
         }
         String requestGroup = null;
-        WarpGroup group = warpGroupByServer.get(s.getServerInfo().getName());
+        WarpGroup group = warpGroupByServer.get(s.getInfo().getName());
         if (group != null) {
             requestGroup = group.getId();
         }

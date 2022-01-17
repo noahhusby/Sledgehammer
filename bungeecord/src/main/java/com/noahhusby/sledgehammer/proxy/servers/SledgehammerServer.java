@@ -35,47 +35,29 @@ import java.util.List;
 
 @Key("name")
 @Getter
+@Setter
 public class SledgehammerServer {
     @Expose
-    private String name;
+    private final String name;
     @Expose
-    @Setter
     private String nick;
     @Expose
-    @Setter
     private boolean earthServer;
     @Expose
-    @Setter
     private List<Location> locations = new ArrayList<>();
     @Expose
-    @Setter
     private int xOffset;
     @Expose
-    @Setter
     private int zOffset;
     @Expose
-    @Setter
     private boolean stealthMode;
     @Expose
-    @Setter
     private TpllMode tpllMode = TpllMode.NORMAL;
     private SledgehammerVersion sledgehammerVersion = null;
-
-    public SledgehammerServer() {
-    }
 
     public SledgehammerServer(String name) {
         this.name = name;
         this.nick = name;
-    }
-
-    /**
-     * Initializes server from init packet
-     *
-     * @param version Sledgehammer Version
-     */
-    public void initialize(SledgehammerVersion version) {
-        this.sledgehammerVersion = version;
     }
 
     /**
@@ -92,7 +74,7 @@ public class SledgehammerServer {
      *
      * @return {@link ServerInfo}
      */
-    public ServerInfo getServerInfo() {
+    public ServerInfo getInfo() {
         return ProxyServer.getInstance().getServerInfo(name);
     }
 }
