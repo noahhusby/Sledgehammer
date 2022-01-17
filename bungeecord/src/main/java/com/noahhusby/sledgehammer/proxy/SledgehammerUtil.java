@@ -31,6 +31,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -77,17 +78,9 @@ public class SledgehammerUtil extends CommonUtil {
      * @return The space seperated String
      */
     public static String getRawArguments(String[] args) {
-        if (args.length == 0) {
-            return "";
-        }
-        if (args.length == 1) {
-            return args[0];
-        }
-        StringBuilder arguments = new StringBuilder(args[0]);
-        for (int x = 1; x < args.length; x++) {
-            arguments.append(" ").append(args[x]);
-        }
-        return arguments.toString();
+        StringBuilder builder = new StringBuilder();
+        Arrays.stream(args).forEach(s -> builder.append(" ").append(s));
+        return builder.toString().trim();
     }
 
     /**
@@ -113,7 +106,6 @@ public class SledgehammerUtil extends CommonUtil {
                 collection.add(string);
             }
         }
-
         return collection;
     }
 
