@@ -86,17 +86,15 @@ public class WarpHandler {
      */
     public List<Warp> getWarps(String name) {
         List<Warp> lw = Lists.newArrayList();
-        for (Warp w : warps.values()) {
-            if (w.getName().equalsIgnoreCase(name)) {
-                lw.add(w);
-            }
-        }
-
+        warps.values()
+                .stream()
+                .filter(w -> w.getName().equalsIgnoreCase(name))
+                .forEach(lw::add);
         return lw;
     }
 
     /**
-     * Gets a warp by it's ID
+     * Gets a warp by its ID
      *
      * @param id Warp ID
      * @return {@link Warp} if exists, null if not.
@@ -144,11 +142,10 @@ public class WarpHandler {
         if (warp == null) {
             return false;
         }
-        for (WarpGroup group : warpGroups.values()) {
-            if (group.getWarps().contains(id)) {
-                group.getWarps().remove(id);
-            }
-        }
+        warpGroups.values()
+                .stream()
+                .filter(g -> g.getWarps().contains(id))
+                .forEach(g -> g.getWarps().remove(id));
         warps.saveAsync();
         warpGroups.save();
         return true;

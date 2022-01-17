@@ -26,6 +26,7 @@ import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.datasets.Location;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
 import com.noahhusby.sledgehammer.proxy.network.p2s.P2SInitializationPacket;
+import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -61,11 +62,7 @@ public class ServerHandler implements Listener {
         SledgehammerServer s = getServer(name);
         if (s == null) {
             s = new SledgehammerServer(name);
-            servers.put(name, s);
-            servers.saveAsync();
-        }
-        if (s.isInitialized()) {
-            return;
+            addServer(s);
         }
         s.initialize(version);
     }
@@ -77,12 +74,8 @@ public class ServerHandler implements Listener {
      */
     public LinkedList<ServerInfo> getBungeeServers() {
         LinkedList<ServerInfo> bungeeServers = new LinkedList<>();
-
         Map<String, ServerInfo> serversTemp = ProxyServer.getInstance().getServers();
-        for (Map.Entry<String, ServerInfo> s : serversTemp.entrySet()) {
-            bungeeServers.add(s.getValue());
-        }
-
+        serversTemp.forEach((key, value) -> bungeeServers.add(value));
         return bungeeServers;
     }
 
@@ -103,6 +96,10 @@ public class ServerHandler implements Listener {
      */
     public void removeServer(SledgehammerServer server) {
         servers.remove(server.getName());
+        WarpHandler.getInstance().getWarpGroups().values()
+                                .stream()
+                                .filter(g -> g.getServers().contains(server.getName()))
+                                .forEach(g -> g.getServers().remove(server.getName()));
         servers.saveAsync();
     }
 
