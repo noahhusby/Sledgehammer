@@ -20,7 +20,7 @@
 
 package com.noahhusby.sledgehammer.proxy.dialogs.scenes.location;
 
-import com.noahhusby.sledgehammer.proxy.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.utils.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.datasets.Location;
 import com.noahhusby.sledgehammer.proxy.dialogs.DialogHandler;
 import com.noahhusby.sledgehammer.proxy.dialogs.scenes.DialogScene;

@@ -21,7 +21,7 @@
 package com.noahhusby.sledgehammer.proxy.dialogs;
 
 import com.google.common.collect.Maps;
-import com.noahhusby.sledgehammer.proxy.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.utils.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.dialogs.scenes.IDialogScene;
 import net.md_5.bungee.api.ChatColor;

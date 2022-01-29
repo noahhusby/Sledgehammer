@@ -35,9 +35,13 @@ import com.noahhusby.lib.data.storage.Storage;
 import com.noahhusby.lib.data.storage.handlers.LocalStorageHandler;
 import com.noahhusby.lib.data.storage.handlers.MongoStorageHandler;
 import com.noahhusby.lib.data.storage.handlers.SQLStorageHandler;
+import com.noahhusby.sledgehammer.common.warps.Warp;
+import com.noahhusby.sledgehammer.common.warps.WarpGroup;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
+import com.noahhusby.sledgehammer.proxy.players.Attribute;
 import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
+import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
 import com.noahhusby.sledgehammer.proxy.terramap.MapStyleLibrary;
 import com.noahhusby.sledgehammer.proxy.warp.WarpHandler;
 import lombok.Getter;
@@ -110,26 +114,26 @@ public class ConfigHandler {
     }
 
     private void loadHandlers() {
-        Storage serverData = ServerHandler.getInstance().getServers();
-        serverData.clearHandlers();
-        serverData.registerHandler(new LocalStorageHandler(ConfigHandler.serverFile));
+        Storage<SledgehammerServer> serverData = ServerHandler.getInstance().getServers();
+        serverData.handlers().clear();
+        serverData.handlers().register(new LocalStorageHandler<>(ConfigHandler.serverFile));
 
-        Storage warpData = WarpHandler.getInstance().getWarps();
-        warpData.clearHandlers();
-        warpData.registerHandler(new LocalStorageHandler(ConfigHandler.warpFile));
+        Storage<Warp> warpData = WarpHandler.getInstance().getWarps();
+        warpData.handlers().clear();
+        warpData.handlers().register(new LocalStorageHandler<>(ConfigHandler.warpFile));
 
-        Storage attributeData = PlayerHandler.getInstance().getAttributes();
-        attributeData.clearHandlers();
-        attributeData.registerHandler(new LocalStorageHandler(ConfigHandler.attributeFile));
+        Storage<Attribute> attributeData = PlayerHandler.getInstance().getAttributes();
+        attributeData.handlers().clear();
+        attributeData.handlers().register(new LocalStorageHandler<>(ConfigHandler.attributeFile));
 
-        Storage warpGroups = WarpHandler.getInstance().getWarpGroups();
-        warpGroups.clearHandlers();
-        warpGroups.registerHandler(new LocalStorageHandler(ConfigHandler.warpGroupsFile));
+        Storage<WarpGroup> warpGroups = WarpHandler.getInstance().getWarpGroups();
+        warpGroups.handlers().clear();
+        warpGroups.handlers().register(new LocalStorageHandler<>(ConfigHandler.warpGroupsFile));
 
         if (SledgehammerConfig.database.type.equals("SQL")) {
             Credentials credentials = new Credentials(SledgehammerConfig.database.host, SledgehammerConfig.database.port, SledgehammerConfig.database.user, SledgehammerConfig.database.password, SledgehammerConfig.database.database);
             {
-                SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(credentials), "Servers",
+                SQLStorageHandler<SledgehammerServer> sqlStorageHandler = new SQLStorageHandler<>(new MySQL(credentials), "Servers",
                         Structure.builder()
                                 .add("name", Type.TEXT)
                                 .add("earthServer", Type.TEXT)
@@ -141,11 +145,11 @@ public class ConfigHandler {
                                 .repair(true)
                                 .build());
                 sqlStorageHandler.setPriority(100);
-                serverData.registerHandler(sqlStorageHandler);
+                serverData.handlers().register(sqlStorageHandler);
             }
 
             {
-                SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(credentials), "Warps",
+                SQLStorageHandler<Warp> sqlStorageHandler = new SQLStorageHandler<>(new MySQL(credentials), "Warps",
                         Structure.builder()
                                 .add("id", Type.INT)
                                 .add("name", Type.TEXT)
@@ -156,22 +160,22 @@ public class ConfigHandler {
                                 .repair(true)
                                 .build());
                 sqlStorageHandler.setPriority(100);
-                warpData.registerHandler(sqlStorageHandler);
+                warpData.handlers().register(sqlStorageHandler);
             }
 
             {
-                SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(credentials), "Attributes",
+                SQLStorageHandler<Attribute> sqlStorageHandler = new SQLStorageHandler<>(new MySQL(credentials), "Attributes",
                         Structure.builder()
                                 .add("UUID", Type.TEXT)
                                 .add("Attributes", Type.TEXT)
                                 .repair(true)
                                 .build());
                 sqlStorageHandler.setPriority(100);
-                attributeData.registerHandler(sqlStorageHandler);
+                attributeData.handlers().register(sqlStorageHandler);
             }
 
             {
-                SQLStorageHandler sqlStorageHandler = new SQLStorageHandler(new MySQL(credentials), "Groups",
+                SQLStorageHandler<WarpGroup> sqlStorageHandler = new SQLStorageHandler<>(new MySQL(credentials), "Groups",
                         Structure.builder()
                                 .add("id", Type.TEXT)
                                 .add("name", Type.TEXT)
@@ -181,7 +185,7 @@ public class ConfigHandler {
                                 .repair(true)
                                 .build());
                 sqlStorageHandler.setPriority(100);
-                warpGroups.registerHandler(sqlStorageHandler);
+                warpGroups.handlers().register(sqlStorageHandler);
 
                 ProxyServer.getInstance().getScheduler().schedule(Sledgehammer.getInstance(), () -> {
                     serverData.loadAsync();
@@ -194,44 +198,36 @@ public class ConfigHandler {
             MongoCredential credential = MongoCredential.createCredential(SledgehammerConfig.database.user, SledgehammerConfig.database.database, SledgehammerConfig.database.password.toCharArray());
             MongoClient client = new MongoClient(new ServerAddress(SledgehammerConfig.database.host, SledgehammerConfig.database.port), credential, MongoClientOptions.builder().build());
             MongoDatabase database = client.getDatabase(SledgehammerConfig.database.database);
-            boolean attemptEventUpdate = false;
             {
-                MongoStorageHandler mongoStorageHandler = new MongoStorageHandler(database.getCollection("servers"));
+                MongoStorageHandler<SledgehammerServer> mongoStorageHandler = new MongoStorageHandler<>(database.getCollection("servers"));
                 mongoStorageHandler.setPriority(100);
-                try {
-                    mongoStorageHandler.enableEventUpdates();
-                    attemptEventUpdate = true;
-                } catch (MongoCommandException ignored) {
-                    Sledgehammer.logger.warning("Failed to enable event-driven updates for MongoDB. If sledgehammer is being used in a multi-proxy configuration, please set MongoDB up as a replica set.");
-                }
-                serverData.registerHandler(mongoStorageHandler);
+                mongoStorageHandler.enableEventUpdates(e -> {
+                    if (e instanceof MongoCommandException) {
+                        Sledgehammer.logger.warning("Failed to enable event-driven updates for MongoDB. If sledgehammer is being used in a multi-proxy configuration, please set MongoDB up as a replica set.");
+                    }
+                });
+                serverData.handlers().register(mongoStorageHandler);
             }
 
             {
-                MongoStorageHandler mongoStorageHandler = new MongoStorageHandler(database.getCollection("warps"));
+                MongoStorageHandler<Warp> mongoStorageHandler = new MongoStorageHandler<>(database.getCollection("warps"));
                 mongoStorageHandler.setPriority(100);
-                if (attemptEventUpdate) {
-                    mongoStorageHandler.enableEventUpdates();
-                }
-                warpData.registerHandler(mongoStorageHandler);
+                mongoStorageHandler.enableEventUpdates();
+                warpData.handlers().register(mongoStorageHandler);
             }
 
             {
-                MongoStorageHandler mongoStorageHandler = new MongoStorageHandler(database.getCollection("attributes"));
+                MongoStorageHandler<Attribute> mongoStorageHandler = new MongoStorageHandler<>(database.getCollection("attributes"));
                 mongoStorageHandler.setPriority(100);
-                if (attemptEventUpdate) {
-                    mongoStorageHandler.enableEventUpdates();
-                }
-                attributeData.registerHandler(mongoStorageHandler);
+                mongoStorageHandler.enableEventUpdates();
+                attributeData.handlers().register(mongoStorageHandler);
             }
 
             {
-                MongoStorageHandler mongoStorageHandler = new MongoStorageHandler(database.getCollection("groups"));
+                MongoStorageHandler<WarpGroup> mongoStorageHandler = new MongoStorageHandler<>(database.getCollection("groups"));
                 mongoStorageHandler.setPriority(100);
-                if (attemptEventUpdate) {
-                    mongoStorageHandler.enableEventUpdates();
-                }
-                warpGroups.registerHandler(mongoStorageHandler);
+                mongoStorageHandler.enableEventUpdates();
+                warpGroups.handlers().register(mongoStorageHandler);
             }
         }
         serverData.loadAsync();
@@ -250,9 +246,9 @@ public class ConfigHandler {
      * Migrates the data from local storage to databases
      */
     public void migrate() {
-        ServerHandler.getInstance().getServers().migrate(0);
-        WarpHandler.getInstance().getWarpGroups().migrate(0);
-        WarpHandler.getInstance().getWarps().migrate(0);
-        PlayerHandler.getInstance().getAttributes().migrate(0);
+        ServerHandler.getInstance().getServers().migrate().migrate(0);
+        WarpHandler.getInstance().getWarpGroups().migrate().migrate(0);
+        WarpHandler.getInstance().getWarps().migrate().migrate(0);
+        PlayerHandler.getInstance().getAttributes().migrate().migrate(0);
     }
 }

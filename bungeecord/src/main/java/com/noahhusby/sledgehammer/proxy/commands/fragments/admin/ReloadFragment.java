@@ -21,7 +21,7 @@
 package com.noahhusby.sledgehammer.proxy.commands.fragments.admin;
 
 
-import com.noahhusby.sledgehammer.proxy.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.utils.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
 import net.md_5.bungee.api.ChatColor;

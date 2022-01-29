@@ -21,7 +21,7 @@
 package com.noahhusby.sledgehammer.proxy.datasets;
 
 import com.google.gson.annotations.Expose;
-import com.noahhusby.sledgehammer.proxy.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.utils.ChatUtil;
 
 public class Location {
     @Expose

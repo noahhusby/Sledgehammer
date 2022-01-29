@@ -22,7 +22,6 @@ package com.noahhusby.sledgehammer.proxy;
 
 import com.google.common.collect.Lists;
 import com.noahhusby.sledgehammer.common.CommonUtil;
-import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;

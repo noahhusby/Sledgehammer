@@ -25,7 +25,7 @@ import com.noahhusby.sledgehammer.common.warps.Page;
 import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.common.warps.Warp;
 import com.noahhusby.sledgehammer.common.warps.WarpConfigPayload;
-import com.noahhusby.sledgehammer.proxy.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.utils.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;

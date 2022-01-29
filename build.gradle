@@ -34,7 +34,7 @@ allprojects {
         gsonVersion = "2.8.9"
         hikariVersion = "4.0.3"
         lombokVersion = "1.18.22"
-        husbyVersion = "0.1.92"
+        husbyVersion = "0.1.110"
         mongoVersion = "3.12.10"
         guavaVersion = "31.0.1-jre"
         log4jVersion = "2.17.1"
@@ -42,7 +42,7 @@ allprojects {
         paperVersion = "1.12.2-R0.1-SNAPSHOT"
         bungeecordVersion = "1.18-R0.1-SNAPSHOT"
         terraplusplusVersion = "74449c4af349fd9b77b10e1041ed2c09f2d78518"
-        bungee2forgechannelsVersion = "0547ebf2b0222906148e2ea035f5679062456110"
+        bungee2forgechannelsVersion = "b2d5e0778c"
     }
 
     group "com.noahhusby"

@@ -20,7 +20,7 @@
 
 package com.noahhusby.sledgehammer.proxy.commands;
 
-import com.noahhusby.sledgehammer.proxy.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.utils.ChatUtil;
 import net.md_5.bungee.api.CommandSender;
 
 public class SledgehammerCommand extends Command {

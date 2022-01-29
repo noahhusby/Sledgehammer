@@ -24,6 +24,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
 import com.noahhusby.lib.data.JsonUtils;
 import com.noahhusby.sledgehammer.proxy.Constants;
+import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.modules.Module;
@@ -246,19 +247,15 @@ public class OpenStreetMaps implements Module {
         }
         String[] data = f.trim().replaceAll(" ", "space").replaceAll("\\s+", ";;")
                 .replaceAll("space", " ").trim().split(";;");
-
         String a = "";
         String b = "";
-
         if (data.length > 1) {
             a = data[1];
         }
         if (data.length > 2) {
             b = data[2];
         }
-
         String c = data[data.length - 1].trim();
-
         return new OfflineDataField(a, b, c);
     }
 
@@ -269,6 +266,9 @@ public class OpenStreetMaps implements Module {
                 offlineGeocoder = new ReverseGeocoder(ConfigHandler.getInstance().getOfflineBin());
             }
         } catch (IOException e) {
+            Sledgehammer.logger.warning("Failed to initialize offline geocoder! Disabling offline features.");
+            SledgehammerConfig.geography.useOfflineMode = false;
+            SledgehammerConfig.geography.borderTeleportation = false;
             e.printStackTrace();
         }
     }

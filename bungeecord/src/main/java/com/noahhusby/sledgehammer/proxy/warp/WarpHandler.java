@@ -23,6 +23,9 @@ package com.noahhusby.sledgehammer.proxy.warp;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.noahhusby.lib.data.storage.StorageHashMap;
+import com.noahhusby.lib.data.storage.events.EventListener;
+import com.noahhusby.lib.data.storage.events.transfer.StorageLoadEvent;
+import com.noahhusby.lib.data.storage.events.transfer.StorageSaveEvent;
 import com.noahhusby.sledgehammer.common.warps.Page;
 import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.common.warps.Warp;
@@ -31,7 +34,7 @@ import com.noahhusby.sledgehammer.common.warps.WarpGroup;
 import com.noahhusby.sledgehammer.common.warps.WarpGroupConfigPayload;
 import com.noahhusby.sledgehammer.common.warps.WarpGroupPayload;
 import com.noahhusby.sledgehammer.common.warps.WarpPayload;
-import com.noahhusby.sledgehammer.proxy.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.utils.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
@@ -58,17 +61,26 @@ import java.util.function.Consumer;
 public class WarpHandler {
     private static WarpHandler instance;
     @Getter
-    private final StorageHashMap<Integer, Warp> warps = new StorageHashMap<>(Integer.class, Warp.class);
+    private final StorageHashMap<Integer, Warp> warps = new StorageHashMap<>(Warp.class);
     @Getter
-    private final StorageHashMap<String, WarpGroup> warpGroups = new StorageHashMap<>(String.class, WarpGroup.class);
+    private final StorageHashMap<String, WarpGroup> warpGroups = new StorageHashMap<>(WarpGroup.class);
     private final Map<UUID, Warp> warpRequests = Maps.newHashMap();
     private final Map<Warp, Consumer<Warp>> warpConsumers = Maps.newHashMap();
     @Getter
     private TreeMap<String, WarpGroup> warpGroupByServer = Maps.newTreeMap(String.CASE_INSENSITIVE_ORDER);
 
     private WarpHandler() {
-        warpGroups.onLoadEvent(this::refreshWarpGroupCache);
-        warpGroups.onSaveEvent(this::refreshWarpGroupCache);
+        warpGroups.events().register(new EventListener<WarpGroup>() {
+            @Override
+            public void onSave(StorageSaveEvent<WarpGroup> event) {
+                refreshWarpGroupCache();
+            }
+
+            @Override
+            public void onLoad(StorageLoadEvent<WarpGroup> event) {
+                refreshWarpGroupCache();
+            }
+        });
     }
 
     public static WarpHandler getInstance() {

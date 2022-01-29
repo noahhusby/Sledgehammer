@@ -26,6 +26,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class Constants extends CommonConstants {
     public static final String PLUGINID = "sledgehammer";
+
     public static final String nominatimAPI = "https://nominatim.openstreetmap.org/reverse.php?osm_type=N&format=json&zoom={zoom}";
 
     public static final String adminMessagePrefix = "&9&lSH &8&l> ";

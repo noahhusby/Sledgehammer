@@ -21,7 +21,7 @@
 package com.noahhusby.sledgehammer.proxy.commands.fragments;
 
 import com.google.common.collect.Maps;
-import com.noahhusby.sledgehammer.proxy.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.utils.ChatUtil;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
 import net.md_5.bungee.api.ChatColor;

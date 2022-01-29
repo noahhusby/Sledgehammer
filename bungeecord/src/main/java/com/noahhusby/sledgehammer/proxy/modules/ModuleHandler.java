@@ -80,7 +80,6 @@ public class ModuleHandler {
      * Enables a specific module
      *
      * @param module {@link Module}
-     * @return True if successfully enabled, false if not
      */
     public void enable(Module module) {
         if (modules.get(module)) {
@@ -95,7 +94,6 @@ public class ModuleHandler {
      * Disables a specific module
      *
      * @param module {@link Module}
-     * @return True if successfully disabled, false if not
      */
     public void disable(Module module) {
         if (!modules.get(module)) {
@@ -110,29 +108,19 @@ public class ModuleHandler {
      * Enables all modules
      */
     public void enableAll() {
-        for (Map.Entry<Module, Boolean> e : ImmutableMap.copyOf(modules).entrySet()) {
-            if (!e.getValue()) {
-                enable(e.getKey());
-            }
-        }
+        ImmutableMap.copyOf(modules).entrySet()
+                .stream()
+                .filter(e -> !e.getValue())
+                .forEach(e -> enable(e.getKey()));
     }
 
     /**
      * Disables all modules
      */
     public void disableAll() {
-        for (Map.Entry<Module, Boolean> e : ImmutableMap.copyOf(modules).entrySet()) {
-            if (e.getValue()) {
-                disable(e.getKey());
-            }
-        }
-    }
-
-    /**
-     * Reloads all modules
-     */
-    public void reloadAll() {
-        disableAll();
-        enableAll();
+        ImmutableMap.copyOf(modules).entrySet()
+                .stream()
+                .filter(Map.Entry::getValue)
+                .forEach(e -> disable(e.getKey()));
     }
 }

@@ -20,7 +20,7 @@
 
 package com.noahhusby.sledgehammer.proxy.terramap.commands;
 
-import com.noahhusby.sledgehammer.proxy.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.utils.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.Command;
 import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;

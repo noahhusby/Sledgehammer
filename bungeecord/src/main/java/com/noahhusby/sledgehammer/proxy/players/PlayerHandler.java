@@ -22,13 +22,9 @@ package com.noahhusby.sledgehammer.proxy.players;
 
 import com.google.common.collect.Maps;
 import com.noahhusby.lib.data.storage.StorageHashMap;
-import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
-import com.noahhusby.sledgehammer.proxy.config.ConfigHandler;
-import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.modules.Module;
 import lombok.Getter;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -51,7 +47,7 @@ public class PlayerHandler implements Listener, Module {
     @Getter
     private final Map<UUID, SledgehammerPlayer> players = Maps.newHashMap();
     @Getter
-    private final StorageHashMap<UUID, Attribute> attributes = new StorageHashMap<>(UUID.class, Attribute.class);
+    private final StorageHashMap<UUID, Attribute> attributes = new StorageHashMap<>(Attribute.class);
 
     /**
      * Creates a new SledgehammerPlayer and sets attributes from storage upon player joining
@@ -95,13 +91,10 @@ public class PlayerHandler implements Listener, Module {
      */
     private void onPlayerDisconnect(ProxiedPlayer player) {
         SledgehammerPlayer p = players.get(player.getUniqueId());
-
         if (p == null) {
             return;
         }
-
         Attribute attribute = attributes.get(player.getUniqueId());
-
         if (attribute == null) {
             if (!p.getAttributes().isEmpty()) {
                 attributes.put(p.getUniqueId(), new Attribute(p.getUniqueId(), p.getAttributes()));
@@ -111,7 +104,6 @@ public class PlayerHandler implements Listener, Module {
                 attributes.remove(player.getUniqueId());
             }
         }
-
         attributes.saveAsync();
         players.remove(player.getUniqueId());
     }
@@ -138,9 +130,6 @@ public class PlayerHandler implements Listener, Module {
      * @return {@link SledgehammerPlayer}
      */
     public SledgehammerPlayer getPlayer(CommandSender s) {
-        if (s == null) {
-            return null;
-        }
         if (!(s instanceof ProxiedPlayer)) {
             return null;
         }
@@ -172,20 +161,6 @@ public class PlayerHandler implements Listener, Module {
     @Override
     public void onEnable() {
         Sledgehammer.addListener(this);
-        if (SledgehammerConfig.geography.borderTeleportation && !ConfigHandler.getInstance().getOfflineBin().exists()) {
-            ChatUtil.sendMessageBox(ProxyServer.getInstance().getConsole(), ChatColor.DARK_RED + "WARNING", ChatUtil.combine(ChatColor.RED,
-                    "Automatic border teleportation was enabled without an offline OSM database.\n" +
-                    "This feature will now be disabled."));
-            SledgehammerConfig.geography.borderTeleportation = false;
-        }
-
-        if (SledgehammerConfig.geography.useOfflineMode && !ConfigHandler.getInstance().getOfflineBin().exists()) {
-            ChatUtil.sendMessageBox(ProxyServer.getInstance().getConsole(), ChatColor.DARK_RED + "WARNING", ChatUtil.combine(ChatColor.RED,
-                    "The offline OSM database was enabled without a proper database configured.\n" +
-                    "Please follow the guide on https://github.com/noahhusby/Sledgehammer/wiki/Border-Offline-Database to configure an offline database.\n" +
-                    "This feature will now be disabled."));
-            SledgehammerConfig.geography.useOfflineMode = false;
-        }
     }
 
 

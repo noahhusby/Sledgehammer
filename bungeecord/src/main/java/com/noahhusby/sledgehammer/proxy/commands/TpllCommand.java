@@ -22,7 +22,7 @@ package com.noahhusby.sledgehammer.proxy.commands;
 
 import com.noahhusby.sledgehammer.common.TpllMode;
 import com.noahhusby.sledgehammer.common.exceptions.InvalidCoordinatesException;
-import com.noahhusby.sledgehammer.proxy.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.utils.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.proxy.network.p2s.P2SLocationPacket;
