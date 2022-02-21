@@ -21,7 +21,7 @@
 package com.noahhusby.sledgehammer.proxy.dialogs.scenes;
 
 import com.google.common.collect.Maps;
-import com.noahhusby.sledgehammer.proxy.utils.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.dialogs.DialogHandler;
 import com.noahhusby.sledgehammer.proxy.dialogs.components.IDialogComponent;
 import com.noahhusby.sledgehammer.proxy.dialogs.toolbars.DefaultToolbar;
@@ -34,11 +34,10 @@ import java.util.Map;
 
 public abstract class DialogScene implements IDialogScene {
 
-    protected IDialogComponent currentComponent;
-    protected CommandSender sender;
-
     protected final DialogHandler dialogHandler = DialogHandler.getInstance();
     private final Map<Integer, IDialogComponent> components = Maps.newHashMap();
+    protected IDialogComponent currentComponent;
+    protected CommandSender sender;
 
     @Override
     public void init(CommandSender commandSender) {

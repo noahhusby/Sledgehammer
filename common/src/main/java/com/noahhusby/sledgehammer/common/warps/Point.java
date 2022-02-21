@@ -41,6 +41,10 @@ public class Point {
     @Expose
     private final double pitch;
 
+    public Point() {
+        this(0, 0, 0, 0, 0);
+    }
+
     public Point limit() {
         double lX = new BigDecimal(x).setScale(3, RoundingMode.HALF_UP).doubleValue();
         double lY = new BigDecimal(y).setScale(3, RoundingMode.HALF_UP).doubleValue();
@@ -48,9 +52,5 @@ public class Point {
         double lYaw = new BigDecimal(yaw).setScale(3, RoundingMode.HALF_UP).doubleValue();
         double lPitch = new BigDecimal(pitch).setScale(3, RoundingMode.HALF_UP).doubleValue();
         return new Point(lX, lY, lZ, lYaw, lPitch);
-    }
-
-    public Point() {
-        this(0, 0, 0, 0, 0);
     }
 }

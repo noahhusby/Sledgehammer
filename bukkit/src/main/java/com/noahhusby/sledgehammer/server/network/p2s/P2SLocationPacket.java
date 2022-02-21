@@ -42,29 +42,30 @@ public class P2SLocationPacket extends P2SPacket {
             throwNoSender();
             return;
         }
-        String lat = data.get("lat").getAsString();
-        String lon = data.get("lon").getAsString();
-        int xOffset = 0;
-        int zOffset = 0;
-        try {
-            xOffset = Integer.parseInt(data.get("xOffset").getAsString());
-            zOffset = Integer.parseInt(data.get("zOffset").getAsString());
-        } catch (Exception ignored) {
-        }
-        double[] proj = SledgehammerUtil.fromGeo(Double.parseDouble(lon), Double.parseDouble(lat));
-        int x = (int) Math.floor(proj[0]) + xOffset;
-        int z = (int) Math.floor(proj[1]) + zOffset;
-        if (SledgehammerUtil.hasTerraPlusPlus()) {
-            SledgehammerUtil.getTerraConnector().getHeight(x, z).thenAccept(y -> {
-                int height = y.intValue();
-                while (player.getWorld().getBlockAt(x, height, z).getType() != Material.AIR &&
-                       player.getWorld().getBlockAt(x, height - 1, z).getType() != Material.AIR) {
-                    height++;
-                }
-                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), String.format("minecraft:tp %s %s %s %s", player.getName(), x, height, z));
-            });
+        int x = data.get("x").getAsInt();
+        int z = data.get("z").getAsInt();
+
+        if (data.has("y")) {
+            int y = data.get("y").getAsInt();
+            teleport(player.getName(), x, y, z);
         } else {
-            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), String.format("minecraft:tp %s %s %s %s", player.getName(), x, player.getWorld().getHighestBlockYAt(x, z) + 1, z));
+            if (SledgehammerUtil.hasTerraPlusPlus()) {
+                SledgehammerUtil.getTerraConnector().getHeight(x, z).thenAccept(y -> {
+                    int height = y.intValue();
+                    while (player.getWorld().getBlockAt(x, height, z).getType() != Material.AIR &&
+                           player.getWorld().getBlockAt(x, height - 1, z).getType() != Material.AIR) {
+                        height++;
+                    }
+                    teleport(player.getName(), x, height, z);
+                });
+            } else {
+                teleport(player.getName(), x, player.getWorld().getHighestBlockYAt(x, z) + 1, z);
+            }
         }
+    }
+
+    private void teleport(String player, int x, int y, int z) {
+        // TODO: Figure out why I replaced direct player teleportation with tp command
+        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), String.format("minecraft:tp %s %s %s %s", player, x, y, z));
     }
 }

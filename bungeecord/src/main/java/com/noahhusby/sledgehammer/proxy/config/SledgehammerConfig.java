@@ -39,6 +39,44 @@ public class SledgehammerConfig {
             "General options for sledgehammer"
     })
     public static GeneralOptions general = new GeneralOptions();
+    @Comment({
+            "Settings for the database"
+    })
+    public static DatabaseOptions database = new DatabaseOptions();
+    @Comment({
+            "Options for warps"
+    })
+    public static WarpOptions warps = new WarpOptions();
+    @Comment({
+            "Options for OpenStreetMaps and Teleportation"
+    })
+    public static GeographyOptions geography = new GeographyOptions();
+    @Comment({
+            "Terramap Addon Configuration"
+    })
+    public static TerramapOptions terramap = new TerramapOptions();
+
+    public static void validate() {
+        // Validate Database Information
+        String databaseType = database.type.toLowerCase(Locale.ROOT);
+        if (!(databaseType.equals("mongo") || databaseType.equals("sql") || databaseType.equals("local"))) {
+            Sledgehammer.logger.warning(validationError(databaseType, "database", "type", "Using local database instead."));
+            database.type = "LOCAL";
+        }
+        if (geography.useOfflineMode && !ConfigHandler.getInstance().getOfflineBin().exists()) {
+            Sledgehammer.logger.warning("Offline mode was enabled, but no location database exists! Please follow this guide to download the location database: https://github.com/noahhusby/Sledgehammer/wiki/Border-Offline-Database\n"
+                                        + "Disabling offline mode!");
+            geography.useOfflineMode = false;
+        }
+        if (geography.borderTeleportation && !geography.useOfflineMode) {
+            Sledgehammer.logger.warning("Border teleportation was enabled, but offline mode is disabled. Please make sure the offline database is configured correctly, and offline mode is enabled.");
+            geography.borderTeleportation = false;
+        }
+    }
+
+    private static String validationError(String value, String cat, String field, String result) {
+        return String.format("Invalid value \"%s\", for %s/%s. %s", value, cat, field, result);
+    }
 
     @SuppressWarnings("CanBeFinal")
     public static class GeneralOptions {
@@ -55,11 +93,6 @@ public class SledgehammerConfig {
         })
         public boolean replaceNotAvailable = false;
     }
-
-    @Comment({
-            "Settings for the database"
-    })
-    public static DatabaseOptions database = new DatabaseOptions();
 
     @SuppressWarnings("CanBeFinal")
     public static class DatabaseOptions {
@@ -97,11 +130,6 @@ public class SledgehammerConfig {
         public String database = "";
     }
 
-    @Comment({
-            "Options for warps"
-    })
-    public static WarpOptions warps = new WarpOptions();
-
     @SuppressWarnings("CanBeFinal")
     public static class WarpOptions {
         @Comment({
@@ -133,11 +161,6 @@ public class SledgehammerConfig {
         public String warpMenuPage = "";
     }
 
-    @Comment({
-            "Options for OpenStreetMaps and Teleportation"
-    })
-    public static GeographyOptions geography = new GeographyOptions();
-
     @SuppressWarnings("CanBeFinal")
     public static class GeographyOptions {
         @Comment({
@@ -156,11 +179,6 @@ public class SledgehammerConfig {
         })
         public boolean borderTeleportation = false;
     }
-
-    @Comment({
-            "Terramap Addon Configuration"
-    })
-    public static TerramapOptions terramap = new TerramapOptions();
 
     @SuppressWarnings("CanBeFinal")
     public static class TerramapOptions {
@@ -203,27 +221,5 @@ public class SledgehammerConfig {
                 "A UUID v4 that will be used by Terramap clients to identify this network when saving settings. DO NOT PUT YOUR NETWORK AUTHENTIFICATION CODE IN HERE, THIS IS SHARED WITH CLIENTS! You want this to be the same on all your network's proxies. The default value is randomly generated."
         })
         public String terramapProxyUUID = UUID.randomUUID().toString();
-    }
-
-    public static void validate() {
-        // Validate Database Information
-        String databaseType = database.type.toLowerCase(Locale.ROOT);
-        if (!(databaseType.equals("mongo") || databaseType.equals("sql") || databaseType.equals("local"))) {
-            Sledgehammer.logger.warning(validationError(databaseType, "database", "type", "Using local database instead."));
-            database.type = "LOCAL";
-        }
-        if (geography.useOfflineMode && !ConfigHandler.getInstance().getOfflineBin().exists()) {
-            Sledgehammer.logger.warning("Offline mode was enabled, but no location database exists! Please follow this guide to download the location database: https://github.com/noahhusby/Sledgehammer/wiki/Border-Offline-Database\n"
-                                        + "Disabling offline mode!");
-            geography.useOfflineMode = false;
-        }
-        if (geography.borderTeleportation && !geography.useOfflineMode) {
-            Sledgehammer.logger.warning("Border teleportation was enabled, but offline mode is disabled. Please make sure the offline database is configured correctly, and offline mode is enabled.");
-            geography.borderTeleportation = false;
-        }
-    }
-
-    private static String validationError(String value, String cat, String field, String result) {
-        return String.format("Invalid value \"%s\", for %s/%s. %s", value, cat, field, result);
     }
 }

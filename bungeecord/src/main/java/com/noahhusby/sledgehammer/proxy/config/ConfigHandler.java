@@ -52,23 +52,20 @@ import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 public class ConfigHandler {
-    private static ConfigHandler instance = null;
-
-    public static ConfigHandler getInstance() {
-        return instance == null ? instance = new ConfigHandler() : instance;
-    }
-
-    private File dataFolder;
-
     public static File warpFile;
     public static File serverFile;
     public static File localStorage;
     public static File attributeFile;
     public static File warpGroupsFile;
+    private static ConfigHandler instance = null;
+    private File dataFolder;
     @Getter
     private File offlineBin;
-
     private ConfigHandler() {
+    }
+
+    public static ConfigHandler getInstance() {
+        return instance == null ? instance = new ConfigHandler() : instance;
     }
 
     /**

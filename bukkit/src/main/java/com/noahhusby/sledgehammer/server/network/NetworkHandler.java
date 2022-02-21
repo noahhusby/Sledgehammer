@@ -34,11 +34,9 @@ import java.util.Map;
 
 public class NetworkHandler implements Listener {
     private static NetworkHandler instance = null;
-
-    public static NetworkHandler getInstance() {
-        return instance == null ? instance = new NetworkHandler() : instance;
-    }
-
+    private final Map<String, P2SPacket> registeredPackets;
+    private final Map<JsonObject, String> cachedPackets;
+    private final MessageChannel channel;
     private NetworkHandler() {
         registeredPackets = Maps.newHashMap();
         cachedPackets = Maps.newHashMap();
@@ -46,9 +44,9 @@ public class NetworkHandler implements Listener {
         channel.onMessage(m -> onMessage(SledgehammerUtil.parser.parse(m).getAsJsonObject()));
     }
 
-    private final Map<String, P2SPacket> registeredPackets;
-    private final Map<JsonObject, String> cachedPackets;
-    private final MessageChannel channel;
+    public static NetworkHandler getInstance() {
+        return instance == null ? instance = new NetworkHandler() : instance;
+    }
 
     public void register(P2SPacket packet) {
         registeredPackets.put(packet.getPacketID(), packet);

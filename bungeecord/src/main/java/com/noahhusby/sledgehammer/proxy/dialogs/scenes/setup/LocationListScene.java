@@ -20,7 +20,7 @@
 
 package com.noahhusby.sledgehammer.proxy.dialogs.scenes.setup;
 
-import com.noahhusby.sledgehammer.proxy.utils.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.dialogs.components.location.LocationListComponent;
 import com.noahhusby.sledgehammer.proxy.dialogs.scenes.DialogScene;
 import net.md_5.bungee.api.ChatColor;

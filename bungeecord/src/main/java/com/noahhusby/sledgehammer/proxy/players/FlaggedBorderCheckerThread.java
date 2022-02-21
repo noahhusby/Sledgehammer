@@ -22,7 +22,7 @@ package com.noahhusby.sledgehammer.proxy.players;
 
 import com.google.common.collect.ImmutableMap;
 import com.noahhusby.sledgehammer.common.warps.Point;
-import com.noahhusby.sledgehammer.proxy.utils.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.datasets.OpenStreetMaps;

@@ -40,6 +40,7 @@ import java.util.function.Consumer;
 public class MessageChannel implements PluginMessageListener {
     private final JavaPlugin plugin;
     private final String channel;
+    private final List<Consumer<String>> messageReceivers = Lists.newArrayList();
 
     public MessageChannel(JavaPlugin plugin, String channel) {
         this.plugin = plugin;
@@ -47,8 +48,6 @@ public class MessageChannel implements PluginMessageListener {
         Bukkit.getMessenger().registerIncomingPluginChannel(plugin, channel, this);
         Bukkit.getMessenger().registerOutgoingPluginChannel(plugin, channel);
     }
-
-    private final List<Consumer<String>> messageReceivers = Lists.newArrayList();
 
     public void send(Player player, String message) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();

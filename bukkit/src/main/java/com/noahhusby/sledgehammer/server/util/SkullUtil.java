@@ -49,10 +49,9 @@ import java.util.UUID;
 @UtilityClass
 public class SkullUtil {
 
+    private static final Map<Integer, ItemStack> numberHeads = Maps.newHashMap();
     private static Method metaSetProfileMethod;
     private static Field metaProfileField;
-
-    private static final Map<Integer, ItemStack> numberHeads = Maps.newHashMap();
 
     static {
         numberHeads.put(0, itemFromTextureId("3f09018f46f349e553446946a38649fcfcf9fdfd62916aec33ebca96bb21b5"));

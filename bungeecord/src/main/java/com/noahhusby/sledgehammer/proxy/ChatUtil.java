@@ -18,9 +18,8 @@
  *
  */
 
-package com.noahhusby.sledgehammer.proxy.utils;
+package com.noahhusby.sledgehammer.proxy;
 
-import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.ChatColor;

@@ -30,6 +30,8 @@ import java.util.List;
 
 public abstract class WarpFragmentManager extends Command {
 
+    private final List<ICommandFragment> commandFragments = new ArrayList<>();
+
     public WarpFragmentManager(String name, String node) {
         this(name, node, new String[]{});
     }
@@ -37,8 +39,6 @@ public abstract class WarpFragmentManager extends Command {
     public WarpFragmentManager(String name, String node, String[] alias) {
         super(name, node, alias);
     }
-
-    private final List<ICommandFragment> commandFragments = new ArrayList<>();
 
     protected void registerCommandFragment(ICommandFragment c) {
         commandFragments.add(c);

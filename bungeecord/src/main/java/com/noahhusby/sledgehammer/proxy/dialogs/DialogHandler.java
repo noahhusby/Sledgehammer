@@ -21,7 +21,7 @@
 package com.noahhusby.sledgehammer.proxy.dialogs;
 
 import com.google.common.collect.Maps;
-import com.noahhusby.sledgehammer.proxy.utils.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.Sledgehammer;
 import com.noahhusby.sledgehammer.proxy.dialogs.scenes.IDialogScene;
 import net.md_5.bungee.api.ChatColor;
@@ -38,16 +38,15 @@ import java.util.Map;
 
 public class DialogHandler implements Listener {
     private static DialogHandler instance = null;
-
-    public static DialogHandler getInstance() {
-        return instance == null ? instance = new DialogHandler() : instance;
-    }
+    private final Map<CommandSender, IDialogScene> activeScenes = Maps.newHashMap();
 
     private DialogHandler() {
         Sledgehammer.addListener(this);
     }
 
-    private final Map<CommandSender, IDialogScene> activeScenes = Maps.newHashMap();
+    public static DialogHandler getInstance() {
+        return instance == null ? instance = new DialogHandler() : instance;
+    }
 
     /**
      * Start a dialog scene

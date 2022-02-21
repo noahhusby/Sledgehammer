@@ -22,6 +22,8 @@ package com.noahhusby.sledgehammer.proxy;
 
 import com.google.common.collect.Lists;
 import com.noahhusby.sledgehammer.common.CommonUtil;
+import com.noahhusby.sledgehammer.proxy.players.PlayerHandler;
+import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
@@ -30,8 +32,10 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 @UtilityClass
@@ -70,16 +74,16 @@ public class SledgehammerUtil extends CommonUtil {
         return ServerHandler.getInstance().getServers().containsKey(server.getName());
     }
 
-    /**
-     * Gets a space seperated string from an array
-     *
-     * @param args A string array
-     * @return The space seperated String
-     */
-    public static String getRawArguments(String[] args) {
-        StringBuilder builder = new StringBuilder();
-        Arrays.stream(args).forEach(s -> builder.append(" ").append(s));
-        return builder.toString().trim();
+    public static Collection<SledgehammerPlayer> getMatchingEntities(String e) {
+        e = e.toLowerCase(Locale.ROOT).trim();
+        if (e.equals("@e")) {
+            return PlayerHandler.getInstance().getPlayers().values();
+        }
+        SledgehammerPlayer player = SledgehammerPlayer.getPlayer(e);
+        if (player != null) {
+            return Collections.singleton(player);
+        }
+        return Collections.emptyList();
     }
 
     /**

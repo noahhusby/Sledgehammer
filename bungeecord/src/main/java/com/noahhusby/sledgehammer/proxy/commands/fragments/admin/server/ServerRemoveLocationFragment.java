@@ -20,7 +20,7 @@
 
 package com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server;
 
-import com.noahhusby.sledgehammer.proxy.utils.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.proxy.dialogs.DialogHandler;
 import com.noahhusby.sledgehammer.proxy.dialogs.scenes.setup.LocationRemovalScene;

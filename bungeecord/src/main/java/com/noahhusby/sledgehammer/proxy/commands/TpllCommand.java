@@ -22,8 +22,8 @@ package com.noahhusby.sledgehammer.proxy.commands;
 
 import com.noahhusby.sledgehammer.common.TpllMode;
 import com.noahhusby.sledgehammer.common.exceptions.InvalidCoordinatesException;
-import com.noahhusby.sledgehammer.proxy.utils.ChatUtil;
-import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
+import com.noahhusby.sledgehammer.common.utils.LatLngHeight;
+import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.proxy.network.p2s.P2SLocationPacket;
 import com.noahhusby.sledgehammer.proxy.players.Permission;
@@ -37,9 +37,15 @@ import net.md_5.bungee.api.chat.hover.content.Text;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
+import static com.noahhusby.sledgehammer.proxy.SledgehammerUtil.*;
+
 public class TpllCommand extends Command {
+
+    private final static String USAGE = "Usage: /tpll <lat> <lon> [alt]";
+    private final static String ADMIN_USAGE = "Usage: /tpll [target player] <lat> <lon> [alt]";
 
     public TpllCommand() {
         super("tpll", "sledgehammer.tpll");
@@ -58,22 +64,18 @@ public class TpllCommand extends Command {
         }
         SledgehammerPlayer player = SledgehammerPlayer.getPlayer(sender);
         if (player.getSledgehammerServer() != null && player.getSledgehammerServer().getTpllMode() == TpllMode.PASSTHROUGH) {
-            player.chat("/tpll " + SledgehammerUtil.getRawArguments(args));
+            player.chat("/tpll " + getRawArguments(args));
             return;
         }
         CompletableFuture<Permission> permissionFuture = SledgehammerPlayer.getPlayer(sender).getPermission("sledgehammer.tpll");
         permissionFuture.thenAccept(permission -> {
             if (permission.isLocal()) {
+                boolean admin = hasPerms(sender, "admin");
                 if (args.length == 0) {
-                    if (hasPerms(sender, "admin")) {
-                        adminUsage(sender);
-                    } else {
-                        regularUsage(sender);
-                    }
+                    usage(sender, admin);
                     return;
                 }
 
-                SledgehammerPlayer recipient = SledgehammerPlayer.getPlayer(sender);
                 if (args[0].equalsIgnoreCase("help")) {
                     TextComponent text = ChatUtil.title();
 
@@ -88,68 +90,64 @@ public class TpllCommand extends Command {
                     sender.sendMessage(text);
                     return;
                 }
-                String[] parseArgs = args;
 
-                if (args.length == 3 && hasPerms(sender, "admin")) {
-                    parseArgs = new String[]{ args[1], args[2] };
-                    recipient = SledgehammerPlayer.getPlayer(args[0]);
-                    if (recipient == null) {
-                        sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, args[0], " could not be found on the network!"));
-                        return;
-                    }
+                LatLngHeight coordinates;
+                boolean selector = false;
+
+                try {
+                    coordinates = parseCoordinates(args);
+                } catch (InvalidCoordinatesException ignored) {
+                    usage(sender, admin);
+                    return;
                 }
 
                 try {
-                    double[] coordinates = SledgehammerUtil.parseCoordinates(parseArgs);
-                    ServerInfo server = OpenStreetMaps.getInstance().getServerFromLocation(coordinates[1], coordinates[0]);
-                    if (server == null) {
-                        sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "That location could not be found, or is not available on this server!"));
+                    LatLngHeight temp = parseCoordinates(selectArray(args, 1));
+                    selector = coordinates.equals(temp);
+                } catch (InvalidCoordinatesException ignored) {
+                }
+
+                Collection<SledgehammerPlayer> targets = getMatchingEntities(sender.getName());
+                if (selector && admin) {
+                    targets = getMatchingEntities(args[0]);
+                    if (targets.isEmpty()) {
+                        sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "No players found with \"", args[0], "\""));
                         return;
-                    }
-                    if (!hasPerms(sender, "admin") && !(hasPerms(sender, server.getName()) || hasPerms(sender, "all"))) {
-                        sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "You don't have permission to tpll to ", ChatColor.DARK_RED, sender.getName()));
-                        return;
-                    }
-                    if (SledgehammerUtil.getServerFromSender(recipient) != server) {
-                        if (!sender.getName().equals(recipient.getName())) {
-                            recipient.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "You were summoned to ",
-                                    ChatColor.RED, server.getName(), ChatColor.GRAY, " by ", ChatColor.DARK_RED, sender.getName()));
-                        } else {
-                            sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Sending you to ", ChatColor.RED, sender.getName()));
-                        }
-                        recipient.connect(server);
-                    }
-                    if (!recipient.equals(sender)) {
-                        recipient.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Teleporting to ", ChatColor.RED, String.format("%s, %s", coordinates[0], coordinates[1])));
-                    } else {
-                        sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Teleporting to ", ChatColor.RED, String.format("%s, %s", coordinates[0], coordinates[1])));
-                    }
-                    getNetworkManager().send(new P2SLocationPacket(recipient.getName(), server.getName(), coordinates));
-                    SledgehammerPlayer.getPlayer(sender).getAttributes().put("TPLL_FAILS", 0);
-                } catch (InvalidCoordinatesException e) {
-                    if (hasPerms(sender, "admin")) {
-                        adminUsage(sender);
-                    } else {
-                        regularUsage(sender);
                     }
                 }
-                return;
+
+                ServerInfo server = OpenStreetMaps.getInstance().getServerFromLocation(coordinates.getLat(), coordinates.getLon());
+                if (server == null) {
+                    sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "That location could not be found, or is not available on this server!"));
+                    return;
+                }
+                if (!hasPerms(sender, "admin") && !(hasPerms(sender, server.getName()) || hasPerms(sender, "all"))) {
+                    sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "You don't have permission to tpll to ", ChatColor.DARK_RED, sender.getName()));
+                    return;
+                }
+                // Send each target to destination
+                for (SledgehammerPlayer target : targets) {
+                    if (getServerFromSender(target) != server) {
+                        if (!sender.getName().equals(target.getName())) {
+                            target.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "You were summoned to ",
+                                    ChatColor.RED, server.getName(), ChatColor.GRAY, " by ", ChatColor.DARK_RED, sender.getName()));
+                        } else {
+                            target.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Sending you to ", ChatColor.RED, sender.getName()));
+                        }
+                        target.connect(server);
+                    }
+                    target.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Teleporting to ", ChatColor.RED, String.format("%s, %s", coordinates.getLon(), coordinates.getLat())));
+                    getNetworkManager().send(new P2SLocationPacket(target.getName(), server.getName(), coordinates));
+                    return;
+                }
+                SledgehammerPlayer.getPlayer(sender).getAttributes().put("TPLL_FAILS", 0);
             }
             sender.sendMessage(ChatUtil.getNoPermission());
         });
     }
 
-    private void adminUsage(CommandSender sender) {
-        sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "Usage: /tpll [target player] <lat> <lon>"));
-        tpllHelp(sender);
-    }
-
-    private void regularUsage(CommandSender sender) {
-        sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "Usage: /tpll <lat> <lon>"));
-        tpllHelp(sender);
-    }
-
-    private void tpllHelp(CommandSender sender) {
+    private void usage(CommandSender sender, boolean admin) {
+        sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, admin ? ADMIN_USAGE : USAGE));
         SledgehammerPlayer player = SledgehammerPlayer.getPlayer(sender);
         if (player != null) {
             if (player.getAttributes().containsKey("TPLL_FAILS")) {

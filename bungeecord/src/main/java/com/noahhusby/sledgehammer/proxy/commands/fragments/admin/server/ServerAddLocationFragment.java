@@ -21,7 +21,7 @@
 package com.noahhusby.sledgehammer.proxy.commands.fragments.admin.server;
 
 import com.noahhusby.lib.data.JsonUtils;
-import com.noahhusby.sledgehammer.proxy.utils.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.ICommandFragment;
 import com.noahhusby.sledgehammer.proxy.datasets.Location;

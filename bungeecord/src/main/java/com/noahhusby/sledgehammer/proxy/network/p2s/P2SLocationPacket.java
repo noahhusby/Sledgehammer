@@ -21,33 +21,21 @@
 package com.noahhusby.sledgehammer.proxy.network.p2s;
 
 import com.google.gson.JsonObject;
+import com.noahhusby.sledgehammer.common.utils.LatLngHeight;
 import com.noahhusby.sledgehammer.proxy.Constants;
+import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.network.P2SPacket;
 import com.noahhusby.sledgehammer.proxy.network.PacketInfo;
 import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class P2SLocationPacket extends P2SPacket {
 
     private final String sender;
     private final String server;
-    private final String lat;
-    private final String lon;
-    private String xOffset;
-    private String zOffset;
-
-    public P2SLocationPacket(String sender, String server, double[] geo) {
-        this.server = server;
-        this.sender = sender;
-        SledgehammerServer sledgehammerServer = ServerHandler.getInstance().getServer(server);
-        if (sledgehammerServer != null) {
-            xOffset = String.valueOf(sledgehammerServer.getXOffset());
-            zOffset = String.valueOf(sledgehammerServer.getZOffset());
-        }
-
-        this.lat = String.valueOf(geo[0]);
-        this.lon = String.valueOf(geo[1]);
-    }
+    private final LatLngHeight coords;
 
     @Override
     public String getPacketID() {
@@ -56,10 +44,19 @@ public class P2SLocationPacket extends P2SPacket {
 
     @Override
     public void getMessage(JsonObject data) {
-        data.addProperty("lat", lat);
-        data.addProperty("lon", lon);
-        data.addProperty("xOffset", xOffset);
-        data.addProperty("zOffset", zOffset);
+        double[] proj = SledgehammerUtil.fromGeo(coords.getLon(), coords.getLat());
+        int x = (int) Math.floor(proj[0]);
+        int z = (int) Math.floor(proj[1]);
+        SledgehammerServer sledgehammerServer = ServerHandler.getInstance().getServer(server);
+        if (sledgehammerServer != null) {
+            x += sledgehammerServer.getXOffset();
+            z += sledgehammerServer.getZOffset();
+        }
+        data.addProperty("x", x);
+        if (!Double.isNaN(coords.getHeight())) {
+            data.addProperty("y", (int) Math.floor(coords.getHeight()));
+        }
+        data.addProperty("z", z);
     }
 
     @Override

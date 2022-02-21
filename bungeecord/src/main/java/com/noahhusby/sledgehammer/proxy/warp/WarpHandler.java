@@ -34,7 +34,7 @@ import com.noahhusby.sledgehammer.common.warps.WarpGroup;
 import com.noahhusby.sledgehammer.common.warps.WarpGroupConfigPayload;
 import com.noahhusby.sledgehammer.common.warps.WarpGroupPayload;
 import com.noahhusby.sledgehammer.common.warps.WarpPayload;
-import com.noahhusby.sledgehammer.proxy.utils.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;
 import com.noahhusby.sledgehammer.proxy.network.NetworkHandler;
@@ -313,7 +313,7 @@ public class WarpHandler {
                 servers.get(warp.getServer()).add(warp.getId());
             }
         }
-        return new WarpPayload(page, editAccess, local, localGroup, player.trackAction(), warps, groups, servers);
+        return new WarpPayload(editAccess, local, localGroup, player.trackAction(), warps, groups, servers, page);
     }
 
     /**

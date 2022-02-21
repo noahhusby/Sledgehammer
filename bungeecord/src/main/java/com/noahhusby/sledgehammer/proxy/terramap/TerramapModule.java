@@ -47,19 +47,16 @@ import java.util.concurrent.TimeUnit;
  */
 public class TerramapModule implements Module, Listener {
 
-    public static TerramapModule instance;
-
     public static final String TERRAMAP_MODID = "terramap";
     public static final String MAPSYNC_CHANNEL_NAME = "terramap:mapsync";
     public static final String SLEDGEHAMMER_CHANNEL_NAME = "terramap:sh"; // Forge does not support channel names longer than 20
     public static final TerramapVersion MINIMUM_COMPATIBLE_VERSION = new TerramapVersion(1, 0, 0, ReleaseType.BETA, 6, 0);
     public static final TerramapVersion OLDEST_TERRA121_TERRAMAP_VERSION = new TerramapVersion(1, 0, 0, ReleaseType.BETA, 6, 7);
-
     public static final String PLAYER_SYNC_PERMISSION_NODE = "sledgehammer.terramap.playersync";
     public static final String TERRASHOW_BASE_PERMISSION_NODE = "sledgehammer.terramap.terrashow";
     public static final String TERRASHOW_SELF_PERMISSION_NODE = "sledgehammer.terramap.terrashow.self";
     public static final String TERRASHOW_OTHERS_PERMISSION_NODE = "sledgehammer.terramap.terrashow.other";
-
+    public static TerramapModule instance;
     public final ForgeChannel mapSyncChannel = ForgeChannelRegistry.instance().get(MAPSYNC_CHANNEL_NAME);
     public final ForgeChannel sledgehammerChannel = ForgeChannelRegistry.instance().get(SLEDGEHAMMER_CHANNEL_NAME);
 

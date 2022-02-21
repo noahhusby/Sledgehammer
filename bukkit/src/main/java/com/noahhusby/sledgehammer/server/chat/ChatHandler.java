@@ -34,12 +34,11 @@ import java.util.function.BiConsumer;
 
 public class ChatHandler implements Listener {
     private static ChatHandler instance = null;
+    private final Map<Player, BiConsumer<Boolean, String>> entries = Maps.newHashMap();
 
     public static ChatHandler getInstance() {
         return instance == null ? instance = new ChatHandler() : instance;
     }
-
-    private final Map<Player, BiConsumer<Boolean, String>> entries = Maps.newHashMap();
 
     public void startEntry(Player player, String message, BiConsumer<Boolean, String> consumer) {
         entries.remove(player);

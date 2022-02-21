@@ -21,12 +21,10 @@
 package com.noahhusby.sledgehammer.common.projection;
 
 public class InvertableVectorField {
+    protected static final double ROOT3 = Math.sqrt(3);
+    public final int sideLength;
     protected final double[][] VECTOR_X;
     protected final double[][] VECTOR_Y;
-
-    protected static final double ROOT3 = Math.sqrt(3);
-
-    public final int sideLength;
 
     public InvertableVectorField(double[][] vx, double[][] vy) {
         sideLength = vx.length - 1;

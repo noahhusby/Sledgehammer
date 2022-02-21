@@ -21,7 +21,7 @@
 package com.noahhusby.sledgehammer.proxy.network.s2p;
 
 import com.google.gson.JsonObject;
-import com.noahhusby.sledgehammer.proxy.utils.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.config.SledgehammerConfig;

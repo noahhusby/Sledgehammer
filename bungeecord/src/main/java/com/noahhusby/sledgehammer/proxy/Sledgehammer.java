@@ -51,6 +51,24 @@ public class Sledgehammer extends Plugin implements Listener {
     @Getter
     private static Sledgehammer instance;
 
+    /**
+     * Add a new listener to the Sledgehammer plugin
+     *
+     * @param listener {@link Listener}
+     */
+    public static void addListener(Listener listener) {
+        ProxyServer.getInstance().getPluginManager().registerListener(instance, listener);
+    }
+
+    /**
+     * Removes a listener
+     *
+     * @param listener {@link Listener}
+     */
+    public static void removeListener(Listener listener) {
+        ProxyServer.getInstance().getPluginManager().unregisterListener(listener);
+    }
+
     @Override
     public void onEnable() {
         instance = this;
@@ -112,23 +130,5 @@ public class Sledgehammer extends Plugin implements Listener {
         onDisable();
         onEnable();
         Sledgehammer.logger.warning("Reloaded Sledgehammer!");
-    }
-
-    /**
-     * Add a new listener to the Sledgehammer plugin
-     *
-     * @param listener {@link Listener}
-     */
-    public static void addListener(Listener listener) {
-        ProxyServer.getInstance().getPluginManager().registerListener(instance, listener);
-    }
-
-    /**
-     * Removes a listener
-     *
-     * @param listener {@link Listener}
-     */
-    public static void removeListener(Listener listener) {
-        ProxyServer.getInstance().getPluginManager().unregisterListener(listener);
     }
 }

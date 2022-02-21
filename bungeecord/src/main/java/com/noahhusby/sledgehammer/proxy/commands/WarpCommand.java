@@ -22,7 +22,7 @@ package com.noahhusby.sledgehammer.proxy.commands;
 
 import com.noahhusby.sledgehammer.common.warps.Warp;
 import com.noahhusby.sledgehammer.common.warps.WarpGroup;
-import com.noahhusby.sledgehammer.proxy.utils.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.warps.WarpFragmentManager;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.warps.WarpListFragment;

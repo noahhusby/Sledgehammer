@@ -50,15 +50,14 @@ import java.util.Map;
 
 public class NetworkHandler implements Listener, Module {
     private static NetworkHandler instance = null;
-
-    public static NetworkHandler getInstance() {
-        return instance == null ? instance = new NetworkHandler() : instance;
-    }
+    private final Map<String, S2PPacket> registeredPackets = new CaseInsensitiveMap<>();
 
     private NetworkHandler() {
     }
 
-    private final Map<String, S2PPacket> registeredPackets = new CaseInsensitiveMap<>();
+    public static NetworkHandler getInstance() {
+        return instance == null ? instance = new NetworkHandler() : instance;
+    }
 
     /**
      * Register incoming packets

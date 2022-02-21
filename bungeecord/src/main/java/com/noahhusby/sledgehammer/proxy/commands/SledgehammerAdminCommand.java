@@ -20,7 +20,7 @@
 
 package com.noahhusby.sledgehammer.proxy.commands;
 
-import com.noahhusby.sledgehammer.proxy.utils.ChatUtil;
+import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.FragmentManager;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.ReloadFragment;
 import com.noahhusby.sledgehammer.proxy.commands.fragments.admin.ServerFragment;

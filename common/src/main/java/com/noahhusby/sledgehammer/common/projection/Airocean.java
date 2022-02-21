@@ -22,51 +22,6 @@ package com.noahhusby.sledgehammer.common.projection;
 
 public class Airocean extends GeographicProjection {
 
-    protected static final double ARC = 2 * Math.asin(Math.sqrt(5 - Math.sqrt(5)) / Math.sqrt(10));
-
-    protected static final double TO_RADIANS = Math.PI / 180.0;
-    protected static final double ROOT3 = Math.sqrt(3);
-
-    protected static final double[] VERT = new double[]{
-            10.536199, 64.700000,
-            -5.245390, 2.300882,
-            58.157706, 10.447378,
-            122.300000, 39.100000,
-            -143.478490, 50.103201,
-            -67.132330, 23.717925,
-            36.521510, -50.103200,
-            112.867673, -23.717930,
-            174.754610, -2.300882,
-            -121.842290, -10.447350,
-            -57.700000, -39.100000,
-            -169.463800, -64.700000,
-    };
-
-    protected static final int[] ISO = new int[]{
-            2, 1, 6,
-            1, 0, 2,
-            0, 1, 5,
-            1, 5, 10,
-            1, 6, 10,
-            7, 2, 6,
-            2, 3, 7,
-            3, 0, 2,
-            0, 3, 4,
-            4, 0, 5, //9, qubec
-            5, 4, 9,
-            9, 5, 10,
-            10, 9, 11,
-            11, 6, 10,
-            6, 7, 11,
-            8, 3, 7,
-            8, 3, 4,
-            8, 4, 9,
-            9, 8, 11,
-            7, 8, 11,
-            11, 6, 7, //child of 14
-            3, 7, 8, //child of 15
-    };
-
     public static final double[] CENTER_MAP = new double[]{
             -3, 7,
             -2, 5,
@@ -91,17 +46,67 @@ public class Airocean extends GeographicProjection {
             -5, -5, //20, pseudo triangle, child of 14
             -2, -7, //21 , pseudo triangle, child of 15
     };
-
     public static final byte[] FLIP_TRIANGLE = new byte[]{
             1, 0, 1, 0, 0,
             1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
             1, 1, 1, 0, 0,
             1, 0,
     };
-
+    public static final double[] OUT_OF_BOUNDS = new double[]{ Double.NaN, Double.NaN };
+    protected static final double ARC = 2 * Math.asin(Math.sqrt(5 - Math.sqrt(5)) / Math.sqrt(10));
+    protected static final double TO_RADIANS = Math.PI / 180.0;
+    protected static final double ROOT3 = Math.sqrt(3);
+    protected static final double[] VERT = new double[]{
+            10.536199, 64.700000,
+            -5.245390, 2.300882,
+            58.157706, 10.447378,
+            122.300000, 39.100000,
+            -143.478490, 50.103201,
+            -67.132330, 23.717925,
+            36.521510, -50.103200,
+            112.867673, -23.717930,
+            174.754610, -2.300882,
+            -121.842290, -10.447350,
+            -57.700000, -39.100000,
+            -169.463800, -64.700000,
+    };
+    protected static final int[] ISO = new int[]{
+            2, 1, 6,
+            1, 0, 2,
+            0, 1, 5,
+            1, 5, 10,
+            1, 6, 10,
+            7, 2, 6,
+            2, 3, 7,
+            3, 0, 2,
+            0, 3, 4,
+            4, 0, 5, //9, qubec
+            5, 4, 9,
+            9, 5, 10,
+            10, 9, 11,
+            11, 6, 10,
+            6, 7, 11,
+            8, 3, 7,
+            8, 3, 4,
+            8, 4, 9,
+            9, 8, 11,
+            7, 8, 11,
+            11, 6, 7, //child of 14
+            3, 7, 8, //child of 15
+    };
     protected static final double[] CENTROID = new double[66];
     protected static final double[] ROTATION_MATRIX = new double[198];
     protected static final double[] INVERSE_ROTATION_MATRIX = new double[198];
+    protected static final int[] FACE_ON_GRID = new int[]{
+            -1, -1, 0, 1, 2, -1, -1, 3, -1, 4, -1,
+            -1, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+            20, 19, 15, 21, 16, -1, 17, 18, -1, -1, -1,
+    };
+    protected static final double Z = Math.sqrt(5 + 2 * Math.sqrt(5)) / Math.sqrt(15);
+    protected static final double EL = Math.sqrt(8) / Math.sqrt(5 + Math.sqrt(5));
+    protected static final double EL6 = EL / 6;
+    protected static final double DVE = Math.sqrt(3 + Math.sqrt(5)) / Math.sqrt(5 + Math.sqrt(5));
+    protected static final double R = -3 * EL6 / DVE;
 
     static {
 
@@ -163,7 +168,6 @@ public class Airocean extends GeographicProjection {
         out[offset + 8] = cosb;
     }
 
-
     protected static double[] cart(double lambda, double phi) {
         double sinphi = Math.sin(phi);
         return new double[]{ sinphi * Math.cos(lambda), sinphi * Math.sin(lambda), Math.cos(phi) };
@@ -194,12 +198,6 @@ public class Airocean extends GeographicProjection {
 
         return face;
     }
-
-    protected static final int[] FACE_ON_GRID = new int[]{
-            -1, -1, 0, 1, 2, -1, -1, 3, -1, 4, -1,
-            -1, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
-            20, 19, 15, 21, 16, -1, 17, 18, -1, -1, -1,
-    };
 
     protected static int findTriangleGrid(double x, double y) {
 
@@ -244,11 +242,23 @@ public class Airocean extends GeographicProjection {
         return FACE_ON_GRID[row * 11 + col]; //get face at this position
     }
 
-    protected static final double Z = Math.sqrt(5 + 2 * Math.sqrt(5)) / Math.sqrt(15);
-    protected static final double EL = Math.sqrt(8) / Math.sqrt(5 + Math.sqrt(5));
-    protected static final double EL6 = EL / 6;
-    protected static final double DVE = Math.sqrt(3 + Math.sqrt(5)) / Math.sqrt(5 + Math.sqrt(5));
-    protected static final double R = -3 * EL6 / DVE;
+    static double[] yRot(double lambda, double phi, double rot) {
+        double[] c = cart(lambda, phi);
+
+        double x = c[0];
+        c[0] = c[2] * Math.sin(rot) + x * Math.cos(rot);
+        c[2] = c[2] * Math.cos(rot) - x * Math.sin(rot);
+
+        double mag = Math.sqrt(c[0] * c[0] + c[1] * c[1] + c[2] * c[2]);
+        c[0] /= mag;
+        c[1] /= mag;
+        c[2] /= mag;
+
+        return new double[]{
+                Math.atan2(c[1], c[0]),
+                Math.atan2(Math.sqrt(c[0] * c[0] + c[1] * c[1]), c[2])
+        };
+    }
 
     protected double[] triangleTransform(double x, double y, double z) {
 
@@ -311,24 +321,6 @@ public class Airocean extends GeographicProjection {
         return inverseTriangleTransformNewton(x, y);
     }
 
-    static double[] yRot(double lambda, double phi, double rot) {
-        double[] c = cart(lambda, phi);
-
-        double x = c[0];
-        c[0] = c[2] * Math.sin(rot) + x * Math.cos(rot);
-        c[2] = c[2] * Math.cos(rot) - x * Math.sin(rot);
-
-        double mag = Math.sqrt(c[0] * c[0] + c[1] * c[1] + c[2] * c[2]);
-        c[0] /= mag;
-        c[1] /= mag;
-        c[2] /= mag;
-
-        return new double[]{
-                Math.atan2(c[1], c[0]),
-                Math.atan2(Math.sqrt(c[0] * c[0] + c[1] * c[1]), c[2])
-        };
-    }
-
     public double[] fromGeo(double lon, double lat) {
 
         lat = 90 - lat;
@@ -370,8 +362,6 @@ public class Airocean extends GeographicProjection {
 
         return out;
     }
-
-    public static final double[] OUT_OF_BOUNDS = new double[]{ Double.NaN, Double.NaN };
 
     public double[] toGeo(double x, double y) {
         int face = findTriangleGrid(x, y);

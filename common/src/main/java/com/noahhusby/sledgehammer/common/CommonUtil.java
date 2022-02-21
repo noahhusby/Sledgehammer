@@ -25,6 +25,13 @@ import com.noahhusby.sledgehammer.common.exceptions.InvalidCoordinatesException;
 import com.noahhusby.sledgehammer.common.projection.GeographicProjection;
 import com.noahhusby.sledgehammer.common.projection.ModifiedAirocean;
 import com.noahhusby.sledgehammer.common.projection.ScaleProjection;
+import com.noahhusby.sledgehammer.common.utils.CoordinateParseUtils;
+import com.noahhusby.sledgehammer.common.utils.LatLng;
+import com.noahhusby.sledgehammer.common.utils.LatLngHeight;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Noah Husby
@@ -68,30 +75,70 @@ public abstract class CommonUtil {
         return scaleProj;
     }
 
-    public static double[] parseCoordinates(String[] c) throws InvalidCoordinatesException {
-        String[] splitCoords = c[0].split(",");
-        if (splitCoords.length == 2 && c.length < 3) { // lat and long in single arg
-            c = splitCoords;
+    /**
+     * Gets a space seperated string from an array
+     *
+     * @param args A string array
+     * @return The space seperated String
+     */
+    public static String getRawArguments(String[] args) {
+        StringBuilder builder = new StringBuilder();
+        Arrays.stream(args).forEach(s -> builder.append(" ").append(s));
+        return builder.toString().trim();
+    }
+
+    /**
+     * Gets all objects in a string array above a given index
+     *
+     * @param args  Initial array
+     * @param index Starting index
+     * @return Selected array
+     */
+    public static String[] selectArray(String[] args, int index) {
+        List<String> array = new ArrayList<>(Arrays.asList(args).subList(index, args.length));
+        return array.toArray(array.toArray(new String[array.size()]));
+    }
+
+    public static String[] inverseSelectArray(String[] args, int index) {
+        List<String> array = new ArrayList<>(Arrays.asList(args).subList(0, index));
+        return array.toArray(array.toArray(new String[array.size()]));
+    }
+
+    public static LatLngHeight parseCoordinates(String[] args) throws InvalidCoordinatesException {
+        double altitude = Double.NaN;
+        LatLng defaultCoords = CoordinateParseUtils.parseVerbatimCoordinates(getRawArguments(args).trim());
+
+        if (defaultCoords == null) {
+            LatLng possiblePlayerCoords = CoordinateParseUtils.parseVerbatimCoordinates(getRawArguments(selectArray(args, 1)));
+            if (possiblePlayerCoords != null) {
+                defaultCoords = possiblePlayerCoords;
+            }
         }
 
-        if (c[0].endsWith(",")) {
-            c[0] = c[0].substring(0, c[0].length() - 1);
+        if (args.length > 1) {
+            LatLng possibleHeightCoords = CoordinateParseUtils.parseVerbatimCoordinates(getRawArguments(inverseSelectArray(args, args.length - 1)));
+            if (possibleHeightCoords != null) {
+                defaultCoords = possibleHeightCoords;
+                try {
+                    altitude = Double.parseDouble(args[args.length - 1]);
+                } catch (Exception ignored) {
+                }
+            }
+
+            LatLng possibleHeightNameCoords = CoordinateParseUtils.parseVerbatimCoordinates(getRawArguments(inverseSelectArray(selectArray(args, 1), selectArray(args, 1).length - 1)));
+            if (possibleHeightNameCoords != null) {
+                defaultCoords = possibleHeightNameCoords;
+                try {
+                    altitude = Double.parseDouble(selectArray(args, 1)[selectArray(args, 1).length - 1]);
+                } catch (Exception e) {
+                    altitude = Double.NaN;
+                }
+            }
         }
-        if (c.length > 1 && c[1].endsWith(",")) {
-            c[1] = c[1].substring(0, c[1].length() - 1);
-        }
-        if (c.length != 2 && c.length != 3) {
+
+        if (defaultCoords == null) {
             throw new InvalidCoordinatesException();
         }
-
-        double[] coordinates = new double[2];
-
-        try {
-            coordinates[0] = Double.parseDouble(c[0]);
-            coordinates[1] = Double.parseDouble(c[1]);
-        } catch (Exception e) {
-            throw new InvalidCoordinatesException();
-        }
-        return coordinates;
+        return new LatLngHeight(defaultCoords.getLat(), defaultCoords.getLon(), altitude);
     }
 }

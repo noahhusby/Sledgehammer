@@ -211,6 +211,27 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
     }
 
     /**
+     * Gets the given player's Terramap version.
+     * The player needs to have logged onto a Forge server at least once for this to work.
+     * If it's not the case then this will return null, even though that may be wrong.
+     *
+     * @return the player Terramap version, or null if they don't have it
+     */
+    public static TerramapVersion getClientVersion(ProxiedPlayer player) {
+        Map<String, String> modList = player.getModList();
+        TerramapVersion version = null;
+        String remoteVersion = modList.get(TerramapModule.TERRAMAP_MODID);
+        if (remoteVersion != null) {
+            try {
+                version = new TerramapVersion(remoteVersion);
+            } catch (InvalidVersionString e) {
+                Sledgehammer.logger.warning("Failed to parse a client's Terramap version: " + remoteVersion + " : " + e.getLocalizedMessage());
+            }
+        }
+        return version;
+    }
+
+    /**
      * Returns a version String for this version
      */
     @Override
@@ -377,27 +398,6 @@ public class TerramapVersion implements Comparable<TerramapVersion> {
         } else {
             return TerraDependency.TERRA121;
         }
-    }
-
-    /**
-     * Gets the given player's Terramap version.
-     * The player needs to have logged onto a Forge server at least once for this to work.
-     * If it's not the case then this will return null, even though that may be wrong.
-     *
-     * @return the player Terramap version, or null if they don't have it
-     */
-    public static TerramapVersion getClientVersion(ProxiedPlayer player) {
-        Map<String, String> modList = player.getModList();
-        TerramapVersion version = null;
-        String remoteVersion = modList.get(TerramapModule.TERRAMAP_MODID);
-        if (remoteVersion != null) {
-            try {
-                version = new TerramapVersion(remoteVersion);
-            } catch (InvalidVersionString e) {
-                Sledgehammer.logger.warning("Failed to parse a client's Terramap version: " + remoteVersion + " : " + e.getLocalizedMessage());
-            }
-        }
-        return version;
     }
 
     /**

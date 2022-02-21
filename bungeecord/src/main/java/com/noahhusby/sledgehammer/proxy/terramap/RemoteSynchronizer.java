@@ -44,6 +44,10 @@ public class RemoteSynchronizer {
 
     private final Map<UUID, RegisteredForUpdatePlayer> playersToUpdate = new HashMap<>();
 
+    public static boolean hasSyncPermission(ProxiedPlayer player) {
+        return player.hasPermission(TerramapModule.PLAYER_SYNC_PERMISSION_NODE) || PlayerHandler.getInstance().isAdmin(player);
+    }
+
     /**
      * Sends position updates to registered players
      */
@@ -124,10 +128,6 @@ public class RemoteSynchronizer {
         synchronized (this.playersToUpdate) {
             this.playersToUpdate.clear();
         }
-    }
-
-    public static boolean hasSyncPermission(ProxiedPlayer player) {
-        return player.hasPermission(TerramapModule.PLAYER_SYNC_PERMISSION_NODE) || PlayerHandler.getInstance().isAdmin(player);
     }
 
     private static class RegisteredForUpdatePlayer {

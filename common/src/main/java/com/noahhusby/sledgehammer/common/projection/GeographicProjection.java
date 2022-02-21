@@ -42,10 +42,6 @@ public class GeographicProjection {
         return base;
     }
 
-    public enum Orientation {
-        none, upright, swapped
-    }
-
     public double[] toGeo(double x, double y) {
         return new double[]{ x, y };
     }
@@ -95,5 +91,9 @@ public class GeographicProjection {
                 geo[1] + north * 360.0 / EARTH_POLAR_CIRCUMFERENCE);
 
         return new double[]{ off[0] - x, off[1] - y };
+    }
+
+    public enum Orientation {
+        none, upright, swapped
     }
 }

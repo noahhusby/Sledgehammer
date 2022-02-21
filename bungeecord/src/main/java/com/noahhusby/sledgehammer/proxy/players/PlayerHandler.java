@@ -39,15 +39,14 @@ import java.util.UUID;
 
 public class PlayerHandler implements Listener, Module {
     private static PlayerHandler instance = null;
-
-    public static PlayerHandler getInstance() {
-        return instance == null ? instance = new PlayerHandler() : instance;
-    }
-
     @Getter
     private final Map<UUID, SledgehammerPlayer> players = Maps.newHashMap();
     @Getter
     private final StorageHashMap<UUID, Attribute> attributes = new StorageHashMap<>(Attribute.class);
+
+    public static PlayerHandler getInstance() {
+        return instance == null ? instance = new PlayerHandler() : instance;
+    }
 
     /**
      * Creates a new SledgehammerPlayer and sets attributes from storage upon player joining

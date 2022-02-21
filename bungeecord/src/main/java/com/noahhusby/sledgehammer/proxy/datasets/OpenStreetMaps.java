@@ -42,37 +42,60 @@ import java.util.Map;
 
 public class OpenStreetMaps implements Module {
     private static OpenStreetMaps instance = null;
+    private ReverseGeocoder offlineGeocoder;
+
+    private OpenStreetMaps() {
+    }
 
     public static OpenStreetMaps getInstance() {
         return instance == null ? instance = new OpenStreetMaps() : instance;
     }
 
-    private OpenStreetMaps() {
+    /**
+     * Gets estimated data from offline OSM database
+     *
+     * @param f The parsed offline data field
+     * @return {@link OfflineDataField}
+     */
+    private static OfflineDataField getDataField(String f) {
+        if (f == null) {
+            return null;
+        }
+        String[] data = f.trim().replaceAll(" ", "space").replaceAll("\\s+", ";;")
+                .replaceAll("space", " ").trim().split(";;");
+        String a = "";
+        String b = "";
+        if (data.length > 1) {
+            a = data[1];
+        }
+        if (data.length > 2) {
+            b = data[2];
+        }
+        String c = data[data.length - 1].trim();
+        return new OfflineDataField(a, b, c);
     }
-
-    private ReverseGeocoder offlineGeocoder;
 
     /**
      * Gets a server from geographical coordinates
      *
-     * @param lon Longitude
      * @param lat Latitude
+     * @param lon Longitude
      * @return Returns {@link ServerInfo} if a valid region is found, or null if not
      */
-    public ServerInfo getServerFromLocation(double lon, double lat) {
-        return getServerFromLocation(lon, lat, SledgehammerConfig.geography.useOfflineMode);
+    public ServerInfo getServerFromLocation(double lat, double lon) {
+        return getServerFromLocation(lat, lon, SledgehammerConfig.geography.useOfflineMode);
     }
 
     /**
      * Gets a server from geographical coordinates
      *
-     * @param lon     Longitude
      * @param lat     Latitude
+     * @param lon     Longitude
      * @param offline True to use offline database
      * @return Returns {@link ServerInfo} if a valid region is found, or null if not
      */
-    public ServerInfo getServerFromLocation(double lon, double lat, boolean offline) {
-        Location location = offline ? getOfflineLocation(lon, lat) : getLocation(lon, lat);
+    public ServerInfo getServerFromLocation(double lat, double lon, boolean offline) {
+        Location location = offline ? getOfflineLocation(lat, lon) : getLocation(lat, lon);
         if (location == null) {
             return null;
         }
@@ -137,25 +160,25 @@ public class OpenStreetMaps implements Module {
     /**
      * Generates {@link Location} from geographical coordinates
      *
-     * @param lon Longitude
      * @param lat Latitude
+     * @param lon Longitude
      * @return {@link Location}
      */
-    public Location getLocation(double lon, double lat) {
-        return getLocation(lon, lat, SledgehammerConfig.geography.zoom);
+    public Location getLocation(double lat, double lon) {
+        return getLocation(lat, lon, SledgehammerConfig.geography.zoom);
     }
 
     /**
      * Generates {@link Location} from geographical coordinates
      *
-     * @param lon  Longitude
      * @param lat  Latitude
+     * @param lon  Longitude
      * @param zoom Zoom level
      * @return {@link Location}
      */
-    public Location getLocation(double lon, double lat, int zoom) {
+    public Location getLocation(double lat, double lon, int zoom) {
         try {
-            String fullRequest = Constants.nominatimAPI.replace("{zoom}", String.valueOf(zoom)) + "&lon=" + lon + "&accept-language=en&lat=" + lat;
+            String fullRequest = Constants.nominatimAPI.replace("{zoom}", String.valueOf(zoom)) + "&lat=" + lat + "&accept-language=en&lon=" + lon;
 
             URL url = new URL(fullRequest);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -201,11 +224,11 @@ public class OpenStreetMaps implements Module {
     /**
      * Get location from geographical coordinates from an offline bin
      *
-     * @param lon Longitude
      * @param lat Latitude
+     * @param lon Longitude
      * @return {@link Location}
      */
-    public Location getOfflineLocation(double lon, double lat) {
+    public Location getOfflineLocation(double lat, double lon) {
         String[] data = offlineGeocoder.lookup((float) lon, (float) lat);
         String city = null;
         String county = null;
@@ -233,30 +256,6 @@ public class OpenStreetMaps implements Module {
         }
 
         return new Location(Location.Detail.none, city, county, state, country);
-    }
-
-    /**
-     * Gets estimated data from offline OSM database
-     *
-     * @param f The parsed offline data field
-     * @return {@link OfflineDataField}
-     */
-    private static OfflineDataField getDataField(String f) {
-        if (f == null) {
-            return null;
-        }
-        String[] data = f.trim().replaceAll(" ", "space").replaceAll("\\s+", ";;")
-                .replaceAll("space", " ").trim().split(";;");
-        String a = "";
-        String b = "";
-        if (data.length > 1) {
-            a = data[1];
-        }
-        if (data.length > 2) {
-            b = data[2];
-        }
-        String c = data[data.length - 1].trim();
-        return new OfflineDataField(a, b, c);
     }
 
     @Override

@@ -21,7 +21,8 @@
 package com.noahhusby.sledgehammer.proxy.commands;
 
 import com.noahhusby.sledgehammer.common.exceptions.InvalidCoordinatesException;
-import com.noahhusby.sledgehammer.proxy.utils.ChatUtil;
+import com.noahhusby.sledgehammer.common.utils.LatLngHeight;
+import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.network.p2s.P2SLocationPacket;
 import com.noahhusby.sledgehammer.proxy.players.Permission;
@@ -55,19 +56,21 @@ public class TplloCommand extends Command {
         permissionFuture.thenAccept(permission -> {
             if (permission.isLocal()) {
                 if (a.length == 0) {
-                    sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "Usage: /tpllo <lat> <lon>"));
+                    sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "Usage: /tpllo <lat> <lon> [alt]"));
                     return;
                 }
 
                 try {
-                    double[] coordinates = SledgehammerUtil.parseCoordinates(a);
+                    LatLngHeight coords = SledgehammerUtil.parseCoordinates(a);
                     ServerInfo server = ((ProxiedPlayer) sender).getServer().getInfo();
                     sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "(Override) Teleporting to ",
-                            ChatColor.RED, String.format("%s, %s", coordinates[0], coordinates[1])));
-                    getNetworkManager().send(new P2SLocationPacket(sender.getName(), server.getName(), coordinates));
+                            ChatColor.BLUE, String.format("%s, %s", coords.getLat(), coords.getLon())));
+                    getNetworkManager().send(new P2SLocationPacket(sender.getName(), server.getName(), coords));
                 } catch (InvalidCoordinatesException e) {
-                    sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "Usage: /tpllo <lat> <lon>"));
+                    e.printStackTrace();
+                    sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.RED, "Usage: /tpllo <lat> <lon> [alt]"));
                 }
+                return;
             }
             sender.sendMessage(ChatUtil.getNoPermission());
         });

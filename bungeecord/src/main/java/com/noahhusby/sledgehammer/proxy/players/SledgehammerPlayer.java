@@ -63,19 +63,47 @@ import java.util.concurrent.TimeUnit;
 public class SledgehammerPlayer implements ProxiedPlayer {
 
     private final ProxiedPlayer player;
-
+    Map<String, Object> attributes = Maps.newHashMap();
     private boolean flagged = false;
     private GameMode gameMode = GameMode.NONE;
     private Point location;
     private Point track;
-    Map<String, Object> attributes = Maps.newHashMap();
-
     private String trackSalt = null;
 
     private PermissionRequest permissionRequest;
 
     public SledgehammerPlayer(ProxiedPlayer player) {
         this.player = player;
+    }
+
+    /**
+     * Get SledgehammerPlayer from player name
+     *
+     * @param s Name of player
+     * @return {@link SledgehammerPlayer}
+     */
+    public static SledgehammerPlayer getPlayer(String s) {
+        return PlayerHandler.getInstance().getPlayer(s);
+    }
+
+    /**
+     * Get SledgehammerPlayer by command sender
+     *
+     * @param s CommandSender
+     * @return {@link SledgehammerPlayer}
+     */
+    public static SledgehammerPlayer getPlayer(CommandSender s) {
+        return PlayerHandler.getInstance().getPlayer(s);
+    }
+
+    /**
+     * Gets a SledgehammerPlayer by {@link UUID}
+     *
+     * @param uuid {@link UUID}
+     * @return {@link SledgehammerPlayer}
+     */
+    public static SledgehammerPlayer getPlayer(UUID uuid) {
+        return PlayerHandler.getInstance().getPlayer(uuid);
     }
 
     @Override
@@ -556,35 +584,5 @@ public class SledgehammerPlayer implements ProxiedPlayer {
             permissionRequest = null;
         }, 500, TimeUnit.MILLISECONDS);
         return permissionFuture;
-    }
-
-    /**
-     * Get SledgehammerPlayer from player name
-     *
-     * @param s Name of player
-     * @return {@link SledgehammerPlayer}
-     */
-    public static SledgehammerPlayer getPlayer(String s) {
-        return PlayerHandler.getInstance().getPlayer(s);
-    }
-
-    /**
-     * Get SledgehammerPlayer by command sender
-     *
-     * @param s CommandSender
-     * @return {@link SledgehammerPlayer}
-     */
-    public static SledgehammerPlayer getPlayer(CommandSender s) {
-        return PlayerHandler.getInstance().getPlayer(s);
-    }
-
-    /**
-     * Gets a SledgehammerPlayer by {@link UUID}
-     *
-     * @param uuid {@link UUID}
-     * @return {@link SledgehammerPlayer}
-     */
-    public static SledgehammerPlayer getPlayer(UUID uuid) {
-        return PlayerHandler.getInstance().getPlayer(uuid);
     }
 }

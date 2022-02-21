@@ -30,8 +30,6 @@ import java.util.Map;
 @AllArgsConstructor
 @Getter
 public class WarpPayload {
-    @Setter
-    private Page defaultPage;
     private final boolean editAccess;
     private final boolean local;
     private final String localGroup;
@@ -39,4 +37,6 @@ public class WarpPayload {
     private final Map<Integer, Warp> waypoints;
     private final Map<String, WarpGroupPayload> groups;
     private final Map<String, List<Integer>> servers;
+    @Setter
+    private Page defaultPage;
 }

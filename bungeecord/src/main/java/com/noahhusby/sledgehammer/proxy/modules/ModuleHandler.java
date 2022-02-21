@@ -33,12 +33,11 @@ import java.util.Map;
 public class ModuleHandler {
     @Getter
     private static final ModuleHandler instance = new ModuleHandler();
+    @Getter
+    private final Map<Module, Boolean> modules = Maps.newLinkedHashMap();
 
     private ModuleHandler() {
     }
-
-    @Getter
-    private final Map<Module, Boolean> modules = Maps.newLinkedHashMap();
 
     /**
      * Register a new module

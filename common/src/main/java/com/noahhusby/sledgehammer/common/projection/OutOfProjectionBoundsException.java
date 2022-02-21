@@ -18,40 +18,28 @@
  *
  */
 
-package com.noahhusby.sledgehammer.proxy.commands;
+package com.noahhusby.sledgehammer.common.projection;
 
-import com.noahhusby.sledgehammer.proxy.ChatUtil;
-import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
-import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-
-public class CsTpllCommand extends Command {
-
-    public CsTpllCommand() {
-        super("cs", "");
+public final class OutOfProjectionBoundsException extends Exception {
+    /**
+     * @param x
+     * @param y
+     * @param maxX
+     * @param maxY
+     * @throws OutOfProjectionBoundsException if <code> Math.abs(x) > maxX || Math.abs(y) > maxY </code>
+     */
+    public static void checkInRange(double x, double y, double maxX, double maxY) throws OutOfProjectionBoundsException {
+        if (Math.abs(x) > maxX || Math.abs(y) > maxY) {
+            throw new OutOfProjectionBoundsException();
+        }
     }
 
-    @Override
-    public void execute(CommandSender sender, String[] args) {
-        if (!(sender instanceof ProxiedPlayer)) {
-            sender.sendMessage(ChatUtil.getPlayerOnly());
-            return;
-        }
-
-        if (args.length == 0) {
-            ((ProxiedPlayer) sender).chat("/cs");
-            return;
-        } else if (!args[0].equals("tpll")) {
-            ((ProxiedPlayer) sender).chat("/cs " + SledgehammerUtil.getRawArguments(args));
-            return;
-        }
-
-        ArrayList<String> dataList = new ArrayList<>(Arrays.asList(args).subList(1, args.length));
-        String[] data = dataList.toArray(new String[0]);
-
-        new TpllCommand().execute(sender, data);
+    /**
+     * @param longitude
+     * @param latitude
+     * @throws OutOfProjectionBoundsException if <code> Math.abs(longitude) > 180 || Math.abs(latitude) > 90 </code>
+     */
+    public static void checkLongitudeLatitudeInRange(double longitude, double latitude) throws OutOfProjectionBoundsException {
+        checkInRange(longitude, latitude, 180, 90);
     }
 }

@@ -94,6 +94,28 @@ public class ReverseGeocoder implements AutoCloseable {
         reopen();
     }
 
+    /**
+     * Read an unsigned integer.
+     *
+     * @param buffer Buffer to read from
+     * @return Integer value
+     */
+    private static int readUnsignedVarint(ByteBuffer buffer) {
+        int val = 0;
+        int bits = 0;
+        while (true) {
+            final int data = buffer.get();
+            val |= (data & 0x7F) << bits;
+            if ((data & 0x80) == 0) {
+                return val;
+            }
+            bits += 7;
+            if (bits > 35) {
+                throw new RuntimeException("Variable length quantity is too long for expected integer.");
+            }
+        }
+    }
+
     public void reopen() throws IOException {
         file = new RandomAccessFile(filename, "r");
         buffer = file.getChannel().map(MapMode.READ_ONLY, 0, file.length());
@@ -151,28 +173,6 @@ public class ReverseGeocoder implements AutoCloseable {
             }
         }
         return 0;
-    }
-
-    /**
-     * Read an unsigned integer.
-     *
-     * @param buffer Buffer to read from
-     * @return Integer value
-     */
-    private static int readUnsignedVarint(ByteBuffer buffer) {
-        int val = 0;
-        int bits = 0;
-        while (true) {
-            final int data = buffer.get();
-            val |= (data & 0x7F) << bits;
-            if ((data & 0x80) == 0) {
-                return val;
-            }
-            bits += 7;
-            if (bits > 35) {
-                throw new RuntimeException("Variable length quantity is too long for expected integer.");
-            }
-        }
     }
 
     /**
