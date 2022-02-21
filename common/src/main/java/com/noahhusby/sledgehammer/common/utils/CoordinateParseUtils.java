@@ -62,7 +62,7 @@ public final class CoordinateParseUtils {
     }
 
     /**
-     * Parses a String to a {@link LatLng} object, while being as flexible as possible.
+     * Parses a String to a {@link Coords} object, while being as flexible as possible.
      * It can understand both decimal and DMS coordinates, and even a mix of them.
      * <p>
      * Coordinates can use both a period <code>.</code>, or a comma <code>,</code> as the decimal separator,
@@ -75,7 +75,7 @@ public final class CoordinateParseUtils {
      * @param coordinates the coordinates to parse
      * @return the parsed coordinates
      */
-    public static LatLng parseVerbatimCoordinates(final String coordinates) {
+    public static Coords parseVerbatimCoordinates(final String coordinates) {
         if (Strings.isNullOrEmpty(coordinates)) {
             return null;
         }
@@ -145,22 +145,22 @@ public final class CoordinateParseUtils {
         }
     }
 
-    private static LatLng validateAndRound(double lat, double lon) throws OutOfProjectionBoundsException {
+    private static Coords validateAndRound(double lat, double lon) throws OutOfProjectionBoundsException {
         lat = roundTo6decimals(lat);
         lon = roundTo6decimals(lon);
 
         if (Double.compare(lat, 0) == 0 && Double.compare(lon, 0) == 0) {
-            return new LatLng(0, 0);
+            return new Coords(0, 0);
         }
 
         if (inRange(lat, lon)) {
-            return new LatLng(lat, lon);
+            return new Coords(lat, lon);
         }
 
         if (Double.compare(lat, 90) > 0 || Double.compare(lat, -90) < 0) {
             // try and swap
             if (inRange(lon, lat)) {
-                return new LatLng(lat, lon);
+                return new Coords(lat, lon);
             }
         }
 

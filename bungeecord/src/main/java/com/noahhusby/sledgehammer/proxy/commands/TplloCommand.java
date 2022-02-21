@@ -21,9 +21,8 @@
 package com.noahhusby.sledgehammer.proxy.commands;
 
 import com.noahhusby.sledgehammer.common.exceptions.InvalidCoordinatesException;
-import com.noahhusby.sledgehammer.common.utils.LatLngHeight;
+import com.noahhusby.sledgehammer.common.utils.Coords;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
-import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.network.p2s.P2SLocationPacket;
 import com.noahhusby.sledgehammer.proxy.players.Permission;
 import com.noahhusby.sledgehammer.proxy.players.SledgehammerPlayer;
@@ -61,7 +60,7 @@ public class TplloCommand extends Command {
                 }
 
                 try {
-                    LatLngHeight coords = SledgehammerUtil.parseCoordinates(a);
+                    Coords coords = Coords.of(a);
                     ServerInfo server = ((ProxiedPlayer) sender).getServer().getInfo();
                     sender.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "(Override) Teleporting to ",
                             ChatColor.BLUE, String.format("%s, %s", coords.getLat(), coords.getLon())));

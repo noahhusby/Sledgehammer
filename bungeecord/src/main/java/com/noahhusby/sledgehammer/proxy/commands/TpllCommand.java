@@ -22,7 +22,7 @@ package com.noahhusby.sledgehammer.proxy.commands;
 
 import com.noahhusby.sledgehammer.common.TpllMode;
 import com.noahhusby.sledgehammer.common.exceptions.InvalidCoordinatesException;
-import com.noahhusby.sledgehammer.common.utils.LatLngHeight;
+import com.noahhusby.sledgehammer.common.utils.Coords;
 import com.noahhusby.sledgehammer.proxy.ChatUtil;
 import com.noahhusby.sledgehammer.proxy.datasets.OpenStreetMaps;
 import com.noahhusby.sledgehammer.proxy.network.p2s.P2SLocationPacket;
@@ -91,18 +91,18 @@ public class TpllCommand extends Command {
                     return;
                 }
 
-                LatLngHeight coordinates;
+                Coords coordinates;
                 boolean selector = false;
 
                 try {
-                    coordinates = parseCoordinates(args);
+                    coordinates = Coords.of(args);
                 } catch (InvalidCoordinatesException ignored) {
                     usage(sender, admin);
                     return;
                 }
 
                 try {
-                    LatLngHeight temp = parseCoordinates(selectArray(args, 1));
+                    Coords temp = Coords.of(selectArray(args, 1));
                     selector = coordinates.equals(temp);
                 } catch (InvalidCoordinatesException ignored) {
                 }

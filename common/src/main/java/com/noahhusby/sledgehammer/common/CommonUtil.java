@@ -21,13 +21,9 @@
 package com.noahhusby.sledgehammer.common;
 
 import com.google.gson.Gson;
-import com.noahhusby.sledgehammer.common.exceptions.InvalidCoordinatesException;
 import com.noahhusby.sledgehammer.common.projection.GeographicProjection;
 import com.noahhusby.sledgehammer.common.projection.ModifiedAirocean;
 import com.noahhusby.sledgehammer.common.projection.ScaleProjection;
-import com.noahhusby.sledgehammer.common.utils.CoordinateParseUtils;
-import com.noahhusby.sledgehammer.common.utils.LatLng;
-import com.noahhusby.sledgehammer.common.utils.LatLngHeight;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -102,43 +98,5 @@ public abstract class CommonUtil {
     public static String[] inverseSelectArray(String[] args, int index) {
         List<String> array = new ArrayList<>(Arrays.asList(args).subList(0, index));
         return array.toArray(array.toArray(new String[array.size()]));
-    }
-
-    public static LatLngHeight parseCoordinates(String[] args) throws InvalidCoordinatesException {
-        double altitude = Double.NaN;
-        LatLng defaultCoords = CoordinateParseUtils.parseVerbatimCoordinates(getRawArguments(args).trim());
-
-        if (defaultCoords == null) {
-            LatLng possiblePlayerCoords = CoordinateParseUtils.parseVerbatimCoordinates(getRawArguments(selectArray(args, 1)));
-            if (possiblePlayerCoords != null) {
-                defaultCoords = possiblePlayerCoords;
-            }
-        }
-
-        if (args.length > 1) {
-            LatLng possibleHeightCoords = CoordinateParseUtils.parseVerbatimCoordinates(getRawArguments(inverseSelectArray(args, args.length - 1)));
-            if (possibleHeightCoords != null) {
-                defaultCoords = possibleHeightCoords;
-                try {
-                    altitude = Double.parseDouble(args[args.length - 1]);
-                } catch (Exception ignored) {
-                }
-            }
-
-            LatLng possibleHeightNameCoords = CoordinateParseUtils.parseVerbatimCoordinates(getRawArguments(inverseSelectArray(selectArray(args, 1), selectArray(args, 1).length - 1)));
-            if (possibleHeightNameCoords != null) {
-                defaultCoords = possibleHeightNameCoords;
-                try {
-                    altitude = Double.parseDouble(selectArray(args, 1)[selectArray(args, 1).length - 1]);
-                } catch (Exception e) {
-                    altitude = Double.NaN;
-                }
-            }
-        }
-
-        if (defaultCoords == null) {
-            throw new InvalidCoordinatesException();
-        }
-        return new LatLngHeight(defaultCoords.getLat(), defaultCoords.getLon(), altitude);
     }
 }

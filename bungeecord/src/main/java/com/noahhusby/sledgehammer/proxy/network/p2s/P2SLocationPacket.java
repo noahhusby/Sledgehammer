@@ -21,7 +21,7 @@
 package com.noahhusby.sledgehammer.proxy.network.p2s;
 
 import com.google.gson.JsonObject;
-import com.noahhusby.sledgehammer.common.utils.LatLngHeight;
+import com.noahhusby.sledgehammer.common.utils.Coords;
 import com.noahhusby.sledgehammer.proxy.Constants;
 import com.noahhusby.sledgehammer.proxy.SledgehammerUtil;
 import com.noahhusby.sledgehammer.proxy.network.P2SPacket;
@@ -35,7 +35,7 @@ public class P2SLocationPacket extends P2SPacket {
 
     private final String sender;
     private final String server;
-    private final LatLngHeight coords;
+    private final Coords coords;
 
     @Override
     public String getPacketID() {
