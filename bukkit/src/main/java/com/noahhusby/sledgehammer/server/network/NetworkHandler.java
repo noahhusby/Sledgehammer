@@ -37,6 +37,7 @@ public class NetworkHandler implements Listener {
     private final Map<String, P2SPacket> registeredPackets;
     private final Map<JsonObject, String> cachedPackets;
     private final MessageChannel channel;
+
     private NetworkHandler() {
         registeredPackets = Maps.newHashMap();
         cachedPackets = Maps.newHashMap();

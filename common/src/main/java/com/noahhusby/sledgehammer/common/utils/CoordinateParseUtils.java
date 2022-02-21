@@ -4,7 +4,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.noahhusby.sledgehammer.common.projection.OutOfProjectionBoundsException;
 import lombok.experimental.UtilityClass;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -201,10 +200,10 @@ public final class CoordinateParseUtils {
 
         // Look for a potential delimiter that only appears once and is not at the start or end of the string
         for (final char delimiter : PART_DELIMITERS) {
-            int count = StringUtils.countMatches(coordinates, String.valueOf(delimiter));
+            int count = countMatches(coordinates, String.valueOf(delimiter));
             int delimiterIndex;
             if (count == 1 && (delimiterIndex = coordinates.indexOf(delimiter)) > 0 && delimiterIndex < coordinates.length() - 1) {
-                return StringUtils.split(coordinates, delimiter);
+                return split(coordinates, delimiter);
             }
         }
 
@@ -297,5 +296,48 @@ public final class CoordinateParseUtils {
             }
         }
         return -1;
+    }
+
+    private static int countMatches(final CharSequence str, final CharSequence sub) {
+        if (str.length() == 0 || sub.length() == 0) {
+            return 0;
+        }
+        int count = 0;
+        int idx = 0;
+        while ((idx = ((String) str).indexOf(sub.toString(), idx)) != -1) {
+            count++;
+            idx += sub.length();
+        }
+        return count;
+    }
+
+    private static String[] split(final String str, final char separatorChar) {
+        if (str == null) {
+            return null;
+        }
+        final int len = str.length();
+        if (len == 0) {
+            return new String[]{};
+        }
+        final List<String> list = new ArrayList<>();
+        int i = 0;
+        int start = 0;
+        boolean match = false;
+        while (i < len) {
+            if (str.charAt(i) == separatorChar) {
+                if (match) {
+                    list.add(str.substring(start, i));
+                    match = false;
+                }
+                start = ++i;
+                continue;
+            }
+            match = true;
+            i++;
+        }
+        if (match) {
+            list.add(str.substring(start, i));
+        }
+        return list.toArray(new String[]{});
     }
 }

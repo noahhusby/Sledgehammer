@@ -61,6 +61,7 @@ public class ConfigHandler {
     private File dataFolder;
     @Getter
     private File offlineBin;
+
     private ConfigHandler() {
     }
 
