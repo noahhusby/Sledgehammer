@@ -20,8 +20,8 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
       - name: Archive
-        if: github.ref == 'refs/heads/master'
       - uses: actions/upload-artifact@v2
+        if: github.ref == 'refs/heads/master'
         with:
           name: Sledgehammer
           path: build/libs/*.jar
