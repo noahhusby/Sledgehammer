@@ -31,8 +31,7 @@ allprojects {
     ext {
         sledgehammerVersion = "0.5." + ('git rev-list --count HEAD'.execute().text.trim())
 
-        gsonVersion = "2.8.9"
-        langVersion = "3.12.0"
+        gsonVersion = "2.9.0"
         hikariVersion = "4.0.3"
         lombokVersion = "1.18.22"
         husbyVersion = "0.1.110"
