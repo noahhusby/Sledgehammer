@@ -73,6 +73,8 @@ public class Sledgehammer extends Plugin implements Listener {
     public void onEnable() {
         instance = this;
         logger = getLogger();
+        // Manually load version
+        Constants.loadVersion(getDescription().getVersion());
         Configurator.setLevel("org.mongodb.driver.cluster", Level.FATAL);
         Configurator.setLevel("org.mongodb.driver.connection", Level.FATAL);
 

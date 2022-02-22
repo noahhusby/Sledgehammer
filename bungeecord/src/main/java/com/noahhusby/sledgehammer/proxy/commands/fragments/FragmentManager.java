@@ -38,10 +38,10 @@ import java.util.Map;
  */
 @AllArgsConstructor
 public class FragmentManager {
-    private final String title;
-    private final Map<String, ICommandFragment> fragments = Maps.newHashMap();
     @Setter
     private String base;
+    private final String title;
+    private final Map<String, ICommandFragment> fragments = Maps.newHashMap();
 
     public void register(ICommandFragment fragment) {
         fragments.put(fragment.getName(), fragment);

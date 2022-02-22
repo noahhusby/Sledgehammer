@@ -52,6 +52,12 @@ allprojects {
         options.encoding = "UTF-8"
     }
 
+    processResources {
+        filter {
+            it.replace('${project.version}', project.sledgehammerVersion)
+        }
+    }
+
     repositories {
         mavenCentral()
         maven { url 'https://papermc.io/repo/repository/maven-public/' }
@@ -86,9 +92,6 @@ dependencies {
 
 shadowJar {
     archiveFileName = "Sledgehammer-${sledgehammerVersion}.jar"
-    manifest {
-        attributes('Implementation-Version': "${sledgehammerVersion}")
-    }
     dependencies {
         exclude(dependency("com.google.code.gson:gson"))
         exclude(dependency("org.yaml:snakeyaml"))

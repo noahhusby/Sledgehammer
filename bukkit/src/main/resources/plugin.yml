@@ -1,6 +1,6 @@
 main: com.noahhusby.sledgehammer.server.Sledgehammer
 name: Sledgehammer
-version: 0.5
+version: ${project.version}
 prefix: Sledgehammer
 authors: [ noahhusby ]
 website: https://github.com/noahhusby/sledgehammer

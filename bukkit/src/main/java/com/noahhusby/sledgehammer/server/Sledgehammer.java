@@ -50,6 +50,8 @@ public final class Sledgehammer extends JavaPlugin implements Listener {
     public void onEnable() {
         instance = this;
         LOGGER = getLogger();
+        // Manually load version
+        Constants.loadVersion(getDescription().getVersion());
 
         SledgehammerUtil.checkForTerra();
 
