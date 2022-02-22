@@ -136,7 +136,7 @@ public class TpllCommand extends Command {
                         }
                         target.connect(server);
                     }
-                    target.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Teleporting to ", ChatColor.RED, String.format("%s, %s", coordinates.getLon(), coordinates.getLat())));
+                    target.sendMessage(ChatUtil.titleAndCombine(ChatColor.GRAY, "Teleporting to ", ChatColor.RED, String.format("%s, %s", coordinates.getLat(), coordinates.getLon())));
                     getNetworkManager().send(new P2SLocationPacket(target.getName(), server.getName(), coordinates));
                     return;
                 }
