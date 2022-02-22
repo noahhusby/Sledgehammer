@@ -296,6 +296,9 @@ public class WarpHandler {
             } else {
                 localGroup = warpGroup.getId();
             }
+            if (page == Page.LOCAL_GROUP && localGroup != null && !warpGroups.containsKey(localGroup)) {
+                page = Page.ALL;
+            }
         }
 
         Map<String, WarpGroupPayload> groups = Maps.newHashMap();

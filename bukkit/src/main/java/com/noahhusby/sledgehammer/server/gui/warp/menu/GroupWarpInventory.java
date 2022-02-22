@@ -201,13 +201,13 @@ public class GroupWarpInventory extends AbstractWarpInventory {
 
         @Override
         public void init() {
-            WarpGroupPayload group = payload.getGroups().get(groupId);
-            if (group == null) {
+            if (groupId == null || !payload.getGroups().containsKey(groupId)) {
                 close();
                 GUIRegistry.register(new AllWarpInventory.AllWarpInventoryController(getPlayer(), payload));
                 return;
             }
 
+            WarpGroupPayload group = payload.getGroups().get(groupId);
             List<Warp> warps = Lists.newArrayList();
             for (Integer warpId : group.getWarps()) {
                 Warp warp = payload.getWaypoints().get(warpId);
