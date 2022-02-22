@@ -29,7 +29,8 @@ allprojects {
     apply plugin: "java"
 
     ext {
-        sledgehammerVersion = "0.5." + ('git rev-list --count HEAD'.execute().text.trim())
+        semVersion = "0.5.0-rc.1"
+        fullVersion = semVersion + "+" + ('git rev-list --count HEAD'.execute().text.trim())
 
         gsonVersion = "2.9.0"
         hikariVersion = "4.0.3"
@@ -46,7 +47,7 @@ allprojects {
     }
 
     group "com.noahhusby"
-    version "$sledgehammerVersion"
+    version "$fullVersion"
 
     tasks.withType(JavaCompile) {
         options.encoding = "UTF-8"
@@ -54,7 +55,7 @@ allprojects {
 
     processResources {
         filter {
-            it.replace('${project.version}', project.sledgehammerVersion)
+            it.replace('${project.version}', project.fullVersion)
         }
     }
 
@@ -91,7 +92,7 @@ dependencies {
 }
 
 shadowJar {
-    archiveFileName = "Sledgehammer-${sledgehammerVersion}.jar"
+    archiveFileName = "Sledgehammer-${fullVersion}.jar"
     dependencies {
         exclude(dependency("com.google.code.gson:gson"))
         exclude(dependency("org.yaml:snakeyaml"))

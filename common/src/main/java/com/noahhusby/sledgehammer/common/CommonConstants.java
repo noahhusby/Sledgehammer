@@ -45,7 +45,7 @@ public abstract class CommonConstants {
         try {
             VERSION = new SledgehammerVersion(version);
         } catch (VersionParseException ignored2) {
-            VERSION = new SledgehammerVersion(0, 0, 0, true);
+            VERSION = SledgehammerVersion.DEV;
         }
     }
 }
