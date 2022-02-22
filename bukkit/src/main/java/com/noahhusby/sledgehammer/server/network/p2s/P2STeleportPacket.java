@@ -23,10 +23,12 @@ package com.noahhusby.sledgehammer.server.network.p2s;
 import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.common.warps.Point;
 import com.noahhusby.sledgehammer.server.Constants;
+import com.noahhusby.sledgehammer.server.Sledgehammer;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.network.P2SPacket;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class P2STeleportPacket extends P2SPacket {
@@ -49,7 +51,8 @@ public class P2STeleportPacket extends P2SPacket {
         }
 
         Point point = SledgehammerUtil.GSON.fromJson(data.get("point"), Point.class);
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), String.format("minecraft:tp %s %s %s %s %s %s", info.getSender(), point.getX(),
-                point.getY(), point.getZ(), point.getYaw(), point.getPitch()));
+        Location location = new Location(player.getWorld(), point.getX(), point.getY(), point.getZ(), (float) point.getYaw(), (float) point.getPitch());
+        Sledgehammer.getInstance().getLogger().info(String.format("%s teleported to %s, %s, %s", player.getName(), point.getX(), point.getY(), point.getZ()));
+        player.teleport(location);
     }
 }

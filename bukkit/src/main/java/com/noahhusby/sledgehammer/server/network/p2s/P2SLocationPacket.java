@@ -22,10 +22,12 @@ package com.noahhusby.sledgehammer.server.network.p2s;
 
 import com.google.gson.JsonObject;
 import com.noahhusby.sledgehammer.server.Constants;
+import com.noahhusby.sledgehammer.server.Sledgehammer;
 import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.network.P2SPacket;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -47,7 +49,7 @@ public class P2SLocationPacket extends P2SPacket {
 
         if (data.has("y")) {
             int y = data.get("y").getAsInt();
-            teleport(player.getName(), x, y, z);
+            teleport(player, x, y, z);
         } else {
             if (SledgehammerUtil.hasTerraPlusPlus()) {
                 SledgehammerUtil.getTerraConnector().getHeight(x, z).thenAccept(y -> {
@@ -56,16 +58,16 @@ public class P2SLocationPacket extends P2SPacket {
                            player.getWorld().getBlockAt(x, height - 1, z).getType() != Material.AIR) {
                         height++;
                     }
-                    teleport(player.getName(), x, height, z);
+                    teleport(player, x, height, z);
                 });
             } else {
-                teleport(player.getName(), x, player.getWorld().getHighestBlockYAt(x, z) + 1, z);
+                teleport(player, x, player.getWorld().getHighestBlockYAt(x, z) + 1, z);
             }
         }
     }
 
-    private void teleport(String player, int x, int y, int z) {
-        // TODO: Figure out why I replaced direct player teleportation with tp command
-        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), String.format("minecraft:tp %s %s %s %s", player, x, y, z));
+    private void teleport(Player player, int x, int y, int z) {
+        Sledgehammer.getInstance().getLogger().info(String.format("%s > Teleported to %s, %s, %s", player.getName(), x, y, z));
+        player.teleport(new Location(player.getWorld(), x, y, z));
     }
 }
