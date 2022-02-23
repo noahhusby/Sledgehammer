@@ -14,7 +14,6 @@
     <a href="https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE"><img src="https://img.shields.io/github/license/noahhusby/Sledgehammer"></a>
     <a href="https://github.com/noahhusby/Sledgehammer/releases"><img src="https://img.shields.io/github/v/release/noahhusby/sledgehammer?include_prereleases"></a>
     <a href="https://github.com/noahhusby/Sledgehammer"><img src="https://img.shields.io/tokei/lines/github/noahhusby/sledgehammer"></a>
-    <a href="https://github.com/noahhusby/Sledgehammer"><img src="https://img.shields.io/github/repo-size/noahhusby/sledgehammer"></a>
     <a href="https://discord.com/invite/BGpmp3sfH5"><img src="https://img.shields.io/discord/706317564904472627?label=discord"></a>
 </p>
 
