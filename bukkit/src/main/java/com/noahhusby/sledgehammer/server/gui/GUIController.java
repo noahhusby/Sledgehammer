@@ -53,13 +53,9 @@ public abstract class GUIController implements IController {
         if (child == null) {
             return;
         }
-        System.out.println("Init non-null child");
         this.currentChild = child;
-        System.out.println("Contents!");
         inventory.setContents(child.getInventory().getContents());
-        System.out.println("Updating");
         player.updateInventory();
-        System.out.println("DOPNE!");
     }
 
     public void close() {
