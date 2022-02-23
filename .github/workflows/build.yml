@@ -1,4 +1,4 @@
-name: Build & Archive
+name: Build
 
 on:
   push:
