@@ -9,6 +9,7 @@
   <br/><br/>
 </p>
 <p align="center">
+    <img src="https://go.buildtheearth.net/community-shield">
     <a href="https://github.com/noahhusby/Sledgehammer/actions/workflows/build.yml"><img src="https://github.com/noahhusby/Sledgehammer/actions/workflows/build.yml/badge.svg"></a>
     <a href="https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE"><img src="https://img.shields.io/github/license/noahhusby/Sledgehammer"></a>
     <a href="https://github.com/noahhusby/Sledgehammer/releases"><img src="https://img.shields.io/github/v/release/noahhusby/sledgehammer?include_prereleases"></a>
