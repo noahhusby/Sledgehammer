@@ -27,7 +27,6 @@ import com.noahhusby.sledgehammer.server.SledgehammerUtil;
 import com.noahhusby.sledgehammer.server.network.P2SPacket;
 import com.noahhusby.sledgehammer.server.network.PacketInfo;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -68,6 +67,8 @@ public class P2SLocationPacket extends P2SPacket {
 
     private void teleport(Player player, int x, int y, int z) {
         Sledgehammer.getInstance().getLogger().info(String.format("%s > Teleported to %s, %s, %s", player.getName(), x, y, z));
-        player.teleport(new Location(player.getWorld(), x, y, z));
+        // TODO: Figure out why direct teleportation is slower
+        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), String.format("minecraft:tp %s %s %s %s", player.getName(), x, y, z));
+        //player.teleport(new Location(player.getWorld(), x, y, z));
     }
 }
