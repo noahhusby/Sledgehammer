@@ -4,7 +4,7 @@
 # Sledgehammer
 #### A multi-server utility for the BuildTheEarth project.
 
-![](https://go.buildtheearth.net/community-shield)
+[![community](https://go.buildtheearth.net/community-shield)](https://github.com/buildtheearth)
 ![https://github.com/noahhusby/Sledgehammer/actions/workflows/build.yml](https://github.com/noahhusby/Sledgehammer/actions/workflows/build.yml/badge.svg)
 ![https://github.com/noahhusby/Sledgehammer/blob/master/LICENSE](https://img.shields.io/github/license/noahhusby/Sledgehammer)
 ![https://github.com/noahhusby/Sledgehammer/releases](https://img.shields.io/github/v/release/noahhusby/sledgehammer?include_prereleases)
