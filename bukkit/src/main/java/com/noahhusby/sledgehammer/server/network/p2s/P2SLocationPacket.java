@@ -43,29 +43,36 @@ public class P2SLocationPacket extends P2SPacket {
             throwNoSender();
             return;
         }
-        int x = data.get("x").getAsInt();
-        int z = data.get("z").getAsInt();
+        double x = data.get("x").getAsDouble();
+        double z = data.get("z").getAsDouble();
 
         if (data.has("y")) {
             int y = data.get("y").getAsInt();
             teleport(player, x, y, z);
         } else {
+            int xI = (int) Math.floor(x);
+            int zI = (int) Math.floor(z);
             if (SledgehammerUtil.hasTerraPlusPlus()) {
                 SledgehammerUtil.getTerraConnector().getHeight(x, z).thenAccept(y -> {
                     int height = y.intValue();
-                    while (player.getWorld().getBlockAt(x, height, z).getType() != Material.AIR &&
-                           player.getWorld().getBlockAt(x, height - 1, z).getType() != Material.AIR) {
+                    while (player.getWorld().getBlockAt(xI, height, zI).getType() != Material.AIR &&
+                           player.getWorld().getBlockAt(xI, height - 1, zI).getType() != Material.AIR) {
                         height++;
                     }
+                    height += 512;
+                    while (player.getWorld().getBlockAt(xI, height, zI).getType() == Material.AIR) {
+                        height--;
+                    }
+                    height++;
                     teleport(player, x, height, z);
                 });
             } else {
-                teleport(player, x, player.getWorld().getHighestBlockYAt(x, z) + 1, z);
+                teleport(player, x, player.getWorld().getHighestBlockYAt(xI, zI) + 1, z);
             }
         }
     }
 
-    private void teleport(Player player, int x, int y, int z) {
+    private void teleport(Player player, double x, double y, double z) {
         Sledgehammer.getInstance().getLogger().info(String.format("%s > Teleported to %s, %s, %s", player.getName(), x, y, z));
         // TODO: Figure out why direct teleportation is slower
         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), String.format("minecraft:tp %s %s %s %s", player.getName(), x, y, z));

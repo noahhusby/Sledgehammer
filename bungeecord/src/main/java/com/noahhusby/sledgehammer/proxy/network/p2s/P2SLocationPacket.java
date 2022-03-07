@@ -30,6 +30,9 @@ import com.noahhusby.sledgehammer.proxy.servers.ServerHandler;
 import com.noahhusby.sledgehammer.proxy.servers.SledgehammerServer;
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 @RequiredArgsConstructor
 public class P2SLocationPacket extends P2SPacket {
 
@@ -45,8 +48,9 @@ public class P2SLocationPacket extends P2SPacket {
     @Override
     public void getMessage(JsonObject data) {
         double[] proj = SledgehammerUtil.fromGeo(coords.getLon(), coords.getLat());
-        int x = (int) Math.floor(proj[0]);
-        int z = (int) Math.floor(proj[1]);
+        double x = BigDecimal.valueOf(proj[0]).setScale(3, RoundingMode.HALF_UP).doubleValue();
+        double z = BigDecimal.valueOf(proj[1]).setScale(3, RoundingMode.HALF_UP).doubleValue();
+
         SledgehammerServer sledgehammerServer = ServerHandler.getInstance().getServer(server);
         if (sledgehammerServer != null) {
             x += sledgehammerServer.getXOffset();
