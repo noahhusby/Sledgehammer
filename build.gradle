@@ -34,9 +34,9 @@ allprojects {
 
         gsonVersion = "2.9.0"
         hikariVersion = "4.0.3"
-        lombokVersion = "1.18.22"
-        husbyVersion = "0.1.115"
-        mongoVersion = "3.12.10"
+        lombokVersion = "1.18.24"
+        husbyVersion = "0.1.117"
+        mongoVersion = "3.12.11"
         guavaVersion = "31.1-jre"
         log4jVersion = "2.17.2"
         anvilGuiVersion = "1.5.3-SNAPSHOT"
