@@ -82,7 +82,7 @@ public class WarpMenuInventory extends AbstractWarpInventory {
             WarpGroupPayload group = groups.get(x);
 
             String headId = group.getHeadId();
-            if (headId.equals("")) {
+            if (headId == null || headId.equals("")) {
                 headId = Constants.Heads.cyanWool;
             }
             ItemStack item = SledgehammerUtil.getSkull(headId, group.getName());

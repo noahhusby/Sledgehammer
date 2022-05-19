@@ -26,7 +26,6 @@ import com.noahhusby.sledgehammer.common.exceptions.VersionParseException;
  * @author Noah Husby
  */
 public abstract class CommonConstants {
-    public static SledgehammerVersion VERSION;
     public static final double SCALE = 7318261.522857145;
     public static final String serverChannel = "sledgehammer:server";
     public static final String teleportID = "teleport";
@@ -40,6 +39,7 @@ public abstract class CommonConstants {
     public static final String warpGroupConfigID = "warp_group_config";
     public static final String playerUpdateID = "player_update";
     public static final String permissionCheckID = "permission_check";
+    public static SledgehammerVersion VERSION;
 
     public static void loadVersion(String version) {
         try {

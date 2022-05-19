@@ -35,14 +35,13 @@ import java.util.Objects;
 @Getter
 @RequiredArgsConstructor
 public class SledgehammerVersion implements Comparable<SledgehammerVersion> {
+    public static final SledgehammerVersion DEV = new SledgehammerVersion(0, 0, 0, ReleaseType.DEV, 0, 0);
     private final int majorVersion;
     private final int minorVersion;
     private final int patchVersion;
     private final ReleaseType type;
     private final int revision;
     private final int build;
-
-    public static final SledgehammerVersion DEV = new SledgehammerVersion(0, 0, 0, ReleaseType.DEV, 0, 0);
 
     public SledgehammerVersion(@NonNull String version) throws VersionParseException {
         String[] splitBuild = version.split("\\+");
