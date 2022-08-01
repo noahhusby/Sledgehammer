@@ -32,7 +32,7 @@ allprojects {
         semVersion = "0.5.0-rc.1"
         fullVersion = semVersion + "+" + ('git rev-list --count HEAD'.execute().text.trim())
 
-        gsonVersion = "2.9.0"
+        gsonVersion = "2.9.1"
         hikariVersion = "4.0.3"
         lombokVersion = "1.18.24"
         husbyVersion = "0.1.121"
