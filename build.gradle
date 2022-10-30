@@ -39,7 +39,7 @@ allprojects {
         husbyVersion = "0.1.126"
         mongoVersion = "3.12.11"
         guavaVersion = "31.1-jre"
-        log4jVersion = "2.18.0"
+        log4jVersion = "2.19.0"
         anvilGuiVersion = "1.5.3-SNAPSHOT"
         paperVersion = "1.12.2-R0.1-SNAPSHOT"
         bungeecordVersion = "1.19-R0.1-SNAPSHOT"
